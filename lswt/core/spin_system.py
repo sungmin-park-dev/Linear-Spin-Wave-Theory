@@ -1,388 +1,388 @@
-"""
-SpinSystem: Complete representation of a magnetic system.
+"""SpinSystem: the central data structure combining lattice, spins, and interactions.
 
-This module defines the SpinSystem class which combines:
-- Crystallographic lattice (geometry)
-- Magnetic structure (spin configuration)
-- Interactions (exchange, anisotropy, DM, etc.)
+A SpinSystem holds all information needed for spin system solvers:
+- Spin sites with positions, angles, spin magnitude, and magnetic field
+- Couplings with exchange matrices and displacement vectors
+- Lattice vectors
 
-This is the main object that gets passed to solvers and analysis tools.
+SpinSystem is solver-agnostic: it does not contain BZ type or any
+solver-specific logic. Solver parameters (e.g., bz_type, regularization)
+are passed to the solver directly.
 """
 
 import numpy as np
-from typing import Dict, List, Optional, Any, Tuple
-from pathlib import Path
-
-from .lattice import AbstractLattice
-from .magnetic_structure import AbstractMagneticStructure
+from dataclasses import dataclass
+from typing import List, Optional, Tuple, Dict, Union
 
 
 class SpinSystem:
-    """
-    Complete physical representation of a magnetic spin system.
+    """Solver-agnostic spin system definition.
 
-    This class combines three independent components:
-    1. Lattice: crystallographic geometry (AbstractLattice)
-    2. Magnetic structure: spin configuration pattern (AbstractMagneticStructure)
-    3. Interactions: physical couplings (exchange, anisotropy, etc.)
-
-    Design Philosophy
-    -----------------
-    Clean separation of concerns:
-    - Lattice determines GEOMETRY (neighbors, distances, BZ)
-    - MagneticStructure determines SPIN PATTERN (commensurate/incommensurate)
-    - Interactions determine PHYSICS (energy scales, anisotropies)
-    - SpinSystem COMBINES all three
-
-    This enables:
-    - Same lattice with different magnetic structures
-    - Same magnetic structure with different interactions
-    - Easy optimization (magnetic structure is mutable)
-    - Clear serialization (each component serializes independently)
+    Combines spin sites, couplings, and lattice information into a single
+    object that can be passed to any solver (LSWT, ED, BdG, ...).
 
     Parameters
     ----------
-    lattice : AbstractLattice
-        Crystallographic lattice defining geometry
-    magnetic_structure : AbstractMagneticStructure
-        Spin configuration (commensurate or incommensurate)
-    interactions : Dict
-        Interaction parameters. Structure depends on model type.
-        For NBCP-style models:
-            {
-                'nearest_neighbor': {
-                    'Jxy': float, 'Jz': float, 'JGamma': float, 'JPD': float
-                },
-                'next_nearest_neighbor': {
-                    'Kxy': float, 'Kz': float, 'KGamma': float, 'KPD': float
-                },
-                'magnetic_field': {'h': [hx, hy, hz]},
-                'single_ion_anisotropy': {'D': [Dx, Dy, Dz]}  # optional
-            }
-    spin_magnitude : float, optional
-        Spin quantum number S (default: 0.5)
-    metadata : Dict, optional
-        Additional information (project name, description, etc.)
-
-    Attributes
-    ----------
-    lattice : AbstractLattice
-        The crystallographic lattice
-    magnetic_structure : AbstractMagneticStructure
-        The magnetic ordering pattern
-    interactions : Dict
-        Interaction parameters
-    spin_magnitude : float
-        Spin quantum number
-    metadata : Dict
-        Additional metadata
+    sites : list of SpinSystem.Site
+        Magnetic sites in the magnetic unit cell.
+    couplings : list of SpinSystem.Coupling
+        Exchange couplings between sites.
+    lattice_vectors : array_like
+        Primitive lattice vectors, shape (2, 2): [a1, a2].
 
     Examples
     --------
-    Create a simple ferromagnetic system on triangular lattice:
-
-    >>> from lswt.core.lattice import TriangularLattice
-    >>> from lswt.core.magnetic_structure import CommensurateStructure
+    >>> import numpy as np
+    >>> from lswt import SpinSystem
+    >>> from lswt.core import exchange
     >>>
-    >>> # Geometry
-    >>> lattice = TriangularLattice(lattice_constant=1.0)
+    >>> a1 = np.array([1.0, 0.0])
+    >>> a2 = np.array([0.5, np.sqrt(3)/2])
     >>>
-    >>> # All spins up in z-direction
-    >>> mag_struct = CommensurateStructure(
-    ...     num_basis_sites=1,
-    ...     magnetic_supercell=(1, 1),
-    ...     angles=np.array([[0.0, 0.0]])  # θ=0 → ẑ
-    ... )
-    >>>
-    >>> # Interactions
-    >>> interactions = {
-    ...     'nearest_neighbor': {'Jxy': -1.0, 'Jz': -1.0}  # Negative = FM
-    ... }
-    >>>
-    >>> # Combine
-    >>> system = SpinSystem(lattice, mag_struct, interactions)
-    >>> print(system)
-
-    Create NBCP-type system (3-sublattice on triangular lattice):
-
-    >>> angles_120 = np.array([
-    ...     [np.pi/2, 0.0],
-    ...     [np.pi/2, 2*np.pi/3],
-    ...     [np.pi/2, 4*np.pi/3]
-    ... ])
-    >>> mag_struct = CommensurateStructure(
-    ...     num_basis_sites=1,
-    ...     magnetic_supercell=(1, 1),
-    ...     angles=angles_120
-    ... )
-    >>> interactions = {
-    ...     'nearest_neighbor': {
-    ...         'Jxy': 0.076, 'Jz': 0.125,
-    ...         'JGamma': 0.1, 'JPD': 0.0
-    ...     },
-    ...     'magnetic_field': {'h': [0, 0, 0.376]}
-    ... }
-    >>> system = SpinSystem(lattice, mag_struct, interactions, spin_magnitude=0.5)
-
-    Load from YAML configuration:
-
-    >>> system = SpinSystem.from_config('config.yaml')
+    >>> sites = [
+    ...     SpinSystem.Site("A", [0, 0], spin=0.5, angles=[np.pi/2, 0],
+    ...                     magnetic_field=[0, 0, 0.3]),
+    ...     SpinSystem.Site("B", [0.5, 0.866], spin=0.5,
+    ...                     angles=[np.pi/2, 2*np.pi/3],
+    ...                     magnetic_field=[0, 0, 0.3]),
+    ... ]
+    >>> J = exchange.heisenberg(1.0)
+    >>> couplings = [SpinSystem.Coupling(0, 1, J, [1.0, 0.0])]
+    >>> system = SpinSystem(sites, couplings, [a1, a2])
+    >>> system.site("A").spin
+    0.5
     """
 
-    def __init__(self,
-                 lattice: AbstractLattice,
-                 magnetic_structure: AbstractMagneticStructure,
-                 interactions: Dict,
-                 spin_magnitude: float = 0.5,
-                 metadata: Optional[Dict] = None):
-        """
-        Initialize SpinSystem.
+    # ------------------------------------------------------------------
+    # Nested data classes
+    # ------------------------------------------------------------------
+
+    @dataclass
+    class Site:
+        """A single magnetic site in the unit cell.
 
         Parameters
         ----------
-        lattice : AbstractLattice
-            Crystallographic lattice
-        magnetic_structure : AbstractMagneticStructure
-            Magnetic ordering pattern
-        interactions : Dict
-            Interaction parameters
-        spin_magnitude : float
-            Spin quantum number S
-        metadata : Dict, optional
-            Additional metadata
+        label : str
+            Site label (e.g., 'A', 'B', 'C').
+        position : array_like
+            2D position within the unit cell.
+        spin : float
+            Spin magnitude S (e.g., 0.5 for spin-1/2).
+        angles : array_like
+            Spherical angles (theta, phi) for spin direction.
+        magnetic_field : array_like
+            External magnetic field vector (3D).
         """
-        # Validation
-        if not isinstance(lattice, AbstractLattice):
-            raise TypeError("lattice must be an AbstractLattice instance")
+        label: str
+        position: np.ndarray
+        spin: float
+        angles: np.ndarray
+        magnetic_field: np.ndarray
 
-        if not isinstance(magnetic_structure, AbstractMagneticStructure):
-            raise TypeError("magnetic_structure must be an AbstractMagneticStructure instance")
+        def __post_init__(self):
+            self.position = np.asarray(self.position, dtype=float)
+            self.angles = np.asarray(self.angles, dtype=float)
+            self.magnetic_field = np.asarray(self.magnetic_field, dtype=float)
+            if self.position.shape != (2,):
+                raise ValueError(
+                    f"position must be 2D, got shape {self.position.shape}")
+            if self.angles.shape != (2,):
+                raise ValueError(
+                    f"angles must be (theta, phi), got shape {self.angles.shape}")
+            if self.magnetic_field.shape != (3,):
+                raise ValueError(
+                    f"magnetic_field must be 3D, got shape {self.magnetic_field.shape}")
 
-        if spin_magnitude <= 0:
-            raise ValueError("spin_magnitude must be positive")
+        def __repr__(self):
+            return (f"Site('{self.label}', pos={self.position}, "
+                    f"S={self.spin}, angles={self.angles})")
 
-        # Store components
-        self.lattice = lattice
-        self.magnetic_structure = magnetic_structure
-        self.interactions = interactions
-        self.spin_magnitude = spin_magnitude
-        self.metadata = metadata or {}
+    @dataclass
+    class Coupling:
+        """A bilinear spin-spin coupling: H = S_i^T J S_j.
+
+        Parameters
+        ----------
+        site_i : int
+            Index of site i.
+        site_j : int
+            Index of site j.
+        exchange_matrix : array_like
+            3x3 exchange matrix J_ij.
+        displacement : array_like
+            Real-space displacement vector from site i to site j.
+        """
+        site_i: int
+        site_j: int
+        exchange_matrix: np.ndarray
+        displacement: np.ndarray
+
+        def __post_init__(self):
+            self.exchange_matrix = np.asarray(self.exchange_matrix, dtype=float)
+            self.displacement = np.asarray(self.displacement, dtype=float)
+            if self.exchange_matrix.shape != (3, 3):
+                raise ValueError(
+                    f"exchange_matrix must be 3x3, got {self.exchange_matrix.shape}")
+            if self.displacement.shape != (2,):
+                raise ValueError(
+                    f"displacement must be 2D, got {self.displacement.shape}")
+
+    # ------------------------------------------------------------------
+    # SpinSystem constructor
+    # ------------------------------------------------------------------
+
+    def __init__(self, sites, couplings, lattice_vectors):
+        if not sites:
+            raise ValueError("Must provide at least one Site")
+        self.sites = tuple(sites)
+        self.couplings = tuple(couplings)
+        self.lattice_vectors = np.asarray(lattice_vectors, dtype=float)
+
+        # Build label -> index map
+        self._label_map: Dict[str, int] = {}
+        for i, s in enumerate(self.sites):
+            if s.label in self._label_map:
+                raise ValueError(f"Duplicate site label: '{s.label}'")
+            self._label_map[s.label] = i
+
+    # ------------------------------------------------------------------
+    # Properties
+    # ------------------------------------------------------------------
 
     @property
-    def is_commensurate(self) -> bool:
-        """Check if magnetic structure is commensurate."""
-        return self.magnetic_structure.is_commensurate()
+    def num_sites(self) -> int:
+        """Number of magnetic sites."""
+        return len(self.sites)
 
     @property
-    def num_basis_sites(self) -> int:
-        """Number of sites in crystallographic unit cell."""
-        return len(self.lattice.get_basis_positions())
+    def num_sublattices(self) -> int:
+        """Number of magnetic sublattices (alias for num_sites)."""
+        return self.num_sites
 
     @property
-    def num_magnetic_sublattices(self) -> Optional[int]:
-        """
-        Number of magnetic sublattices.
+    def num_couplings(self) -> int:
+        """Number of couplings."""
+        return len(self.couplings)
 
-        Returns None for incommensurate structures.
-        """
-        return self.magnetic_structure.get_num_magnetic_sublattices()
+    # ------------------------------------------------------------------
+    # Access methods
+    # ------------------------------------------------------------------
 
-    @property
-    def lattice_constant(self) -> float:
-        """Characteristic lattice constant."""
-        return self.lattice.get_lattice_constant()
+    def site(self, key: Union[str, int]) -> "SpinSystem.Site":
+        """Access a site by label or index.
 
-    def to_dict(self) -> Dict:
-        """
-        Serialize to dictionary.
+        Parameters
+        ----------
+        key : str or int
+            Site label (e.g., 'A') or site index (e.g., 0).
 
         Returns
         -------
-        data : Dict
-            Complete representation suitable for saving to YAML/JSON
+        Site
+            The requested site.
 
-        Notes
-        -----
-        This creates a complete snapshot that can be used to:
-        - Save to configuration file
-        - Save with results for reproducibility
-        - Share with collaborators
+        Examples
+        --------
+        >>> system.site("A").position
+        array([0., 0.])
+        >>> system.site(0).spin
+        0.5
         """
+        if isinstance(key, str):
+            if key not in self._label_map:
+                raise KeyError(f"No site with label '{key}'")
+            return self.sites[self._label_map[key]]
+        elif isinstance(key, (int, np.integer)):
+            return self.sites[key]
+        else:
+            raise TypeError(f"key must be str or int, got {type(key)}")
+
+    def get_couplings(self, site_i: Union[str, int],
+                      site_j: Union[str, int, None] = None
+                      ) -> List["SpinSystem.Coupling"]:
+        """Filter couplings by site label or index.
+
+        Parameters
+        ----------
+        site_i : str or int
+            First site label or index.
+        site_j : str, int, or None, optional
+            Second site label or index. If None, returns all couplings
+            involving site_i.
+
+        Returns
+        -------
+        list of Coupling
+            Matching couplings.
+
+        Examples
+        --------
+        >>> system.get_couplings("A", "B")  # A-B couplings only
+        >>> system.get_couplings("A")        # all couplings involving A
+        """
+        idx_i = self._resolve_index(site_i)
+
+        if site_j is None:
+            return [c for c in self.couplings
+                    if c.site_i == idx_i or c.site_j == idx_i]
+        else:
+            idx_j = self._resolve_index(site_j)
+            return [c for c in self.couplings
+                    if (c.site_i == idx_i and c.site_j == idx_j)
+                    or (c.site_i == idx_j and c.site_j == idx_i)]
+
+    def _resolve_index(self, key: Union[str, int]) -> int:
+        """Convert label or index to integer index."""
+        if isinstance(key, str):
+            if key not in self._label_map:
+                raise KeyError(f"No site with label '{key}'")
+            return self._label_map[key]
+        elif isinstance(key, (int, np.integer)):
+            return int(key)
+        else:
+            raise TypeError(f"key must be str or int, got {type(key)}")
+
+    # ------------------------------------------------------------------
+    # Angle manipulation
+    # ------------------------------------------------------------------
+
+    def update_angles(self, angles):
+        """Update spin angles for all sites.
+
+        Parameters
+        ----------
+        angles : array_like
+            Flat array [theta_0, phi_0, theta_1, phi_1, ...] of length
+            2*num_sites, or array of shape (num_sites, 2).
+        """
+        angles = np.asarray(angles, dtype=float)
+        if angles.ndim == 1:
+            if len(angles) != 2 * self.num_sites:
+                raise ValueError(
+                    f"Expected {2 * self.num_sites} angles, got {len(angles)}")
+            for i, site in enumerate(self.sites):
+                site.angles = angles[2 * i:2 * i + 2].copy()
+        elif angles.ndim == 2:
+            if angles.shape != (self.num_sites, 2):
+                raise ValueError(
+                    f"Expected shape ({self.num_sites}, 2), got {angles.shape}")
+            for i, site in enumerate(self.sites):
+                site.angles = angles[i].copy()
+        else:
+            raise ValueError("angles must be 1D or 2D array")
+
+    def get_angles_flat(self) -> np.ndarray:
+        """Return all spin angles as flat array.
+
+        Returns
+        -------
+        np.ndarray
+            [theta_0, phi_0, theta_1, phi_1, ...].
+        """
+        return np.concatenate([site.angles for site in self.sites])
+
+    # ------------------------------------------------------------------
+    # Legacy compatibility (to be gradually removed)
+    # ------------------------------------------------------------------
+
+    def to_legacy_dict(self, bz_type: str = "Hex_60") -> dict:
+        """Convert to legacy spin_system_data dict format.
+
+        Parameters
+        ----------
+        bz_type : str, optional
+            Brillouin zone type for the legacy format (default: 'Hex_60').
+
+        Returns
+        -------
+        dict
+            Legacy format: {"Spin info": ..., "Couplings": ...,
+            "Lattice/BZ setting": ...}.
+        """
+        spin_info = {}
+        for site in self.sites:
+            spin_info[site.label] = {
+                "Position": tuple(site.position),
+                "Spin": site.spin,
+                "Angles": tuple(site.angles),
+                "Magnetic Field": site.magnetic_field.copy(),
+            }
+
+        couplings_list = []
+        for c in self.couplings:
+            couplings_list.append({
+                "SpinI": self.sites[c.site_i].label,
+                "SpinJ": self.sites[c.site_j].label,
+                "Exchange Matrix": c.exchange_matrix.copy(),
+                "Displacement": tuple(c.displacement),
+            })
+
+        a1 = self.lattice_vectors[0]
+        a2 = self.lattice_vectors[1]
+        lattice_bz_setting = ((a1, a2), bz_type)
+
         return {
-            'lattice': {
-                'type': self.lattice.__class__.__name__,
-                'lattice_constant': self.lattice_constant,
-                # Additional lattice-specific parameters could go here
-            },
-            'magnetic_structure': self.magnetic_structure.to_dict(),
-            'interactions': self.interactions,
-            'spin_magnitude': self.spin_magnitude,
-            'metadata': self.metadata
+            "Spin info": spin_info,
+            "Couplings": couplings_list,
+            "Lattice/BZ setting": lattice_bz_setting,
         }
 
     @classmethod
-    def from_config(cls, config_path: str) -> 'SpinSystem':
-        """
-        Load system from YAML configuration file.
+    def from_legacy_dict(cls, data) -> "SpinSystem":
+        """Create SpinSystem from legacy spin_system_data dict.
 
         Parameters
         ----------
-        config_path : str
-            Path to YAML configuration file
+        data : dict
+            Legacy format with keys "Spin info", "Couplings",
+            "Lattice/BZ setting".
 
         Returns
         -------
-        system : SpinSystem
-            Loaded spin system
-
-        Notes
-        -----
-        Configuration file format:
-            lattice:
-              type: triangular
-              lattice_constant: 1.0
-
-            magnetic_structure:
-              type: commensurate
-              num_basis_sites: 1
-              magnetic_supercell: [1, 1]
-              angles:
-                - [1.5708, 0.0]
-                - [1.5708, 2.0944]
-                - [1.5708, 4.1888]
-
-            interactions:
-              nearest_neighbor:
-                Jxy: 0.076
-                Jz: 0.125
-                JGamma: 0.1
-                JPD: 0.0
-              magnetic_field:
-                h: [0.0, 0.0, 0.376]
-
-            calculation:
-              spin_magnitude: 0.5
-
-            project:
-              name: "NBCP Ground State"
-              description: "..."
-
-        Raises
-        ------
-        NotImplementedError
-            This method requires the io.config_loader module (Phase 5)
+        SpinSystem
+            New SpinSystem instance.
         """
-        raise NotImplementedError(
-            "SpinSystem.from_config() requires the config loader module.\n"
-            "This will be implemented in Phase 5 (Configuration System).\n"
-            "\n"
-            "For now, construct SpinSystem manually:\n"
-            "  lattice = TriangularLattice(...)\n"
-            "  mag_struct = CommensurateStructure(...)\n"
-            "  system = SpinSystem(lattice, mag_struct, interactions)\n"
-        )
+        spin_info = data["Spin info"]
+        label_to_idx = {}
+        sites = []
+        for i, (label, info) in enumerate(spin_info.items()):
+            label_to_idx[label] = i
+            sites.append(SpinSystem.Site(
+                label=label,
+                position=np.array(info["Position"]),
+                spin=info["Spin"],
+                angles=np.array(info["Angles"]),
+                magnetic_field=np.array(info["Magnetic Field"]),
+            ))
 
-    def to_legacy_dict(self) -> Dict:
-        """
-        Convert to legacy spin_system_data format for backward compatibility.
+        couplings = []
+        for c in data["Couplings"]:
+            couplings.append(SpinSystem.Coupling(
+                site_i=label_to_idx[c["SpinI"]],
+                site_j=label_to_idx[c["SpinJ"]],
+                exchange_matrix=np.array(c["Exchange Matrix"]),
+                displacement=np.array(c["Displacement"]),
+            ))
 
-        Returns
-        -------
-        spin_system_data : Dict
-            Dictionary in the format expected by current modules/ code:
-            {
-                'Spin info': {...},
-                'Couplings': {...},
-                'Lattice/BZ setting': {...}
-            }
+        lattice_vecs, _bz_type = data["Lattice/BZ setting"]
+        a1, a2 = lattice_vecs
+        lattice_vectors = np.array([a1, a2])
 
-        Notes
-        -----
-        This is a temporary compatibility layer to allow incremental migration.
-        Will be removed once all code uses the new SpinSystem interface.
+        return cls(sites, couplings, lattice_vectors)
 
-        Only works for commensurate structures on single-atom basis lattices.
-        """
-        if not self.is_commensurate:
-            raise ValueError("Legacy format only supports commensurate structures")
+    # ------------------------------------------------------------------
+    # Display
+    # ------------------------------------------------------------------
 
-        if self.num_basis_sites != 1:
-            raise ValueError("Legacy format only supports single-atom basis")
+    def __repr__(self):
+        return (f"SpinSystem(num_sites={self.num_sites}, "
+                f"num_couplings={self.num_couplings})")
 
-        # Build spin info
-        spin_info = {}
-        for i in range(self.num_magnetic_sublattices):
-            spin_dir = self.magnetic_structure.get_spin_direction(
-                site_index=0,
-                unit_cell=(i, 0)  # Simplified - assumes 1D magnetic ordering
-            )
-            theta = np.arccos(spin_dir[2])
-            phi = np.arctan2(spin_dir[1], spin_dir[0])
 
-            # Position (simplified - would need proper mapping for general case)
-            position = [0.0, 0.0]  # Placeholder
+# ======================================================================
+# Backward-compatible aliases (to be removed in future versions)
+# ======================================================================
 
-            spin_info[i] = {
-                'Spin': self.spin_magnitude,
-                'Angles': [theta, phi],
-                'Position': position,
-                'Magnetic Field': self.interactions.get('magnetic_field', {}).get('h', [0, 0, 0])
-            }
-
-        # Build couplings (simplified - assumes NBCP format)
-        couplings = {
-            'NN': self.interactions.get('nearest_neighbor', {}),
-            'NNN': self.interactions.get('next_nearest_neighbor', {})
-        }
-
-        # Lattice/BZ setting
-        lattice_vectors = self.lattice.get_primitive_vectors()
-        lattice_bz_setting = (
-            (lattice_vectors[0], lattice_vectors[1]),
-            'Hex_60'  # Hardcoded for now - would need to be more sophisticated
-        )
-
-        return {
-            'Spin info': spin_info,
-            'Couplings': couplings,
-            'Lattice/BZ setting': lattice_bz_setting
-        }
-
-    def __repr__(self) -> str:
-        """String representation."""
-        lattice_name = self.lattice.__class__.__name__
-        mag_type = "commensurate" if self.is_commensurate else "incommensurate"
-        num_sl = self.num_magnetic_sublattices
-
-        return (f"SpinSystem(lattice={lattice_name}, "
-                f"structure={mag_type}, "
-                f"sublattices={num_sl}, "
-                f"S={self.spin_magnitude})")
-
-    def __str__(self) -> str:
-        """Detailed string representation."""
-        lines = [
-            "="*50,
-            "Spin System",
-            "="*50,
-            f"Lattice: {self.lattice}",
-            f"Magnetic Structure: {self.magnetic_structure}",
-            f"Spin Magnitude: S = {self.spin_magnitude}",
-            f"Commensurate: {self.is_commensurate}",
-            f"Number of Magnetic Sublattices: {self.num_magnetic_sublattices}",
-            "",
-            "Interactions:",
-        ]
-
-        for key, value in self.interactions.items():
-            lines.append(f"  {key}: {value}")
-
-        if self.metadata:
-            lines.append("")
-            lines.append("Metadata:")
-            for key, value in self.metadata.items():
-                lines.append(f"  {key}: {value}")
-
-        lines.append("="*50)
-
-        return "\n".join(lines)
+SpinSite = SpinSystem.Site
+Coupling = SpinSystem.Coupling

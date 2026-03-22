@@ -1,0 +1,2406 @@
+\documentclass[aps, prx, nofootinbib, superscriptaddress]{revtex4-2}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, bm, nicefrac}
+\usepackage{multirow} 
+\usepackage{tabularx} 
+\usepackage{array}
+\usepackage{units}
+\usepackage{tensor} 
+\usepackage{braket}
+\usepackage{hyperref}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{array}
+\setlist[itemize,2]{label=\textopenbullet} % itemize의 두 번째 레벨의 기호를 \textbullet로 설정
+\usepackage{booktabs} % 테이블 선을 위한 패키지 추가
+
+
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage[export]{adjustbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+
+
+% Define global settings and functions before \begin{document}
+\definecolor{SkyBlue}{rgb}{0.5, 0.8, 1} 
+\definecolor{MyPink}{rgb}{1, 0.682, 0.843}
+\definecolor{customblue}{HTML}{1f77b4}
+\definecolor{customorange}{HTML}{ff7f0e}
+\definecolor{customgreen}{HTML}{2ca02c}
+\definecolor{custompurple}{HTML}{C4A3F0}
+
+
+
+
+
+% Define a custom function for magnetic ordering globally
+\newcommand{\magneticOrdering}[5]{
+    % Arguments: { #1: grid row }{ #2: grid column }{ #3: angle theta in degrees }{ #4: length of the arrow }{ #5: color of the arrow }
+
+    % Calculate the grid point's actual position
+    \pgfmathsetmacro\xa{#2 * \size - #1 * 0.5 * \size}
+    \pgfmathsetmacro\ya{#1 * \size * 0.866} % Height of equilateral triangle
+
+    % Calculate arrow end point
+    \pgfmathsetmacro\dx{#4 * cos(#3)} % x-component of the arrow
+    \pgfmathsetmacro\dy{#4 * sin(#3)} % y-component of the arrow
+
+    % Draw arrow
+    \draw[->, line width=1.5pt] (\xa, \ya) -- ++(\dx, \dy);
+
+    % Draw red dot
+    \fill[#5] (\xa, \ya) circle(0.2);
+}
+
+
+
+\setcounter{secnumdepth}{2}
+\makeatletter 
+\renewcommand\twocolumngrid{
+	\def\footnoterule{
+		\dimen@\skip\footins\divide\dimen@\thr@@
+		\kern-\dimen@\hrule width.5in\kern\dimen@}
+	\do@columngrid{mlt}{\tw@}
+ }
+
+\makeatother  
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{prop}{Proposition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{claim}{Claim}
+\newtheorem{corollary}{Corollary}[theorem]
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,                                         %% 
+    pdftitle={Stability of Chirality for mixed states}, %% PDF의 제목
+    pdfpagemode=FullScreen,
+    }
+
+\newcommand{\SP}[1]{{\color{cyan}\footnotesize{(SP) #1}}}
+\newcommand{\NBCPatom}{$\mathrm{Na_2 Ba Co (PO_4)_2}$}
+\newcommand{\NBCP}{{\sf NBCP}}
+
+\newcommand{\kvec}{\mathbf{k}}
+\newcommand{\bmdelta}{\bm{\delta}}
+
+\newcommand{\ha}{\hat{a}}
+\newcommand{\hc}{\hat{c}}
+\newcommand{\hI}{\hat{\mathbb{I}}}
+\newcommand{\hP}{\hat{P}}
+
+\newcommand{\rD}{\mathrm{D}}
+\newcommand{\rU}{\mathrm{U}}
+\newcommand{\ri}{\mathrm{i}}
+
+
+\newcommand{\bfr}{\mathbf{r}}
+
+
+
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cU}{\mathcal{U}}
+
+
+\newcommand{\Id}{\mathrm{Id}}
+
+\newcommand{\bth}{\bm{\theta}}
+
+
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\Pf}{\mathrm{Pf}}
+
+
+\newcommand{\Theme}[1]{{\vspace{0.5cm}\noindent\textbf{#1}}}
+
+\begin{document}
+
+\title{Note: Linear Spin Wave Theory}
+\author{Sung-Min Park}
+\begin{abstract}
+    In this article, we summarize the linear spin wave theory (LSWT) described in the literature.
+\end{abstract}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section*{Summary of Notation and Symbols}
+
+
+
+We summarize the symbols and notation used in this notes.
+\begin{table*}[t]
+    \centering
+    \caption{Summary of Notation and Symbols in Linear Spin Wave Theory}
+    \begin{tabular}{c|l}
+    \multicolumn{2}{c}{\textbf{Spin Hamiltonian and Related Quantities}} \\
+    \hline
+    $\hat{H}$ & Spin Hamiltonian \\
+    $J_{ij}^{\alpha\beta}$ & Exchange coupling between sites $i$ and $j$ for spin components $\alpha$ and $\beta$ \\
+    $h_j^{\alpha}$ & External magnetic field at site $j$ along direction $\alpha$ \\
+    $E_{\rm cl}$ & Classical ground state energy \\
+    $\mathbf{S}_j$ & Classical spin vector at site $j$ \\
+    $\hat{\mathbf{S}}_j$ & Quantum spin operator at site $j$ \\
+    $\delta\hat{\mathbf{S}}_j$ & Quantum fluctuation operator ($\hat{\mathbf{S}}_j = \mathbf{S}_j + \delta\hat{\mathbf{S}}_j$) \\
+    $\widetilde{\mathbf{S}}_j$ & Spin operator in the local reference frame \\
+    \hline
+    \multicolumn{2}{c}{\textbf{Index Conventions and Coordinate Systems}} \\
+    \hline
+    $i, j$ & Unit cell indices \\
+    $\mu, \nu, \sigma, \rho$ & Sublattice indices (typically $a, b, c, \dots$) \\
+    $I = (i, \mu), J = (j, \nu)$ & Composite site indices combining unit cell and sublattice \\
+    $\mathbf{r}_i$ & Position of unit cell $i$ \\
+    $\boldsymbol{\delta}_\mu$ & Position of sublattice $\mu$ within the unit cell \\
+    $\mathbf{R}_I = \mathbf{r}_i + \boldsymbol{\delta}_\mu$ & Position of spin at site $I = (i, \mu)$ \\
+    $\alpha, \beta$ & Spin component indices ($x, y, z$ or $+, -, 0$) \\
+    $\mathbf{R}_j$ & Rotation matrix from laboratory frame to local frame at site $j$ \\
+    $\hat{\mathbf{e}}_j^{\alpha}$ & Basis vectors of local frame at site $j$ ($\alpha = +, -, 0$) \\
+    \hline
+    \multicolumn{2}{c}{\textbf{Boson Operators and Transformations}} \\
+    \hline
+    $\hat{a}_j, \hat{a}_j^{\dagger}$ & Bosonic annihilation and creation operators \\
+    $\hat{n}_j = \hat{a}_j^{\dagger}\hat{a}_j$ & Boson number operator \\
+    $\hat{b}_{\mathbf{k}\mu}, \hat{b}_{\mathbf{k}\mu}^{\dagger}$ & Momentum-space bosonic operators for sublattice $\mu$ \\
+    $\hat{\beta}_{\mathbf{k}\mu}, \hat{\beta}_{\mathbf{k}\mu}^{\dagger}$ & Diagonalized magnon operators (after Bogoliubov transformation) \\
+    $\Psi_{\mathbf{k}} = (\hat{\mathbf{b}}_{\mathbf{k}}, \hat{\mathbf{b}}_{-\mathbf{k}}^{\dagger})^T$ & Nambu spinor in momentum space \\
+    $\widetilde{\Psi}_{\mathbf{k}} = (\hat{\boldsymbol{\beta}}_{\mathbf{k}}, \hat{\boldsymbol{\beta}}_{-\mathbf{k}}^{\dagger})^T$ & Diagonalized Nambu spinor \\
+    \hline
+    \multicolumn{2}{c}{\textbf{Matrices and Transformation Operators}} \\
+    \hline
+    $\mathsf{H}_{\mathbf{k}}$ & Hamiltonian matrix in BdG form \\
+    $\mathsf{A}_{\mathbf{k}}, \mathsf{B}_{\mathbf{k}}$ & Blocks of the Hamiltonian matrix $\mathsf{H}_{\mathbf{k}}$ \\
+    $\mathsf{T}_{\mathbf{k}}$ & Paraunitary transformation matrix for Bogoliubov diagonalization \\
+    $\mathsf{E}_{\mathbf{k}}$ & Diagonal matrix of magnon energies \\
+    $\mathsf{N}_{\mathbf{k}}(t)$ & Time-dependent correlation matrix in magnon basis \\
+    $\mathsf{U}^{\alpha}$ & Spin projection operator in laboratory frame \\
+    $\mathsf{S}_{\mathbf{k}}$ & Matrix encoding spin magnitudes and sublattice phase factors \\
+    $\mathsf{C}^{\alpha\beta}(\mathbf{k}, t)$ & Correlation matrix in laboratory frame \\
+    $\mathsf{J}$ & Symplectic metric tensor \\
+    \hline
+    \multicolumn{2}{c}{\textbf{Physical Quantities}} \\
+    \hline
+    $E_{\mathbf{k},\mu}$ & Magnon energy for band $\mu$ at momentum $\mathbf{k}$ \\
+    $n_{\mathbf{k},\mu} = 1/(e^{\beta E_{\mathbf{k},\mu}}-1)$ & Bose-Einstein distribution function \\
+    $E_0$ & Zero-point energy \\
+    $\mathcal{C}^{\alpha\beta}_{\mu\nu}(\mathbf{k}, t)$ & Sublattice spin-spin correlation function \\
+    $\mathcal{S}^{\alpha\beta}(\mathbf{k}, \omega)$ & Dynamic structure factor \\
+    $\mathcal{A}^{\alpha\beta}(\mathbf{k}, \omega)$ & Spectral function \\
+    $\Omega_{n,\mathbf{k}}$ & Berry curvature of the $n$-th magnon band \\
+    $C_n$ & Chern number of the $n$-th magnon band \\
+    \hline
+    \end{tabular}
+\end{table*}
+
+
+\newpage
+\section{Introduction to Spin Wave Theory (SWT)}
+
+For the spin wave theory, the spin model of our interest is 
+\begin{equation}\label{eq: General model Hamiltonian for spin wave theory}
+    \hat{H} 
+    = \sum_{ij} \sum_{\alpha, \beta} \hat{S}^{\alpha}_{i} J_{ij}^{\alpha\beta}  \hat{S}^{\beta}_{j}  
+    -  \sum_{j, \alpha} h_{j}^{\alpha} \hat{S}^{\alpha}_{j},
+\end{equation}
+where ${\bf S}_{i} = (S^{x}_{i}, S^{y}_{i}, S_{i}^{z})$ is the spin operator at site $i$, with $S^\alpha_i$ representing the $\alpha$-direction component, and $ij$ denotes the \emph{link}, not the lattice indices\footnote{
+    If we count $i$ and $j$ as independent variables, we change the exchange Hamiltonian: $\sum_{ij} \sum_{\alpha, \beta} S^{\alpha}_{i} J_{ij}^{\alpha\beta}  S^{\beta}_{j} \rightarrow \frac{1}{2} \sum_{ij} \sum_{\alpha, \beta} S^{\alpha}_{i} J_{ij}^{\alpha\beta} S^{\beta}_{j}$.
+}.
+The first term is called the exchange Hamiltonian, and the second term is the Zeeman term. 
+Note that many Mott insulators can be generally modeled as in Eqn.~\eqref{eq: General model Hamiltonian for spin wave theory}.
+\begin{enumerate}[label=(\roman*)]
+    \item {\bf Spin-Exchange interactions:} 
+    \begin{equation}
+        \sum_{ij} \sum_{\alpha, \beta} \hat{S}^{\alpha}_{i} J_{ij}^{\alpha\beta}  \hat{S}^{\beta}_{j}  
+        = \sum_{i \neq j} \hat{\bf S}_{i} \cdot {\bf J}_{ij} \cdot \hat{\bf S}_{j} + \sum_{i} \hat{\bf S}_{i} \cdot {\bf A}_{i} \cdot \hat{\bf S}_{i}
+    \end{equation}
+    where the exchange energy is composed of inter-site interactions (first term) and single-ion anisotropies (second term). The exchange matrix ${\bf J}_{ij}$ can represent various types of interactions including isotropic exchange, Dzyaloshinskii-Moriya interactions, and anisotropic exchanges such as Kitaev interactions. The single-ion anisotropy term, for example $- A \sum_{i} (S^{x}_{i})^{2}$, describes easy-axis anisotropy along $x$.
+    
+    \item {\bf External magnetic fields and $g$-tensors:}
+    \begin{equation}
+        \sum_{j} {\bf h}_{j} \cdot \hat{\bf S}_{j} = \mu_B \sum_{j} \sum_{\alpha, \beta} B_{j}^{\alpha} g_{j}^{\alpha\beta} \hat{S}^{\beta}_{j}
+    \end{equation}
+    where $\mu_B = 0.057883$ meV/T is the Bohr magneton. In magnetic materials, the $g$-tensor $g_{j}^{\alpha\beta}$ mediates the interaction between spins and external magnetic fields and can exhibit significant anisotropy due to spin-orbit coupling and crystal field effects, unlike the isotropic $g$-factor of free electrons ($g_e \approx 2.002$).
+\end{enumerate}
+
+\subsection{Spin to Boson Transformations}\label{subsec: spin-to-boson transformation}
+A spin wave theory for the model [Eqn.~\eqref{eq: General model Hamiltonian for spin wave theory}] can be formulated by assuming the quantum spin exhibits small fluctuations around its classical spin configuration:
+\begin{equation}
+    \hat{\mathbf{S}}_{j} = \mathbf{S}_{j} + \delta \hat{\mathbf{S}}_{j},
+\end{equation}
+where $\mathbf{S}_{j}$ is the classical spin and the operator $\delta \hat{\mathbf{S}}_{j}$ represents the quantum fluctuation. Substituting this into the Hamiltonian $H$, we obtain:
+\begin{align*}
+    \hat{H} 
+    = & \sum_{ij} \big( \mathbf{S}_{i} + \delta \hat{\mathbf{S}}_{i} \big) \cdot \mathbf{J}_{ij} \cdot \big( \mathbf{S}_{j} + \delta \hat{\mathbf{S}}_{j} \big) - \sum_{i} \mathbf{h}_{i} \cdot \big( \mathbf{S}_{i} + \delta \hat{\mathbf{S}}_{i} \big) \\
+    = & E_{\rm cl}
+    + \Big[ \sum_{ij} \big( \delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \mathbf{S}_{j} + \mathbf{S}_{i} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j} \big) - \sum_{i} \mathbf{h}_{i} \cdot \delta \hat{\mathbf{S}}_{i} \Big] 
+    + \sum_{ij} \delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j} \\
+    = & E_{\rm cl}
+    + \sum_{i} \Big( \sum_{j \in \mathsf{L}(i)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}
+    + \sum_{i,j} \delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j},
+\end{align*}
+where $E_{\rm cl} = \sum_{i,j} \mathbf{S}_{i} \cdot \mathbf{J}_{ij} \cdot \mathbf{S}_{j} - \sum_{i} \mathbf{h}_{i} \cdot \mathbf{S}_{i}$ is the classical energy, and the summation runs over the links, not the lattice indices\footnote{
+    If we count the indices independently, this becomes $\sum_{i} \Big( 2 \sum_{j} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}$.
+    },
+and $\sum_{i} \sum_{j \in \mathsf{L}(i)} = \sum_{\langle i, j \rangle}$.
+In the second line, we use $\delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \mathbf{S}_{j} = \mathbf{S}_{j} \cdot \mathbf{J}_{ji} \cdot \delta \hat{\mathbf{S}}_{i}$, which follows from $J_{ij}^{\alpha\beta} = J_{ji}^{\beta\alpha}$.
+
+
+
+The fluctuation operator $\delta \hat{\mathbf{S}}_{j}$ can be further decomposed into components perpendicular and parallel to the classical spin orientation:
+\begin{equation}
+    \delta \hat{\mathbf{S}}_{j} = \delta \hat{\mathbf{S}}_{j}^{\perp} + \delta \hat{\mathbf{S}}_{j}^{\parallel} 
+    %= \big( \widetilde{S}_{j}^{+} \hat{\bf e}_{j}^{-} + \widetilde{S}_{j}^{-} \hat{\bf e}_{j}^{+} \big) + \widetilde{S}^{z}_{j} \hat{\bf e}_{j}^{0}.
+\end{equation}
+Formally, this can be done using the \emph{Holstein-Primakoff} transformation~\cite{PhysRev.58.1098}, which represents the spin operator in the laboratory frame in terms of bosonic operators:
+\begin{equation}
+    \hat{\bf S}_{j} 
+    = \sqrt{S_{j}} 
+    \left[ 
+    \Big( 1 - \frac{\hat{n}_{j}}{2S_{j}} \Big)^{1/2} \hat{a}_{j} \hat{\bf e}_{j}^{-} + 
+    \hat{a}_{j}^{\dagger} \Big( 1 - \frac{\hat{n}_{j}}{2S_{j}} \Big)^{1/2} \hat{\bf e}_{j}^{+}
+    \right]
+    + (S_{j} - \hat{n}_{j}) \hat{\bf e}_{j}^{0},
+\end{equation}
+where the operators $\hat{a}_{i}$ and $\hat{a}_{i}^{\dagger}$ are the bosonic annihilation and creation operators that satisfy the canonical commutation relation $[\hat{a}_{i}, \hat{a}_{j}^{\dagger}] = \delta_{ij}$, and $\hat{n}_{j} \equiv \hat{a}^{\dagger}_{j} \hat{a}_{j}$ is the boson number operator. 
+The vectors $\hat{\bf e}_{j}^{\alpha}$ ($\alpha = \pm, 0$) define a local frame of reference. In a more conventional Cartesian basis, one defines $\hat{\bf e}_{j}^{\pm} = (\hat{\bf x}_{j} \pm i \hat{\bf y}_{j})/\sqrt{2}$ and $\hat{\bf e}_{j}^{0} = \hat{\bf z}_{j}$ with $\hat{\bf e}_{j}^{-} \times \hat{\bf e}_{j}^{+} = i \hat{\bf e}_{j}^{0}$, where $\hat{\bf e}^{0}_{j} = {\bf S}_{j} / {S_{j}} = \hat{\bf n}_{j}$ denotes the classical spin orientation.
+
+The perpendicular component $ \delta \hat{\mathbf{S}}_{j}^{\perp}$ satisfies $ \hat{\bf e}_{j}^{0} \cdot \delta \hat{\mathbf{S}}_{j}^{\perp} = 0 $ (where $\hat{\bf e}_{j}^{0}$ is the unit vector along the classical spin direction) and contains only odd-order bosonic operators: 
+\begin{equation}
+    \delta \hat{\mathbf{S}}_{j}^{\perp} = \sqrt{S_{j}}\left[ 
+    \Big( 1 - \frac{\hat{n}_{j}}{2S_{j}} \Big)^{1/2} \hat{a}_{j} \hat{\bf e}_{j}^{-} + 
+    \hat{a}_{j}^{\dagger} \Big( 1 - \frac{\hat{n}_{j}}{2S_{j}} \Big)^{1/2} \hat{\bf e}_{j}^{+}
+    \right] 
+    = \delta \hat{\mathbf{S}}_{j}^{(1)} + \delta \hat{\mathbf{S}}_{j}^{(3)} + \cdots 
+\end{equation}
+The parallel component, $\delta \hat{\mathbf{S}}_{j}^{\parallel} = \delta \hat{\mathbf{S}}_{j}^{(2)} = -\hat{n}_{j} \hat{\bf e}_{j}^{0}$, involves the number operator, where $\hat{\bf e}_{j}^{0}$ is the unit vector along the classical spin.
+
+Based on the above equations, the Hamiltonian can then be rewritten as:
+\begin{equation}
+    \begin{split}
+        H = & E_{\rm cl}
+        + \sum_{i} \Big( \sum_{j} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}
+        + \sum_{i,j} \delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}, \\
+        = & E_{\rm cl} + H_{1} + H_{2} + H_{3} + H_{4} + \cdots,
+    \end{split}
+\end{equation}
+where the terms could be obtained by plugging $\delta \hat{\bf S}_{j}^{\perp} = \delta \hat{\mathbf{S}}_{j}^{(1)} + \delta \hat{\mathbf{S}}_{j}^{(3)} + \cdots$, and $\delta \hat{\bf S}_{j}^{\parallel} = \delta \hat{\bf S}_{j}^{(2)}$.
+\begin{equation}
+    \begin{split}
+        E_{\rm cl} 
+        = & \sum_{ij} \mathbf{S}_i \cdot \mathbf{J}_{ij} \mathbf{S}_j - \sum_{i} \mathbf{h}_{i} \cdot \mathbf{S}_{i}
+        = \sum_{ij}  \widetilde{J}_{ij}^{00} S_{i} S_{j} - \sum_{i} S_{i}^{0} h_{i}, \\
+        H_{1} = & \sum_{i} \Big( \sum_{j \in \mathsf{L}(i)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}^{(1)} 
+        = \sum_{i} \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \delta \hat{\mathbf{S}}_{i}^{(1)}, \\
+        H_{2} = & \sum_{ij} \delta \hat{\mathbf{S}}_{i}^{(1)} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{(1)} 
+        + \sum_{i} \Big( \sum_{j\in \mathsf{L}(i)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}^{(2)}, \\
+        H_{3} = & \sum_{ij} \big( \delta \hat{\mathbf{S}}_{i}^{(1)} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{(2)} + \delta \hat{\mathbf{S}}_{i}^{(2)} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{(1)} \big), 
+        \quad \text{and so on.} 
+    \end{split}
+\end{equation}
+Note that the linear boson term vanishes when the spin configuration corresponds to a classical extremum:
+\begin{equation}
+    \sum_{i} \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \delta \hat{\mathbf{S}}_{i}^{(1)} = 0.
+\end{equation}
+To demonstrate this, consider the Lagrangian with a Lagrange multiplier enforcing the spin magnitude constraint:
+\begin{equation}
+    \mathcal{L} = E_{\rm cl} - \sum_{j} \frac{\lambda_{j}}{2} \big( |\mathbf{S}_{j}|^{2} - S_{j}^{2} \big).
+\end{equation}
+Taking the derivative with respect to $\mathbf{S}_{i}$, we get:
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial \mathbf{S}_{i}} = \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} - \lambda_{i} \mathbf{S}_{i} = 0,
+\end{equation}
+where $\frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} = \sum_{j} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i}$. 
+Since $\delta \hat{\mathbf{S}}_{i}^{\perp}$ is perpendicular to $\mathbf{S}_{i}$, it follows that:
+\begin{equation}
+    \boxed{\frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \delta \hat{\mathbf{S}}_{i}^{\perp} = \lambda_{i} \mathbf{S}_{i} \cdot \delta \hat{\mathbf{S}}_{i}^{\perp} = 0, \text{ for all } i.} 
+\end{equation}
+Thus, the linear boson term, as well as any odd terms related to classical energy differentiation, vanishes when the spin configuration is a classical stable point.
+
+
+\subparagraph{Comment ---}
+Alternatively, \emph{Dyson-Maleev} transformation~\cite{PhysRev.102.1217, maleev1958scattering} could map spin operators onto bosonic creation and annihilation operators ($a_{i}^{\dagger}, a_{i}$) as well:
+\begin{equation}\label{eq: spin-to-boson mapping}
+        S^{+}_{i} = \sqrt{2S_{i}} \Big( 1 - \frac{a^{\dagger}_{i}a_{i}}{2S_{i}} \Big)^{\xi} a_{i}, \quad
+        S^{-}_{i} = \sqrt{2S_{i}} \, a_{i}^{\dagger} \Big( 1 - \frac{a^{\dagger}_{i}a_{i}}{2S_{i}} \Big)^{1 - \xi}, \quad
+        S_{i}^{z} = S_{i} - a^{\dagger}_{i} a_{i},
+\end{equation}
+where $\xi = 1/2$ for the Holstein-Primakoff transformation, and $\xi = 1$ for the Dyson-Maleev transformation. 
+While both transformations map spin operators onto bosonic operators, the Dyson-Maleev transformation does not preserve Hermiticity. For instance, $(S^{+}_{i})^{\dagger}$ is not equal to $S^{-}_{i}$:
+\begin{equation}
+        (S^{+}_{i})^{\dagger} = \sqrt{2S_{i}} a^{\dagger}_{i} \Big( 1 - \frac{a^{\dagger}_{i} a_{i}}{2S_{i}} \Big)^{\xi} = S^{-}_{i} \Big( 1 - \frac{a^{\dagger}_{i} a_{i}}{2S_{i}} \Big)^{2\xi - 1},
+\end{equation}
+whereas for $\xi = 1/2$ (the Holstein-Primakoff transformation), Hermiticity of the spin operators is preserved.
+
+
+
+
+\subsection{Rotations for Spin Models}
+To analyze an ordered spin system using linear spin-wave theory (LSWT), it is useful to rotate the spins at each site from the \emph{laboratory} reference frame $\{\hat{\bf x}, \hat{\bf y}, \hat{\bf z}\}$ to a \emph{local} reference frame $\{\hat{\bf x}_{j}, \hat{\bf y}_{j}, \hat{\bf z}_{j}\}$ (aligned with the classical spin ordering, where $\hat{{\bf z}}_{j}$ coincides with the spin's quantization axis). 
+The transformation is given by:
+\begin{equation}
+    \label{eq: Spin rotation}
+    \hat{\bf S}_j = \mathbf{R}_j \, \widetilde{\mathbf{S}}_j 
+    = \widetilde{S}^{x}_{j} \hat{\bf x}_{j} + \widetilde{S}^{y}_{j} \hat{\bf y}_{j} + \widetilde{S}^{z}_{j} \hat{\bf z}_{j},
+\end{equation}
+where $\widetilde{\mathbf{S}}_j$ is the spin operator in the local reference frame at site $j$.
+By applying the rotation to all spins in a unit cell, the spin Hamiltonian is transformed from the laboratory frame to the local frame as:
+\begin{equation}\label{eq: Rotated Hamiltonian}
+    \begin{split}
+        \hat{H} = & \sum_{ij} \sum_{\alpha, \beta} S^{\alpha}_{i} J_{ij}^{\alpha\beta} S^{\beta}_{j} - \sum_{j, \alpha} h_{j}^{\alpha} S^{\alpha}_{j}
+        = \sum_{ij} \sum_{\alpha, \beta} \widetilde{S}^{\alpha}_{i} \widetilde{J}_{ij}^{\alpha\beta} \widetilde{S}^{\beta}_{j} - \sum_{j, \alpha} \widetilde{h}_{j}^{\alpha} \widetilde{S}^{\alpha}_{j},
+    \end{split}
+\end{equation}
+where the rotated couplings are defined as:
+\begin{equation}
+    \widetilde{J}_{ij}^{\alpha\beta}  = [\widetilde{\mathbf{J}}_{ij}]^{\alpha\beta} = [\mathbf{R}_i^{\rm T} \mathbf{J}_{ij} \mathbf{R}_j]^{\alpha\beta}, 
+    \quad \text{ and } \quad
+     \widetilde{h}_{j}^{\alpha} = [\widetilde{\mathbf{h}}_j]^{\alpha} = [\mathbf{h}_{j}^{\rm T} \mathbf{R}_{j}]^{\alpha}.
+\end{equation}
+In practice, the rotation from the crystal frame to the local frame is performed in two stages, expressed as $\mathbf{R}_i = \mathbf{R}^{\varphi} \cdot \mathbf{R}^{\theta}$. The combined rotation matrix is:
+\begin{equation}
+    \mathbf{R} (\theta, \varphi) = \mathbf{R}^{\varphi} \cdot \mathbf{R}^{\theta} = 
+    \begin{pmatrix} 
+        \cos \theta \cos \varphi & -\sin \varphi & \sin \theta \cos \varphi \\
+        \cos \theta \sin \varphi & \cos \varphi & \sin \theta \sin \varphi \\
+        -\sin \theta & 0 & \cos \theta
+    \end{pmatrix},
+    \label{eq_frametransform_gen}
+\end{equation}
+where $\theta$ is the angle relative to the $z$-axis in lab frame and $\varphi$ is the azimuthal angle in the $xy$-plane.
+Note that the classical spin orientation $\mathbf{S}_j$ satisfies:
+\begin{equation}
+    \mathbf{S}_{j} 
+    = \mathbf{R}_{j} \, \hat{\bf z} 
+    = \mathbf{R}^{\varphi_{j}} \mathbf{R}^{\theta_{j}} 
+    \begin{pmatrix} 
+        0 \\ 0 \\ 1 
+    \end{pmatrix} 
+    = \mathbf{R}^{\varphi_j} 
+    \begin{pmatrix} 
+        \sin \theta_{j} \\ 0 \\ \cos \theta_{j} 
+    \end{pmatrix} 
+    = 
+    \begin{pmatrix} 
+        \sin \theta_{j} \cos \varphi_{j} \\ \sin \theta_{j} \sin \varphi_{j} \\ \cos \theta_{j} 
+    \end{pmatrix}.
+\end{equation}
+
+
+
+
+For later uses, it is also convenient to express the spin operator using ladder operators with complex vector:
+\begin{equation}\label{eq: Spin rotation-ladder}
+    \hat{\bf S}_j = \mathbf{R}_j \, \widetilde{\mathbf{S}}_j
+    = \frac{\widetilde{S}_{j}^{+} \hat{\bf e}^{-}_{j} + \widetilde{S}_{j}^{-} \hat{\bf e}^{+}_{j} }{\sqrt{2}} + \widetilde{S}^{0}_{j} \hat{\bf e}^{0}_{j},
+\end{equation}
+where the spin operators are $\widetilde{S}_{j}^{\pm} \equiv \widetilde{S}_{j}^{x} \pm i \widetilde{S}_{j}^{y}$, $\widetilde{S}^{0}_{j} = \widetilde{S}^{z}_{j}$, and $[\widetilde{S}^{z}_{j}, \widetilde{S}^{\pm}_{j}] = \pm \widetilde{S}^{\pm}_{j}$.
+The complex vectors are
+\begin{equation}
+    \hat{\bf e}_{j}^{\alpha} \equiv \mathbf{R}_{j} \hat{\bf e}^{\alpha}: \quad 
+    \hat{\bf e}^{\pm}_{j} = \mathbf{R}_{j} \Big( \frac{ \hat{\bf x} \pm i \hat{\bf y} }{\sqrt{2}} \Big)
+    \text{ and }
+    \hat{\bf e}_{j}^{0} \equiv \mathbf{R}_{j} \hat{\bf z},
+\end{equation}
+where $\alpha = \pm, 0, (x,y,z)$ and the $\hat{\bf e}_{j}^{0}$-direction represents the classical magnetic orientation at site $j$. 
+These complex vectors $\hat{\bf e}_{j}^{\alpha}$ introduce a rotated Hamiltonian similar to the previous one:
+\begin{equation}
+    \hat{H} 
+    = \sum_{ij} \sum_{\alpha, \beta = 0, \pm} 
+    \widetilde{S}^{\alpha}_{i} \widetilde{J}^{\bar{\alpha}\bar{\beta}}_{ij} \widetilde{S}^{\beta}_{j} 
+    - \sum_{j} \sum_{\alpha = 0, \pm} \widetilde{h}^{\alpha}_{j} \widetilde{S}^{\alpha}_{j}.
+\end{equation}
+where $\bar{(\cdot)} = - ( \cdot )$, for example $\alpha = \pm, (0)$ and $\bar{\alpha} = \mp, (0)$.
+The couplings $\widetilde{J}^{\bar{\alpha}\bar{\beta}}_{ij}$ and magnetic fields $\widetilde{h}_{j}^{\alpha}$ are defined as 
+\begin{equation}
+    \widetilde{J}^{\alpha\beta}_{ij} \equiv \hat{\bf e}_{i}^{\alpha} \cdot \widetilde{\bf J}_{ij} \cdot \hat{\bf e}_{j}^{\beta}
+    \quad \text{ and } \quad
+    \widetilde{h}^{\alpha}_{j} \equiv \widetilde{\bf h}_{j} \cdot \hat{\bf e}^{\alpha}_{j}.
+\end{equation}
+
+The transformation from $xyz$ to $\pm0$ basis is given by:
+\begin{equation}
+    \mathbf{C} = 
+    \begin{pmatrix}
+        \hat{\bf e}^{+} & \hat{\bf e}^{-} & \hat{\bf e}^{0}
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        [\hat{\mathbf{e}}^{+}]^{x} & [\hat{\mathbf{e}}^{-}]^{x} & [\hat{\mathbf{e}}^{0}]^{x} \\[0.1em]
+        [\hat{\mathbf{e}}^{+}]^{y} & [\hat{\mathbf{e}}^{-}]^{y} & [\hat{\mathbf{e}}^{0}]^{y} \\[0.1em]
+        [\hat{\mathbf{e}}^{+}]^{z} & [\hat{\mathbf{e}}^{-}]^{z} & [\hat{\mathbf{e}}^{0}]^{z} 
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        \frac{1}{\sqrt{2}}  &   \frac{1}{\sqrt{2}}  &   0   \\[0.1em]
+        \frac{i}{\sqrt{2}}  & - \frac{i}{\sqrt{2}}  &   0   \\[0.1em]
+                    0       &           0           &   1   
+    \end{pmatrix} 
+\end{equation}
+where $[\hat{\mathbf{e}}_{i}^{\alpha}]^{\beta}$ denotes the $\beta = x, y, z$ component of the basis vector $\hat{\mathbf{e}}_{i}^{\alpha}$ (with $\alpha = +, -, 0$). 
+These components are obtained from:
+\begin{equation}
+    \mathbf{U}_{j} = \mathbf{R}_{j} \mathbf{C} =
+    \begin{pmatrix}
+        [\hat{\mathbf{e}}_{j}^{+}]^{x} & [\hat{\mathbf{e}}_{j}^{-}]^{x} & [\hat{\mathbf{e}}_{j}^{0}]^{x} \\[0.25em]
+        [\hat{\mathbf{e}}_{j}^{+}]^{y} & [\hat{\mathbf{e}}_{j}^{-}]^{y} & [\hat{\mathbf{e}}_{j}^{0}]^{y} \\[0.25em]
+        [\hat{\mathbf{e}}_{j}^{+}]^{z} & [\hat{\mathbf{e}}_{j}^{-}]^{z} & [\hat{\mathbf{e}}_{j}^{0}]^{z} 
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        R^{xx}_{j}   &   R^{xy}_{j}   &   R^{xz}_{j}   \\[0.25em]
+        R^{yx}_{j}   &   R^{yy}_{j}   &   R^{yz}_{j}   \\[0.25em]
+        R^{zx}_{j}   &   R^{zy}_{j}   &   R^{zz}_{j}   
+    \end{pmatrix}
+    \begin{pmatrix}
+        \frac{1}{\sqrt{2}}   &   \frac{1}{\sqrt{2}}   &   0   \\[0.25em]
+        \frac{i}{\sqrt{2}}   & - \frac{i}{\sqrt{2}}   &   0   \\[0.25em]
+                0     &         0       &   1   
+    \end{pmatrix} 
+\end{equation}
+
+The transformed coupling tensor $\mathbf{C}^{\dagger} \mathbf{J} \mathbf{C} = $ is expressed as:
+\begin{equation}
+    \begin{split}
+    \begin{pmatrix}
+        J^{-+}_{ij} & J^{--}_{ij} & J^{-0}_{ij} \\[0.3em]
+        J^{++}_{ij} & J^{+-}_{ij} & J^{+0}_{ij} \\[0.3em]
+        J^{0+}_{ij} & J^{0-}_{ij} & J^{00}_{ij}
+    \end{pmatrix}
+    = &
+    \begin{pmatrix}
+        \frac{1}{\sqrt{2}}   & - \frac{i}{\sqrt{2}}   &   0   \\[0.3em]
+        \frac{1}{\sqrt{2}}   &   \frac{i}{\sqrt{2}}   &   0   \\[0.3em]
+                0     &         0       &   1   
+    \end{pmatrix} 
+    \begin{pmatrix}
+        J^{xx}_{ij}   &   J^{xy}_{ij}   &   J^{xz}_{ij}   \\[0.3em]
+        J^{yx}_{ij}   &   J^{yy}_{ij}   &   J^{yz}_{ij}   \\[0.3em]
+        J^{zx}_{ij}   &   J^{zy}_{ij}   &   J^{zz}_{ij}   
+    \end{pmatrix}
+    \begin{pmatrix}
+        \frac{1}{\sqrt{2}}   &   \frac{1}{\sqrt{2}}   &   0   \\[0.3em]
+        \frac{i}{\sqrt{2}}   & - \frac{i}{\sqrt{2}}   &   0   \\[0.3em]
+                0     &         0       &   1   
+    \end{pmatrix} 
+    % \\ 
+    % \begin{pmatrix}
+    %     \frac{1}{2} \left( J^{xx} + J^{yy} + i (J^{xy} - J^{yx}) \right) & 
+    %     \frac{1}{2} \left( J^{xx} - J^{yy} - i (J^{xy} + J^{yx}) \right) & 
+    %     \frac{1}{\sqrt{2}} \left( J^{xz} - i J^{yz} \right) \\
+    %     \frac{1}{2} \left( J^{xx} - J^{yy} + i (J^{xy} + J^{yx}) \right) & 
+    %     \frac{1}{2} \left( J^{xx} + J^{yy} - i (J^{xy} - J^{yx}) \right) & 
+    %     \frac{1}{\sqrt{2}} \left( J^{xz} + i J^{yz} \right) \\
+    %     \frac{1}{\sqrt{2}} \left( J^{zx} + i J^{zy} \right) & 
+    %     \frac{1}{\sqrt{2}} \left( J^{zx} - i J^{zy} \right) & 
+    %     J^{zz}
+    % \end{pmatrix}
+    \end{split}
+\end{equation}
+with elements defined as $\widetilde{J}_{ij}^{\alpha\beta} = \hat{\mathbf{e}}_i^{\alpha} \cdot \widetilde{\mathbf{J}}_{ij} \cdot \hat{\mathbf{e}}_j^{\beta}$:
+\begin{equation}\label{eq: expressions for exchange couplings}
+    \begin{array}{rlrlrl}
+        J_{ij}^{--} &= \frac{1}{2} \big( J_{ij}^{xx} - J_{ij}^{yy} - i (J_{ij}^{xy} + J_{ij}^{yx}) \big), \qquad \qquad &
+        J_{ij}^{++} &= \frac{1}{2} \big( J_{ij}^{xx} - J_{ij}^{yy} + i (J_{ij}^{xy} + J_{ij}^{yx}) \big), &&\\[0.25em]
+        J_{ij}^{-+} &= \frac{1}{2} \big( J_{ij}^{xx} + J_{ij}^{yy} + i (J_{ij}^{xy} - J_{ij}^{yx}) \big), \qquad &
+        J_{ij}^{+-} &= \frac{1}{2} \big( J_{ij}^{xx} + J_{ij}^{yy} - i (J_{ij}^{xy} - J_{ij}^{yx}) \big), &&\\[0.25em]
+        J_{ij}^{0\pm} &= \frac{1}{\sqrt{2}} \big( J_{ij}^{zx} \pm i J_{ij}^{zy} \big), &
+        J_{ij}^{\pm0} &= \frac{1}{\sqrt{2}} \big( J_{ij}^{xz} \pm i J_{ij}^{yz} \big), & \qquad
+        J_{ij}^{00} &= J_{ij}^{zz}.
+    \end{array}
+\end{equation}
+
+
+
+
+
+\subsection{Bosonic representations for spin Hamiltonian}\label{subsec: Bosonic representations for spin exchange Hamiltonian}
+
+In this section, we derive the explicit bosonic Hamiltonian for the spin model.
+\begin{equation}
+    \begin{split}
+        \hat{H} 
+        &= E_{\rm cl}
+        + \sum_{i} \Big( \sum_{j \in \mathsf{L}(ij)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}
+        + \sum_{ij \in \mathsf{L}} \delta \hat{\mathbf{S}}_{i} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j},
+    \end{split}
+\end{equation}
+where $E_{\rm cl}$ is the classical energy, $\mathbf{S}_{j}$ represents the spin vector at site $j$, $\mathbf{J}_{ji}$ is the exchange interaction tensor, $\mathbf{h}_{i}$ is the external field, and $\delta \hat{\mathbf{S}}_{i}$ denotes the spin fluctuation operator.
+
+Let us divide the spin model into even and odd bosonic operator terms,
+\begin{subequations}\label{eq: LSWT boson expansion even/odd}
+    \begin{align}
+        H_{\rm even} &= \sum_{ij\in\mathsf{L}} 
+        \Big( \delta \hat{\mathbf{S}}_{i}^{\perp} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\perp} 
+        + \delta \hat{\mathbf{S}}_{i}^{\parallel} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\parallel} \Big)
+        + \sum_{i} \Big( \sum_{j \in \mathsf{L}(ij)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}^{\parallel}, 
+        \label{subeq: even bosonic terms in SWT} \\
+        H_{\rm odd}^{(m \ge 3)} &= \sum_{ij\in\mathsf{L}} 
+        \Big( \delta \hat{\mathbf{S}}_{i}^{\perp} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\parallel} 
+        + \delta \hat{\mathbf{S}}_{i}^{\parallel} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\perp} \Big).
+        \label{subeq: odd bosonic terms in SWT} 
+    \end{align}
+\end{subequations}
+and substituting the following spin-to-boson transformation:
+\begin{equation}
+    \delta \hat{\mathbf{S}}_{i}^{\perp} = \frac{\widetilde{S}_{i}^{+} \hat{\mathbf{e}}^{-}_{i} + \widetilde{S}_{i}^{-} \hat{\mathbf{e}}^{+}_{i} }{\sqrt{2}} = \sqrt{S_{i}} \left[ \Big( 1 - \frac{\hat{a}^{\dagger}_{i}\hat{a}_{i}}{2S_{i}} \Big)^{1/2} \hat{a}_{i} \hat{\mathbf{e}}_{i}^{-} + \hat{a}_{i}^{\dagger} \Big( 1 - \frac{\hat{a}^{\dagger}_{i}\hat{a}_{i}}{2S_{i}} \Big)^{1/2} \hat{\mathbf{e}}_{i}^{+} \right], 
+    \quad \text{ and } \quad
+    \delta \hat{\mathbf{S}}^{\parallel}_{i} =  - \hat{n}_{i} \hat{\mathbf{e}}_{i},
+\end{equation}
+where $\hat{\mathbf{e}}_{i}^{\pm}$ are the raising and lowering unit vectors, $\hat{\mathbf{e}}_{i}$ is the unit vector along the local quantization axis, and $\hat{n}_{i} = \hat{a}^{\dagger}_{i}\hat{a}_{i}$ is the boson number operator.
+This boson mapping results in the SWT Hamiltonian. 
+While the odd terms can also be obtained easily, we will focus on the even terms as they are of primary interest for the linear spin wave theory.
+
+The even Hamiltonian term, $H_{\rm even}$, consists of terms involving an even number of bosonic operators: 
+\begin{equation}
+    \delta \hat{\mathbf{S}}_{i}^{\perp} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\perp}  
+    = \frac{1}{2} \Big( \widetilde{S}_{i}^{+} \widetilde{J}_{ij}^{--} \widetilde{S}_{j}^{+}  
+    + \widetilde{S}_{i}^{+} \widetilde{J}_{ij}^{-+} \widetilde{S}_{j}^{-}
+    + \widetilde{S}_{i}^{-} \widetilde{J}_{ij}^{+-} \widetilde{S}_{j}^{+} 
+    + \widetilde{S}_{i}^{-} \widetilde{J}_{ij}^{++} \widetilde{S}_{j}^{-} \Big),
+\end{equation}
+This becomes:
+\begin{align*}
+    \frac{1}{2} \widetilde{S}_{i}^{+} \widetilde{J}_{ij}^{-+} \widetilde{S}_{j}^{-} 
+    = & 
+    \sqrt{S_{i}S_{j}} \widetilde{J}_{ij}^{-+} \Big( 1 - \frac{\hat{n}_{i}}{2S_i} \Big)^{1/2} \hat{a}_{i} \hat{a}_{j}^{\dagger}  \Big( 1 - \frac{\hat{n}_{j}}{2S_j} \Big)^{1/2} 
+    = t_{ij}^{-+} \Big[ \hat{a}_{i} \hat{a}_{j}^{\dagger}  - \tfrac{1}{4} \Big( \tfrac{\hat{n}_{i} \hat{a}_{i} \hat{a}_{j}^{\dagger}}{S_{i}} + \tfrac{\hat{a}_{i} \hat{a}_{j}^{\dagger} \hat{n}_{j}}{S_{j}} \Big) + \mathcal{O} (S^{-2}) \Big]
+    \\
+    \frac{1}{2} \widetilde{S}_{i}^{-} \widetilde{J}_{ij}^{+-} \widetilde{S}_{j}^{+} = &
+    \sqrt{S_i S_j} \widetilde{J}_{ij}^{+-} \hat{a}_i^{\dagger} \Big( 1 - \frac{\hat{n}_i}{2 S_i} \Big)^{1/2} \Big( 1 - \frac{\hat{n}_j}{2 S_j} \Big)^{1/2} \hat{a}_j 
+    = t_{ij}^{+-} \Big[ \hat{a}_{i}^{\dagger} \hat{a}_{j}  - \tfrac{1}{4} \Big( \tfrac{\hat{a}_{i}^{\dagger} \hat{n}_{i} \hat{a}_{j}}{S_{i}} + \tfrac{\hat{a}_{i}^{\dagger} \hat{n}_{j} \hat{a}_{j}}{S_{j}} \Big) + \mathcal{O} (S^{-2}) \Big]
+    \\
+    \frac{1}{2} \widetilde{S}_{i}^{+} \widetilde{J}_{ij}^{--} \widetilde{S}_{j}^{+} = & 
+    \sqrt{S_i S_j} \widetilde{J}_{ij}^{--} \Big( 1 - \frac{\hat{n}_i}{2 S_i} \Big)^{1/2} \hat{a}_i \Big( 1 - \frac{\hat{n}_j}{2 S_j} \Big)^{1/2} \hat{a}_j 
+    = t_{ij}^{--} \Big[ \hat{a}_{i} \hat{a}_{j} - \tfrac{1}{4} \Big( \tfrac{\hat{n}_{i} \hat{a}_{i} \hat{a}_{j}}{S_{i}} + \tfrac{\hat{a}_{i} \hat{n}_{j} \hat{a}_{j}}{S_{j}} \Big) + \mathcal{O} (S^{-2}) \Big]
+    \\
+    \frac{1}{2} \widetilde{S}_{i}^{-} \widetilde{J}_{ij}^{++} \widetilde{S}_{j}^{-} = & 
+    \sqrt{S_i S_j} \widetilde{J}_{ij}^{++} \hat{a}_i^{\dagger} \Big( 1 - \frac{\hat{n}_i}{2 S_i} \Big)^{1/2} \hat{a}_j^{\dagger} \Big( 1 - \frac{\hat{n}_j}{2 S_j} \Big)^{1/2}
+    = t_{ij}^{++} \Big[ \hat{a}_{i}^{\dagger} \hat{a}_{j}^{\dagger} - \tfrac{1}{4} \Big( \tfrac{\hat{a}_{i}^{\dagger} \hat{n}_{i} \hat{a}_{j}^{\dagger}}{S_{i}} + \tfrac{\hat{a}_{i}^{\dagger} \hat{a}_{j}^{\dagger} \hat{n}_{j}}{S_{j}} \Big) + \mathcal{O} (S^{-2}) \Big],
+\end{align*}
+where we define $t^{\alpha\beta}_{ij} = \sqrt{S_{i}S_{j}} \widetilde{J}^{\alpha\beta}_{ij}$.
+Next, the other terms in Eqn.~\eqref{subeq: even bosonic terms in SWT} are:
+\begin{equation}
+    \begin{split}
+    \sum_{i} \Big( \sum_{j \in \mathsf{L}(i)} \mathbf{S}_{j} \cdot \mathbf{J}_{ji} - \mathbf{h}_{i} \Big) \cdot \delta \hat{\mathbf{S}}_{i}^{\parallel} 
+    &= 
+    \sum_{i} \Big( \widetilde{h}_{i}^{0} - \sum_{j \in \mathsf{L}(i)} S_{j} \cdot \widetilde{J}_{ji}^{00} \Big)  \hat{n}_{i}, \\
+    \delta \hat{\mathbf{S}}_{i}^{\parallel} \cdot \mathbf{J}_{ij} \cdot \delta \hat{\mathbf{S}}_{j}^{\parallel}
+    &= \hat{n}_{i} \widetilde{J}_{ij}^{00} \hat{n}_{j},
+    \end{split}
+\end{equation}
+where $\widetilde{h}_{i}^{0}$ is the magnetic field along the local quantization axis and $\widetilde{J}_{ij}^{00}$ represents the longitudinal component of the exchange interaction.
+
+Combining all terms, we can express the quadratic and quartic Hamiltonian contributions, $H_{2}$ and $H_{4}$, as:
+\begin{align}
+    H_{2} &= \sum_{ij} \Big[ t_{ij}^{--} \hat{a}_{i} \hat{a}_{j} + t_{ij}^{-+} \hat{a}_{i}\hat{a}_{j}^{\dagger} + t_{ij}^{+-} \hat{a}_{i}^{\dagger} \hat{a}_{j} + t_{ij}^{++} \hat{a}^{\dagger}_{i} \hat{a}^{\dagger}_{j} - \widetilde{J}_{ij}^{00} \big( S_{i} \hat{n}_{j} + S_{j} \hat{n}_{i} \big) \Big] + \sum_{i} h_{i} \hat{n}_{i}, 
+    \label{eq: SWT bosonic H2 in real space}\\
+    H_{4} &= \sum_{ij} \widetilde{J}_{ij}^{00} \hat{n}_{i} \hat{n}_{j} - \Big[ t_{ij}^{--} \big( \tfrac{\hat{n}_{i}}{S_{i}} + \tfrac{\hat{n}_{j}}{S_{j}} \big) \hat{a}_{i} \hat{a}_{j} + t_{ij}^{++} \hat{a}^{\dagger}_{i} \hat{a}^{\dagger}_{j} \big( \tfrac{\hat{n}_{i}}{S_{i}} + \tfrac{\hat{n}_{j}}{S_{j}} \big) + t_{ij}^{-+} \big( \tfrac{\hat{n}_{i} \hat{a}_{i} \hat{a}_{j}^{\dagger}}{S_{i}} + \tfrac{\hat{a}_{i} \hat{a}_{j}^{\dagger} \hat{n}_{j}}{S_{j}} \big) + t_{ij}^{+-} \big( \tfrac{\hat{a}_{i}^{\dagger} \hat{n}_{i} \hat{a}_{j}}{S_{i}} + \tfrac{\hat{a}_{i}^{\dagger} \hat{n}_{j} \hat{a}_{j}}{S_{j}} \big) \Big]. 
+    \label{eq: SWT bosonic H4 in real space}
+\end{align}
+Note that if the anisotropic couplings are absent in the rotated exchange matrix $\widetilde{J}^{xy} = \widetilde{J}^{yx} = 0$, and $\widetilde{J}^{xx} = \widetilde{J}^{yy}$ are equal, then the anomalous contribution, such as $a^{\dagger}a^{\dagger}$, vanishes, see Eq.~\eqref{eq: expressions for exchange couplings}. 
+Furthermore, when the spins' magnitudes equal $S_{i} = S$, the expansions 
+\begin{equation}
+    H = S^{2} \tilde{E}_{cl} + S^{1} \tilde{H}_2 + S^{1/2} \tilde{H}_3 + S^{0} \tilde{H}_4 + \cdots.
+\end{equation}
+
+
+\subsection{Momentum Space Representations}
+
+In this section, we shall find the momentum space representation for the quadratic spin wave Hamiltonian ($H_{2}$).
+The quadratic bosonic Hamiltonian we have in Eqn.~\eqref{eq: SWT bosonic H2 in real space} is 
+\begin{equation}
+    \begin{split}
+        H_{2} = & \sum_{ij}
+        \Big[ t_{ij}^{--} \hat{a}_{i} \hat{a}_{j} + t_{ij}^{-+} \hat{a}_{i}\hat{a}_{j}^{\dagger} + t_{ij}^{+-} \hat{a}_{i}^{\dagger} \hat{a}_{j} + t_{ij}^{++} \hat{a}^{\dagger}_{i} \hat{a}^{\dagger}_{j} - \widetilde{J}_{ij}^{00} \big( S_{i} \hat{a}_{j}^{\dagger} \hat{a}_{j} + S_{j} \hat{a}_{i}^{\dagger} \hat{a}_{i} \big) \Big]  + \sum_{i} \widetilde{h}^{0}_{i} \hat{a}^{\dagger}_{i}\hat{a}_{i} \\
+        = & \sum_{ij} 
+        \Big[ t_{ij}^{--} \hat{a}_{i} \hat{a}_{j} + t_{ij}^{-+} \hat{a}_{i}\hat{a}_{j}^{\dagger} + t_{ij}^{+-} \hat{a}_{i}^{\dagger} \hat{a}_{j} + t_{ij}^{++} \hat{a}^{\dagger}_{i} \hat{a}^{\dagger}_{j} \Big] 
+        + \sum_{i} \mu_{i} \hat{a}^{\dagger}_{i} \hat{a}_{i}, 
+    \end{split}
+\end{equation}
+where the (effective) chemical potential $\mu_{i}$ is 
+\begin{equation}
+    \mu_{i} = \widetilde{h}^{0}_{i} - \sum_{j \in \mathsf{L}(i)} S_{j} \widetilde{J}^{00}_{ij} = \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \hat{\mathbf{e}}_{i}^{0}.
+\end{equation}
+
+We assume translational invariance.  
+In general, the spin system has magnetic sublattices $\sigma = a, b, c, \dots$.
+The bosonic annihilation operator $\hat{a}_{i}$ is defined with two indices $i = (i, \sigma)$, where $\sigma$ denotes the magnetic sublattice and $i$ is the unit-cell index. For example, $\hat{b}_{(i, a)} = \hat{a}_{i}$ and $\hat{b}_{(i, b)} = \hat{b}_{i}$. 
+This allows the operators to be transformed into their momentum-space representations:
+\begin{equation}
+    \hat{b}_{i\sigma} = \frac{1}{\sqrt{L}} \sum_{\mathbf{k} \in \mathrm{FBZ}} e^{i \mathbf{k} \cdot \mathbf{r}_{i\sigma}} \hat{b}_{\mathbf{k}\sigma},
+\end{equation}
+where $L$ is the number of unit cells in the system and FBZ denotes the first Brillouin zone.
+Then, the Hamiltonian becomes:
+\begin{align}
+    H_{2} 
+    = & \sum_{\mathbf{k}} 
+    \Big[ \sum_{\mathsf{L}(i\sigma, j\rho)}  
+        t^{+-}_{ij} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} \hat{a}_{\mathbf{k} \sigma}^{\dagger}          \hat{a}_{ \mathbf{k} \rho }^{\phantom \dagger}   +
+        t^{-+}_{ij} e^{ i \mathbf{k} \cdot \bm{\delta}_{ij}} \hat{a}_{\mathbf{k} \sigma}^{\phantom \dagger} \hat{a}_{ \mathbf{k} \rho }^{\dagger}  +
+        t^{++}_{ij} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} \hat{a}_{\mathbf{k} \sigma}^{\dagger}          \hat{a}_{-\mathbf{k} \rho }^{\dagger} + t^{--}_{ij} e^{ i \mathbf{k} \cdot \bm{\delta}_{ij}} \hat{a}_{\mathbf{k} \sigma}^{\phantom \dagger} \hat{a}_{-\mathbf{k} \rho }^{\phantom \dagger} \Big] 
+    + \sum_{\mathbf{k}, \sigma} \mu_{\sigma} \hat{a}_{\mathbf{k}\sigma}^{\dagger} \hat{a}_{\mathbf{k}\sigma}^{\phantom\dagger} \nonumber \\
+    = & \frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}} 
+    \begin{pmatrix}
+        \psi_{  \mathbf{k}}^{\dagger} &  
+        \psi_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \mathsf{A}_{\mathbf{k}}          & \mathsf{B}_{\mathbf{k}} \\
+        \mathsf{B}_{\mathbf{k}}^{\dagger}& \mathsf{A}_{-\mathbf{k}}^{*}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \psi_{  \mathbf{k}} \\
+        \psi_{-\mathbf{k}}^{\dagger} 
+    \end{pmatrix}
+    + \frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}}  C_{\mathbf{k}},
+\end{align}
+where $\psi^{\dagger}_{\mathbf{k}} = (a^{\dagger}_{\mathbf{k}}, b^{\dagger}_{\mathbf{k}}, \cdots)$ is a vector of bosonic creation operators for each sublattice, and the constant $C_{\mathbf{k}}$ follows from the normal ordering $\hat{a}_{\mathbf{k}\rho}^{\dagger} \hat{a}_{\mathbf{k}\sigma} = \frac{1}{2} (\hat{a}_{\mathbf{k}\rho}^{\dagger} \hat{a}_{ \mathbf{k}\sigma} + \hat{a}_{ \mathbf{k}\rho} \hat{a}_{\mathbf{k}\sigma}^{\dagger} ) - \frac{1}{2} \delta_{\rho\sigma}$.
+\begin{align}
+    \sum_{\mathbf{k} \in \mathrm{FBZ}} C_{\mathbf{k}} 
+    = & \sum_{\mathbf{k} \in \mathrm{FBZ}} \Big[
+    \sum_{\mathsf{L}(i\sigma,j\rho)} \big( t^{-+}_{ij} e^{i \mathbf{k} \cdot \bm{\delta}_{ij}} - t^{+-}_{ij} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}}\big) \delta_{\rho\sigma}    - \sum_{\sigma} \mu_{\sigma} \Big]
+    = - L \sum_{\sigma = a, b, \cdots} \mu_{\sigma} \nonumber \\
+    = & L \sum_{\sigma = a, b, \cdots} \Big( \sum_{\rho \in \mathsf{L}(\sigma)} S_{\rho} \widetilde{J}_{\rho\sigma}^{00} - \widetilde{h}_{\sigma}^{0} \Big) 
+    = \sum_{i} \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \hat{\mathbf{e}}_{i}^{0} 
+\end{align}
+In the first line, the first term always vanishes if $\rho \neq \sigma$.
+Even when $\rho = \sigma$ for hopping within the same sublattice but between different unit cells, these terms vanish in the summation over the FBZ.
+Note that the constant term can be expressed as $\frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}}  C_{\mathbf{k}}  = - \frac{1}{4} \Tr[\mathsf{H}_{\mathbf{k}}]$ and 
+\begin{equation}
+    \frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}}  C_{\mathbf{k}} 
+    = \frac{1}{2} \sum_{i} \frac{\partial E_{\rm cl}}{\partial \mathbf{S}_{i}} \cdot \hat{\mathbf{e}}_{i}^{0} 
+    = \frac{1}{2} \sum_{i} \Big( \widetilde{h}_{i}^{0} - \sum_{j \in \mathsf{L}(i)} S_{j} \cdot \widetilde{J}_{ji}^{00} \Big)
+    \xrightarrow{ S_{i} = S}  
+    \frac{1}{S} \big( E_{\rm exc} + \frac{1}{2}  E_{\rm zm} \big),
+\end{equation}
+where $ E_{\rm exc} = \sum_{ij} \mathbf{S}_i \cdot \mathbf{J}_{ij} \cdot \mathbf{S}_j $ is the exchange energy and $ E_{\rm zm} = - \sum_{i} \mathbf{h}_{i} \cdot \mathbf{S}_{i}$ is the Zeeman energy. 
+This is the reason why the quantum correction reduces the classical energy. 
+Clearly, when $\mathbf{h} = 0$, we have
+\begin{equation}
+    \hat{H} = S(S+1) E_{\rm cl} + S H_{2} + S^{1/2} H_{3} + \cdots .
+\end{equation}
+
+To summarize, the LSWT Hamiltonian can be expressed in the following form:
+\begin{align}
+    H^{(2)} 
+    = & \frac{1}{2}\sum_{\mathbf{k}} \Big(     
+        \Psi_{\mathbf{k}}^\dagger \hat{\mathsf{H}}_{\mathbf{k}}^{\phantom{\dagger}} \Psi_{\mathbf{k}}^{\phantom{\dagger}} 
+    - \Tr [\mathsf{A}_{\mathbf{k}}] \Big)
+\end{align}
+where $\Psi^\dagger_{\mathbf{k}}=\left( a^\dagger_{\mathbf{k}}, b^\dagger_{\mathbf{k}},\dots, a^{\phantom \dagger}_{-\mathbf{k}},b^{\phantom \dagger}_{-\mathbf{k}},\dots\right)$ is a vector of length $2 M_s$, with $M_s$ being the number of magnetic sublattices, and $\hat{\mathsf{H}}_{\mathbf{k}}$ is a $2M_s\times 2M_s$ matrix given by:
+\begin{equation}
+    \hat{\mathsf{H}}_{\mathbf{k}} = 
+    \begin{pmatrix}
+        \hat{\mathsf{A}}^{\phantom \dagger}_{\mathbf{k}} &  \hat{\mathsf{B}}^{\phantom \dagger}_{\mathbf{k}}\\[0.5ex] 
+        \hat{\mathsf{B}}^\dagger_{\mathbf{k}}  & \hat{\mathsf{A}}^*_{-\mathbf{k}}
+    \end{pmatrix},
+\end{equation}
+where $\hat{\mathsf{A}}^{\dagger}_{\mathbf{k}} = \hat{\mathsf{A}}^{\phantom \dagger}_{\mathbf{k}}$ are Hermitian, which follows from the Hermiticity of the Hamiltonian, and $\hat{\mathsf{B}}^{\phantom *}_{-\mathbf{k}} = \hat{\mathsf{B}}^{\rm T}_{\mathbf{k}}$, which follows from the bosonic commutation relations. 
+
+Finally, we provide explicit expressions for $\mathsf{H}_{\mathbf{k}}$ for a two-sublattice system $(\rho, \sigma) = (a, b)$ for the reader's convenience.
+Let us first consider the case where $a \neq b$, which can be written in matrix form as: 
+
+\textcolor{blue}{(SJ: I think $t^{--}_{ij}$ should be replaced by $(t^{--}_{ij})^{*}$ in equation 46, to satisfy the constraint on $B$, $\hat{\mathsf{B}}^{\phantom *}_{-\mathbf{k}} = \hat{\mathsf{B}}^{\rm T}_{\mathbf{k}} $) }
+
+\textcolor{red}{ (SP): 
+    I agree and this is a typo. The code is implemented without this typo.
+}
+\begin{equation}
+    \mathsf{A}_{\mathbf{k}} = 
+    \begin{pmatrix}
+        \widetilde{h}_{a} - \sum_{\mathsf{L}(i,j)} \widetilde{J}_{ij}^{00} S_{b} \quad
+        & \sum_{\mathsf{L}(i,j)}t^{+-}_{ij} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} \\[0.5em]
+        \sum_{\mathsf{L}(i,j)}t^{-+}_{ij} e^{i \mathbf{k} \cdot \bm{\delta}_{ij}} \quad &
+        \widetilde{h}_{b} - \sum_{\mathsf{L}(i,j)} \widetilde{J}_{ij}^{00} S_{a}
+    \end{pmatrix},
+    \quad  \mathsf{B}_{\mathbf{k}} =
+    \begin{pmatrix}
+        0   & \sum_{\mathsf{L}(i,j)}t^{++}_{ij} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} \\[0.5em]
+        \sum_{\mathsf{L}(i,j)}t^{++}_{ij} e^{i \mathbf{k} \cdot \bm{\delta}_{ij}} &    0
+    \end{pmatrix},
+\end{equation}
+If the two sublattices are identical ($a = b$), the matrices in the Hamiltonian are given as: \textcolor{blue}{(SJ: I think the factor 2 in $A_k$ (in equation 47) is unnecessary; the chemical potential is doublely counted for $A_k$ and $A_{-k}$, and divided by 2 in total LSWT Hamiltonian )}
+\begin{equation}
+    \begin{split}
+        \mathsf{A}_{\mathbf{k}} 
+        = & 2 \Big( \widetilde{h}_{a} - \sum_{\mathsf{L}(ij)} \widetilde{J}_{ij}^{00} S_{a} \Big)
+        + \sum_{\mathsf{L}(i,j)}(t_{ij}^{+-} e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} + t^{-+}_{ij} e^{+i \mathbf{k} \cdot \bm{\delta}_{ij}}), \\
+        \mathsf{B}_{\mathbf{k}} 
+        = & \sum_{\mathsf{L}(i,j)}t^{++}_{ij} (e^{-i \mathbf{k} \cdot \bm{\delta}_{ij}} + e^{+i \mathbf{k} \cdot \bm{\delta}_{ij}})
+        = 2 \sum_{\mathsf{L}(i,j)}t^{++}_{ij} \cos ( \mathbf{k} \cdot \bm{\delta}_{ij}) 
+    \end{split}
+\end{equation}
+This momentum-space formulation simplifies the analysis of bosonic excitations and provides a basis for studying dispersion relations and system stability.
+
+
+
+\subsection{Diagonalization of Quadratic Boson Hamiltonian}
+
+In this section, we discuss the diagonalization of the boson Hamiltonian. 
+The quadratic boson Hamiltonian can be diagonalized by the Bogoliubov transformation. 
+Consider the following Bogoliubov transformation:
+\begin{equation}
+    \hat{b}_{\mathbf{k}, \mu} 
+    = \big[ \mathsf{P}_{\mathbf{k}}^{\phantom \dagger} \hat{\bm \beta}_{\mathbf{k}}^{\phantom \dagger} + \mathsf{Q}_{-\mathbf{k}}^{\phantom \dagger} \hat{\bm \beta}_{-\mathbf{k}}^{\dagger} \big]_{\mu}
+    = \sum_{\nu = 1}^{M_s} [\mathsf{P}_{\mathbf{k}}]_{\mu\nu}^{\phantom \dagger} \hat{\beta}_{\mathbf{k}, \nu}^{\phantom \dagger} + [\mathsf{Q}_{-\mathbf{k}}]_{\mu\nu}^{\phantom \dagger} \hat{\beta}_{-\mathbf{k}, \nu}^{\dagger},
+\end{equation}
+where the indices $\mu, \nu$ are defined over $\mu, \nu = 1, \cdots, M_s$.
+In order to preserve the bosonic commutation relations, we require the following identities:
+\begin{align*}
+    [\hat{b}_{  \mathbf{k}, \mu}^{\phantom \dagger}, \hat{b}_{  \mathbf{q}, \nu}^{\dagger}] 
+    = & \big[ \mathsf{P}_{\mathbf{k}}\mathsf{P}_{\mathbf{k}}^{\dagger} - \mathsf{Q}_{-\mathbf{k}}\mathsf{Q}_{-\mathbf{k}}^{\dagger} \big]_{\mu\nu} \delta_{\mathbf{k},\mathbf{q}}
+    = + \delta_{\mu,\nu}    \delta_{\mathbf{k}, \mathbf{q}} ,
+    \qquad \quad
+    [\hat{b}_{  \mathbf{k}, \mu}, \hat{b}_{-\mathbf{q}, \nu}] 
+    = \big[ \mathsf{P}_{\mathbf{k}}\mathsf{Q}_{\mathbf{k}}^{\mathrm{T}} - \mathsf{Q}_{-\mathbf{k}}\mathsf{P}_{-\mathbf{k}}^{\mathrm{T}} \big]_{\mu\nu} \delta_{\mathbf{k},\mathbf{q}} = 0, \\
+    [\hat{b}_{-\mathbf{k}, \mu}^{\dagger}, \hat{b}_{-\mathbf{q}, \nu}^{\phantom \dagger}] 
+    = & \big[ \mathsf{P}_{-\mathbf{k}}^{*}\mathsf{P}_{-\mathbf{k}}^{\mathrm{T}} - \mathsf{Q}_{\mathbf{k}}^{*}\mathsf{Q}_{\mathbf{k}}^{\mathrm{T}} \big]_{\mu\nu} \delta_{\mathbf{k},\mathbf{q}}
+    = - \delta_{\mu,\nu}    \delta_{\mathbf{k}, \mathbf{q}}, 
+    \qquad \quad
+    [\hat{b}_{-\mathbf{k}, \mu}^{\dagger}, \hat{b}_{  \mathbf{q}, \nu}^{\dagger}] 
+    = \big[ \mathsf{Q}_{\mathbf{k}}^{*}\mathsf{P}_{\mathbf{k}}^{\dagger} - \mathsf{P}_{-\mathbf{k}}^{*}\mathsf{Q}_{-\mathbf{k}}^{\dagger} \big]_{\mu\nu} \delta_{\mathbf{k},\mathbf{q}}
+    = 0.
+\end{align*}
+These identities can be represented in a compact matrix form:
+\begin{equation}
+    \begin{pmatrix}
+       \mathsf{P}_{\mathbf{k}} & \mathsf{Q}_{-\mathbf{k}} \\ 
+       \mathsf{Q}_{\mathbf{k}}^{*} & \mathsf{P}_{-\mathbf{k}}^{*}
+    \end{pmatrix}
+    \begin{pmatrix}
+        1 & 0 \\ 0 & -1
+    \end{pmatrix}
+    \begin{pmatrix}
+       \mathsf{P}_{\mathbf{k}}^{\dagger} & \mathsf{Q}_{\mathbf{k}}^{\rm T} \\ 
+       \mathsf{Q}_{-\mathbf{k}}^{\dagger} & \mathsf{P}_{-\mathbf{k}}^{\rm T}
+    \end{pmatrix} 
+    = 
+    \begin{pmatrix} 
+        \mathsf{P}_{\mathbf{k}}\mathsf{P}_{\mathbf{k}}^{\dagger} - \mathsf{Q}_{-\mathbf{k}}\mathsf{Q}_{-\mathbf{k}}^{\dagger} & 
+        \mathsf{P}_{\mathbf{k}}\mathsf{Q}_{\mathbf{k}}^{\rm T}   - \mathsf{Q}_{-\mathbf{k}}\mathsf{P}_{-\mathbf{k}}^{\rm T}     \\
+        \mathsf{Q}_{\mathbf{k}}^{*}\mathsf{P}_{\mathbf{k}}^{\dagger} - \mathsf{P}_{-\mathbf{k}}^{*}\mathsf{Q}_{-\mathbf{k}}^{\dagger} & 
+            \mathsf{Q}_{\mathbf{k}}^{*}\mathsf{Q}_{\mathbf{k}}^{\rm T} - \mathsf{P}_{-\mathbf{k}}^{*}\mathsf{P}_{-\mathbf{k}}^{\rm T}
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        1 & 0 \\ 0 & -1
+    \end{pmatrix}
+\end{equation}
+
+By adopting the above convention (i.e., the transformation of $\hat{\bm b}_{\mathbf{k}} \rightarrow \hat{\bm b}^{\dagger}_{-\mathbf{k}}$), the (para)-unitary transformation matrix $\mathsf{T}_{\mathbf{k}}$ has the following form: 
+\begin{equation}
+    \Psi_{\mathbf{k}} = \mathsf{T}_{\mathbf{k}} \widetilde{\Psi}_{\mathbf{k}}: \quad
+    \begin{pmatrix}
+        \hat{\bm b}_{\mathbf{k}} \\
+        \hat{\bm b}_{-\mathbf{k}}^{\dagger}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        \mathsf{P}_{\mathbf{k}}       & \mathsf{Q}_{-\mathbf{k}} \\ 
+        \mathsf{Q}_{\mathbf{k}}^{*}   & \mathsf{P}_{-\mathbf{k}}^{*}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \hat{\bm \beta}_{ \mathbf{k}} \\
+        \hat{\bm \beta}_{-\mathbf{k}}^{\dagger}
+    \end{pmatrix}.
+\end{equation}
+Suppose the unitary transformation $\mathsf{T}_{\mathbf{k}}$ diagonalizes the Hamiltonian matrix $\mathsf{H}_{\mathbf{k}}$:
+\begin{equation}
+    \mathsf{T}_{\mathbf{k}}^{\dagger} \mathsf{H}_{\mathbf{k}}^{\phantom \dagger} \mathsf{T}_{\mathbf{k}} = \mathsf{E}_{\mathbf{k}}: \qquad
+        \begin{pmatrix}
+        \mathsf{P}_{\mathbf{k}}^{\dagger}     & \mathsf{Q}_{  \mathbf{k}}^{\rm T} \\[0.3em] 
+        \mathsf{Q}_{-\mathbf{k}}^{\dagger}    & \mathsf{P}_{- \mathbf{k}}^{\rm T}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \mathsf{A}^{\phantom \dagger}_{\mathbf{k}}      &   \mathsf{B}^{\phantom \dagger}_{\mathbf{k}}\\[0.3em] 
+        \mathsf{B}^\dagger_{\mathbf{k}}                 &   \mathsf{A}^*_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \mathsf{P}_{\mathbf{k}}       & \mathsf{Q}_{-\mathbf{k}} \\[0.3em] 
+        \mathsf{Q}_{\mathbf{k}}^{*}   & \mathsf{P}_{-\mathbf{k}}^{*}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        \mathsf{E}_{\mathbf{k}} & 0 \\ 0 & \widetilde{\mathsf{E}}_{-\mathbf{k}}
+    \end{pmatrix},
+\end{equation}
+The two diagonal matrices $\mathsf{E}_{\mathbf{k}}$ and $\widetilde{\mathsf{E}}_{-\mathbf{k}}$ are real-valued, and their explicit forms are written as:
+\begin{align*}
+    \mathsf{E}_{\mathbf{k}} = & 
+    \mathsf{P}_{\mathbf{k}}^{\dagger} \mathsf{A}_{\mathbf{k}} \mathsf{P}_{\mathbf{k}} + 
+    \mathsf{P}_{\mathbf{k}}^{\dagger} \mathsf{B}_{\mathbf{k}} \mathsf{Q}_{\mathbf{k}}^{*} + 
+    \mathsf{Q}_{\mathbf{k}}^{\rm T} \mathsf{B}_{\mathbf{k}}^{\dagger} \mathsf{P}_{\mathbf{k}} + 
+    \mathsf{Q}_{\mathbf{k}}^{\rm T} \mathsf{A}_{-\mathbf{k}}^{*} \mathsf{Q}_{\mathbf{k}}^{*},
+    \\
+    \widetilde{\mathsf{E}}_{-\mathbf{k}} = & 
+    \mathsf{Q}_{-\mathbf{k}}^{\dagger} \mathsf{A}_{\mathbf{k}} \mathsf{Q}_{-\mathbf{k}} + 
+    \mathsf{Q}_{-\mathbf{k}}^{\dagger} \mathsf{B}_{\mathbf{k}} \mathsf{P}_{-\mathbf{k}}^{*} + 
+    \mathsf{P}_{-\mathbf{k}}^{\rm T} \mathsf{B}_{\mathbf{k}}^{\dagger} \mathsf{Q}_{-\mathbf{k}} + 
+    \mathsf{P}_{-\mathbf{k}}^{\rm T} \mathsf{A}_{-\mathbf{k}}^{*} \mathsf{P}_{-\mathbf{k}}^{*}.
+\end{align*}
+Note that the two diagonal matrices can be mapped to each other under conjugation and momentum inversion. 
+Thus, we obtain the energy bands ($E_{\mathbf{k}}$ and $E_{-\mathbf{k}}$) when we diagonalize the quadratic boson Hamiltonian via Colpa's method~\cite{Colpa1978Diagonalization}:
+\begin{equation}
+    \widetilde{\mathsf{E}}_{-\mathbf{k}} 
+    \xrightarrow[\mathbf{k} \rightarrow -\mathbf{k}]{\rm conj} 
+    \widetilde{\mathsf{E}}_{\mathbf{k}}^{*}:  \qquad
+    \widetilde{\mathbf{E}}_{\mathbf{k}}^{*} =
+    \mathsf{P}_{\mathbf{k}}^{\dagger}   \mathsf{A}_{\mathbf{k}}             \mathsf{P}_{\mathbf{k}}   +
+    \mathsf{P}_{\mathbf{k}}^{\dagger}   \mathsf{B}^{\rm T}_{-\mathbf{k}}    \mathsf{Q}_{\mathbf{k}}^{*} +
+    \mathsf{Q}_{\mathbf{k}}^{\rm T}     \mathsf{B}^{*}_{-\mathbf{k}}        \mathsf{P}_{\mathbf{k}}     +
+    \mathsf{Q}_{\mathbf{k}}^{\rm T}     \mathsf{A}_{-\mathbf{k}}^{*}        \mathsf{Q}_{\mathbf{k}}^{*}
+    = \mathbf{E}_{\mathbf{k}},
+\end{equation}
+where $\mathsf{B}^{\rm T}_{-\mathbf{k}} = \mathsf{B}_{\mathbf{k}}^{\phantom T}$ and $\mathsf{B}^{*}_{-\mathbf{k}} = \mathsf{B}_{\mathbf{k}}^{\dagger}$.
+Since $\mathsf{E}_{\mathbf{k}}$ is a \emph{real} diagonal matrix, we conclude $\widetilde{\mathsf{E}}_{\mathbf{k}} = \mathsf{E}_{\mathbf{k}}$. 
+Thus, the canonical form of the quadratic bosonic Hamiltonian reads:
+\begin{align}
+    \hat{H}_{2}
+    = & \frac{1}{2} \sum_{\mathbf{k}} 
+    \Big( (\widetilde{\Psi}^{\dagger}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}}^{\dagger}) \mathsf{H}_{\mathbf{k}}^{\phantom \dagger} (\mathsf{T}_{\mathbf{k}}^{\phantom \dagger} \widetilde{\Psi}_{\mathbf{k}}^{\phantom \dagger} )- \Tr [\mathsf{A}_{\mathbf{k}}] \Big) 
+    = \frac{1}{2} \sum_{\mathbf{k}} 
+    \Big( \widetilde{\Psi}^{\dagger}_{\mathbf{k}} \mathsf{E}_{\mathbf{k}} \widetilde{\Psi}_{\mathbf{k}} - \Tr [\mathsf{A}_{\mathbf{k}}] \Big) \nonumber \\
+    = & \frac{1}{2} \sum_{\mathbf{k}} 
+    \begin{pmatrix}
+        \hat{\bm \beta}_{\mathbf{k}} \\
+        \hat{\bm \beta}_{-\mathbf{k}}^{\dagger}
+    \end{pmatrix}^{\dagger}
+    \begin{pmatrix}
+        \mathbf{E}_{\mathbf{k}} & 0 \\ 0 & \widetilde{\mathbf{E}}_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \hat{\bm \beta}_{\mathbf{k}} \\
+        \hat{\bm \beta}_{-\mathbf{k}}^{\dagger}
+    \end{pmatrix} 
+    - \frac{1}{2} \Tr [\mathsf{A}_{\mathbf{k}}]
+    \nonumber \\
+    = & \frac{1}{2} \sum_{\mathbf{k}, \sigma} 
+    \big( 
+        E_{\mathbf{k}, \sigma} \hat{\beta}^{\dagger}_{\mathbf{k}, \sigma}   \hat{\beta}^{\phantom \dagger}_{\mathbf{k}, \sigma} +
+        E_{-\mathbf{k}, \sigma} \hat{\beta}^{\phantom \dagger}_{-\mathbf{k}, \sigma} \hat{\beta}^{\dagger}_{-\mathbf{k}, \sigma}
+    \big) 
+    - \frac{1}{2} \Tr [\mathsf{A}_{\mathbf{k}}] \\
+    = & \sum_{\mathbf{k}, \sigma} E_{\mathbf{k}, \sigma} \hat{\beta}_{\mathbf{k}, \sigma}^{\dagger} \hat{\beta}_{\mathbf{k}, \sigma}^{\phantom \dagger} 
+    + \frac{1}{2} \sum_{\mathbf{k}, \sigma} \big( E_{\mathbf{k}, \sigma} - \Tr [\mathsf{A}_{\mathbf{k}}] \big),
+\end{align}
+where $E_{\mathbf{k}} \ge 0$ for all $\mathbf{k} \in \mathrm{BZ}$. 
+The constant term is called the ``zero-point energy,'' as it represents the ground state energy of the quantum system at zero temperature (the Gibbs state at $T=0$).
+This gives the quantum correction to the classical energy in the LSWT framework:
+\begin{equation}\label{eq: def. of zero point energy}
+    E_{0} = E_{\rm cl} + \frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}} \Big( \sum_{\sigma=a,b,\cdots} E_{\mathbf{k}, \sigma} -  \Tr[\mathsf{A}_{\mathbf{k}}] \Big),
+\end{equation}
+and the energy density per spin site is:
+\begin{equation}
+    \mathcal{E} 
+    = \frac{E_{0}}{N} 
+    = \frac{1}{N} \Big[ E_{\rm cl} + \frac{1}{2} \sum_{\mathbf{k} \in \mathrm{FBZ}} \Big( \sum_{\sigma=a,b,\cdots} E_{\mathbf{k}, \sigma} -  \Tr[\mathsf{A}_{\mathbf{k}}] \Big) \Big],
+\end{equation}
+where $N=Lm_{s}$ is the total number of spin sites in the system, with $L$ being the number of unit cells and $m_s$ the number of magnetic sublattices per unit cell.
+
+
+
+\subsection{Paraunitary Diagonalization}
+Now, the remaining problem is to find a paraunitary matrix $\mathsf{T}_{\kvec}$ (we will suppress the $\kvec$ subscript in this section for clarity, so $\mathsf{H}_{\kvec} \rightarrow \mathsf{H}$, etc.) such that
+\begin{equation}
+    \mathsf{T}^{\dagger}\mathsf{HT} = \mathsf{E}, \quad \text{with}
+    \quad \mathsf{TJT}^{\dagger} = \mathsf{J},
+\end{equation}
+where $\mathsf{E}$ is a diagonal matrix containing the magnon energies, and $\mathsf{J}$ is the symplectic metric tensor. The paraunitary transformation $\mathsf{T}$ exists if and only if $\mathsf{H}$ is positive definite.
+
+The explicit form of the paraunitary matrix is given by 
+\begin{equation}
+    \mathsf{T} = (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2},
+\end{equation}
+where $\mathsf{K}$ comes from the Cholesky decomposition of the Hamiltonian. Since the Hamiltonian matrix $\mathsf{H}$ is positive definite, the Cholesky decomposition exists, satisfying:
+\begin{equation}
+    \mathsf{H} = \mathsf{KK}^{\dagger},
+\end{equation}
+and $\mathsf{V}$ is the unitary matrix that diagonalizes $\mathsf{K}^{\dagger} \mathsf{JK}$:
+\begin{equation}
+    \mathsf{V \Lambda V}^{\dagger} = \mathsf{K}^{\dagger} \mathsf{JK},
+\end{equation}
+where $\mathsf{\Lambda}$ is a diagonal matrix.
+
+We will now verify that this construction satisfies the required paraunitary conditions. First, let us check $\mathsf{TJT}^{\dagger} = \mathsf{J}$:
+\begin{align*}
+    \mathsf{TJT}^{\dagger} &= 
+    \big( (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \big) \mathsf{J} \big( \mathsf{(\Lambda J)}^{1/2} \big)^{\dagger} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \\
+    &= (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \mathsf{J} \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \\
+    &= (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{\Lambda} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \\
+    &= (\mathsf{K}^{\dagger})^{-1} (\mathsf{K}^{\dagger} \mathsf{JK}) \mathsf{K}^{-1} = \mathsf{J}
+\end{align*}
+where we can also verify that $\mathsf{T}^{\dagger} \mathsf{JT} = \mathsf{J}$.
+% \begin{align*}
+%     \mathsf{T}^{\dagger} \mathsf{JT} &= 
+%     \big( \mathsf{(\Lambda J)}^{1/2} \big)^{\dagger} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \mathsf{J} (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \mathsf{J} (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} (\mathsf{K}^{\dagger} \mathsf{JK})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} (\mathsf{V \Lambda V}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} \mathsf{V} \mathsf{\Lambda}^{-1} \mathsf{V}^{\dagger} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{(J\Lambda)}^{1/2} \mathsf{\Lambda}^{-1} \mathsf{(\Lambda J)}^{1/2} \\
+%     &= \mathsf{J}
+% \end{align*}
+
+Next, let us check that $\mathsf{T}$ diagonalizes the Hamiltonian as required:
+\begin{align*}
+    \mathsf{T}^{\dagger} \mathsf{HT}
+    &= \big( \mathsf{(\Lambda J)}^{1/2} \big)^{\dagger} \mathsf{V}^{\dagger} \mathsf{K}^{-1} \cdot \mathsf{KK}^{\dagger} \cdot (\mathsf{K}^{\dagger})^{-1} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+    &= \mathsf{(J\Lambda)}^{1/2} \mathsf{V}^{\dagger} \mathsf{V} \mathsf{(\Lambda J)}^{1/2} \\
+    &= \mathsf{(J\Lambda)}^{1/2} \mathsf{(\Lambda J)}^{1/2} \\
+    &= \mathsf{J\Lambda} = \mathsf{\Lambda J} = \mathsf{E}
+\end{align*}
+where we identify the diagonal energy matrix as $\mathsf{E} = \mathsf{J\Lambda} = \mathsf{\Lambda J}$. This equality holds because both $\mathsf{J}$ and $\mathsf{\Lambda}$ are diagonal matrices, with $\mathsf{J}$ having half positive and half negative entries, and $\mathsf{\Lambda}$ arranged to ensure that $\mathsf{E}$ is always positive definite.
+
+
+
+\newpage
+
+
+
+\section{Physical Quantities in Linear Spin Wave Theory}
+
+In this Section, I summarize the methods for obtaining important physical quantities in the frame of linear spin wave theory.
+The physical quantities computable in LSWT are the following:
+
+
+\begin{table*}[!h]
+    \centering
+    \begin{tabular}{c|c|c|c}
+    \hline\hline
+    \textbf{Quantity} & \textbf{Definition} & \textbf{Calculation in LSWT} & \textbf{Sect.} \\
+    \hline
+    \multicolumn{3}{c|}{\bf Thermodynamics} & \textbf{III} \\[0.5ex]
+    \hline
+    $Z_{\beta}$ % partition function
+    & 
+    $\text{Tr} [e^{-\beta \hat{H}}]$ 
+    & $e^{-\beta E_{0}} \prod_{\mathbf{k}, \mu} \frac{1}{1 - e^{-\beta E_{\mathbf{k}, \mu}}}$ 
+    & \ref{subsec: Partition Function}
+    \\[1ex]
+    $U$ 
+    & $\langle \hat{H} \rangle$ & $\sum_{\mathbf{k}, \mu} E_{\mathbf{k}, \mu} n_{\mathbf{k}, \mu}$
+    & \ref{subsec: Internal Energy}
+    \\[1ex]
+    $F$ 
+    & $- k_B T \ln Z_{\beta}$ 
+    & $  k_B T \sum_{\mathbf{k}, \mu} \ln \left( 1 - e^{-\beta E_{\mathbf{k}, \mu}} \right) + E_{0} $ 
+    & \ref{subsec: Free Energy}
+    \\[1ex]
+    $S$ 
+    & $-k_{\rm B}\Tr \big( \rho \ln \rho \big)$
+    & $k_B \sum_{\mathbf{k}, \mu} \left[ (1 + n_{\mathbf{k}, \mu}) \ln (1 + n_{\mathbf{k}, \mu}) - n_{\mathbf{k}, \mu} \ln n_{\mathbf{k}, \mu} \right]$ 
+    & \ref{subsec: Entropy}
+    \\[1ex]
+    $C$ 
+    & $\frac{\partial U}{\partial T}$ 
+    & $\sum_{\mathbf{k}, \mu} \frac{\partial n_{\mathbf{k}, \mu}}{\partial T} E_{\mathbf{k}, \mu}$ 
+    & \ref{subsec: Specific Heat} 
+    \\[1ex]
+    $\langle \hat{n}_\mu \rangle$ 
+    & $\sum_{\mathbf{k}} \langle a^{\dagger}_{\mathbf{k}, \mu} a_{\mathbf{k}, \mu} \rangle$  
+    & $\sum_{\mathbf{k}} [\langle \Psi_{\mathbf{k}}^{\phantom\dagger} \Psi_{\mathbf{k}}^{\dagger} \rangle]_{m_{s} + \mu, m_{s} + \mu}$ 
+    & \ref{subsec: Number expectation value/Spin moment} \\
+    [1ex]
+    $\langle \widetilde{S}_\mu \rangle$ 
+    & $S_{\mu} - \langle \hat{n}_\mu \rangle$  
+    & $S_{\mu} - \frac{1}{L} \sum_{\mathbf{k}} \langle \hat{n}_{\mathbf{k}, \mu} \rangle$ & \ref{subsec: Number expectation value/Spin moment} \\
+    [1ex]
+    \hline
+    \multicolumn{3}{c|}{\bf Correlations} & \textbf{IV} \\[0.5ex]
+    \hline
+    $\mathcal{C}^{\alpha \beta}_{\mu\nu}(\mathbf{k}, t)$ 
+    & 
+    $\langle S_{\mathbf{k},\mu}^\alpha(t) S_{-\mathbf{k},\nu}^\beta(0) \rangle$ 
+    & $\sum_{(m, n)_{\mu\nu}}
+    [\mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathsf{N}_{\mathbf{k}}(t) \mathsf{T}_{\mathbf{k}}^\dagger \bar{\mathsf{S}}_{\mathbf{k}} \bar{\mathsf{U}}^{\beta}]_{m n}$ 
+    & \ref{subsec: Real-Time (Dynamical) Spin-Spin Correlation Function} \\[1ex]
+    $\mathcal{S}^{\alpha \beta}(\mathbf{k},\omega)$ 
+    & $\frac{1}{2 \pi} \int dt \, e^{i \omega t} \mathcal{C}^{\alpha \beta}(\mathbf{k}, t)$ 
+    & $\sum_{(m, n)_{\mu\nu}} [ \mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathcal{F}[\mathsf{N}_{\mathbf{k}}](\omega; \eta) \mathsf{T}_{\mathbf{k}}^\dagger \bar{\mathsf{S}}_{\mathbf{k}} \bar{\mathsf{U}}^{\beta}]_{m, n}$ 
+    & \ref{subsec: Structure Factor} \\[1ex]
+    $\mathcal{A}^{\alpha \beta}(\mathbf{k}, \omega)$ 
+    & $-\frac{1}{\pi} \operatorname{Im} [G_{\mathsf{R}}^{\alpha \beta}(\mathbf{k}, \omega)]$ & $-\frac{2}{\pi} \operatorname{Im} \sum_{m, n} [\mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathcal{G}[\mathsf{N}_{\mathbf{k}}] (\omega; \eta)
+    \mathsf{T}_{\mathbf{k}}^\dagger \mathsf{S}_{\mathbf{k}} \mathsf{U}^\beta]_{m, n}$ & \ref{subsec: Spectral Function} \\
+    \hline
+    \multicolumn{3}{c|}{\bf Topology} & \textbf{V} \\[0.5ex]
+    \hline
+    $Q_{\rm skyr}$ 
+    & $\frac{1}{4\pi} \sum_{\triangle} \chi_{\triangle}$ 
+    & $\chi_{\triangle} = 2 \arctan \left( \frac{|\mathbf{m}_i \cdot (\mathbf{m}_j \times \mathbf{m}_k)|}{1 + \mathbf{m}_i \cdot \mathbf{m}_j + \mathbf{m}_j \cdot \mathbf{m}_k + \mathbf{m}_k \cdot \mathbf{m}_i} \right)$
+    & \ref{subsec: Skyrmion number}
+    \\
+    $C_n$ & $\frac{1}{2 \pi} \int_{\mathrm{FBZ}} \Omega_{n, \mathbf{k}} \, d^2 \mathbf{k}$ 
+    & $\Omega_{n, \mathbf{k}} = -2 \operatorname{Im} \sum_{m \neq n} \frac{[\mathsf{J} \mathsf{T}_{\mathbf{k}}^\dagger (\partial_x \mathsf{H}_{\mathbf{k}}) \mathsf{T}_{\mathbf{k}}]_{nm} [\mathsf{J} \mathsf{T}_{\mathbf{k}}^\dagger (\partial_y \mathsf{H}_{\mathbf{k}}) \mathsf{T}_{\mathbf{k}}]_{mn}}{(E_{\mathbf{k}, nn} - E_{\mathbf{k}, mm})^2}$ 
+    & \ref{subsec: Chern number} \\[1ex]
+    $\kappa_{xy}$ 
+    & $\text{Thermal Hall conductivity}$
+    & $ - \frac{k_{B}^2 T}{V} \sum_{n} \int_{\mathbf{k}} d^{2} \mathbf{k} \left( c_2(n_{\mathbf{k}, n}) - \frac{\pi^2}{3} \right) \Omega_{n, \mathbf{k}}$ 
+    &  \ref{subsec: Thermal Hall Conductance} \\
+    \hline\hline
+    \end{tabular}
+    \caption{Physical Quantities in Linear Spin Wave Theory (LSWT). 
+    Here, $\beta = 1/k_{B}T$,
+    $n_{\mathbf{k}, \mu} = \frac{1}{e^{\beta E_{\mathbf{k}, \mu}} - 1}$ is the Bose-Einstein distribution function,
+    $\Omega_{n, \mathbf{k}}$ is the Berry curvature, and 
+    $c_2(x)$ is the Spence function.
+    }
+    \label{tab:lswt_quantities}
+\end{table*}
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Thermodynamics in Linear Spin Wave Theory}
+
+\subsection{Partition function}\label{subsec: Partition Function}
+In this section, we derive the partition function for linear spin wave theory. 
+Recall that the Hamiltonian for the spin system with normal bosons is written as 
+\begin{align}
+    \hat{H} = E_{\rm cl} + \sum_{\kvec, \mu} E_{\kvec, \mu} \Big( \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu} + \frac{1}{2} \Big) - \frac{1}{2} \Tr [\mathsf{H}_{\kvec}] 
+    = E_{0} + \sum_{\kvec \in \mathrm{FBZ}} \sum_{\mu = a, b, \cdots} E_{\kvec, \mu} \hat{n}_{\kvec, \mu},
+\end{align}
+where $E_{0} = E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big)$ represents the zero-point energy [Eqn.~\eqref{eq: def. of zero point energy}] and $\hat{n}_{\mu}(\kvec) = \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu}$ is the magnon number operator. Here, $E_{\kvec, \mu}$ are the magnon energy eigenvalues with band index $\mu$.
+
+The partition function is given by
+\begin{equation}
+    Z_{\beta} \equiv \Tr \big( e^{- \beta \hat{H}} \big) 
+    = e^{- \beta E_{0}}  \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu}} \big) 
+    = e^{- \beta E_{0}} \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \big),
+\end{equation}
+Here, the constant term $E_0$ contributes to the internal energy but is not important for thermodynamic quantities that involve derivatives of $\ln \tilde{Z}_{\beta}$, where $\tilde{Z}_{\beta}$ represents the partition function without the zero-point energy contribution.
+
+The partition function $Z_{\beta}$ can be evaluated as
+\begin{subequations}\label{eq: explicit expressions for Z and log-Z}
+    \begin{align}
+        \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \hat{n}_{\mu}(\kvec)} \big) 
+        = & \Tr \Big[ \prod_{\kvec, \mu} e^{- \beta E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \Big]
+        = \prod_{\kvec, \mu} \Tr \Big[ e^{- \beta E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \Big] 
+        =  \prod_{\kvec, \mu}  \frac{1}{1 - e^{- \beta E_{\kvec, \mu}}} \\
+        - \ln Z_{\beta} &= \beta E_{0} + \sum_{\kvec, \mu} \ln \big( 1 - e^{- \beta E_{\kvec, \mu}} \big).
+    \end{align}
+\end{subequations}
+The final expression for $-\ln Z_{\beta}$ is particularly useful for calculating thermodynamic quantities such as free energy, internal energy, specific heat, and entropy in the linear spin-wave approximation.
+
+
+\subsection{Internal Energy}\label{subsec: Internal Energy}
+The internal energy $U$ is the expectation value of the Hamiltonian $\hat{H}$, computed as:
+\begin{equation}
+    U \equiv \langle \hat{H} \rangle  = -\frac{\partial \ln Z_{\beta}}{\partial \beta},
+\end{equation}
+where $Z_{\beta} = e^{- \beta E_{0}} \tilde{Z}_{\beta}$, with $E_0$ being the zero-point energy and $\tilde{Z}_{\beta}$ the partition function excluding the zero-point energy contribution.
+
+Computing the derivative, we get:
+\begin{equation}
+     - \frac{\partial \ln Z_{\beta}}{\partial \beta} 
+    = E_{0} + \frac{\partial}{\partial \beta} \Big[  \sum_{\kvec, \mu} \ln \big( 1 - e^{- \beta E_{\kvec, \mu}} \big) \Big]
+    = E_{0} + \sum_{\kvec, \mu} \frac{E_{\kvec, \mu} e^{-\beta E_{\kvec, \mu}}}{1 - e^{-\beta E_{\kvec, \mu}}}  
+    = E_{0} + \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{1}{e^{\beta E_{\kvec, \mu}} - 1},
+\end{equation}
+where we identify the Bose-Einstein distribution function:
+\begin{equation}
+    n_{\mu} (\kvec) = \frac{1}{e^{\beta E_{\kvec, \mu}} - 1},
+\end{equation}
+which represents the thermal expectation value of the magnon number operator $\langle\hat{n}_{\kvec, \mu}\rangle = \langle \hat{\beta}^{\dagger}_{\kvec, \mu} \hat{\beta}_{\kvec,\mu} \rangle$.
+Therefore, the internal energy can be expressed as:
+\begin{align}
+    U &= E_0 + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu} (\kvec) \nonumber \\
+    &= E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big) + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec)
+\end{align}
+This result expresses the internal energy as the sum of the classical ground state energy, the zero-point quantum fluctuations, and the thermal contribution from magnon excitations.
+
+
+
+\subsection{Free Energy}\label{subsec: Free Energy}
+The Helmholtz free energy ($F$) is defined as 
+\begin{equation}\label{eq: def. of Helmholtz free energy}
+    Z_{\beta} \equiv e^{-\beta F}
+\end{equation}
+where $Z_{\beta} = e^{- \beta E_0} \tilde{Z}_{\beta}$ is the partition function, with $\tilde{Z}_{\beta}$ being the partition function excluding the zero-point energy contribution.
+From \eqref{eq: explicit expressions for Z and log-Z} and Eq.~\eqref{eq: def. of Helmholtz free energy}, we get:
+\begin{align}
+    F &= -\frac{1}{\beta} \ln(e^{- \beta E_0} \tilde{Z}_{\beta}) \nonumber \\
+    &= E_0 - \frac{1}{\beta} \ln \tilde{Z}_{\beta} \nonumber \\
+    &= E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big) + \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right),
+\end{align}
+where we use $-\ln \tilde{Z}_{\beta} = \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right)$ from the partition function section, and $E_0 = E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big)$ is the zero-point energy.
+
+
+\subsection{Entropy Expression}\label{subsec: Entropy}
+In this section, we derive the expression for the thermal entropy in LSWT. 
+The entropy is defined as 
+\begin{equation}
+    S \equiv -k_{\rm B}\Tr \big( \rho \ln \rho \big),
+\end{equation}
+where $\rho$ is the density operator, which is Gibbs states ($\rho = e^{-\beta \hat{H}}/Z_{\beta}$) especially in thermal equilibrium.
+This definition coincides with the conventional definition of entropy in thermal physics:
+\begin{align}
+    - \frac{\partial F}{\partial T}
+    = \frac{1}{T} \Big(-\frac{\partial}{\partial \beta} \ln Z_{\beta} \Big) - \big(-k_{\rm B} \ln Z_{\beta} \big)
+    = \frac{U - F}{T}.
+\end{align}
+We can derive the same expression using Gibbs states:
+\begin{align}
+    S = & -k_{\rm B}\Tr \big( \rho \ln \rho \big)
+    = -k_{\rm B}\Tr \big( \rho (-\beta \hat{H} - \ln Z_{\beta}) \big) \nonumber \\
+    = &  \frac{ \Tr (\rho \hat{H}) - (-k_{\rm B}T\ln Z_{\beta})}{T} 
+    = \frac{U - F}{T}.
+\end{align}
+Using our previous expressions for $U$ and $F$, we have:
+\begin{align}
+    U - F &= E_0 + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec) - \left( E_0 + \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right) \right) \nonumber \\ 
+    &= \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec) - \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right).
+\end{align}
+
+Since $S = k_{\rm B} \beta (U - F)$ (noting $\beta = \frac{1}{k_B T}$ and adjusting units appropriately):
+\begin{equation}
+    S = k_{\rm B} \sum_{\kvec, \mu} \beta E_{\kvec, \mu} n_{\mu} (\kvec) - k_{\rm B} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right).
+\end{equation}
+
+Now, we can rewrite this expression using the properties of the Bose-Einstein distribution function $n_{\kvec, \mu}$. From the definition $n_{\kvec, \mu} = \frac{1}{e^{\beta E_{\kvec, \mu}} - 1}$, we can derive:
+\begin{equation}
+    \beta E_{\kvec, \mu} = \ln \Big( \frac{1 + n_{\mu}(\kvec)}{n_{\mu}(\kvec)} \Big), 
+    \quad \text{and} \quad
+    \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right) 
+    = -\ln \big( 1 + n_{\mu} (\kvec) \big), 
+\end{equation}
+Substituting these relations into our entropy expression, we obtain:
+\begin{equation}
+    S = k_{\rm B} \sum_{\kvec, \mu} \big[ (1 + n_{\mu}(\kvec)) \ln (1 + n_{\mu}(\kvec)) - n_{\mu}(\kvec) \ln n_{\mu} (\kvec) \big]
+\end{equation}
+This is the standard entropy formula for a system of non-interacting bosons, which emerges naturally from our linear spin wave theory.
+
+
+
+
+\subsection{Specific Heat}\label{subsec: Specific Heat}
+The specific heat $C$ is defined as the temperature derivative of the internal energy:
+\begin{equation}
+    C = \frac{\partial U}{\partial T} = \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{\partial n_{\mu}(\kvec)}{\partial T},
+\end{equation}
+where $n_{\mu}(\kvec)$ is the Bose-Einstein distribution for magnons $\mu$. 
+The derivative of the distribution with respect to temperature is 
+\begin{equation}
+    \frac{\partial n_{\mu}(\kvec)}{\partial T} 
+    =  \frac{\partial n_{\mu}(\kvec)}{\partial \beta} \frac{\partial \beta}{\partial T} \\
+    =  \Big( - \frac{E_{\kvec, \mu} e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2} \Big) \Big( - \frac{\beta}{T}\Big) 
+    =  \frac{\beta}{T} \frac{E_{\kvec, \mu} e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}.
+\end{equation}
+Therefore, the specific heat is given by:
+\begin{equation}
+    \begin{split}
+        C = & \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{\partial n_{\mu}(\kvec)}{\partial T} 
+        = \frac{\beta}{T} \sum_{\kvec, \mu} \frac{E_{\kvec, \mu}^2 e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}
+        = k_{\rm B} \sum_{\kvec, \mu} \frac{(\beta E_{\kvec, \mu})^2 e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}
+        =  k_{\rm B} \sum_{\kvec, \mu} \frac{ (\beta E_{\kvec, \mu})^2 }{\left( e^{\beta E_{\kvec, \mu}/2} - e^{-\beta E_{\kvec, \mu}/2} \right)^2} \\
+        = &  k_{\rm B} \sum_{\kvec, \mu} \frac{ (\beta E_{\kvec, \mu})^2 }{4 \sinh^{2} (\beta E_{\kvec, \mu}/2 )}
+    \end{split}
+\end{equation}
+This expression represents the specific heat contribution from magnon excitations in the system, which dominates the low-temperature thermal properties of magnetic insulators.
+
+
+
+\subsection{Number and Spin moment from Correlation Matrix}\label{subsec: Number expectation value/Spin moment}
+
+Finally, we discuss the number expectation and spin moment. 
+Linear spin-wave theory gives the leading correction of the sublattice magnetization. 
+The spin moments are 
+\begin{equation}
+    \langle \hat{\bf S}_{\mu} \rangle 
+    \equiv \frac{1}{L} \sum_{i} \langle \hat{\bf S}_{i, \mu} \rangle
+\end{equation}
+where the spin moment at site $i=(i,\mu)$ can be obtained from $\langle \hat{\bf S}_{i, \mu} \rangle = \mathbf{R}_{i,\mu} \langle \widetilde{\bf S}_{i,\mu} \rangle$ and $\widetilde{\bf S}_{i,\mu} = (0, 0, \widetilde{S}^{0}_{i,\mu})$. 
+This is the spin moment in the reference frame.
+The average sublattice magnetization along the magnetization axis $\widetilde{S}^{0}_{i,\mu}$ is given
+\begin{align*}
+    \frac{1}{L} \sum_{i} \langle \widetilde{S}^{0}_{i, \mu} \rangle 
+    = & \frac{1}{L} \sum_{i} \langle S_{\mu} -  \hat{n}_{i, \mu} \rangle 
+    = S_{\mu} - \frac{1}{L} \sum_{\kvec \in \mathrm{FBZ}}  \langle \hat{n}_{\kvec, \mu}  \rangle
+    = S_{\mu} - n_{\mu},
+\end{align*}
+where $i$ runs over the lattice, $\mu$ denotes the sublattice index, and $S_{\mu}$ is the spin moment of the spin. 
+For example, for the spin 1/2 system, $S_\mu = 1/2$.
+\begin{align}
+    n_{\mu} \equiv & \frac{1}{L} \sum_{\kvec}  \langle \hat{n}_{\kvec, \mu} \rangle 
+    = \frac{1}{L} \sum_{\kvec \in \mathrm{FBZ}} 
+    = \langle b^{\dagger}_{\kvec, \mu} b_{\kvec, \mu}^{\phantom \dagger} \rangle  
+\end{align}
+
+To proceed, it is useful to introduce the correlation matrix.
+The correlation matrix is defined as the expectation of outer product of the BdG vector $\Psi_{\kvec}$.
+\begin{equation}
+    \langle b^{\dagger}_{\kvec, \mu} b_{\kvec, \mu}^{\phantom \dagger} \rangle  
+    = \Big[ \big\langle \Psi_{\kvec}^{\phantom \dagger} \Psi_{\kvec}^{\dagger} \big\rangle \Big]_{m_{s} + \mu, m_{s} + \mu} 
+    = \left[
+        \left\langle 
+        \begin{pmatrix}
+            {\bm b}_{\kvec} \\ {\bm b}^{\dagger}_{- \kvec}
+        \end{pmatrix}
+        \begin{pmatrix}
+            {\bm b}_{\kvec}^{\dagger} & {\bm b}_{- \kvec}
+        \end{pmatrix}
+        \right\rangle
+    \right]_{m_{s} + \mu, m_{s} + \mu} 
+    = \left[
+        \begin{pmatrix}
+            \langle  {\bm b}_{\kvec}^{\phantom \dagger} {\bm b}_{\kvec}^{\dagger}  \rangle
+            & \langle  {\bm b}_{\kvec}^{\phantom \dagger} {\bm b}_{- \kvec}^{\phantom \dagger}  \rangle
+            \\ 
+            \langle  {\bm b}^{\dagger}_{- \kvec} {\bm b}_{\kvec}^{\dagger}  \rangle
+            & \langle  {\bm b}^{\dagger}_{- \kvec} {\bm b}_{- \kvec}^{\phantom \dagger}  \rangle
+        \end{pmatrix}
+    \right]_{m_{s} + \mu, m_{s} + \mu}
+\end{equation}
+where $\langle \hat{\bm b}_{\pm \kvec}^{(\dagger)} \hat{\bm b}_{\pm \kvec}^{(\dagger)} \rangle $ denotes the block matrix whose elements is the expectation for two bosonic operator ($\hat{\bm b}_{\pm \kvec}^{(\dagger)} \hat{\bm b}_{\pm \kvec}^{(\dagger)}$).
+The expectation value is calculated for the state of the interest and our main interests are the ground states and the Gibbs states. 
+
+
+The bosonic operator $(\hat{b}_{\kvec\sigma}^{\phantom \dagger}, \hat{b}_{\kvec\sigma}^{\dagger} )$ at $\kvec$ are related to the eigenmodes $(\hat{\beta}_{\kvec\sigma}^{\phantom \dagger}, \hat{\beta}_{\kvec\sigma}^{\dagger} )$ at momentum $\kvec$ through the para-unitary $\mathsf{T}_{\kvec}$. 
+\begin{equation}
+    \Psi_{\kvec} = \mathsf{T}_{\kvec} \widetilde{\Psi}_{\kvec}: \qquad
+    \begin{pmatrix}
+        \hat{\bm b}_{\kvec} \\ 
+        \hat{\bm b}^{\dagger}_{-\kvec}
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        \mathsf{P}_{\kvec}           & \mathsf{Q}_{-\kvec}        \\
+        \mathsf{Q}_{\kvec}^{*}       & \mathsf{P}_{-\kvec}^{*}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \hat{\bm\beta}_{\kvec} \\
+        \hat{\bm\beta}_{-\kvec}^{\dagger}
+    \end{pmatrix},
+\end{equation}
+where $\hat{\bm\beta}_{\kvec}^{T} = (\hat{\beta}_{\kvec,a}, \hat{\beta}_{\kvec,b}, \cdots)$.
+Then, the correlation matrix can be obtained using unitary transformation.
+\begin{equation}
+    \big 
+    \langle \Psi_{\kvec}^{\phantom \dagger} \Psi_{\kvec}^{\dagger} 
+    \big \rangle 
+    = 
+    \big\langle 
+    \mathsf{T}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\dagger} \mathsf{T}_{\kvec}^{\dagger} 
+    \big\rangle
+    = 
+    \mathsf{T}_{\kvec} \big\langle \widetilde{\Psi}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\dagger}  \big \rangle \mathsf{T}_{\kvec}^{\dagger}
+    = 
+    \mathsf{T}_{\kvec} 
+    \begin{pmatrix}
+            \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{ \kvec}^{\dagger}          \rangle            
+        &   \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{-\kvec}^{\phantom \dagger} \rangle\\
+            \langle \hat{\bm \beta}_{ \kvec}^{\dagger}          \hat{\bm \beta}_{-\kvec}^{\dagger}          \rangle  
+        &   \langle \hat{\bm \beta}_{-\kvec}^{\dagger}          \hat{\bm \beta}_{-\kvec}^{\phantom \dagger} \rangle
+    \end{pmatrix}
+    \mathsf{T}_{\kvec}^{\dagger}
+    =\mathsf{T}_{\kvec}^{\phantom \dagger} \mathsf{N}_{\kvec}^{\phantom \dagger} \mathsf{T}_{\kvec}^{\dagger},
+\end{equation}
+where $\mathsf{N}_{\kvec}$ is the $2m_{s} \times 2m_{s}$ Block matrix, 
+For the Gibbs states, all elements for the correlation matrices can be obtained from the partition function. 
+\begin{equation}
+    \begin{array}{rlrl}
+        \big[ \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{ \kvec}^{\dagger} \rangle \big]_{\mu\nu} 
+        & = \delta_{\mu\nu} \big( 1 + n_{\mu}(\kvec) \big) , 
+        \qquad & \qquad 
+        \big[ \langle \hat{\bm\beta}_{-\kvec}^{\dagger} \hat{\bm\beta}_{\kvec}^{\dagger} \rangle \big]_{\mu\nu} & = 0  ,
+        \\[0.5em]
+        \big[ \langle \hat{\bm\beta}_{-\kvec}^{\dagger} \hat{\bm\beta}_{- \kvec}^{\phantom \dagger} \rangle \big]_{\mu\nu}
+        & = \delta_{\mu\nu} n_{\mu}(-\kvec) ,
+        \qquad & \qquad 
+        \big[ \langle \hat{\bm\beta}_{\kvec} \hat{\bm\beta}_{-\kvec} \rangle \big]_{\mu\nu} & = 0.
+    \end{array}
+\end{equation}
+where $n_{\mu}(\kvec) = 1/(e^{\beta E_{\kvec}} - 1)$ is the Bose-Einstein distribution at energy $E_{\kvec}$. 
+
+
+
+
+
+
+
+
+\newpage
+\section{Correlations in Linear Spin Wave Theory}
+
+In this section, we discuss the physical quantities related to spin-spin correlation functions. Specifically, from real-time (or dynamical) spin-spin correlation function to structure factor and spectral functions, these are quantities of fundamental interest in understanding magnetic excitations.
+
+\begin{itemize}
+    \item \textbf{Real-time correlation function:}
+    The real-time spin-spin correlation function is a $3 \times 3$ matrix as a function of momentum and time:
+    \begin{equation}
+        \mathcal{C}^{\alpha\beta} (\mathbf{k}, t) = \frac{1}{L} \sum_{i, j} e^{- i \mathbf{k} \cdot (\mathbf{r}_{i} - \mathbf{r}_{j})} \langle \hat{S}_{i}^{\alpha}(t) \hat{S}_{j}^{\beta}(0) \rangle,
+    \end{equation}
+    where $\alpha, \beta = x, y, z$ or $\pm, 0$ and $L$ is the number of lattice sites for spins. 
+
+    \begin{itemize}
+        \item Note that the real-time spin-spin correlation function is equivalently defined as 
+        \begin{equation}
+            \mathcal{C}^{\alpha\beta} (\mathbf{k}, t) 
+            = \big\langle \hat{S}_{+ \mathbf{k}}^{\alpha}(t) \hat{S}_{- \mathbf{k}}^{\beta}(0) \big\rangle,  
+        \end{equation}
+        by employing the spin Fourier transformation $S_{\mathbf{k}}^{\alpha} = \frac{1}{\sqrt{N}} \sum_{i} e^{-i \mathbf{k} \cdot \mathbf{r}_{i}} S_{i}^{\alpha}$.
+        
+        \item The spin-spin correlation function under complex conjugation is 
+        \begin{equation}
+            [\mathcal{C}^{\alpha\beta}(\mathbf{k}, t)]^{*}
+            = \langle [S_{\mathbf{k}}^{\alpha} ( t ) S_{-\mathbf{k}}^{\beta} ( 0 )]^{\dagger} \rangle
+            = \langle (S_{-\mathbf{k}}^{\beta} ( 0 ))^{\dagger} (S_{\mathbf{k}}^{\alpha} ( t ))^{\dagger} \rangle.
+        \end{equation}
+        At this point, the spin-spin correlation transforms differently depending on indices $\alpha, \beta$:
+        
+        \begin{equation}
+            \langle (S_{-\mathbf{k}}^{\beta} ( 0 ))^{\dagger} (S_{\mathbf{k}}^{\alpha} ( t ))^{\dagger} \rangle
+            = 
+            \begin{cases}
+                \langle S_{\mathbf{k}}^{\bar{\beta}} (0) S_{-\mathbf{k}}^{\bar{\alpha}} (t) \rangle
+                = \langle S_{\mathbf{k}}^{\bar{\beta}} (-t) S_{-\mathbf{k}}^{\bar{\alpha}} (0) \rangle
+                = \mathcal{C}^{\bar{\beta}\bar{\alpha}}(-\mathbf{k}, -t), 
+                & \text{if } \alpha,\beta = \pm, 0, \\[1em]
+                \langle S_{\mathbf{k}}^{\beta} (0) S_{-\mathbf{k}}^{\alpha} (t) \rangle
+                = \langle S_{\mathbf{k}}^{\beta} (-t) S_{-\mathbf{k}}^{\alpha} (0) \rangle 
+                = \mathcal{C}^{\beta\alpha}(-\mathbf{k}, -t), 
+                & \text{if } \alpha, \beta = x, y, z.
+            \end{cases}
+        \end{equation}
+        where in the second equality we use the identity $\langle \hat{A}(0) \hat{B}(t) \rangle = \langle \hat{A}(-t) \hat{B}(0) \rangle$ for thermal states $\rho = e^{-\beta H}/Z$:
+        \begin{equation}
+            \langle \hat{A}(0) \hat{B}(t) \rangle
+            = \Tr[\rho \hat{A} \hat{U}^{\dagger}_{t} \hat{B} \hat{U}_{t}] 
+            = \Tr[\rho \hat{U}_{t} \hat{A} \hat{U}^{\dagger}_{t} \hat{B}(0)]  
+            = \langle \hat{A}(-t) \hat{B}(0) \rangle.
+        \end{equation}
+    \end{itemize}
+    
+    \item \textbf{Static structure factor:}
+    The static structure factor is defined as
+    \begin{equation}
+        \mathcal{S}^{\alpha\beta}(\mathbf{k}) 
+        \equiv
+        \frac{1}{N} \sum_{i,j} e^{-i \mathbf{k} \cdot (\mathbf{r}_{i} - \mathbf{r}_{j})} 
+        \big\langle \hat{S}^{\alpha}_{i} \hat{S}^{\beta}_{j} \big\rangle
+        = \big\langle \hat{S}_{+ \mathbf{k}}^{\alpha} \hat{S}_{- \mathbf{k}}^{\beta} \big\rangle 
+        = \mathcal{C}^{\alpha\beta}(\mathbf{k}, 0).
+    \end{equation}
+    This equals the equal-time spin-spin correlation function in momentum space, and can also be viewed as its time-average.
+
+    
+    \item \textbf{Dynamical structure factor:}
+    The dynamic structure factor is defined as 
+    \begin{equation}
+        \mathcal{S}^{\alpha\beta}(\mathbf{k}, \omega) 
+        \equiv \frac{1}{2\pi} \int_{-\infty}^{\infty} dt \, \mathcal{C}^{\alpha\beta}(\mathbf{k}, t) e^{i \omega t}.
+    \end{equation}
+    This quantity is directly related to the scattering cross-section in neutron scattering experiments.
+
+
+    \item \textbf{Real space correlation function in the reference frame:}
+    The spin-spin correlation in the local reference frame is:
+    \begin{equation}
+        \langle \widetilde{S}^{\alpha}_{i} \widetilde{S}_{j}^{\beta} \rangle,
+    \end{equation}
+    where $\widetilde{S}^{\alpha}_{i}$ represents the spin component in the local frame.
+    
+    \item \textbf{Spectral function:}
+    The spectral function is defined as:
+    \begin{equation}
+        \mathcal{A}^{\alpha\beta}(\mathbf{k}, \omega) = -\frac{1}{\pi} \mathrm{Im}[G^{\alpha\beta}_{\rm R}(\mathbf{k}, \omega)],
+    \end{equation}
+    where $G^{\alpha\beta}_{\rm R}(\mathbf{k}, \omega)$ is the retarded Green's function:
+    \begin{equation}
+        G^{\alpha\beta}_{\rm R}(\mathbf{k}, \omega) 
+        \equiv \frac{1}{i} \int_{-\infty}^{\infty} dt \, e^{i \omega t} \theta(t) \big\langle [S_{\mathbf{k}}^{\alpha}(t), S_{-\mathbf{k}}^{\beta}(0)] \big\rangle.
+    \end{equation}
+    The spectral function provides information about the density of states of the magnetic excitations.
+\end{itemize}
+
+
+
+
+\subsection{Real-Time (Dynamical) Spin-Spin Correlation Function}\label{subsec: Real-Time (Dynamical) Spin-Spin Correlation Function}
+
+In this section, we derive the spin-spin correlation function in linear spin-wave theory (LSWT). The real-time spin-spin correlation function is a $3 \times 3$ matrix as a function of momentum and time:
+\begin{equation}
+    \mathcal{C}^{\alpha\beta}(\mathbf{k}, t) = \frac{1}{L} \sum_{i, j} e^{-i \mathbf{k} \cdot (\mathbf{r}_{i} - \mathbf{r}_{j})} \langle \hat{S}_{i}^{\alpha}(t) \hat{S}_{j}^{\beta}(0) \rangle,
+\end{equation}
+where $\alpha, \beta = x, y, z$ or $\pm, 0$ and $L$ is the number of lattice sites for spins. To proceed, we express the $\alpha$-component of the spin operator as 
+\begin{equation}
+    \hat{S}^{\alpha}_{i} 
+    = \hat{\mathbf{e}}^{\alpha} \cdot \left( \frac{\widetilde{S}_{i}^{+} \hat{\mathbf{e}}^{-}_{i} + \widetilde{S}_{i}^{-} \hat{\mathbf{e}}^{+}_{i}}{\sqrt{2}} + \widetilde{S}^{0}_{i} \hat{\mathbf{e}}^{0}_{i} \right) 
+    = \frac{1}{\sqrt{2}} \left( \bar{u}^{\alpha}_{i} \widetilde{S}_{i}^{+} + u^{\alpha}_{i} \widetilde{S}_{i}^{-} \right) + v^{\alpha}_{i} \widetilde{S}^{0}_{i},
+\end{equation}
+where $u^{\alpha}_{i} = \hat{\mathbf{e}}^{\alpha} \cdot \hat{\mathbf{e}}^{+}_{i}$, $\bar{u}^{\alpha}_{i} = (u^{\alpha}_{i})^*$, and $v^{\alpha}_{i} = \hat{\mathbf{e}}^{\alpha} \cdot \hat{\mathbf{e}}^{0}_{i}$ are components of the spin basis vectors. 
+When the index $\alpha$ are $\pm,0$, then the $(u^{\alpha}_{i}, \bar{u}^{\alpha}_{i}, v^{\alpha}_{i})$ can be obtained from $\mathbf{Q}$:
+\begin{equation}
+    [\mathbf{Q}]_{\alpha\beta} = 
+    \hat{\bf e}^{\alpha} \cdot \hat{\bf e}^{\beta}_{i} = 
+    \hat{\bf e}^{\alpha} \cdot \mathbf{R}_{i} \hat{\bf e}^{\beta}: 
+    \qquad
+    \mathbf{Q}
+    =
+    \begin{pmatrix}
+            u^{-}_{i} &   \bar{u}^{-}_{i}     &   v_{i}^{-}   \\
+            u^{+}_{i} &   \bar{u}^{+}_{i}     &   v_{i}^{+}   \\
+            u^{0}_{i} &   \bar{u}^{0}_{i}     &   v_{i}^{0}   \\
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        (\hat{\bf e}^{-})^{\rm T} \\  
+        (\hat{\bf e}^{+})^{\rm T} \\  
+        (\hat{\bf e}^{0})^{\rm T} 
+    \end{pmatrix}
+    \mathbf{R}_{i}
+    \begin{pmatrix}
+        \hat{\bf e}^{+} & \hat{\bf e}^{-} & \hat{\bf e}^{0}
+    \end{pmatrix}
+    = \mathbf{C}^{\dagger} \mathbf{R}_{i} \mathbf{C},
+\end{equation}
+If the indices $\alpha$ are $x,y,z$, $\mathbf{U}_{i} = \mathbf{R}_{i} \mathbf{C}$.
+Substituting into the spin-spin correlation function, we obtain
+\begin{align}
+    \langle S_i^{\alpha}(t) S_j^{\beta}(0) \rangle
+    &= \frac{1}{2} \Bigg\langle 
+        \big( \bar{u}^{\alpha}_{i} \widetilde{S}_{i}^{+}(t) + u^{\alpha}_{i} \widetilde{S}_{i}^{-}(t) \big) 
+        \big( \bar{u}^{\beta}_{j} \widetilde{S}_{j}^{+}(0) + u^{\beta}_{j} \widetilde{S}_{j}^{-}(0) \big) 
+    \Bigg\rangle 
+    + v^{\alpha}_{i} v^{\beta}_{j} \langle \widetilde{S}^{0}_{i}(t) \widetilde{S}^{0}_{j}(0) \rangle \nonumber \\
+    &\quad + \frac{1}{\sqrt{2}} \Bigg[ 
+        v^{\alpha}_{i} \Bigg\langle 
+        \widetilde{S}^{0}_{i}(t) 
+        \big( \bar{u}^{\beta}_{j} \widetilde{S}_{j}^{+}(0) + u^{\beta}_{j} \widetilde{S}_{j}^{-}(0) \big) 
+        \Bigg\rangle 
+        + v^{\beta}_{j} \Bigg\langle 
+        \big( \bar{u}^{\alpha}_{i} \widetilde{S}_{i}^{+}(t) + u^{\alpha}_{i} \widetilde{S}_{i}^{-}(t) \big) 
+        \widetilde{S}^{0}_{j}(0) 
+        \Bigg\rangle 
+    \Bigg].
+\end{align}
+In LSWT, which is a quadratic bosonic system, odd-order bosonic correlation functions vanish, so the terms in the second line are zero. Thus,
+\begin{align}
+    \langle S_i^{\alpha}(t) S_j^{\beta}(0) \rangle
+    &= \frac{1}{2} \Bigg\langle 
+        \big( \bar{u}^{\alpha}_{i} \widetilde{S}_{i}^{+}(t) + u^{\alpha}_{i} \widetilde{S}_{i}^{-}(t) \big) 
+        \big( \bar{u}^{\beta}_{j} \widetilde{S}_{j}^{+}(0) + u^{\beta}_{j} \widetilde{S}_{j}^{-}(0) \big) 
+    \Bigg\rangle 
+    + v^{\alpha}_{i} v^{\beta}_{j} \langle \widetilde{S}^{0}_{i}(t) \widetilde{S}^{0}_{j}(0) \rangle \\
+    &= \frac{1}{2} \sum_{m,n} \left[ 
+    \begin{pmatrix}
+        \bar{u}^{\alpha}_{i} & 0 \\ 0 & u^{\alpha}_{i}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \langle \widetilde{S}^{+}_{i}(t) \widetilde{S}^{-}_{j}(0) \rangle &
+        \langle \widetilde{S}^{+}_{i}(t) \widetilde{S}^{+}_{j}(0) \rangle \\[0.25em]
+        \langle \widetilde{S}^{-}_{i}(t) \widetilde{S}^{-}_{j}(0) \rangle &
+        \langle \widetilde{S}^{-}_{i}(t) \widetilde{S}^{+}_{j}(0) \rangle
+    \end{pmatrix}
+    \begin{pmatrix}
+        u^{\beta}_{j} & 0 \\ 0 & \bar{u}^{\beta}_{j}
+    \end{pmatrix}
+    \right]_{m,n}
+    + v^{\alpha}_{i} v^{\beta}_{j} \langle \widetilde{S}^{0}_{i}(t) \widetilde{S}^{0}_{j}(0) \rangle.
+\end{align}
+
+Now, we define two matrix quantities: $\mathsf{U}^{\alpha}_{i}$, which maps the spin operators from the reference frame to the laboratory frame, and the correlation matrix between spin ladder operators (or transversal fluctuations).
+\begin{equation}
+    \mathsf{U}^{\alpha}_{i} 
+    \equiv 
+    \begin{pmatrix}
+         \bar{u}^{\alpha}_{i} & 0 \\ 0 & u^{\alpha}_{i} 
+    \end{pmatrix},
+    \qquad \text{and} \qquad
+    \big\langle \widetilde{\mathbf{S}}^{\pm}_{i}(t) \widetilde{\mathbf{S}}^{\mp}_{j}(0) \big\rangle
+    = 
+    \begin{pmatrix}
+        \langle \widetilde{S}^{+}_{i}(t) \widetilde{S}^{-}_{j}(0) \rangle &
+        \langle \widetilde{S}^{+}_{i}(t) \widetilde{S}^{+}_{j}(0) \rangle \\[0.25em]
+        \langle \widetilde{S}^{-}_{i}(t) \widetilde{S}^{-}_{j}(0) \rangle &
+        \langle \widetilde{S}^{-}_{i}(t) \widetilde{S}^{+}_{j}(0) \rangle
+    \end{pmatrix}
+\end{equation}
+The Holstein-Primakoff (HP) operators are
+\begin{equation}
+    \widetilde{S}_{i}^{+} = \sqrt{2 S_i} \left( 1 - \frac{\hat{n}_i}{2 S_i} \right)^{1/2} \hat{b}_i, 
+    \qquad \widetilde{S}_{i}^{-} = \sqrt{2 S_i} \hat{b}_i^{\dagger} \left( 1 - \frac{\hat{n}_i}{2 S_i} \right)^{1/2}, 
+    \qquad \widetilde{S}_{i}^{0} = S_i - \hat{n}_i,
+\end{equation}
+with $\hat{n}_i = \hat{b}_i^{\dagger} \hat{b}_i$ being the magnon number operator.
+We approximate $\widetilde{S}_{i}^{+} \approx \sqrt{2 S_i} \hat{b}_i$ and $\widetilde{S}_{i}^{-} \approx \sqrt{2 S_i} \hat{b}_i^{\dagger}$, yielding
+\begin{equation}
+    \langle S_i^{\alpha}(t) S_j^{\beta}(0) \rangle
+    = \sqrt{S_i S_j} \sum_{m,n} \left[ 
+    \mathsf{U}^{\alpha}_{i}
+    \big\langle \Psi_{i}(t) \Psi_{j}^{\dagger}(0) \big\rangle
+    \mathsf{U}^{\beta}_{j}
+    \right]_{m,n}
+    + v^{\alpha}_{i} v^{\beta}_{j} \big( S_i S_j -  S_i \langle \hat{n}_j(0) \rangle - S_j \langle \hat{n}_i(t) \rangle \big),
+\end{equation}
+where $\big\langle \Psi_{i}(t) \Psi_{j}^{\dagger}(0) \big\rangle$ is the matrix form of the two-point correlation function, defined as 
+\begin{equation}
+    \big\langle \Psi_{i}(t) \Psi_{j}^{\dagger}(0) \big\rangle
+    \equiv
+    \begin{pmatrix}
+        \langle \hat{b}_i(t) \hat{b}_j^{\dagger}(0) \rangle &
+        \langle \hat{b}_i(t) \hat{b}_j(0) \rangle \\
+        \langle \hat{b}_i^{\dagger}(t) \hat{b}_j^{\dagger}(0) \rangle &
+        \langle \hat{b}_i^{\dagger}(t) \hat{b}_j(0) \rangle
+    \end{pmatrix}
+    = \frac{1}{\sqrt{S_{i}S_{j}}}
+    \big\langle \widetilde{\mathbf{S}}^{\pm}_{i}(t) \widetilde{\mathbf{S}}^{\mp}_{j}(0) \big\rangle
+\end{equation}
+
+The expectation value of the number operator satisfies $\langle \hat{n}_i(t) \rangle = \langle \hat{n}_i(0) \rangle$ because, for a time-independent Hamiltonian $\hat{H}$,
+\begin{equation}
+    \langle \hat{A}(t) \rangle = 
+    \begin{cases}
+        \langle \psi_n | e^{i \hat{H} t} \hat{A} e^{-i \hat{H} t} | \psi_n \rangle = \langle \hat{A} \rangle, & \text{if } \hat{H} | \psi_n \rangle = E_n | \psi_n \rangle, \\
+        \mathrm{Tr} [ \rho \hat{U}^{\dagger}(t) \hat{A} \hat{U}(t) ] = \mathrm{Tr} [ \rho \hat{A} ], & \text{if } \rho = e^{-\beta \hat{H}} / Z,
+    \end{cases}
+\end{equation}
+where $\hat{U}(t) = e^{-i \hat{H} t}$ is the time-evolution operator and $\rho = e^{-\beta \hat{H}} / Z$ is the thermal density matrix. In the Gibbs state, this follows from the commutation of $\rho$ with $\hat{U}(t)$ and the cyclic property of the trace.
+
+
+
+
+
+\subsubsection{Sublattice Spin-Spin Correlation Function}
+
+Given $L$ spins (or magnetic ions), there could be $m_{s}$ magnetic sublattices and $N$ unit cells with $L = m_{s}N$. 
+In this case, we introduce a composite index notation: $I = (i, \mu)$ and $J = (j, \nu)$, where $\mu, \nu = a, b, \dots$ denote the magnetic sublattices and $i, j$ represent the unit cell indices. The position in the lattice is given by $\mathbf{R}_{I} = \mathbf{r}_{i} + \boldsymbol{\delta}_{\mu}$, where $\mathbf{r}_i$ is the position of the $i$-th unit cell and $\boldsymbol{\delta}_\mu$ is the position of the $\mu$-th sublattice within the unit cell.
+
+Explicitly, for a spin at site $I = (i, \mu)$, its position vector is
+\begin{equation}
+    \mathbf{R}_{I} = \mathbf{R}_{i\mu} = \mathbf{r}_{i} + \boldsymbol{\delta}_{\mu}.
+\end{equation}
+
+To compute the real-time spin-spin correlation function in momentum space using Linear Spin-Wave Theory (LSWT), we express it in terms of magnetic sublattices:
+\begin{align}
+    \mathcal{C}^{\alpha\beta}(\mathbf{k}, t) 
+    &= \frac{1}{Nm_{s}} \sum_{i\mu,j\nu} e^{-i\mathbf{k} \cdot [(\mathbf{r}_{i} + \boldsymbol{\delta}_{\mu}) - (\mathbf{r}_{j} + \boldsymbol{\delta}_{\nu})]} \langle \hat{S}_{i\mu}^{\alpha}(t) \hat{S}_{j\nu}^{\beta}(0) \rangle \\
+    &= \frac{1}{m_{s}} \sum_{\mu,\nu} e^{-i\mathbf{k} \cdot (\boldsymbol{\delta}_{\mu} - \boldsymbol{\delta}_{\nu})} 
+    \left[ 
+    \frac{1}{N} \sum_{i,j} e^{-i\mathbf{k} \cdot (\mathbf{r}_{i} - \mathbf{r}_{j})} 
+    \langle \hat{S}_{i\mu}^{\alpha}(t) \hat{S}_{j\nu}^{\beta}(0) \rangle \right] 
+\end{align}
+
+This allows us to express the total correlation function as an average over sublattice correlation functions:
+\begin{align}
+    \mathcal{C}^{\alpha\beta}(\mathbf{k}, t) 
+    = \frac{1}{m_s} \sum_{\mu, \nu = a, b, \dots} 
+    \mathcal{C}_{\mu\nu}^{\alpha\beta}(\mathbf{k}, t),
+\end{align}
+where $m_s$ is the number of magnetic sublattices in the unit cell, and $\mu, \nu$ denote sublattice indices.
+
+The key insight of this section is to demonstrate that the sublattice real-time spin-spin correlation function $\mathcal{C}_{\mu\nu}^{\alpha\beta}(\mathbf{k}, t)$ can be obtained from a partial sum of the $2m_s \times 2m_s$ matrix $\mathsf{C}^{\alpha\beta}(\mathbf{k}, t)$:
+\begin{equation}
+    \begin{split}
+        \mathcal{C}_{\mu\nu}^{\alpha\beta}(\mathbf{k}, t) 
+        &= \sum_{(m,n)_{\mu,\nu}} 
+        \big[ \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) \big]_{m,n} \\
+        &= \big[ \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) \big]_{\mu, \nu} 
+        + \big[ \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) \big]_{m_s + \mu, \nu} 
+        + \big[ \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) \big]_{\mu, m_s + \nu} 
+        + \big[ \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) \big]_{m_s + \mu, m_s + \nu},
+    \end{split}
+\end{equation}
+where the index set $(m,n)_{\mu,\nu} = \{ (\mu, \nu), (m_s + \mu, \nu), (\mu, m_s + \nu), (m_s + \mu, m_s + \nu) \}$ represents all possible combinations of indices in the extended Nambu space. The matrix $\mathsf{C}^{\alpha\beta}$ is defined as
+\begin{equation}
+    \boxed{
+        \mathsf{C}^{\alpha\beta}(\mathbf{k}, t) 
+        = 
+        \mathsf{R}^{\alpha}_{\mathbf{k}} 
+        \mathsf{T}_{\mathbf{k}} 
+        \mathsf{N}_{\mathbf{k}}(t) 
+        \mathsf{T}_{\mathbf{k}}^{\dagger}
+        [\mathsf{R}^{\beta}_{\mathbf{k}}]^{\dagger},
+    }
+\end{equation}
+where $\mathsf{T}_{\mathbf{k}}$ is a para-unitary matrix that diagonalizes the Hamiltonian matrix, satisfying $\mathsf{T}_{\mathbf{k}}^{\dagger} \mathsf{H}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} = \mathsf{E}_{\mathbf{k}}$, and $\mathsf{N}_{\mathbf{k}}(t)$ is the time-dependent correlation matrix in the magnon basis. 
+
+The matrix $\mathsf{R}^{\alpha}_{\mathbf{k}}$ is a $2m_s \times 2m_s$ block-diagonal matrix that encodes both the spin components and sublattice structure. It is defined as $\mathsf{R}^{\alpha}_{\mathbf{k}} = \mathsf{U}^{\alpha} \mathsf{S}_{\mathbf{k}}$, which can be expressed explicitly as:
+\begin{equation}
+    \mathsf{R}^{\alpha}_{\mathbf{k}} 
+    = \mathsf{U}^{\alpha} \mathsf{S}_{\mathbf{k}}
+    =
+    \begin{pmatrix}
+        \bar{\mathsf{u}}^{\alpha} \mathsf{s}_{\mathbf{k}} & \mathbf{0} \\
+        \mathbf{0} & \mathsf{u}^{\alpha} \mathsf{s}_{\mathbf{k}} 
+    \end{pmatrix},
+\end{equation}
+where the diagonal matrices $\mathsf{s}$ and $\mathsf{u}^{\alpha}$ are defined as:
+\begin{equation}
+    \begin{cases}
+        \mathsf{s} = \text{diag} \big[ e^{-i \mathbf{k} \cdot \boldsymbol{\delta}_a} \sqrt{S_a}, e^{-i \mathbf{k} \cdot \boldsymbol{\delta}_b} \sqrt{S_b}, \dots, e^{-i \mathbf{k} \cdot \boldsymbol{\delta}_\mu} \sqrt{S_\mu}, \dots \big], \\
+        \mathsf{u}^{\alpha} = \text{diag} \big[ u_a^{\alpha}, u_b^{\alpha}, \dots, u_\mu^{\alpha}, \dots \big],
+    \end{cases}
+\end{equation}
+where $\mathsf{u}^{\alpha}$ contains the $\alpha$-component of the spin basis vector $\hat{\mathbf{e}}^-$ for each sublattice, i.e., $\mathsf{u}^{\alpha}_\mu = [\hat{\mathbf{e}}^+_\mu]^{\alpha}$, and $\bar{\mathsf{u}}^{\alpha} = [\mathsf{u}^{\alpha}]^* = [\mathsf{u}^{\alpha}]^{\dagger}$. The matrix $\mathsf{s}$ encodes both the phase factors due to sublattice positions and the square root of spin magnitudes $S_\mu$.
+
+The matrix $\mathsf{N}_{\mathbf{k}}(t)$ encodes the time evolution of magnon correlations and is given by:
+\begin{equation}
+    \mathsf{N}_{\mathbf{k}}(t) 
+    = 
+    \begin{pmatrix}
+        \langle \hat{\boldsymbol{\beta}}_{\mathbf{k}}(t) \hat{\boldsymbol{\beta}}_{\mathbf{k}}^{\dagger}(0) \rangle & \langle \hat{\boldsymbol{\beta}}_{\mathbf{k}}(t) \hat{\boldsymbol{\beta}}_{-\mathbf{k}}(0) \rangle \\
+        \langle \hat{\boldsymbol{\beta}}_{-\mathbf{k}}^{\dagger}(t) \hat{\boldsymbol{\beta}}_{\mathbf{k}}^{\dagger}(0) \rangle & \langle \hat{\boldsymbol{\beta}}_{-\mathbf{k}}^{\dagger}(t) \hat{\boldsymbol{\beta}}_{-\mathbf{k}}(0) \rangle
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        (\mathsf{I} + \mathsf{n}_{\mathbf{k}})e^{-it\mathsf{E}_{\mathbf{k}}} & \mathbf{0} \\
+        \mathbf{0} & \mathsf{n}_{-\mathbf{k}}e^{it\mathsf{E}_{-\mathbf{k}}}
+    \end{pmatrix},
+\end{equation}
+where $\mathsf{I}$ is the $m_s \times m_s$ identity matrix, $\mathsf{n}_{\mathbf{k}}$ and $\mathsf{E}_{\mathbf{k}}$ are diagonal matrices containing the Bose-Einstein distribution $[\mathsf{n}_{\mathbf{k}}]_{\mu\nu} = \delta_{\mu\nu}/[e^{\beta E_\mu(\mathbf{k})} - 1]$ and the magnon energies $[\mathsf{E}_{\mathbf{k}}]_{\mu\nu} = \delta_{\mu\nu}E_{\mu}(\mathbf{k})$, respectively. The time dependence arises from the energy eigenstates: $e^{i\hat{H}t}\hat{\beta}_{\mathbf{k},\mu}e^{-i\hat{H}t} = e^{-iE_{\mathbf{k},\mu}t}\hat{\beta}_{\mathbf{k},\mu}$.
+
+
+
+To derive this, we assume a spin system with magnetic sublattice structures within the unit cell. The sublattice correlation function is expressed as
+\begin{align}
+    \mathcal{C}^{\alpha\beta}_{\mu\nu} (\kvec, t) 
+    = & \frac{1}{N} \sum_{i,j} e^{ - i \kvec \cdot [(\mathbf{r}_{i} + \mathbf{\delta}_{\mu}) - (\mathbf{r}_{j} + \mathbf{\delta}_{\nu})]} \langle S_{i\mu}^{\alpha}(t) S_{j\nu}^{\beta}(0) \rangle \\
+    = & e^{ - i \kvec \cdot (\mathbf{\delta}_{\mu} - \mathbf{\delta}_{\nu})}  
+    \frac{1}{N} \sum_{i,j} e^{ - i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+    \langle S_{i\mu}^{\alpha}(t) S_{j\nu}^{\beta}(0) \rangle \\
+    = & e^{ - i \kvec \cdot (\mathbf{\delta}_{\mu} - \mathbf{\delta}_{\nu})}  
+    \frac{1}{N}  \\
+    & \times \sum_{i,j} e^{ - i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+    \bigg[
+    \sqrt{S_{\mu}S_{\nu}} \sum_{m,n}
+    \Big[ \mathsf{U}^{\alpha}_{\mu}
+    \big\langle \Psi_{i\mu}^{\phantom \dagger}(t) \Psi_{j\nu}^{\dagger}(0) \big\rangle
+    \mathsf{U}^{\beta}_{\nu} \Big]_{m,n} 
+    + v_{\mu}^{\alpha} v_{\nu}^{\beta}
+    \Big( S_{\nu} S_{\mu} - S_{\nu}\langle \hat{n}_{i\mu} \rangle - S_{\mu}\langle \hat{n}_{j\nu} \rangle \Big)
+    \bigg], 
+    \nonumber
+\end{align}
+where the spin operators are transformed into bosonic operators via the Holstein-Primakoff transformation, and the correlation is computed using Fourier transforms. The first term, involving the bosonic correlation matrix, yields
+\begin{subequations}
+    \begin{align}
+        \frac{1}{N} \sum_{i,j}   
+        e^{ - i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+        \big\langle \Psi_{i}^{\phantom \dagger}(t) \Psi_{j}^{\dagger}(0) \big\rangle 
+        = &
+        \big\langle \Psi_{\kvec}^{\phantom \dagger}(t) \Psi_{\kvec}^{\dagger}(0) \big\rangle,
+        \\
+        \frac{1}{N} \sum_{\kvec} 
+        e^{ + i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+        \big\langle \Psi_{\kvec}^{\phantom \dagger}(t) \Psi_{\kvec}^{\dagger}(0) \big\rangle 
+        = &
+        \big\langle \Psi_{i}^{\phantom \dagger}(t) \Psi_{j}^{\dagger}(0) \big\rangle.
+    \end{align}
+\end{subequations}
+Similarly, the spin-spin correlation function in real space is obtained as
+\begin{equation}
+    \big\langle \widetilde{\mathbf{S}}_{i}^{\pm}(t) \widetilde{\mathbf{S}}_{j}^{\mp}(0) \big\rangle
+    = \frac{1}{N} \sum_{\kvec, \mu, \nu } 
+    e^{ + i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+    \sqrt{S_{\mu} S_{\nu}} 
+    e^{ i \kvec \cdot (\mathbf{\delta}_{\mu} - \mathbf{\delta}_{\nu}) }
+    \big\langle \Psi_{\kvec, \mu}^{\phantom \dagger}(t) \Psi_{\kvec, \nu}^{\dagger}(0) \big\rangle
+    = \frac{1}{N} \sum_{\kvec} 
+    e^{ + i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+    \bar{\mathsf{S}}_{\kvec}^{\phantom \dagger} 
+    \mathsf{T}_{\kvec}^{\phantom \dagger}
+    \mathsf{N}_{\kvec}^{\phantom \dagger} (t)
+    \mathsf{T}_{\kvec}^{\dagger} 
+    \mathsf{S}_{\kvec}^{\phantom \dagger},
+\end{equation}
+derived by applying the Fourier transform to the bosonic operators and computing the correlation matrix elements:
+\begin{align}
+    \frac{1}{N} \sum_{i,j} e^{ - i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j} )} 
+    \big\langle \Psi_{i\mu}^{\phantom \dagger}(t) \Psi_{j\nu}^{\dagger}(0) \big\rangle 
+    = & 
+    \begin{pmatrix}
+        \big\langle \hat{b}_{+\kvec, \mu}^{\phantom \dagger} (t) \hat{b}_{+\kvec, \nu}^{\dagger}          (0) \big\rangle &
+        \big\langle \hat{b}_{+\kvec, \mu}^{\phantom \dagger} (t) \hat{b}_{-\kvec, \nu}^{\phantom \dagger} (0) \big\rangle \\
+        \big\langle \hat{b}_{-\kvec, \mu}^{\dagger}          (t) \hat{b}_{+\kvec, \nu}^{\dagger}          (0) \big\rangle &
+        \big\langle \hat{b}_{-\kvec, \mu}^{\phantom \dagger} (t) \hat{b}_{-\kvec, \nu}^{\dagger}          (0) \big\rangle 
+    \end{pmatrix}
+    = \mathsf{T}_{\kvec}^{\phantom\dagger} \mathsf{N}_{\kvec}^{\phantom\dagger} (t) \mathsf{T}_{\kvec}^{\dagger},
+\end{align}
+where $\mathsf{T}_{\kvec}$ and $\mathsf{N}_{\kvec}(t)$ are defined above. The second term, representing the density operator in momentum space, is
+\begin{equation}
+    \frac{1}{N} \sum_{i,j} e^{- i \kvec \cdot (\mathbf{r}_{i} - \mathbf{r}_{j})} \langle \hat{n}_{j\nu} \rangle
+    = \Big( \sum_{\kappa \in \mathbf{G}} \delta(\kvec - \kappa) \Big) \langle \hat{n}_{\kvec, \mu} \rangle,
+\end{equation}
+where $\hat{n}_{\kvec, \mu}$, the density fluctuation operator at momentum $\kvec$, is
+\begin{align*}
+    \hat{n}_{\kvec} 
+    = & \frac{1}{N} 
+    \sum_{i} e^{i \kvec \cdot \mathbf{r}_{i}} \hat{a}^{\dagger}_{i} \hat{a}_{i}^{\phantom \dagger} 
+    = \frac{1}{N}  \sum_{\mathbf{q}} \hat{a}_{\mathbf{q} + \kvec}^{\dagger} \hat{a}_{\mathbf{q}}^{\phantom \dagger},
+\end{align*}
+which vanishes for a free system unless $\kvec = \kappa \in \mathbf{G}$ due to momentum conservation.
+
+The correlation function is expressed in matrix form as
+\begin{equation}
+    \mathcal{C}^{\alpha\beta}_{\mu\nu} (\kvec, t)
+    = e^{ - i \kvec \cdot (\mathbf{\delta}_{\mu} - \mathbf{\delta}_{\nu})}  
+    \left[
+    \sqrt{S_{\mu}S_{\nu}} \sum_{m,n}
+    \Big[ \mathsf{U}^{\alpha}_{\mu}
+    \mathsf{T}_{\kvec}^{\phantom\dagger} \mathsf{N}_{\kvec}^{\phantom\dagger} (t) \mathsf{T}_{\kvec}^{\dagger}
+    \mathsf{U}^{\beta}_{\nu} \Big]_{m,n}
+    + v_{\mu}^{\alpha} v_{\nu}^{\beta}
+    \Big( \sum_{\kappa \in \mathbf{G}} \delta(\kvec - \kappa) \Big)
+    \Big( S_{\nu}\langle \hat{n}_{\mathbf{0}, \mu} \rangle + S_{\mu}\langle \hat{n}_{\mathbf{0}, \nu} \rangle \Big)
+    \right],
+\end{equation}
+where the first term describes time-dependent magnon scattering, and the second term accounts for the static ordered moment reduction due to magnon population. The matrix form is
+\begin{equation}\label{eq: matrix form of spin-spin correlation matrix}
+    \mathsf{C}^{\alpha\beta} (\kvec, t)
+    = 
+    \mathsf{U}^{\alpha} 
+    \mathsf{S}_{\kvec}^{\phantom \dagger} 
+    \mathsf{T}_{\kvec}^{\phantom \dagger} 
+    \mathsf{N}_{\kvec}^{\phantom \dagger}  (t)
+    \mathsf{T}_{\kvec}^{         \dagger}
+    \mathsf{S}_{\kvec}^{         \dagger}
+    \mathsf{U}^{\beta},
+\end{equation}
+with elements computed as
+\begin{align*}
+    \mathsf{C}^{\alpha\beta} (\kvec, t) = & 
+    \begin{pmatrix}
+        \bar{\mathsf{u}}^{\alpha} \mathsf{s}_{\kvec}  & \mathbf{0} \\
+        \mathbf{0} & \mathsf{u}^{\alpha} \mathsf{s}_{\kvec} \\
+    \end{pmatrix}
+    \begin{pmatrix}     
+        \langle \mathbf{b}_{ \mathbf{k}\mu}           (t)    \mathbf{b}_{ \mathbf{k}\nu}^{\dagger} (0)    \rangle & 
+        \langle \mathbf{b}_{ \mathbf{k}\mu}           (t)    \mathbf{b}_{-\mathbf{k}\nu}           (0)    \rangle \\
+        \langle \mathbf{b}_{-\mathbf{k}\mu}^{\dagger} (t)    \mathbf{b}_{ \mathbf{k}\nu}^{\dagger} (0)    \rangle & 
+        \langle \mathbf{b}_{-\mathbf{k}\mu}^{\dagger} (t)    \mathbf{b}_{-\mathbf{k}\nu}           (0)    \rangle
+    \end{pmatrix}
+    \begin{pmatrix}
+        \bar{\mathsf{s}}_{\kvec} \mathsf{u}^{\beta} & \mathbf{0} \\
+        \mathbf{0} & \bar{\mathsf{s}}_{\kvec} \bar{\mathsf{u}}^{\beta} \\
+    \end{pmatrix}.
+\end{align*}
+The elements of $\mathsf{C}^{\alpha\beta}(\kvec, t)$ for indices $(m,n)_{\mu,\nu}$ are
+\begin{align*}
+    \begin{array}{crl}
+        {[\mathsf{C}^{\alpha\beta}(\kvec, t)]_{(1,1)_{\mu\nu}}} : \qquad\qquad
+        &
+        \big[
+            \mathsf{s}_{\kvec} \bar{\mathsf{u}}^{\alpha} 
+            \langle \mathbf{b}_{+\mathbf{k}\mu}           (t)    \mathbf{b}_{+\mathbf{k}\nu}^{\dagger} (0)    \rangle 
+            \mathsf{u}^{\beta} \bar{\mathsf{s}}_{\kvec} 
+        \big]_{\mu\nu}
+        = &
+        \sqrt{S_{\mu}S_{\nu}}e^{-i \kvec \cdot (\bm{\delta}_{\mu} - \bm{\delta}_{\nu})} 
+        \big\langle b_{+\mathbf{k}\mu} (t) b_{+\mathbf{k}\nu}^{\dagger} (0) \big\rangle,
+        \\
+        {[\mathsf{C}^{\alpha\beta}(\kvec, t)]_{(1,2)_{\mu\nu}}} : \qquad\qquad
+        &
+        \big[
+            \mathsf{s}_{\kvec} \bar{\mathsf{u}}^{\alpha} 
+            \langle \mathbf{b}_{+\mathbf{k}\mu}           (t)    \mathbf{b}_{-\mathbf{k}\nu}           (0)    \rangle 
+            \bar{\mathsf{u}}^{\beta} \bar{\mathsf{s}}_{\kvec}
+        \big]_{\mu\nu}
+        = & \sqrt{S_{\mu}S_{\nu}}e^{-i \kvec \cdot (\bm{\delta}_{\mu} - \bm{\delta}_{\nu})} 
+        \big\langle b_{+\mathbf{k}\mu} (t) b_{-\mathbf{k}\nu} (0) \big\rangle,
+        \\
+        {[\mathsf{C}^{\alpha\beta}(\kvec, t)]_{(2,1)_{\mu\nu}}} : \qquad\qquad
+        & 
+        \big[
+            \mathsf{s}_{\kvec} \mathsf{u}^{\alpha}
+            \langle \mathbf{b}_{-\mathbf{k}\mu}^{\dagger} (t)    \mathbf{b}_{+\mathbf{k}\nu}^{\dagger} (0)    \rangle  
+            \mathsf{u}^{\beta} \bar{\mathsf{s}}_{\kvec}  
+        \big]_{\mu\nu}
+        = & \sqrt{S_{\mu}S_{\nu}}e^{-i \kvec \cdot (\bm{\delta}_{\mu} - \bm{\delta}_{\nu})} 
+        \big\langle b_{-\mathbf{k}\mu}^{\dagger} (t) b_{+\mathbf{k}\nu}^{\dagger} (0) \big\rangle,
+        \\
+        {[\mathsf{C}^{\alpha\beta}(\kvec, t)]_{(2,2)_{\mu\nu}}} : \qquad\qquad
+        &
+        \big[
+            \mathsf{s}_{\kvec} \mathsf{u}^{\alpha}
+            \langle \mathbf{b}_{-\mathbf{k}\mu}^{\dagger} (t)    \mathbf{b}_{-\mathbf{k}\nu}           (0)    \rangle
+            \bar{\mathsf{u}}^{\beta} \bar{\mathsf{s}}_{\kvec}
+        \big]_{\mu\nu}
+        = & \sqrt{S_{\mu}S_{\nu}}e^{-i \kvec \cdot (\bm{\delta}_{\mu} - \bm{\delta}_{\nu})} 
+        \big\langle b_{-\mathbf{k}\mu}^{\dagger} (t) b_{-\mathbf{k}\nu} (0) \big\rangle.
+    \end{array}
+\end{align*}
+Summing $\mathsf{C}^{\alpha\beta}(\kvec, t)$ over $(m,n)_{\mu,\nu}$ yields the sublattice spin-spin correlation function
+\begin{equation}
+    \mathcal{C}_{\mu\nu}^{\alpha\beta} (\kvec, t) = \sum_{(m,n)_{\mu,\nu}} [\mathsf{C}^{\alpha\beta}(\kvec, t)]_{m,n}.
+\end{equation}
+The spin structure factor is obtained by summing over all sublattices: $\mathcal{S}^{\alpha\beta} (\mathbf{k}, t) = \mathcal{C}^{\alpha\beta} (\kvec, t) = \frac{1}{m_s} \sum_{\mu,\nu} \mathcal{C}_{\mu\nu}^{\alpha\beta} (\kvec, t)$.
+
+
+
+
+\subsection{Structure Factor}\label{subsec: Structure Factor}
+
+In this section, we derive the formulas for the static and dynamic structure factors in Linear Spin-Wave Theory.
+
+\subsubsection{Static Structure Factor}
+
+The static structure factor in momentum space is given by
+\begin{equation}
+    \mathcal{S}^{\alpha\beta} (\mathbf{k}) 
+    \equiv \frac{1}{L} 
+    \sum_{I, J}
+    e^{- i \mathbf{k} \cdot ( \mathbf{r}_{I} -  \mathbf{r}_{J} ) }
+    \langle 
+    S_{I}^{\alpha}
+    S_{J}^{\beta} 
+    \rangle 
+    = \big\langle S^{\alpha}_{\kvec} S^{\beta}_{-\kvec} \big\rangle.
+\end{equation}
+This quantity $\mathcal{S}^{\alpha\beta} (\mathbf{k})$ is equal to $\mathcal{C}^{\alpha\beta}(\kvec, t)$, which we've found the matrix form in a previous equation:
+\begin{equation}
+    \mathcal{S}^{\alpha\beta} (\mathbf{k}) = 
+    \sum_{m,n} 
+    \big[ \mathsf{U}^{\alpha} 
+    \mathsf{S}_{\kvec}^{\phantom \dagger} 
+    \mathsf{T}_{\kvec}^{\phantom \dagger} 
+    \mathsf{N}_{\kvec}^{\phantom \dagger}
+    \mathsf{T}_{\kvec}^{         \dagger}
+    \mathsf{S}_{\kvec}^{         \dagger}
+    \mathsf{U}^{\beta} \big]_{mn},
+\end{equation}
+where $\mathsf{U}^{\alpha}$ and $\mathsf{U}^{\beta}$ are spin projection operators, $\mathsf{S}_{\kvec}$ and $\mathsf{T}_{\kvec}$ are transformation matrices, and $\mathsf{N}_{\kvec}$ accounts for the diagonalized magnon correlation functions.
+In the reference frame, the structure factor is expressed as
+\begin{align*}
+    \widetilde{\mathcal{S}}^{\alpha\beta} (\mathbf{k}) 
+    \equiv &
+    \frac{1}{L} 
+    \sum_{I, J}
+    e^{- i \mathbf{k} \cdot ( \mathbf{r}_{I} -  \mathbf{r}_{J} ) }
+    \langle \widetilde{S}_{I}^{\alpha} \widetilde{S}_{J}^{\beta} \rangle 
+    = 
+    \sum_{\mu, \nu} 
+    \left[
+    \begin{pmatrix}
+        \langle \widetilde{S}^{+}_{\kvec} \widetilde{S}^{-}_{-\kvec} \rangle &
+        \langle \widetilde{S}^{+}_{\kvec} \widetilde{S}^{+}_{-\kvec} \rangle \\[0.25em]
+        \langle \widetilde{S}^{-}_{\kvec} \widetilde{S}^{-}_{-\kvec} \rangle &
+        \langle \widetilde{S}^{-}_{\kvec} \widetilde{S}^{+}_{-\kvec} \rangle
+    \end{pmatrix} 
+    \right]_{(\alpha, \beta)_{\mu\nu}}
+    \\ = &
+    \sum_{\mu, \nu} 
+    \big[
+    \mathsf{S}_{\kvec}^{\phantom \dagger} 
+    \mathsf{T}_{\kvec}^{\phantom \dagger} 
+    \mathsf{N}_{\kvec}^{\phantom \dagger}  
+    \mathsf{T}_{\kvec}^{         \dagger}
+    \mathsf{S}_{\kvec}^{         \dagger}
+    \big]_{(\alpha, \beta)_{\mu\nu}},
+\end{align*}
+where the matrix elements are evaluated in the rotated spin basis.
+
+The quantity relevant to neutron scattering experiments is defined as:
+\begin{equation}
+    \mathcal{S} (\mathbf{q}) 
+    \equiv 
+    \frac{1}{N} 
+    \sum_{\substack{\alpha, \beta \\ I, J}}
+    \Big(
+    \delta_{\alpha\beta} - \frac{q_{\alpha} q_{\beta}}{q^{2}} 
+    \Big)
+    e^{i \mathbf{q} \cdot ( \mathbf{r}_{I} - \mathbf{r}_{J} ) }
+    \langle 
+    S_{i}^{\alpha}
+    S_{j}^{\beta} 
+    \rangle
+    = 
+    \sum_{\alpha, \beta} 
+    \Big( \delta_{\alpha\beta} - \frac{q_{\alpha} q_{\beta}}{q^{2}} \Big)
+    \mathcal{S}^{\alpha\beta} (\mathbf{q}) ,
+\end{equation}
+This formulation respects the directional constraints intrinsic to neutron scattering physics.
+
+
+
+\subsubsection{Dynamic structure factor} 
+
+The dynamic structure factor is defined as 
+\begin{equation}
+    \mathcal{S}^{\alpha\beta}(\kvec, \omega) 
+    = \frac{1}{2\pi} \int_{-\infty}^{\infty} d t \, e^{i \omega t} \mathcal{C}^{\alpha\beta} (\kvec, t).
+\end{equation}
+From the LSWT, we consider 
+\begin{align*}
+    \mathcal{S}^{\alpha\beta}_{\mu\nu} (\mathbf{k}, \omega) 
+    = & \sum_{(m,n)_{\mu,\nu}} \int_{-\infty}^{\infty} dt \, [\mathsf{C}^{\alpha\beta} (\kvec, t)]_{m,n} e^{i \omega t}
+    = \sum_{(m,n)_{\mu,\nu}} 
+    \left[ 
+    \int_{-\infty}^{\infty} dt \, e^{i \omega t} 
+    \mathsf{U}^{\alpha} 
+    \mathsf{S}_{\kvec}^{\phantom \dagger} 
+    \mathsf{T}_{\kvec}^{\phantom \dagger} 
+    \mathsf{N}_{\kvec}^{\phantom \dagger}  (t)
+    \mathsf{T}_{\kvec}^{         \dagger}
+    \mathsf{S}_{\kvec}^{         \dagger}
+    \mathsf{U}^{\beta}
+    \right]_{m,n}  \\
+    = & \sum_{(m,n)_{\mu,\nu}} 
+    \left[  \mathsf{R}^{\alpha}_{\kvec} \mathsf{T}_{\kvec}
+    \left( \int_{-\infty}^{\infty} dt \, e^{i \omega t} \mathsf{N}_{\kvec} (t) \right)
+    \mathsf{T}_{\kvec}^{\dagger} [\mathsf{R}^{\beta}_{\kvec}]^{\dagger} \right]_{m,n}.
+\end{align*}
+However, the integral yields $\delta$-function. So we introduce the decay factor $\eta > 0$ so that $\omega \rightarrow \omega + i \eta$:
+\begin{equation}
+    g_{\kvec} ( \omega ; \eta ) 
+    \equiv \int_{0}^{\infty} dt \, e^{ - [ \eta  + i( E_{\kvec} - \omega ) ] t} 
+    = \frac{1}{\eta + i ( E_{\kvec} - \omega )}
+\end{equation}
+Using this notation, we have
+\begin{align}
+    \mathcal{F}_{\kvec} (\omega; \eta) = & \int_{-\infty}^{\infty} dt\, e^{-i E_{\kvec} t} e^{ i\omega t - \eta |t|} 
+    =  \int_{0}^{\infty} dt \, 
+    \big( e^{ - [ \eta  + i( E_{\kvec} - \omega ) ] t} + e^{ - [ \eta  - i( E_{\kvec} - \omega ) ] t} \big) 
+    =  g_{\kvec} ( \omega ; \eta ) + g_{\kvec}^{*} ( \omega ; \eta ) \\
+    = & 2 \mathrm{Re} [ g_{\kvec} ( \omega ; \eta ) ]
+    = \frac{2\eta}{\eta^{2} + ( E_{\kvec} - \omega )^{2}}
+\end{align}
+where $\mathcal{F}_{\kvec}(\omega; \eta)$ is Lorentzian and its FWHM is $2\eta$.
+\begin{equation}
+    \begin{split}
+        \int_{-\infty}^{\infty} dt \, e^{i \omega t - \eta |t|} \mathsf{N}_{\kvec} (t) 
+        = &
+        \int_{-\infty}^{\infty} dt \, e^{i \omega t  - \eta |t|}
+        \begin{pmatrix}
+            ( \mathsf{I} + \mathsf{n}_{\kvec} ) e^{-{ i E}_{\kvec,\mu}t}  & 0 \\
+            0                         & \mathsf{n}_{-\kvec}  e^{+{  i  E}_{-\kvec,\mu}t}
+        \end{pmatrix} \\
+        = &
+        \begin{pmatrix}
+            ( \mathsf{I} + \mathsf{n}_{\kvec} ) 
+            \int_{-\infty}^{\infty} dt \, e^{i \omega t  - \eta |t|} 
+            e^{-{ i E}_{\kvec,\mu}t}  & 0 \\
+            0                         & \mathsf{n}_{-\kvec}  
+            \int_{-\infty}^{\infty} dt \, e^{i \omega t  - \eta |t|}  e^{+{  i  E}_{-\kvec,\mu}t}
+        \end{pmatrix} \\
+        = & 
+        \begin{pmatrix}
+            ( \mathsf{I} + \mathsf{n}_{\kvec} ) \mathcal{F}_{\kvec} (\omega; \eta)  & 0 \\
+            0   &   \mathsf{n}_{-\kvec} \mathcal{F}_{- \kvec} (-\omega; \eta)
+        \end{pmatrix} 
+    \end{split}
+\end{equation}
+Thus, in LSWT, the dynamical spin structure factor can be computed from the matrix multiplication:
+\begin{equation}
+    \mathcal{S}^{\alpha\beta}_{\mu\nu} (\kvec, \omega)
+    =
+    \sum_{(m,n)_{\mu,\nu}} 
+    \left[  \mathsf{R}^{\alpha}_{\kvec} \mathsf{T}_{\kvec}
+    \mathcal{F} [\mathsf{N}_{\kvec}](\omega; \eta)
+    \mathsf{T}_{\kvec}^{\dagger} [\mathsf{R}^{\beta}_{\kvec}]^{\dagger} \right]_{m,n}.
+\end{equation}
+Here, the fourier transformation of diagonal matrix $\mathsf{N}_{\kvec} (t)$ is given by
+\begin{equation}
+    \mathcal{F} [\mathsf{N}_{\kvec}](\omega; \eta)
+    \equiv 
+    \begin{pmatrix}
+        ( \mathsf{I} + \mathsf{n}_{\kvec} )    \mathcal{F}_{ \kvec} (  \omega; \eta  )  & 0 \\
+        0   &   \mathsf{n}_{-\kvec} \mathcal{F}_{-\kvec} ( -\omega; \eta  )
+    \end{pmatrix} 
+\end{equation}
+
+
+\subsection{Spectral Function}\label{subsec: Spectral Function}
+
+In this section, we compute the spectral function within Linear Spin-Wave Theory (LSWT):
+\begin{equation}
+    \mathcal{A}^{\alpha\beta}(\kvec, \omega) = - \frac{1}{\pi} \mathrm{Im} [G^{\alpha\beta}_{\rm R} (\kvec, \omega)],
+\end{equation}
+where $G^{\alpha\beta}_{\rm R} (\kvec, \omega)$ is the retarded Green's function, defined as
+\begin{equation}
+    G^{\alpha\beta}_{\rm R} (\kvec, \omega) 
+    \equiv  \frac{1}{i} \int_{-\infty}^{\infty} dt \, e^{i\omega t} \theta(t) \big\langle [S_{\kvec}^{\alpha} (t), S_{-\kvec}^{\beta} (0)] \big\rangle . 
+\end{equation}
+The ratared Green's function can be rewritten in terms of the correlation function
+\begin{equation}
+    G^{\alpha\beta}_{\rm R} (\kvec, \omega) 
+    = \frac{1}{i} \int_{0}^{\infty} dt \, \Big[ \big\langle S_{\kvec}^{\alpha} (t) S_{-\kvec}^{\beta} (0) \big\rangle - \big\langle S_{-\kvec}^{\beta} (0) S_{\kvec}^{\alpha} (t) \big\rangle \Big] e^{i \omega t} 
+    = \frac{1}{i} \int_{0}^{\infty} dt \, \big[ \mathcal{C}^{\alpha\beta}(\kvec, t) - \mathcal{C}^{\beta\alpha}(-\kvec, -t) \big] e^{i \omega t}.
+\end{equation}
+For spin components $\alpha, \beta = x, y, z$, the retarded Green's function is expressed as the Fourier transform of the imaginary part of the correlation function:
+\begin{equation}
+    G^{\alpha\beta}_{\rm R} (\kvec, \omega) 
+    = 2 \int_{0}^{\infty} dt \, \mathrm{Im} [\mathcal{C}^{\alpha\beta}(\kvec, t) ] e^{\ri \omega t}.
+\end{equation}
+The spectral function is then obtained as
+\begin{equation}
+    \begin{split}
+        \mathcal{A}^{\alpha\beta}(\kvec, \omega) 
+        % = & - \frac{1}{\pi} \mathrm{Im} [G^{\alpha\beta}_{\rm R} (\kvec, \omega)] \\
+        = & - \frac{2}{\pi} \int_{0}^{\infty} dt \, \mathrm{Im} \big[ \mathrm{Im} \big[ \mathcal{C}^{\alpha\beta}(\kvec, t) \big] e^{i \omega t} \big] \\
+        = & - \frac{2}{\pi} \int_{0}^{\infty} dt \, \mathrm{Im} \big[ \mathcal{C}^{\alpha\beta}(\kvec, t) \sin (\omega t) \big] \\
+        = & - \frac{2}{\pi} \mathrm{Im} 
+        \sum_{m,n}
+        \left[ 
+        \mathsf{U}^{\alpha} \mathsf{S}_{\kvec}^{\phantom \dagger} \mathsf{T}_{\kvec}^{\phantom \dagger}
+        \left( \int_{0}^{\infty} dt \, 
+        \begin{pmatrix}
+            (\mathsf{I} + \mathsf{n}_{\kvec}) e^{- i \mathsf{E}_{\kvec} t} & 0 \\
+            0 & \mathsf{n}_{-\kvec} e^{i \mathsf{E}_{-\kvec} t}
+        \end{pmatrix}
+        \sin (\omega t)
+        \right)
+        \mathsf{T}^{\dagger}_{\kvec} \bar{\mathsf{S}}_{\kvec}^{\phantom \dagger} \bar{\mathsf{U}}^{\beta}
+        \right]_{mn} \\
+        = & -  \frac{2}{\pi} \mathrm{Im} 
+        \sum_{m,n}
+        \left[ 
+            \mathsf{U}^{\alpha} \mathsf{S}_{\kvec}^{\phantom \dagger} \mathsf{T}_{\kvec}^{\phantom \dagger}
+            \begin{pmatrix}
+                (\mathsf{I + n}_{  \kvec}) \mathcal{G}_{\kvec} (\omega ; \eta) & 0 \\
+                0 &  \mathsf{n}_{- \kvec} \mathcal{G}_{-\kvec}^{*} (\omega ; \eta)
+            \end{pmatrix}
+            \mathsf{T}^{\dagger}_{\kvec} \bar{\mathsf{S}}_{\kvec}^{\phantom \dagger}
+            \bar{\mathsf{U}}^{\beta}
+        \right]_{m,n}
+    \end{split}
+\end{equation}
+where the function $\mathcal{G}_{\kvec}(\omega ; \eta)$ is defined as 
+\begin{align*}
+     \mathcal{G}_{\kvec}(\omega ; \eta)
+     \equiv & \int_{0}^{\infty} dt \,  e^{- \ri E_{\kvec} t} \sin (\omega t) e^{-\eta |t|} 
+     = \int_{0}^{\infty} dt \,  e^{-\ri E_{\kvec} t} \bigg( \frac{e^{\ri \omega t} - e^{- \ri \omega t}}{2\ri} \bigg) e^{-\eta t} \\
+     = & \frac{1}{2 \ri} 
+     \left( 
+     \int_{0}^{\infty} dt \,
+     e^{-(\eta + \ri(E_{\kvec} - \omega))t} - \int_{0}^{\infty} dt \, e^{-(\eta + \ri(E_{\kvec} + \omega))t} 
+     \right) 
+     = \frac{1}{2 \ri} \Big( \frac{1}{\eta + \ri(E_{\kvec} - \omega)} - \frac{1}{\eta + \ri(E_{\kvec} + \omega)} \Big) \\
+     = & \frac{1}{2i} \big( g_{\eta}(\kvec, \omega) + g_{\eta} (\kvec, - \omega) \big).
+\end{align*}
+Thus, the spectral function in LSWT can be computed from the product of the matrices.
+\begin{equation}
+    \mathcal{A}^{\alpha\beta}(\kvec, \omega) 
+    = - \frac{2}{\pi} \mathrm{Im} 
+    \sum_{m,n}
+    \left[ 
+    \mathsf{U}^{\alpha} \mathsf{S}_{\kvec}^{\phantom \dagger} \mathsf{T}_{\kvec}^{\phantom \dagger}
+    \mathcal{G} [ \mathsf{N}_{\kvec} ] (\omega ; \eta)
+    \mathsf{T}^{\dagger}_{\kvec} \bar{\mathsf{S}}_{\kvec}^{\phantom \dagger} \bar{\mathsf{U}}^{\beta}
+    \right]_{m,n},
+\end{equation}
+where the matrix $\mathcal{G} [ \mathsf{N}_{\kvec} ] (\omega ; \eta)$ is defined as 
+\begin{equation}
+    \mathcal{G} [ \mathsf{N}_{\kvec} ] (\omega ; \eta)
+    = 
+    \begin{pmatrix}
+        (\mathsf{I} + \mathsf{n}_{\kvec}) \mathcal{G}_{\kvec} (\omega; \eta) & 0 \\
+        0 & \mathsf{n}_{-\kvec} \mathcal{G}_{-\kvec}^{*} (\omega; \eta).
+    \end{pmatrix}.
+\end{equation}
+
+
+
+
+
+\newpage
+\section{Skyrmions, Topological Magnons, and Hall Effects}
+
+\subsection{Skyrmion number}\label{subsec: Skyrmion number}
+
+The skyrmion number itself does not require the LSWT, but introducing it here would be useful for a later purpose. 
+ho in the lattice~\cite{BERG1981412} 
+However,
+The skyrmion number $Q_{\rm sk}$ quantifies the topological charge of a magnetic skyrmion in a lattice, computed as the sum of solid angles over triangular plaquettes ($\triangle$):
+\begin{equation}
+    Q_{\rm skyr} 
+    = \frac{1}{4\pi} \sum_{\triangle} \chi_{\triangle}.
+\end{equation}
+For example, when the subsystem has four magnetic sublattices ($\mu = a, b, c, d$), the summation runs over the triangles $abc, acd, abd, bcd$.
+Here, $\chi_{\triangle}$ is the solid angle subtended by normalized magnetization vectors $\mathbf{m}_i$, $\mathbf{m}_j$, and $\mathbf{m}_k$ at the vertices of a plaquette, where $\mathbf{m}_i = \mathbf{S}_i / S_i$ with $|\mathbf{m}_i| = 1$. The solid angle is given by:
+\begin{equation}
+    \chi_{\triangle} 
+    = 2 \arctan 
+    \left( 
+    \frac{|\mathbf{m}_i \cdot (\mathbf{m}_j \times \mathbf{m}_k)|}{1 + \mathbf{m}_i \cdot \mathbf{m}_j + \mathbf{m}_j \cdot \mathbf{m}_k + \mathbf{m}_k \cdot \mathbf{m}_i} 
+    \right).
+\end{equation}
+
+
+
+
+
+\subsection{Chern Number}\label{subsec: Chern number}
+
+The Chern number of the $n$th band, $C_n$, is defined as the integral of the Berry curvature $\Omega_{n, \kvec}$ over the first Brillouin zone (FBZ):
+\begin{equation}
+    C_n = \frac{1}{2\pi} \int_{\text{FBZ}} \Omega_{n, \kvec} \, d^2\mathbf{k} 
+    \approx \frac{1}{2\pi} \sum_{\kvec \in \text{FBZ}} \Omega_{n, \kvec} \Delta k_x \Delta k_y.
+\end{equation}
+The Berry curvature for the $n$th band is calculated as
+\begin{equation}
+    \Omega_{n, \kvec}^{\mu\nu} = 
+    - 2 \, \mathrm{Im} \sum_{\substack{m = 1 \\ m \neq n}}^{2N}
+    \frac{
+        \big[ \mathsf{J} \mathsf{T}^{\dagger}_{\kvec} (\partial_{\mu} \mathsf{H}_{\kvec}) \mathsf{T}_{\kvec} \big]_{nm}
+        \big[ \mathsf{J} \mathsf{T}^{\dagger}_{\kvec} (\partial_{\nu} \mathsf{H}_{\kvec}) \mathsf{T}_{\kvec} \big]_{mn}
+    }{\big( (\mathsf{J} \mathsf{E}_{\kvec})_{nn} - (\mathsf{J} \mathsf{E}_{\kvec})_{mm} \big)^2},
+\end{equation}
+where $\mathsf{J}$, $\mathsf{H}_{\kvec}$, $\mathsf{T}_{\kvec}$, and $\mathsf{E}_{\kvec}$ are $2N \times 2N$ matrices, defined earlier
+\begin{equation}
+    \mathsf{J} = 
+    \begin{pmatrix}
+        \mathsf{I} & 0 \\ 0 & -\mathsf{I}
+    \end{pmatrix}, 
+    \qquad \text{and} \qquad
+    \mathsf{T}^{\dagger}_{\kvec} \mathsf{H}_{\kvec} \mathsf{T}_{\kvec} = \mathsf{E}_{\kvec},
+\end{equation}
+with $\mathsf{T}_{\kvec}$ diagonalizing the Hamiltonian matrix $\mathsf{H}_{\kvec}$ to yield the energy matrix $\mathsf{E}_{\kvec}$.
+
+
+
+
+\subsection{Thermal Hall Conductance}\label{subsec: Thermal Hall Conductance}
+
+The thermal Hall conductivity (THC), while it's hard to observe in experiments, is related to the topology of magnon bands~\cite{PhysRevLett.128.117201}. It is computed using the Berry curvature as
+\begin{equation}
+    \kappa_{xy} = - \frac{k_B^2 T}{V} \sum_{\mathbf{k} \in \mathrm{FBZ}} \sum_{n=1}^{N} \left\{ c_2[g(\varepsilon_{n, \kvec})] - \frac{\pi^2}{3} \right\} \Omega_{n, \kvec},
+\end{equation}
+where $V$ is the system volume, $g(\varepsilon_{n, \kvec}) = [e^{\varepsilon_{n, \kvec}/k_B T} - 1]^{-1}$ is the Bose-Einstein distribution, and $c_2(x)$ is the Spence function, defined as
+\begin{equation}
+    c_2(x) 
+    = \int_{0}^{x} dt \, \left( \ln \frac{1 + t}{t} \right)^2 
+    = (1 + x) \left( \ln \frac{1 + x}{x} \right)^2 - (\ln x)^2 - 2 \mathrm{Li}_2(-x), 
+    \quad \text{with} \quad 
+    \mathrm{Li}_2(z) = - \int_{0}^{z} \frac{\ln (1 - t)}{t} \, dt.
+\end{equation}
+
+
+
+\newpage
+
+
+\section{Example: Solving spin system with linear spin wave theory}
+
+In this example, we solve a quadratic boson Hamiltonian. Consider the following Hamiltonian in momentum space, rewritten in Nambu form:
+\begin{equation}
+    H = \sum_{\mathbf{k}} A_{\mathbf{k}} a^{\dagger}_{\mathbf{k}} a_{\mathbf{k}} + \frac{1}{2} \Big( B_{\mathbf{k}} a^{\dagger}_{\mathbf{k}} a^{\dagger}_{-\mathbf{k}} + B_{\mathbf{k}}^{*} a_{\mathbf{k}} a_{-\mathbf{k}} \Big) 
+    = \frac{1}{2} \sum_{\mathbf{k}}
+    \begin{pmatrix}
+        a^{\dagger}_{\mathbf{k}} & a_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        A_{\mathbf{k}} & B_{\mathbf{k}} \\
+        B_{\mathbf{k}}^{*} & A_{\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        a_{\mathbf{k}} \\
+        a^{\dagger}_{-\mathbf{k}}
+    \end{pmatrix},
+\end{equation}
+where $ B_{\mathbf{k}} $ is real without loss of generality. This assumption holds because we can redefine the bosonic operator with a phase factor $ a_{\mathbf{k}} \to a_{\mathbf{k}} e^{-i\phi} $, where $ B_{\mathbf{k}} = e^{i\phi} |B_{\mathbf{k}}| $, making $ B_{\mathbf{k}} $ real by choosing an appropriate $ \phi $.
+Note that the condition to be Hamiltonian density positive is 
+\begin{equation*}
+    \lambda(\mathsf{H}_{\kvec}) = A_{\kvec} \pm B_{\kvec} \ge 0, 
+    \qquad \rightarrow \qquad
+    | A_{\kvec} | \ge | B_{\kvec} |.
+\end{equation*}
+This condition corresponds to the positivity of the the magnon energy $\omega_{\kvec} = \sqrt{A_{\kvec}^{2} - B_{\kvec}^{2}}$.
+
+To diagonalize the Hamiltonian, we introduce the Bogoliubov transformation:
+\begin{equation}
+    \begin{pmatrix}
+        a_{\mathbf{k}} \\
+        a^{\dagger}_{-\mathbf{k}}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        \cosh \theta_{\mathbf{k}} & \sinh \theta_{-\mathbf{k}} \\
+        \sinh \theta_{\mathbf{k}} & \cosh \theta_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \alpha_{\mathbf{k}} \\
+        \alpha^{\dagger}_{-\mathbf{k}}
+    \end{pmatrix}
+\end{equation}
+where $ \theta_{\mathbf{k}} $ is real and even under $ \mathbf{k} \to -\mathbf{k} $, so $ \theta_{\mathbf{k}} = \theta_{-\mathbf{k}} $. The bosonic commutation relations $ [a_{\mathbf{k}}, a^{\dagger}_{\mathbf{k}}] = 1 $ and $ [\alpha_{\mathbf{k}}, \alpha^{\dagger}_{\mathbf{k}}] = 1 $ must be preserved. Define the transformation matrix as:
+\begin{equation}
+    \mathsf{T}_{\mathbf{k}} = 
+    \begin{pmatrix}
+        \cosh \theta_{\mathbf{k}} & \sinh \theta_{\mathbf{k}} \\
+        \sinh \theta_{\mathbf{k}} & \cosh \theta_{\mathbf{k}}
+    \end{pmatrix}
+\end{equation}
+Check the commutation relation for the new operators:
+\begin{align}
+    [\alpha_{\mathbf{k}}, \alpha^{\dagger}_{\mathbf{k}}] 
+    &= [\cosh \theta_{\mathbf{k}} a_{\mathbf{k}} + \sinh \theta_{\mathbf{k}} a^{\dagger}_{-\mathbf{k}}, \cosh \theta_{\mathbf{k}} a^{\dagger}_{\mathbf{k}} + \sinh \theta_{\mathbf{k}} a_{-\mathbf{k}}]   \\
+    &= \cosh^2 \theta_{\mathbf{k}} [a_{\mathbf{k}}, a^{\dagger}_{\mathbf{k}}] + \sinh^2 \theta_{\mathbf{k}} [a^{\dagger}_{-\mathbf{k}}, a_{-\mathbf{k}}]   \\
+    &= \cosh^2 \theta_{\mathbf{k}} \cdot 1 + \sinh^2 \theta_{\mathbf{k}} \cdot (-1)   \\
+    &= \cosh^2 \theta_{\mathbf{k}} - \sinh^2 \theta_{\mathbf{k}} = 1
+\end{align}
+This holds due to the hyperbolic identity, confirming that the transformation is canonical.
+
+\subsection*{Diagonalizing the Hamiltonian}
+
+Substitute the transformation into the Hamiltonian. First, the conjugate transformation is:
+\begin{equation}
+    \begin{pmatrix}
+        a^{\dagger}_{\mathbf{k}} & a_{-\mathbf{k}}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        \alpha^{\dagger}_{\mathbf{k}} & \alpha_{-\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \cosh \theta_{\mathbf{k}} & \sinh \theta_{\mathbf{k}} \\
+        \sinh \theta_{\mathbf{k}} & \cosh \theta_{\mathbf{k}}
+    \end{pmatrix}
+\end{equation}
+Thus, the Hamiltonian becomes:
+\begin{equation}
+    H = \frac{1}{2} \sum_{\mathbf{k}}
+    \begin{pmatrix}
+        \alpha^{\dagger}_{\mathbf{k}} & \alpha_{-\mathbf{k}}
+    \end{pmatrix}
+    T_{\mathbf{k}}
+    \begin{pmatrix}
+        A_{\mathbf{k}} & B_{\mathbf{k}} \\
+        B_{\mathbf{k}}^{*} & A_{\mathbf{k}}
+    \end{pmatrix}
+    T_{\mathbf{k}}
+    \begin{pmatrix}
+        \alpha_{\mathbf{k}} \\
+        \alpha^{\dagger}_{-\mathbf{k}}
+    \end{pmatrix}
+\end{equation}
+Define the matrix to be diagonalized as:
+\begin{equation}
+    \mathsf{E}_{\mathbf{k}} = \mathsf{T}_{\mathbf{k}}^{\dagger}
+    \begin{pmatrix}
+        A_{\mathbf{k}} & B_{\mathbf{k}} \\
+        B_{\mathbf{k}}^{*} & A_{\mathbf{k}}
+    \end{pmatrix}
+    \mathsf{T}_{\mathbf{k}}
+    =
+    \begin{pmatrix}
+        \cosh \theta_{\mathbf{k}} & \sinh \theta_{\mathbf{k}} \\
+        \sinh \theta_{\mathbf{k}} & \cosh \theta_{\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        A_{\mathbf{k}} & B_{\mathbf{k}} \\
+        B_{\mathbf{k}}^{*} & A_{\mathbf{k}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \cosh \theta_{\mathbf{k}} & \sinh \theta_{\mathbf{k}} \\
+        \sinh \theta_{\mathbf{k}} & \cosh \theta_{\mathbf{k}}
+    \end{pmatrix}
+\end{equation}
+Since $ B_{\mathbf{k}} $ is real, $ B_{\mathbf{k}}^{*} = B_{\mathbf{k}} $.
+Compute $ M_{\mathbf{k}} $:
+\begin{equation}
+    \mathsf{E}_{\mathbf{k}}
+    = 
+    \begin{pmatrix}
+        A_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} 
+        & A_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}}\\
+        A_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} 
+        & A_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} 
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        \omega_{\kvec}
+        & 0 \\ 0 & 
+        \omega_{\kvec}
+    \end{pmatrix}
+\end{equation}
+Thus, we have the diagonalization condition
+\begin{equation}
+    [\mathsf{E}_{\mathbf{k}}]_{12} = A_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} = 0,
+    \quad \rightarrow \quad
+    \tanh 2\theta_{\mathbf{k}} = -\frac{B_{\mathbf{k}}}{A_{\mathbf{k}}}
+\end{equation}
+The diagonal element $M_{\kvec}^{(11)}$ gives the eigenenergy:
+\begin{equation}
+    \omega_{\mathbf{k}} 
+    = A_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} + B_{\mathbf{k}} \sinh 2\theta_{\mathbf{k}} 
+    = A_{\mathbf{k}} \cdot \frac{A_{\mathbf{k}}}{\sqrt{A_{\mathbf{k}}^2 - B_{\mathbf{k}}^2}} + B_{\mathbf{k}} \cdot \left(-\frac{B_{\mathbf{k}}}{\sqrt{A_{\mathbf{k}}^2 - B_{\mathbf{k}}^2}}\right) 
+    = \sqrt{A_{\mathbf{k}}^2 - B_{\mathbf{k}}^2}.
+\end{equation}
+To express this in terms of $ A_{\mathbf{k}} $ and $ B_{\mathbf{k}} $, use $ \cosh 2\theta_{\mathbf{k}} = \frac{1}{\sqrt{1 - \tanh^2 2\theta_{\mathbf{k}}}} $ and $ \sinh 2\theta_{\mathbf{k}} = \tanh 2\theta_{\mathbf{k}} \cosh 2\theta_{\mathbf{k}} $:
+\begin{equation*}
+    \cosh 2\theta_{\mathbf{k}} = \frac{1}{\sqrt{1 - \left(-B_{\mathbf{k}} / A_{\mathbf{k}} \right)^2}} = \frac{A_{\mathbf{k}}}{\omega_{\kvec}},  
+    \qquad 
+    \sinh 2\theta_{\mathbf{k}} = -\frac{B_{\mathbf{k}}}{A_{\mathbf{k}}} \cdot \frac{A_{\mathbf{k}}}{\sqrt{A_{\mathbf{k}}^2 - B_{\mathbf{k}}^2}} = -\frac{B_{\mathbf{k}}}{\omega_{\kvec}}.
+\end{equation*}
+
+
+\noindent\textbf{Number Expectation in Ground State:}
+\begin{align}
+    \langle n_{\kvec} \rangle 
+    = & \langle a_{\kvec}^{\dagger} a_{\kvec} \rangle 
+    =  \langle 
+    ( \cosh \theta_{\kvec} \alpha_{\kvec}^{\dagger} + \sinh \theta_{\kvec} \alpha_{-\kvec} ) 
+    ( \cosh \theta_{\kvec} \alpha_{\kvec} + \sinh \theta_{\kvec} \alpha_{-\kvec}^{\dagger} ) 
+    \rangle \\
+    = & \cosh^{2} \theta_{\kvec} \langle  \alpha_{\kvec}^{\dagger} \alpha_{\kvec} \rangle 
+    + \sinh^{2} \theta_{\kvec} \langle \alpha_{-\kvec} \alpha_{-\kvec}^{\dagger} \rangle \
+    + \sinh \theta_{\kvec} \cosh \theta_{\kvec} 
+    \big(\langle \alpha_{-\kvec}^{\dagger} \alpha_{\kvec}^{\dagger} \rangle + \langle \alpha_{\kvec} \alpha_{-\kvec} \rangle \big) \\
+    = & \sinh^{2} \theta_{\kvec} 
+    = \frac{\cosh 2 \theta_{\kvec} - 1}{2} 
+    = \frac{A_{\kvec} / \omega_{\kvec} - 1}{2}.
+\end{align}
+
+\begin{itemize}
+    \item If $\omega_{\kvec} = \sqrt{A^{2}_{\kvec} - |B_{\kvec}|^{2}} \rightarrow 0^{+}$, then the number 
+    \begin{equation}
+        \langle a_{k}^{\dagger} a_{k} \rangle = |v_k|^2 = \frac{A_{\kvec}/\omega_{\kvec} - 1}{2} \approx \frac{A_{\kvec}}{\omega_{\kvec}} \rightarrow \infty
+    \end{equation}
+    \item  If $B_{\kvec} = 0$:
+    \begin{equation}
+        \langle n_{\kvec} \rangle = 0
+    \end{equation}
+    \item If $A_{\kvec} \rightarrow A_{\kvec} + \mu$, which corresponds to adding on-site chemical potential amount to $\mu \sum_{\kvec} a_{\kvec}^{\dagger}a_{\kvec} = \frac{\mu}{2} \sum_{\kvec} (a_{\kvec}^{\dagger}a_{\kvec} + a_{-\kvec}a^{\dagger}_{-\kvec} )$ is the quantum correction
+    \begin{align*}
+        E_{\rm qu}^{(\mu)}
+        = & \frac{1}{2} \sum_{\kvec} \Big( \sum_{\mu} E_{\kvec, \mu} - \Tr[\mathsf{A}_{\kvec}]\Big)
+        = \frac{1}{2}\sum_{\kvec}  \Big(  ((A_{\kvec} + \mu)^{2} - B_{\kvec}^{2})^{1/2} - (A_{\kvec} + \mu) \Big) \\
+        = & \frac{1}{2} \sum_{\kvec} \big( (A_{\kvec}^{2} - B_{\kvec})^{1/2} - A_{\kvec} \big) 
+        + \Big( \frac{A_{\kvec}}{\omega_{\kvec}} - 1\Big) \mu 
+        + \frac{B_{\kvec}^{2}}{2\omega^{3}_{\kvec}} \mu^{2} + \cdots  \\
+        = & \sum_{\kvec} \frac{\omega_{\kvec}}{2} + \langle a_{\kvec}^{\dagger} a_{\kvec} \rangle \mu +  \frac{\langle a_{\kvec}^{\dagger} a_{\kvec}^{\dagger} a_{\kvec} a_{\kvec} \rangle}{\omega_{\kvec}} \mu^{2} + \cdots.
+    \end{align*}
+    \begin{align*}
+        \langle n_{\kvec}^{(\mu)} \rangle - \langle n_{\kvec}^{(0)} \rangle 
+        = & \frac{A_{\kvec} + \mu - \sqrt{(A_{\kvec} + \mu)^{2} - B_{\kvec}^{2}}}{2 \sqrt{(A_{\kvec} + \mu)^{2} - B_{\kvec}^{2}} } 
+        - \frac{A_{\kvec} - \sqrt{(A_{\kvec})^{2} - B_{\kvec}^{2}}}{2 \sqrt{(A_{\kvec})^{2} - B_{\kvec}^{2}} } \\
+        = & - \frac{B_{\kvec}^{2}}{2 \omega^{3}_{\kvec}} \mu - \frac{3}{4} \frac{A_{\kvec}B_{\kvec}^{2}}{\omega_{\kvec}^{5}} \mu^{2} + \cdots
+    \end{align*}
+\end{itemize}
+
+
+\bibliography{Setting/citation}
+
+
+\end{document}
+
+
+

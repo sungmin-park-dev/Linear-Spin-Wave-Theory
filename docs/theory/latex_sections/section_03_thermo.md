@@ -1,0 +1,277 @@
+# Thermodynamics in Linear Spin Wave Theory
+
+## Partition function {#subsec: Partition Function}
+
+In this section, we derive the partition function for linear spin wave
+theory. Recall that the Hamiltonian for the spin system with normal
+bosons is written as $$\begin{align}
+    \hat{H} = E_{\rm cl} + \sum_{\kvec, \mu} E_{\kvec, \mu} \Big( \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu} + \frac{1}{2} \Big) - \frac{1}{2} \Tr [\mathsf{H}_{\kvec}] 
+    = E_{0} + \sum_{\kvec \in \mathrm{FBZ}} \sum_{\mu = a, b, \cdots} E_{\kvec, \mu} \hat{n}_{\kvec, \mu},
+\end{align}$$ where
+$E_{0} = E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big)$
+represents the zero-point energy
+\[Eqn. [\[eq: def. of zero point energy\]](#eq: def. of zero point energy){reference-type="eqref"
+reference="eq: def. of zero point energy"}\] and
+$\hat{n}_{\mu}(\kvec) = \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu}$
+is the magnon number operator. Here, $E_{\kvec, \mu}$ are the magnon
+energy eigenvalues with band index $\mu$.
+
+The partition function is given by $$\begin{equation}
+    Z_{\beta} \equiv \Tr \big( e^{- \beta \hat{H}} \big) 
+    = e^{- \beta E_{0}}  \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \beta^{\dagger}_{\kvec, \mu} \beta_{\kvec, \mu}} \big) 
+    = e^{- \beta E_{0}} \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \big),
+\end{equation}$$ Here, the constant term $E_0$ contributes to the
+internal energy but is not important for thermodynamic quantities that
+involve derivatives of $\ln \tilde{Z}_{\beta}$, where
+$\tilde{Z}_{\beta}$ represents the partition function without the
+zero-point energy contribution.
+
+The partition function $Z_{\beta}$ can be evaluated as
+$$\label{eq: explicit expressions for Z and log-Z}
+    \begin{align}
+        \Tr \big( e^{- \beta \sum_{\kvec, \mu} E_{\kvec, \mu} \hat{n}_{\mu}(\kvec)} \big) 
+        = & \Tr \Big[ \prod_{\kvec, \mu} e^{- \beta E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \Big]
+        = \prod_{\kvec, \mu} \Tr \Big[ e^{- \beta E_{\kvec, \mu} \hat{n}_{\kvec, \mu}} \Big] 
+        =  \prod_{\kvec, \mu}  \frac{1}{1 - e^{- \beta E_{\kvec, \mu}}} \\
+        - \ln Z_{\beta} &= \beta E_{0} + \sum_{\kvec, \mu} \ln \big( 1 - e^{- \beta E_{\kvec, \mu}} \big).
+    \end{align}$$ The final expression for $-\ln Z_{\beta}$ is
+particularly useful for calculating thermodynamic quantities such as
+free energy, internal energy, specific heat, and entropy in the linear
+spin-wave approximation.
+
+## Internal Energy {#subsec: Internal Energy}
+
+The internal energy $U$ is the expectation value of the Hamiltonian
+$\hat{H}$, computed as: $$\begin{equation}
+    U \equiv \langle \hat{H} \rangle  = -\frac{\partial \ln Z_{\beta}}{\partial \beta},
+\end{equation}$$ where
+$Z_{\beta} = e^{- \beta E_{0}} \tilde{Z}_{\beta}$, with $E_0$ being the
+zero-point energy and $\tilde{Z}_{\beta}$ the partition function
+excluding the zero-point energy contribution.
+
+Computing the derivative, we get: $$\begin{equation}
+     - \frac{\partial \ln Z_{\beta}}{\partial \beta} 
+    = E_{0} + \frac{\partial}{\partial \beta} \Big[  \sum_{\kvec, \mu} \ln \big( 1 - e^{- \beta E_{\kvec, \mu}} \big) \Big]
+    = E_{0} + \sum_{\kvec, \mu} \frac{E_{\kvec, \mu} e^{-\beta E_{\kvec, \mu}}}{1 - e^{-\beta E_{\kvec, \mu}}}  
+    = E_{0} + \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{1}{e^{\beta E_{\kvec, \mu}} - 1},
+\end{equation}$$ where we identify the Bose-Einstein distribution
+function: $$\begin{equation}
+    n_{\mu} (\kvec) = \frac{1}{e^{\beta E_{\kvec, \mu}} - 1},
+\end{equation}$$ which represents the thermal expectation value of the
+magnon number operator
+$\langle\hat{n}_{\kvec, \mu}\rangle = \langle \hat{\beta}^{\dagger}_{\kvec, \mu} \hat{\beta}_{\kvec,\mu} \rangle$.
+Therefore, the internal energy can be expressed as: $$\begin{align}
+    U &= E_0 + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu} (\kvec) \nonumber \\
+    &= E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big) + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec)
+\end{align}$$ This result expresses the internal energy as the sum of
+the classical ground state energy, the zero-point quantum fluctuations,
+and the thermal contribution from magnon excitations.
+
+## Free Energy {#subsec: Free Energy}
+
+The Helmholtz free energy ($F$) is defined as $$\begin{equation}
+\label{eq: def. of Helmholtz free energy}
+    Z_{\beta} \equiv e^{-\beta F}
+\end{equation}$$ where $Z_{\beta} = e^{- \beta E_0} \tilde{Z}_{\beta}$
+is the partition function, with $\tilde{Z}_{\beta}$ being the partition
+function excluding the zero-point energy contribution. From
+[\[eq: explicit expressions for Z and log-Z\]](#eq: explicit expressions for Z and log-Z){reference-type="eqref"
+reference="eq: explicit expressions for Z and log-Z"} and
+Eq. [\[eq: def. of Helmholtz free energy\]](#eq: def. of Helmholtz free energy){reference-type="eqref"
+reference="eq: def. of Helmholtz free energy"}, we get: $$\begin{align}
+    F &= -\frac{1}{\beta} \ln(e^{- \beta E_0} \tilde{Z}_{\beta}) \nonumber \\
+    &= E_0 - \frac{1}{\beta} \ln \tilde{Z}_{\beta} \nonumber \\
+    &= E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big) + \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right),
+\end{align}$$ where we use
+$-\ln \tilde{Z}_{\beta} = \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right)$
+from the partition function section, and
+$E_0 = E_{\rm cl} + \frac{1}{2} \sum_{\kvec} \big( \sum_{\mu} E_{\kvec, \mu} - \Tr [\mathsf{A}_{\kvec}] \big)$
+is the zero-point energy.
+
+## Entropy Expression {#subsec: Entropy}
+
+In this section, we derive the expression for the thermal entropy in
+LSWT. The entropy is defined as $$\begin{equation}
+    S \equiv -k_{\rm B}\Tr \big( \rho \ln \rho \big),
+\end{equation}$$ where $\rho$ is the density operator, which is Gibbs
+states ($\rho = e^{-\beta \hat{H}}/Z_{\beta}$) especially in thermal
+equilibrium. This definition coincides with the conventional definition
+of entropy in thermal physics: $$\begin{align}
+    - \frac{\partial F}{\partial T}
+    = \frac{1}{T} \Big(-\frac{\partial}{\partial \beta} \ln Z_{\beta} \Big) - \big(-k_{\rm B} \ln Z_{\beta} \big)
+    = \frac{U - F}{T}.
+\end{align}$$ We can derive the same expression using Gibbs states:
+$$\begin{align}
+    S = & -k_{\rm B}\Tr \big( \rho \ln \rho \big)
+    = -k_{\rm B}\Tr \big( \rho (-\beta \hat{H} - \ln Z_{\beta}) \big) \nonumber \\
+    = &  \frac{ \Tr (\rho \hat{H}) - (-k_{\rm B}T\ln Z_{\beta})}{T} 
+    = \frac{U - F}{T}.
+\end{align}$$ Using our previous expressions for $U$ and $F$, we have:
+$$\begin{align}
+    U - F &= E_0 + \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec) - \left( E_0 + \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right) \right) \nonumber \\ 
+    &= \sum_{\kvec, \mu} E_{\kvec, \mu} n_{\mu}(\kvec) - \frac{1}{\beta} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right).
+\end{align}$$
+
+Since $S = k_{\rm B} \beta (U - F)$ (noting $\beta = \frac{1}{k_B T}$
+and adjusting units appropriately): $$\begin{equation}
+    S = k_{\rm B} \sum_{\kvec, \mu} \beta E_{\kvec, \mu} n_{\mu} (\kvec) - k_{\rm B} \sum_{\kvec, \mu} \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right).
+\end{equation}$$
+
+Now, we can rewrite this expression using the properties of the
+Bose-Einstein distribution function $n_{\kvec, \mu}$. From the
+definition $n_{\kvec, \mu} = \frac{1}{e^{\beta E_{\kvec, \mu}} - 1}$, we
+can derive: $$\begin{equation}
+    \beta E_{\kvec, \mu} = \ln \Big( \frac{1 + n_{\mu}(\kvec)}{n_{\mu}(\kvec)} \Big), 
+    \quad \text{and} \quad
+    \ln \left( 1 - e^{-\beta E_{\kvec, \mu}} \right) 
+    = -\ln \big( 1 + n_{\mu} (\kvec) \big), 
+\end{equation}$$ Substituting these relations into our entropy
+expression, we obtain: $$\begin{equation}
+    S = k_{\rm B} \sum_{\kvec, \mu} \big[ (1 + n_{\mu}(\kvec)) \ln (1 + n_{\mu}(\kvec)) - n_{\mu}(\kvec) \ln n_{\mu} (\kvec) \big]
+\end{equation}$$ This is the standard entropy formula for a system of
+non-interacting bosons, which emerges naturally from our linear spin
+wave theory.
+
+## Specific Heat {#subsec: Specific Heat}
+
+The specific heat $C$ is defined as the temperature derivative of the
+internal energy: $$\begin{equation}
+    C = \frac{\partial U}{\partial T} = \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{\partial n_{\mu}(\kvec)}{\partial T},
+\end{equation}$$ where $n_{\mu}(\kvec)$ is the Bose-Einstein
+distribution for magnons $\mu$. The derivative of the distribution with
+respect to temperature is $$\begin{equation}
+    \frac{\partial n_{\mu}(\kvec)}{\partial T} 
+    =  \frac{\partial n_{\mu}(\kvec)}{\partial \beta} \frac{\partial \beta}{\partial T} \\
+    =  \Big( - \frac{E_{\kvec, \mu} e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2} \Big) \Big( - \frac{\beta}{T}\Big) 
+    =  \frac{\beta}{T} \frac{E_{\kvec, \mu} e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}.
+\end{equation}$$ Therefore, the specific heat is given by:
+$$\begin{equation}
+    \begin{split}
+        C = & \sum_{\kvec, \mu} E_{\kvec, \mu} \frac{\partial n_{\mu}(\kvec)}{\partial T} 
+        = \frac{\beta}{T} \sum_{\kvec, \mu} \frac{E_{\kvec, \mu}^2 e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}
+        = k_{\rm B} \sum_{\kvec, \mu} \frac{(\beta E_{\kvec, \mu})^2 e^{\beta E_{\kvec, \mu}}}{\left( e^{\beta E_{\kvec, \mu}} - 1 \right)^2}
+        =  k_{\rm B} \sum_{\kvec, \mu} \frac{ (\beta E_{\kvec, \mu})^2 }{\left( e^{\beta E_{\kvec, \mu}/2} - e^{-\beta E_{\kvec, \mu}/2} \right)^2} \\
+        = &  k_{\rm B} \sum_{\kvec, \mu} \frac{ (\beta E_{\kvec, \mu})^2 }{4 \sinh^{2} (\beta E_{\kvec, \mu}/2 )}
+    \end{split}
+\end{equation}$$ This expression represents the specific heat
+contribution from magnon excitations in the system, which dominates the
+low-temperature thermal properties of magnetic insulators.
+
+## Number and Spin moment from Correlation Matrix {#subsec: Number expectation value/Spin moment}
+
+Finally, we discuss the number expectation and spin moment. Linear
+spin-wave theory gives the leading correction of the sublattice
+magnetization. The spin moments are $$\begin{equation}
+    \langle \hat{\bf S}_{\mu} \rangle 
+    \equiv \frac{1}{L} \sum_{i} \langle \hat{\bf S}_{i, \mu} \rangle
+\end{equation}$$ where the spin moment at site $i=(i,\mu)$ can be
+obtained from
+$\langle \hat{\bf S}_{i, \mu} \rangle = \mathbf{R}_{i,\mu} \langle \widetilde{\bf S}_{i,\mu} \rangle$
+and $\widetilde{\bf S}_{i,\mu} = (0, 0, \widetilde{S}^{0}_{i,\mu})$.
+This is the spin moment in the reference frame. The average sublattice
+magnetization along the magnetization axis $\widetilde{S}^{0}_{i,\mu}$
+is given $$\begin{align*}
+    \frac{1}{L} \sum_{i} \langle \widetilde{S}^{0}_{i, \mu} \rangle 
+    = & \frac{1}{L} \sum_{i} \langle S_{\mu} -  \hat{n}_{i, \mu} \rangle 
+    = S_{\mu} - \frac{1}{L} \sum_{\kvec \in \mathrm{FBZ}}  \langle \hat{n}_{\kvec, \mu}  \rangle
+    = S_{\mu} - n_{\mu},
+\end{align*}$$ where $i$ runs over the lattice, $\mu$ denotes the
+sublattice index, and $S_{\mu}$ is the spin moment of the spin. For
+example, for the spin 1/2 system, $S_\mu = 1/2$. $$\begin{align}
+    n_{\mu} \equiv & \frac{1}{L} \sum_{\kvec}  \langle \hat{n}_{\kvec, \mu} \rangle 
+    = \frac{1}{L} \sum_{\kvec \in \mathrm{FBZ}} 
+    = \langle b^{\dagger}_{\kvec, \mu} b_{\kvec, \mu}^{\phantom \dagger} \rangle  
+\end{align}$$
+
+To proceed, it is useful to introduce the correlation matrix. The
+correlation matrix is defined as the expectation of outer product of the
+BdG vector $\Psi_{\kvec}$. $$\begin{equation}
+    \langle b^{\dagger}_{\kvec, \mu} b_{\kvec, \mu}^{\phantom \dagger} \rangle  
+    = \Big[ \big\langle \Psi_{\kvec}^{\phantom \dagger} \Psi_{\kvec}^{\dagger} \big\rangle \Big]_{m_{s} + \mu, m_{s} + \mu} 
+    = \left[
+        \left\langle 
+        \begin{pmatrix}
+            {\bm b}_{\kvec} \\ {\bm b}^{\dagger}_{- \kvec}
+        \end{pmatrix}
+        \begin{pmatrix}
+            {\bm b}_{\kvec}^{\dagger} & {\bm b}_{- \kvec}
+        \end{pmatrix}
+        \right\rangle
+    \right]_{m_{s} + \mu, m_{s} + \mu} 
+    = \left[
+        \begin{pmatrix}
+            \langle  {\bm b}_{\kvec}^{\phantom \dagger} {\bm b}_{\kvec}^{\dagger}  \rangle
+            & \langle  {\bm b}_{\kvec}^{\phantom \dagger} {\bm b}_{- \kvec}^{\phantom \dagger}  \rangle
+            \\ 
+            \langle  {\bm b}^{\dagger}_{- \kvec} {\bm b}_{\kvec}^{\dagger}  \rangle
+            & \langle  {\bm b}^{\dagger}_{- \kvec} {\bm b}_{- \kvec}^{\phantom \dagger}  \rangle
+        \end{pmatrix}
+    \right]_{m_{s} + \mu, m_{s} + \mu}
+\end{equation}$$ where
+$\langle \hat{\bm b}_{\pm \kvec}^{(\dagger)} \hat{\bm b}_{\pm \kvec}^{(\dagger)} \rangle$
+denotes the block matrix whose elements is the expectation for two
+bosonic operator
+($\hat{\bm b}_{\pm \kvec}^{(\dagger)} \hat{\bm b}_{\pm \kvec}^{(\dagger)}$).
+The expectation value is calculated for the state of the interest and
+our main interests are the ground states and the Gibbs states.
+
+The bosonic operator
+$(\hat{b}_{\kvec\sigma}^{\phantom \dagger}, \hat{b}_{\kvec\sigma}^{\dagger} )$
+at $\kvec$ are related to the eigenmodes
+$(\hat{\beta}_{\kvec\sigma}^{\phantom \dagger}, \hat{\beta}_{\kvec\sigma}^{\dagger} )$
+at momentum $\kvec$ through the para-unitary $\mathsf{T}_{\kvec}$.
+$$\begin{equation}
+    \Psi_{\kvec} = \mathsf{T}_{\kvec} \widetilde{\Psi}_{\kvec}: \qquad
+    \begin{pmatrix}
+        \hat{\bm b}_{\kvec} \\ 
+        \hat{\bm b}^{\dagger}_{-\kvec}
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        \mathsf{P}_{\kvec}           & \mathsf{Q}_{-\kvec}        \\
+        \mathsf{Q}_{\kvec}^{*}       & \mathsf{P}_{-\kvec}^{*}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \hat{\bm\beta}_{\kvec} \\
+        \hat{\bm\beta}_{-\kvec}^{\dagger}
+    \end{pmatrix},
+\end{equation}$$ where
+$\hat{\bm\beta}_{\kvec}^{T} = (\hat{\beta}_{\kvec,a}, \hat{\beta}_{\kvec,b}, \cdots)$.
+Then, the correlation matrix can be obtained using unitary
+transformation. $$\begin{equation}
+    \big 
+    \langle \Psi_{\kvec}^{\phantom \dagger} \Psi_{\kvec}^{\dagger} 
+    \big \rangle 
+    = 
+    \big\langle 
+    \mathsf{T}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\dagger} \mathsf{T}_{\kvec}^{\dagger} 
+    \big\rangle
+    = 
+    \mathsf{T}_{\kvec} \big\langle \widetilde{\Psi}_{\kvec}^{\phantom\dagger} \widetilde{\Psi}_{\kvec}^{\dagger}  \big \rangle \mathsf{T}_{\kvec}^{\dagger}
+    = 
+    \mathsf{T}_{\kvec} 
+    \begin{pmatrix}
+            \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{ \kvec}^{\dagger}          \rangle            
+        &   \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{-\kvec}^{\phantom \dagger} \rangle\\
+            \langle \hat{\bm \beta}_{ \kvec}^{\dagger}          \hat{\bm \beta}_{-\kvec}^{\dagger}          \rangle  
+        &   \langle \hat{\bm \beta}_{-\kvec}^{\dagger}          \hat{\bm \beta}_{-\kvec}^{\phantom \dagger} \rangle
+    \end{pmatrix}
+    \mathsf{T}_{\kvec}^{\dagger}
+    =\mathsf{T}_{\kvec}^{\phantom \dagger} \mathsf{N}_{\kvec}^{\phantom \dagger} \mathsf{T}_{\kvec}^{\dagger},
+\end{equation}$$ where $\mathsf{N}_{\kvec}$ is the
+$2m_{s} \times 2m_{s}$ Block matrix, For the Gibbs states, all elements
+for the correlation matrices can be obtained from the partition
+function. $$\begin{equation}
+    \begin{array}{rlrl}
+        \big[ \langle \hat{\bm \beta}_{ \kvec}^{\phantom \dagger} \hat{\bm \beta}_{ \kvec}^{\dagger} \rangle \big]_{\mu\nu} 
+        & = \delta_{\mu\nu} \big( 1 + n_{\mu}(\kvec) \big) , 
+        \qquad & \qquad 
+        \big[ \langle \hat{\bm\beta}_{-\kvec}^{\dagger} \hat{\bm\beta}_{\kvec}^{\dagger} \rangle \big]_{\mu\nu} & = 0  ,
+        \\[0.5em]
+        \big[ \langle \hat{\bm\beta}_{-\kvec}^{\dagger} \hat{\bm\beta}_{- \kvec}^{\phantom \dagger} \rangle \big]_{\mu\nu}
+        & = \delta_{\mu\nu} n_{\mu}(-\kvec) ,
+        \qquad & \qquad 
+        \big[ \langle \hat{\bm\beta}_{\kvec} \hat{\bm\beta}_{-\kvec} \rangle \big]_{\mu\nu} & = 0.
+    \end{array}
+\end{equation}$$ where $n_{\mu}(\kvec) = 1/(e^{\beta E_{\kvec}} - 1)$ is
+the Bose-Einstein distribution at energy $E_{\kvec}$.

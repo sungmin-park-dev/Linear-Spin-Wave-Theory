@@ -1,0 +1,99 @@
+\section{Physical Quantities in Linear Spin Wave Theory}
+
+In this Section, I summarize the methods for obtaining important physical quantities in the frame of linear spin wave theory.
+The physical quantities computable in LSWT are the following:
+
+
+\begin{table*}[!h]
+    \centering
+    \begin{tabular}{c|c|c|c}
+    \hline\hline
+    \textbf{Quantity} & \textbf{Definition} & \textbf{Calculation in LSWT} & \textbf{Sect.} \\
+    \hline
+    \multicolumn{3}{c|}{\bf Thermodynamics} & \textbf{III} \\[0.5ex]
+    \hline
+    $Z_{\beta}$ % partition function
+    & 
+    $\text{Tr} [e^{-\beta \hat{H}}]$ 
+    & $e^{-\beta E_{0}} \prod_{\mathbf{k}, \mu} \frac{1}{1 - e^{-\beta E_{\mathbf{k}, \mu}}}$ 
+    & \ref{subsec: Partition Function}
+    \\[1ex]
+    $U$ 
+    & $\langle \hat{H} \rangle$ & $\sum_{\mathbf{k}, \mu} E_{\mathbf{k}, \mu} n_{\mathbf{k}, \mu}$
+    & \ref{subsec: Internal Energy}
+    \\[1ex]
+    $F$ 
+    & $- k_B T \ln Z_{\beta}$ 
+    & $  k_B T \sum_{\mathbf{k}, \mu} \ln \left( 1 - e^{-\beta E_{\mathbf{k}, \mu}} \right) + E_{0} $ 
+    & \ref{subsec: Free Energy}
+    \\[1ex]
+    $S$ 
+    & $-k_{\rm B}\Tr \big( \rho \ln \rho \big)$
+    & $k_B \sum_{\mathbf{k}, \mu} \left[ (1 + n_{\mathbf{k}, \mu}) \ln (1 + n_{\mathbf{k}, \mu}) - n_{\mathbf{k}, \mu} \ln n_{\mathbf{k}, \mu} \right]$ 
+    & \ref{subsec: Entropy}
+    \\[1ex]
+    $C$ 
+    & $\frac{\partial U}{\partial T}$ 
+    & $\sum_{\mathbf{k}, \mu} \frac{\partial n_{\mathbf{k}, \mu}}{\partial T} E_{\mathbf{k}, \mu}$ 
+    & \ref{subsec: Specific Heat} 
+    \\[1ex]
+    $\langle \hat{n}_\mu \rangle$ 
+    & $\sum_{\mathbf{k}} \langle a^{\dagger}_{\mathbf{k}, \mu} a_{\mathbf{k}, \mu} \rangle$  
+    & $\sum_{\mathbf{k}} [\langle \Psi_{\mathbf{k}}^{\phantom\dagger} \Psi_{\mathbf{k}}^{\dagger} \rangle]_{m_{s} + \mu, m_{s} + \mu}$ 
+    & \ref{subsec: Number expectation value/Spin moment} \\
+    [1ex]
+    $\langle \widetilde{S}_\mu \rangle$ 
+    & $S_{\mu} - \langle \hat{n}_\mu \rangle$  
+    & $S_{\mu} - \frac{1}{L} \sum_{\mathbf{k}} \langle \hat{n}_{\mathbf{k}, \mu} \rangle$ & \ref{subsec: Number expectation value/Spin moment} \\
+    [1ex]
+    \hline
+    \multicolumn{3}{c|}{\bf Correlations} & \textbf{IV} \\[0.5ex]
+    \hline
+    $\mathcal{C}^{\alpha \beta}_{\mu\nu}(\mathbf{k}, t)$ 
+    & 
+    $\langle S_{\mathbf{k},\mu}^\alpha(t) S_{-\mathbf{k},\nu}^\beta(0) \rangle$ 
+    & $\sum_{(m, n)_{\mu\nu}}
+    [\mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathsf{N}_{\mathbf{k}}(t) \mathsf{T}_{\mathbf{k}}^\dagger \bar{\mathsf{S}}_{\mathbf{k}} \bar{\mathsf{U}}^{\beta}]_{m n}$ 
+    & \ref{subsec: Real-Time (Dynamical) Spin-Spin Correlation Function} \\[1ex]
+    $\mathcal{S}^{\alpha \beta}(\mathbf{k},\omega)$ 
+    & $\frac{1}{2 \pi} \int dt \, e^{i \omega t} \mathcal{C}^{\alpha \beta}(\mathbf{k}, t)$ 
+    & $\sum_{(m, n)_{\mu\nu}} [ \mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathcal{F}[\mathsf{N}_{\mathbf{k}}](\omega; \eta) \mathsf{T}_{\mathbf{k}}^\dagger \bar{\mathsf{S}}_{\mathbf{k}} \bar{\mathsf{U}}^{\beta}]_{m, n}$ 
+    & \ref{subsec: Structure Factor} \\[1ex]
+    $\mathcal{A}^{\alpha \beta}(\mathbf{k}, \omega)$ 
+    & $-\frac{1}{\pi} \operatorname{Im} [G_{\mathsf{R}}^{\alpha \beta}(\mathbf{k}, \omega)]$ & $-\frac{2}{\pi} \operatorname{Im} \sum_{m, n} [\mathsf{U}^\alpha \mathsf{S}_{\mathbf{k}} \mathsf{T}_{\mathbf{k}} \mathcal{G}[\mathsf{N}_{\mathbf{k}}] (\omega; \eta)
+    \mathsf{T}_{\mathbf{k}}^\dagger \mathsf{S}_{\mathbf{k}} \mathsf{U}^\beta]_{m, n}$ & \ref{subsec: Spectral Function} \\
+    \hline
+    \multicolumn{3}{c|}{\bf Topology} & \textbf{V} \\[0.5ex]
+    \hline
+    $Q_{\rm skyr}$ 
+    & $\frac{1}{4\pi} \sum_{\triangle} \chi_{\triangle}$ 
+    & $\chi_{\triangle} = 2 \arctan \left( \frac{|\mathbf{m}_i \cdot (\mathbf{m}_j \times \mathbf{m}_k)|}{1 + \mathbf{m}_i \cdot \mathbf{m}_j + \mathbf{m}_j \cdot \mathbf{m}_k + \mathbf{m}_k \cdot \mathbf{m}_i} \right)$
+    & \ref{subsec: Skyrmion number}
+    \\
+    $C_n$ & $\frac{1}{2 \pi} \int_{\mathrm{FBZ}} \Omega_{n, \mathbf{k}} \, d^2 \mathbf{k}$ 
+    & $\Omega_{n, \mathbf{k}} = -2 \operatorname{Im} \sum_{m \neq n} \frac{[\mathsf{J} \mathsf{T}_{\mathbf{k}}^\dagger (\partial_x \mathsf{H}_{\mathbf{k}}) \mathsf{T}_{\mathbf{k}}]_{nm} [\mathsf{J} \mathsf{T}_{\mathbf{k}}^\dagger (\partial_y \mathsf{H}_{\mathbf{k}}) \mathsf{T}_{\mathbf{k}}]_{mn}}{(E_{\mathbf{k}, nn} - E_{\mathbf{k}, mm})^2}$ 
+    & \ref{subsec: Chern number} \\[1ex]
+    $\kappa_{xy}$ 
+    & $\text{Thermal Hall conductivity}$
+    & $ - \frac{k_{B}^2 T}{V} \sum_{n} \int_{\mathbf{k}} d^{2} \mathbf{k} \left( c_2(n_{\mathbf{k}, n}) - \frac{\pi^2}{3} \right) \Omega_{n, \mathbf{k}}$ 
+    &  \ref{subsec: Thermal Hall Conductance} \\
+    \hline\hline
+    \end{tabular}
+    \caption{Physical Quantities in Linear Spin Wave Theory (LSWT). 
+    Here, $\beta = 1/k_{B}T$,
+    $n_{\mathbf{k}, \mu} = \frac{1}{e^{\beta E_{\mathbf{k}, \mu}} - 1}$ is the Bose-Einstein distribution function,
+    $\Omega_{n, \mathbf{k}}$ is the Berry curvature, and 
+    $c_2(x)$ is the Spence function.
+    }
+    \label{tab:lswt_quantities}
+\end{table*}
+
+
+
+
+
+
+
+
+
+\newpage

@@ -1,77 +1,54 @@
 """
-LSWT: Linear Spin Wave Theory Package
+LSWT: Linear Spin Wave Theory for 2D Quantum Magnets
 
-A Python package for calculating spin wave excitations, thermodynamic properties,
-and topological characteristics of magnetic systems using linear spin wave theory.
+A Python library for computing magnon spectra, topological properties,
+and thermodynamics of arbitrary 2D spin models using linear spin wave theory.
 
 Main Components
 ---------------
-core : Core domain models (Lattice, MagneticStructure, SpinSystem)
-solvers : LSWT solver, optimization, diagonalization
-physics : Thermodynamics, topology, correlations, observables
-analysis : Phase finding, phase diagrams, quantum corrections
-visualization : Plotting and visualization tools
-io : Configuration loading, validation, export
-utils : Constants, mathematical utilities, logging
+core : SpinSystem, exchange matrices, Brillouin zone, Colpa diagonalization
+solvers : LSWT solver, spin optimizer, energy functions
+observables : Thermodynamics, topology (Berry/Chern), correlations
+visualization : Band structure, Berry curvature, spin configuration plots
 
 Quick Start
 -----------
->>> from lswt.core import TriangularLattice, CommensurateStructure, SpinSystem
 >>> import numpy as np
+>>> from lswt import SpinSystem, LSWTSolver
+>>> from lswt.core import exchange
 >>>
->>> # Create triangular lattice
->>> lattice = TriangularLattice(lattice_constant=1.0)
->>>
->>> # Define 120° magnetic structure
->>> angles = np.array([[np.pi/2, 0], [np.pi/2, 2*np.pi/3], [np.pi/2, 4*np.pi/3]])
->>> mag_struct = CommensurateStructure(
-...     num_basis_sites=1,
-...     magnetic_supercell=(1, 1),
-...     angles=angles
-... )
->>>
->>> # Define interactions
->>> interactions = {
-...     'nearest_neighbor': {'Jxy': 1.0, 'Jz': 1.0}
-... }
->>>
->>> # Create spin system
->>> system = SpinSystem(lattice, mag_struct, interactions)
->>> print(system)
-
-Current Version: 0.1.0-dev (Phase 1A)
+>>> # Define sites, couplings, and lattice
+>>> sites = [SpinSystem.Site("A", [0, 0], spin=0.5,
+...          angles=[np.pi/2, 0], magnetic_field=[0, 0, 0])]
+>>> J = exchange.heisenberg(1.0)
+>>> couplings = [SpinSystem.Coupling(0, 0, J, [1.0, 0.0])]
+>>> system = SpinSystem(sites, couplings, lattice_vectors=[[1, 0], [0.5, 0.866]])
 """
 
-__version__ = "0.1.0-dev"
+__version__ = "0.2.0-dev"
 __author__ = "Sung-Min Park"
 __email__ = "sungmin.park.0226@gmail.com"
 
-# High-level API exports
-from .core import (
-    # Lattice
-    AbstractLattice,
-    TriangularLattice,
-    create_lattice,
+# Core
+from lswt.core.spin_system import SpinSystem
+# Backward-compatible aliases (to be removed in future versions)
+from lswt.core.spin_system import SpinSite, Coupling
+from lswt.core.exchange import heisenberg, xxz, xxz_with_soc, dzyaloshinskii_moriya, kitaev
+from lswt.core.brillouin_zone import BrillouinZone
 
-    # Magnetic Structure
-    AbstractMagneticStructure,
-    CommensurateStructure,
-
-    # Spin System
-    SpinSystem,
-)
+# Solvers
+from lswt.solvers.base import AbstractSolver, SolverResult
+from lswt.solvers.solver import LSWTSolver
+from lswt.solvers.optimizer import SpinOptimizer
+from lswt.solvers.energy import EnergyFunction
 
 __all__ = [
-    # Version info
-    '__version__',
-    '__author__',
-    '__email__',
-
-    # Core abstractions
-    'AbstractLattice',
-    'TriangularLattice',
-    'create_lattice',
-    'AbstractMagneticStructure',
-    'CommensurateStructure',
-    'SpinSystem',
+    '__version__', '__author__', '__email__',
+    # Core
+    'SpinSystem', 'SpinSite', 'Coupling',
+    'heisenberg', 'xxz', 'xxz_with_soc', 'dzyaloshinskii_moriya', 'kitaev',
+    'BrillouinZone',
+    # Solvers
+    'AbstractSolver', 'SolverResult',
+    'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',
 ]
