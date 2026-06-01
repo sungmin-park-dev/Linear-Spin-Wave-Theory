@@ -1,0 +1,370 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+
+\newcommand{\hop}{\mathsf{hop\_t}}
+\newcommand{\Ns}{N_s}
+\newcommand{\dg}{^\dagger}
+\newcommand{\cc}{\text{c.c.}}
+
+\title{LSWT Hamiltonian: Code Convention Derivation}
+\author{For internal verification}
+\date{}
+
+\begin{document}
+\maketitle
+
+%=====================================================================
+\section{Basis transformation}
+%=====================================================================
+
+The code defines
+\begin{equation}\label{eq:Cmat}
+  \mathbf{C}
+  = \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+      1  &  1  & 0 \\
+      i  & -i  & 0 \\
+      0  &  0  & \sqrt{2}
+    \end{pmatrix},
+  \qquad
+  \mathbf{C}\dg\mathbf{C} = \mathbf{I},
+  \qquad
+  \mathbf{C}^T\mathbf{C}
+  = \mathbf{S}
+  \equiv \begin{pmatrix} 0&1&0\\1&0&0\\0&0&1 \end{pmatrix}.
+\end{equation}
+An important identity is
+\begin{equation}\label{eq:Cstar}
+  \mathbf{C}^* = \mathbf{C}\mathbf{S},
+  \qquad
+  \mathbf{C}^T = \mathbf{S}\,\mathbf{C}\dg.
+\end{equation}
+
+The rotated exchange matrix in the lab frame is
+\begin{equation}
+  \mathsf{RJ}_{\sigma\rho}
+  = \mathbf{R}_\sigma^T \,\mathbf{J}_{\sigma\rho}\, \mathbf{R}_\rho,
+\end{equation}
+where $\mathbf{R}_\sigma$ is the rotation from the lab frame to the local
+spin frame at sublattice $\sigma$.  The code computes
+\begin{equation}\label{eq:hopt}
+  \boxed{\hop = \mathbf{C}\dg\, \mathsf{RJ}\, \mathbf{C}.}
+\end{equation}
+
+
+%=====================================================================
+\section{Explicit elements of $\hop$}
+%=====================================================================
+
+Direct calculation of $\hop = \mathbf{C}\dg\,\mathsf{RJ}\,\mathbf{C}$ gives:
+\begin{align}
+  \hop_{00} &= \tfrac{1}{2}\bigl(
+    \mathsf{RJ}^{xx} + \mathsf{RJ}^{yy}
+    - i(\mathsf{RJ}^{xy} - \mathsf{RJ}^{yx})\bigr),
+  \label{eq:hopt00}\\
+  \hop_{01} &= \tfrac{1}{2}\bigl(
+    \mathsf{RJ}^{xx} - \mathsf{RJ}^{yy}
+    - i(\mathsf{RJ}^{xy} + \mathsf{RJ}^{yx})\bigr),
+  \label{eq:hopt01}\\
+  \hop_{10} &= \tfrac{1}{2}\bigl(
+    \mathsf{RJ}^{xx} - \mathsf{RJ}^{yy}
+    + i(\mathsf{RJ}^{xy} + \mathsf{RJ}^{yx})\bigr),
+  \label{eq:hopt10}\\
+  \hop_{11} &= \tfrac{1}{2}\bigl(
+    \mathsf{RJ}^{xx} + \mathsf{RJ}^{yy}
+    + i(\mathsf{RJ}^{xy} - \mathsf{RJ}^{yx})\bigr),
+  \label{eq:hopt11}\\[4pt]
+  \hop_{02} &= \tfrac{1}{\sqrt{2}}\bigl(
+    \mathsf{RJ}^{xz} - i\,\mathsf{RJ}^{yz}\bigr),
+  \qquad
+  \hop_{12} = \tfrac{1}{\sqrt{2}}\bigl(
+    \mathsf{RJ}^{xz} + i\,\mathsf{RJ}^{yz}\bigr),
+  \label{eq:hopt_col2}\\
+  \hop_{20} &= \tfrac{1}{\sqrt{2}}\bigl(
+    \mathsf{RJ}^{zx} + i\,\mathsf{RJ}^{zy}\bigr),
+  \qquad
+  \hop_{21} = \tfrac{1}{\sqrt{2}}\bigl(
+    \mathsf{RJ}^{zx} - i\,\mathsf{RJ}^{zy}\bigr),
+  \label{eq:hopt_row2}\\
+  \hop_{22} &= \mathsf{RJ}^{zz}.
+\end{align}
+
+\paragraph{Hermiticity.}
+When $\mathsf{RJ}$ is a real matrix, $\hop$ is Hermitian:
+$\hop_{01} = \hop_{10}^*$, $\hop_{02} = \hop_{20}^*$, etc.
+
+
+%=====================================================================
+\section{The code basis: $q = \mathbf{C}\dg \bar{S}$}
+%=====================================================================
+
+The spin operator in the local frame is $\bar{S} = (\bar{S}^x, \bar{S}^y,
+\bar{S}^z)^T$.  The code implicitly works in the basis
+\begin{equation}\label{eq:qbasis}
+  q \equiv \mathbf{C}\dg \bar{S}
+  = \begin{pmatrix}
+    q^0 \\ q^1 \\ q^2
+  \end{pmatrix}
+  = \begin{pmatrix}
+    (\bar{S}^x - i\bar{S}^y)/\sqrt{2} \\[2pt]
+    (\bar{S}^x + i\bar{S}^y)/\sqrt{2} \\[2pt]
+    \bar{S}^z
+  \end{pmatrix}
+  = \begin{pmatrix}
+    \tilde{S}^-/\sqrt{2} \\[2pt]
+    \tilde{S}^+/\sqrt{2} \\[2pt]
+    \tilde{S}^0
+  \end{pmatrix}.
+\end{equation}
+Here $\tilde{S}^\pm = \bar{S}^x \pm i\bar{S}^y$ are the standard
+raising/lowering operators.  Note the ordering:
+\begin{equation}
+  \boxed{
+    q^0 = \frac{\tilde{S}^-}{\sqrt{2}} \;\propto\; a\dg
+    \quad\text{(creation)},
+    \qquad
+    q^1 = \frac{\tilde{S}^+}{\sqrt{2}} \;\propto\; a
+    \quad\text{(annihilation)}.
+  }
+\end{equation}
+
+
+%=====================================================================
+\section{Bilinear form in the $q$-basis}
+%=====================================================================
+
+The spin--spin interaction in the local frame is the bilinear form:
+\begin{equation}
+  H_{\sigma\rho} = \bar{S}_\sigma^T\; \mathsf{RJ}_{\sigma\rho}\; \bar{S}_\rho.
+\end{equation}
+Since $\bar{S} = \mathbf{C}\,q$ (inverting eq.~\eqref{eq:qbasis}
+using $\mathbf{C}\dg\mathbf{C} = \mathbf{I}$):
+\begin{equation}\label{eq:bilinear}
+  H_{\sigma\rho}
+  = (\mathbf{C}\,q_\sigma)^T\;\mathsf{RJ}\;(\mathbf{C}\,q_\rho)
+  = q_\sigma^T\;\underbrace{\mathbf{C}^T\,\mathsf{RJ}\,\mathbf{C}}_{\displaystyle M}\;
+    q_\rho.
+\end{equation}
+Using $\mathbf{C}^T = \mathbf{S}\,\mathbf{C}\dg$ (eq.~\eqref{eq:Cstar}):
+\begin{equation}\label{eq:M}
+  \boxed{
+    M = \mathbf{C}^T\,\mathsf{RJ}\,\mathbf{C}
+      = \mathbf{S}\;\underbrace{\mathbf{C}\dg\,\mathsf{RJ}\,\mathbf{C}}_{\hop}
+      = \mathbf{S}\cdot\hop.
+  }
+\end{equation}
+So $M_{ab} = \hop_{S(a),\,b}$, where $S$ swaps indices $0\leftrightarrow 1$:
+\begin{equation}
+  M_{0b} = \hop_{1b}, \qquad
+  M_{1b} = \hop_{0b}, \qquad
+  M_{2b} = \hop_{2b}.
+\end{equation}
+
+The bilinear is then $H = \sum_{a,b} q^a_\sigma\; M_{ab}\; q^b_\rho$,
+and the coefficient of $q^a_\sigma\,q^b_\rho$ is $M_{ab}$.
+
+
+%=====================================================================
+\section{Holstein--Primakoff mapping}
+%=====================================================================
+
+From eq.~\eqref{eq:qbasis} and the standard HP transformation
+($\tilde{S}^- \approx \sqrt{2S}\,a\dg$, $\tilde{S}^+ \approx \sqrt{2S}\,a$):
+\begin{equation}
+  q^0 = \frac{\tilde{S}^-}{\sqrt{2}} \approx \sqrt{S}\;a\dg,
+  \qquad
+  q^1 = \frac{\tilde{S}^+}{\sqrt{2}} \approx \sqrt{S}\;a,
+  \qquad
+  q^2 = \tilde{S}^0 \to S \;\text{(classical)}.
+\end{equation}
+Therefore each bilinear $q^a q^b$ maps to bosonic operators as:
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+$q$-pair & Boson operator & Coupling $M_{ab}$ & $= \hop$ element \\
+\midrule
+$q^0\,q^0$ & $S\;a\dg a\dg$ \quad (pair creation) &
+  $M_{00} = \hop_{10}$ & \texttt{hop\_t[1,0]} \\
+$q^1\,q^1$ & $S\;a\,a$ \quad (pair annihilation) &
+  $M_{11} = \hop_{01}$ & \texttt{hop\_t[0,1]} \\
+$q^0\,q^1$ & $S\;a\dg a$ \quad (normal hopping) &
+  $M_{01} = \hop_{11}$ & \texttt{hop\_t[1,1]} \\
+$q^1\,q^0$ & $S\;a\,a\dg$ \quad (normal, reordered) &
+  $M_{10} = \hop_{00}$ & \texttt{hop\_t[0,0]} \\[4pt]
+$q^0\,q^2$ & $\sqrt{S}\;S\;a\dg$ \quad (linear, site $\sigma$) &
+  $M_{02} = \hop_{12}$ & \texttt{hop\_t[1,2]} \\
+$q^2\,q^0$ & $S\;\sqrt{S}\;a\dg$ \quad (linear, site $\rho$) &
+  $M_{20} = \hop_{20}$ & \texttt{hop\_t[2,0]} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+%=====================================================================
+\section{BdG Hamiltonian matrix}
+%=====================================================================
+
+The BdG structure (PDF eq.~40, 45):
+\begin{equation}
+  \hat{\mathsf{H}}_\mathbf{k}
+  = \begin{pmatrix}
+    \mathsf{A}_\mathbf{k}  & \mathsf{B}_\mathbf{k} \\[2pt]
+    \mathsf{B}\dg_\mathbf{k} & \mathsf{A}^*_{-\mathbf{k}}
+  \end{pmatrix},
+  \qquad
+  \Psi\dg_\mathbf{k} = (a\dg_{\mathbf{k},1},\ldots,a\dg_{\mathbf{k},\Ns},\;
+  a_{-\mathbf{k},1},\ldots,a_{-\mathbf{k},\Ns}).
+\end{equation}
+
+\begin{itemize}
+\item Upper-right $[\sigma,\Ns+\rho]$ = $\mathsf{B}_\mathbf{k}$:
+  couples $a\dg_{\mathbf{k},\sigma}\,a\dg_{-\mathbf{k},\rho}$
+  = pair creation $\Rightarrow$ coefficient $M_{00} = \hop_{10}$.
+\item Lower-left $[\Ns+\sigma,\rho]$ = $\mathsf{B}\dg_\mathbf{k}$:
+  Hermitian conjugate of $\mathsf{B}_\mathbf{k}$.
+\end{itemize}
+
+\paragraph{Code assignment.}
+The code defines \texttt{tpp = $\sqrt{S_\sigma S_\rho}\;\hop_{10}$}
+and assigns:
+\begin{align}
+  \mathsf{H}[\sigma,\,\Ns{+}\rho]
+  &\mathrel{+}= \texttt{tpp}\cdot e^{-i\mathbf{k}\cdot\bm{\delta}}
+  \qquad\text{(B block, upper-right)},\\
+  \mathsf{H}[\Ns{+}\rho,\,\sigma]
+  &\mathrel{+}= (\texttt{tpp}\cdot e^{-i\mathbf{k}\cdot\bm{\delta}})^*
+  \qquad\text{(B$\dg$ block, lower-left)}.
+\end{align}
+This is \textbf{correct}: the pair creation coupling $M_{00} = \hop_{10}$
+appears in the B block.
+
+\paragraph{Normal hopping.}
+The code defines \texttt{tpm = $\sqrt{S_\sigma S_\rho}\;\hop_{11}$}:
+\begin{align}
+  \mathsf{H}[\sigma,\rho]
+  &\mathrel{+}= \texttt{tpm}\cdot e^{-i\mathbf{k}\cdot\bm\delta}
+  \qquad\text{(A block)},\\
+  \mathsf{H}[\rho,\sigma]
+  &\mathrel{+}= (\texttt{tpm}\cdot e^{-i\mathbf{k}\cdot\bm\delta})^*
+  \qquad\text{(Hermitian conjugate)}.
+\end{align}
+This is \textbf{correct}: the normal hopping coupling $M_{01} = \hop_{11}$
+appears in the A block.
+
+
+%=====================================================================
+\section{Linear terms}
+%=====================================================================
+
+The linear term is the coefficient of $a\dg_\sigma$ in the Hamiltonian,
+which must vanish at classical equilibrium.
+
+\paragraph{From exchange couplings.}
+For site $\sigma$ from the $q^0_\sigma\,q^2_\rho$ coupling
+(with $q^2_\rho \to S_\rho$ classically):
+\begin{equation}
+  \text{coupling } M_{02} = \hop_{12},
+  \qquad
+  q^0_\sigma \approx \sqrt{S_\sigma}\;a\dg_\sigma.
+\end{equation}
+For site $\rho$ from $q^2_\sigma\,q^0_\rho$:
+\begin{equation}
+  \text{coupling } M_{20} = \hop_{20},
+  \qquad
+  q^0_\rho \approx \sqrt{S_\rho}\;a\dg_\rho.
+\end{equation}
+
+\paragraph{Code assignment.}
+\begin{align}
+  f_\sigma
+  &\mathrel{+}= \sqrt{2}\; S_\rho\; \hop_{12}^{(\sigma\rho)},\\
+  f_\rho
+  &\mathrel{+}= \sqrt{2}\; S_\sigma\; \hop_{20}^{(\sigma\rho)}.
+\end{align}
+The $\hop$ indices \texttt{[1,2]} and \texttt{[2,0]} match $M_{02}$
+and $M_{20}$ respectively.
+The $\sqrt{2}$ prefactor arises from the relation
+$\mathsf{RJ}^{xz} + i\,\mathsf{RJ}^{yz} = \sqrt{2}\;\hop_{12}$
+(eq.~\eqref{eq:hopt_col2}), converting between the Cartesian and
+$q$-basis normalizations.
+At classical equilibrium, $f_\sigma = 0$ for all sublattices.
+
+
+%=====================================================================
+\section{Comparison with the PDF note and legacy code}
+%=====================================================================
+
+\paragraph{PDF note (eq.~28).}
+The PDF defines $\tilde{J}^{\alpha\beta}$ with $\alpha,\beta \in \{+,-,0\}$
+via $(C\dg\,\mathsf{RJ}\,C)_{\alpha\beta}$ (eq.~27), with indices
+ordered as $(+,-,0)$ in the matrix display.  However, the $q$-basis
+(eq.~\eqref{eq:qbasis}) has ordering $(-,+,0)$ for its indices $(0,1,2)$.
+Comparing with the explicit formulas in eq.~28:
+\begin{equation}
+  \hop_{00} = \tilde{J}^{-+}, \quad
+  \hop_{01} = \tilde{J}^{--}, \quad
+  \hop_{10} = \tilde{J}^{++}, \quad
+  \hop_{11} = \tilde{J}^{+-}, \quad
+  \hop_{22} = \tilde{J}^{00}.
+\end{equation}
+The PDF bilinear (eq.~23) uses $\tilde{J}^{\bar\alpha,\beta}$ with
+$\bar{+}=-$, $\bar{-}=+$.  This $\bar\alpha$ convention compensates
+for the $(+,-,0)$ labeling vs the $q$-basis $(-, +, 0)$ ordering:
+\begin{equation}
+  \text{coupling for }q^a q^b
+  = \tilde{J}^{\overline{\hat\alpha(a)},\,\hat\beta(b)}
+  = M_{ab} = \hop_{S(a),b},
+\end{equation}
+where $\hat\alpha(0) = -$, $\hat\alpha(1) = +$, and $\bar{-} = +$, so
+$\overline{\hat\alpha(0)} = +$ selects row~0 of $\tilde{J}$, which is
+row~1 of $\hop$ (via the S-swap).  All approaches give the same result.
+
+\paragraph{Legacy code.}
+The legacy code uses the same \texttt{tpp = hop\_t[1,0]} but places
+it in the \textbf{lower-left} block (B$\dg$ position) with its
+conjugate in the upper-right:
+\begin{align}
+  \text{Legacy:}\quad
+  \mathsf{H}[\Ns{+}\sigma,\,\rho] &\mathrel{+}= \texttt{tpp}\cdot e^{-i\mathbf{k}\cdot\bm\delta}
+  \quad\text{(lower-left)},\\
+  \mathsf{H}[\rho,\,\Ns{+}\sigma] &\mathrel{+}= \texttt{tpp}^*\cdot e^{+i\mathbf{k}\cdot\bm\delta}
+  \quad\text{(upper-right)}.
+\end{align}
+This swaps B and B$\dg$: the upper-right (pair creation) block
+receives $\hop_{10}^* = \hop_{01}$ instead of $\hop_{10}$.
+For the stripe phase where $\mathsf{RJ}$ is real symmetric and
+$\hop_{10} = \hop_{01}^*$ is real, B$\,{=}\,$B$\dg$ and the swap has
+no effect.  For non-collinear phases (e.g., NBCP) where
+$\hop_{10} \ne \hop_{10}^*$, the legacy code produces incorrect results.
+
+
+%=====================================================================
+\section{Summary}
+%=====================================================================
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Physical quantity & Coupling & $\hop$ index & Code variable \\
+\midrule
+Pair creation (B block, $a\dg a\dg$)
+  & $M_{00}$ & \texttt{[1,0]} & \texttt{tpp} \\
+Normal hopping (A block, $a\dg a$)
+  & $M_{01}$ & \texttt{[1,1]} & \texttt{tpm} \\
+Diagonal ($S^z S^z$)
+  & $M_{22}$ & \texttt{[2,2]} & \texttt{t00} \\
+Linear (site $\sigma$, $a\dg_\sigma$)
+  & $M_{02}$ & \texttt{[1,2]} & --- \\
+Linear (site $\rho$, $a\dg_\rho$)
+  & $M_{20}$ & \texttt{[2,0]} & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All code indices are correct.  The relationship $M = \mathbf{S}\cdot\hop$
+(eq.~\eqref{eq:M}) provides the systematic mapping between the physical
+coupling matrix and the code's \texttt{hop\_t} elements.
+
+\end{document}

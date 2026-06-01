@@ -1,0 +1,18 @@
+# chktex configuration for LSWT notes
+# Suppress false positives common in math-heavy physics documents
+
+# CmdLine: default command-line options applied when chktex reads this file
+CmdLine
+{
+    -n1
+    -n2
+    -n3
+    -n8
+    -n11
+    -n13
+    -n24
+    -n36
+    -n37
+    -n38
+    -n44
+}
