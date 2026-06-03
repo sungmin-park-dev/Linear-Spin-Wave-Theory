@@ -38,14 +38,25 @@ project-root/
 │   │   └── map-decisions.md
 │   ├── Agents-Bylaws/
 │   │   ├── map-agents-bylaws.md
-│   │   └── procedures/
-│   │       ├── map-procedures.md
-│   │       └── theory_code_verification_plan.md
+│   │   ├── policies/
+│   │   │   ├── map-policies.md
+│   │   │   ├── directory-structure-guide.md
+│   │   │   ├── frontmatter-policy.md
+│   │   │   └── naming-convention.md
+│   │   ├── procedures/
+│   │   │   ├── map-procedures.md
+│   │   │   └── theory_code_verification_plan.md
+│   │   └── templates/
+│   │       ├── map-templates.md
+│   │       └── ...
 │   └── Working-Pad/
+│       ├── TASK-QUEUE.md
 │       ├── map-working-pad.md
+│       ├── handoff/
 │       ├── idea-proposals/
-│       ├── issues/
-│       └── staging/
+│       ├── inbox/
+│       ├── issue-notes/
+│       └── vault-staging/
 │
 ├── code-space/                  # 코드 구현
 │   ├── lswt/                    # 메인 패키지

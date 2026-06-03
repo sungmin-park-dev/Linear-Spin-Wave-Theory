@@ -2,7 +2,7 @@
 frontmatter-version: 1
 title: Theory Notes & Code Verification Plan
 section: procedures
-status: needs-review
+status: in-review
 last-edited-by: codex
 created: 2026-05-31
 updated: 2026-06-03
@@ -10,7 +10,7 @@ updated: 2026-06-03
 
 # Theory Notes & Code Verification Plan
 
-> 작성일: 2026-05-31  
+> 작성일: 2026-05-31
 > 목적: 이론 노트 정리 + 코드 구현 일치 검증을 동시에 진행하기 위한 계획서
 > 상태: 검토 필요. 현재 `GOVERNMENT/Agents-Bylaws/procedures/`에 있으나, 현 코드·문서 구조와 대조한 뒤 실행 기준으로 사용한다.
 
@@ -19,12 +19,12 @@ updated: 2026-06-03
 ## 1. 배경 및 목표
 
 ### 현재 문제
-- LaTeX 노트가 세 버전(`note.tex`, `note_lswt_reviewed.tex`, `note_lswt_restructured.tex`)으로 분산
+- LaTeX master와 과거 노트가 active source와 legacy archive로 분리됨
 - 마크다운 섹션(`research-space/theory/sections/`)은 구버전 구조 기반 — 최신 LaTeX와 불일치
 - 코드(`code-space/lswt/`)가 이론과 실제로 일치하는지 체계적으로 검증된 적 없음
 
 ### 목표
-1. `note_lswt_restructured.tex`를 단일 LaTeX 기준 소스로 확정
+1. `research-space/sources/lswt/note_lswt_restructured.tex`를 단일 LaTeX 기준 소스로 확정
 2. 마크다운 섹션을 restructured 구조에 맞게 재편
 3. 각 섹션 정리 시 대응하는 코드 모듈을 함께 대조하여 불일치 기록
 
@@ -34,12 +34,13 @@ updated: 2026-06-03
 
 | 파일 | 상태 |
 |---|---|
-| `research-space/notes/note_lswt_restructured.tex` | ✅ **Master** (가장 최신, 최고 구조) |
-| `research-space/notes/note_lswt_reviewed.tex` | 🗃️ archive로 이동 |
-| `research-space/notes/note.tex` | 🗃️ archive로 이동 |
-| `research-space/notes/hamiltonian_convention.tex` | 🗃️ archive로 이동 (내용 이미 흡수됨) |
+| `research-space/sources/lswt/note_lswt_restructured.tex` | ✅ **Master** (가장 최신, 최고 구조) |
+| `legacy/research-notes/lswt/note_lswt_reviewed.tex` | 🗃️ legacy archive |
+| `legacy/research-notes/lswt/note.tex` | 🗃️ legacy archive |
+| `legacy/research-notes/lswt/hamiltonian_convention.tex` | 🗃️ legacy archive (내용 이미 흡수된 것으로 기록됨) |
 
-**즉시 실행**: `research-space/notes/archive/` 디렉토리 생성 후 위 파일들 이동.
+**현재 배치**: active source는 `research-space/sources/lswt/`에 두고, 거의 보지 않을 과거 자료는
+`legacy/research-notes/lswt/`에 둔다.
 
 ---
 
@@ -126,8 +127,8 @@ research-space/theory/sections/
 ```markdown
 # 섹션 제목
 
-> **Source**: `research-space/notes/note_lswt_restructured.tex` §X.X  
-> **Code**: `code-space/lswt/모듈명.py`  
+> **Source**: `research-space/sources/lswt/note_lswt_restructured.tex` §X.X
+> **Code**: `code-space/lswt/모듈명.py`
 > **Status**: 🔴 Draft / 🟡 Review / 🟢 Verified
 
 ---
@@ -161,7 +162,7 @@ research-space/theory/sections/
 
 ## 7. 완료 기준
 
-- [ ] `research-space/notes/archive/` 정리 완료
+- [x] active source와 legacy research note 분리 완료
 - [ ] 마크다운 섹션 구조 재편 완료
 - [ ] 우선순위 1-6 섹션 정리 + 코드 대조 완료
 - [ ] Bug 1 (B/B† swap) 수정 + 검증 완료

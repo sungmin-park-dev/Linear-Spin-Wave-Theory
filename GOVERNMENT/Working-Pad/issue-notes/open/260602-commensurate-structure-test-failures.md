@@ -1,8 +1,10 @@
 ---
 frontmatter-version: 1
 title: CommensurateStructure pytest failures
-section: issues
-status: open
+section: issue-notes/open
+issue-type: problem
+last-edited-by: codex
+status: draft
 created: 2026-06-02
 detected-during: government-space-migration
 ---

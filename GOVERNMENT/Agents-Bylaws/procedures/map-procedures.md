@@ -16,9 +16,9 @@ LSWT 프로젝트의 에이전트 실행 절차 문서.
 
 | 파일 | 제목 | 상태 |
 |---|---|---|
-| `theory_code_verification_plan.md` | Theory Notes & Code Verification Plan | needs-review |
+| `theory_code_verification_plan.md` | Theory Notes & Code Verification Plan | in-review |
 
 ## Agent Instructions
 
-- `needs-review` 상태 문서는 현 코드·문서 구조와 대조한 뒤 사용한다.
+- 검토 필요 절차 문서는 현 코드·문서 구조와 대조한 뒤 사용한다.
 - 절차가 최신화되면 status를 갱신하고 이 map도 수정한다.

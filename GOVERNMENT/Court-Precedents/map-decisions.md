@@ -25,5 +25,5 @@ LSWT 프로젝트의 결정 기록과 판례 레이어.
 ## Agent Instructions
 
 - 새 결정 문서는 사용자 승인 또는 명시적 결정 이후 추가한다.
-- 단순 작업 로그나 임시 이슈는 `GOVERNMENT/Working-Pad/issues/`에 둔다.
+- 단순 작업 로그나 임시 이슈는 `GOVERNMENT/Working-Pad/issue-notes/`에 둔다.
 - 확정 원칙 자체는 `GOVERNMENT/User-Constitution/`에 둔다.

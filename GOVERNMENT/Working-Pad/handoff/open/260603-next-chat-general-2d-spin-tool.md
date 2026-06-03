@@ -1,8 +1,9 @@
 ---
 frontmatter-version: 1
 title: Next Chat - General 2D Spin-System Simulation Tool
-section: handoff
-status: open
+section: handoff/open
+status: draft
+execution-status: pending
 last-edited-by: codex
 created: 2026-06-03
 updated: 2026-06-03
@@ -27,7 +28,7 @@ branch: migrate/government-structure
   - `Court-Precedents/`
   - `Agents-Bylaws/`
   - `Working-Pad/`
-- AAD-style map files exist for current `GOVERNMENT` navigation.
+- AAD-style map files and Working-Pad lifecycle folders exist for current `GOVERNMENT` navigation.
 
 ## User Direction
 
@@ -42,7 +43,7 @@ Working interpretation:
 
 ## Known Open Issue
 
-- `GOVERNMENT/Working-Pad/issues/open/260602-commensurate-structure-test-failures.md`
+- `GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures.md`
   - `python -m pytest code-space/tests` currently has `CommensurateStructure` failures.
   - This should be handled before treating the test suite as reliable.
 
@@ -84,7 +85,7 @@ Classify current modules as:
 - Deprecate
 - Needs physics review
 
-Deliverable: audit issue or plan in `GOVERNMENT/Working-Pad/issues/open/`.
+Deliverable: audit issue or plan in `GOVERNMENT/Working-Pad/issue-notes/open/`.
 
 ### 3. Resolve Test Baseline
 

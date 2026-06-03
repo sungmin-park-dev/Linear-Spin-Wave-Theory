@@ -20,7 +20,7 @@ updated: 2026-06-03
 
 | 파일 | 목적 | 상태 |
 |---|---|---|
-| `open/260603-next-chat-general-2d-spin-tool.md` | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | open |
+| `open/260603-next-chat-general-2d-spin-tool.md` | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | pending |
 
 ## Closed
 

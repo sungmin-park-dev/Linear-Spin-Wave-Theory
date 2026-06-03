@@ -1,6 +1,7 @@
 ---
 frontmatter-version: 1
 title: Map - user-constitution
+section: user-constitution
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
