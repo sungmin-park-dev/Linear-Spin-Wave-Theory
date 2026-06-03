@@ -67,13 +67,17 @@ project-root/
 │       ├── nbcp_ground_state.py
 │       └── nbcp_hamiltonian_check.py
 │
-├── research-space/              # 이론·논문·수식 정리
-│   ├── notes/                   # LaTeX 소스와 참고 PDF
+├── research-space/              # 현재 이론·논문·수식 작업
+│   ├── sources/                 # 정본 작업 중 실제 참조하는 원자료
+│   │   └── lswt/
 │   └── theory/
 │       ├── sections/
 │       └── notation.md
 │
-├── legacy/                      # 원본 legacy 코드 아카이브
+├── legacy/                      # 원본 legacy 코드와 과거 연구노트 아카이브
+│   ├── modules/
+│   ├── scripts/
+│   └── research-notes/
 └── data-space/                  # 계산 결과 데이터
 ```
 
@@ -153,7 +157,7 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 ### 2026-05-31 사전 정리
 - [x] 코드, 지식, 운영 문서의 중간 분류 작업 수행
 - [x] `research-space/theory/latex_sections/` 삭제 (pandoc 쓰레기 파일)
-- [x] `research-space/notes/` 정리 (빌드 찌꺼기 삭제, master = `note_lswt_restructured.tex` 확정)
+- [x] `research-space/sources/lswt/` 정리 (master = `note_lswt_restructured.tex` 확정)
 - [x] 이론-코드 검증 계획서 초안 작성
 - [x] AAD 마이그레이션 사전 작업 문서 사본 준비
 

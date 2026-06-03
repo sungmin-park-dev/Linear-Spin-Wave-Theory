@@ -2,6 +2,10 @@
 
 This directory contains refined theoretical documentation for Linear Spin Wave Theory (LSWT), converted from the original LaTeX document.
 
+The active LSWT canonical workspace is now [`lswt/`](lswt/). The older
+`sections/` files remain as converted Markdown source material until their
+contents are migrated into the canonical LSWT structure.
+
 ## 📖 Table of Contents
 
 ### Core Documentation
@@ -55,7 +59,8 @@ This directory contains refined theoretical documentation for Linear Spin Wave T
 research-space/theory/
 ├── README.md                    # This file
 ├── notation.md                  # Notation reference
-└── sections/                    # Refined theory sections
+├── lswt/                        # Active LSWT canonical workspace
+└── sections/                    # Converted LSWT sections pending migration
 │   ├── 01_spin_wave_theory_intro.md
 │   ├── 02_physical_quantities.md
 │   ├── 03_thermodynamics.md
@@ -68,7 +73,7 @@ research-space/theory/
 
 These documents were created through the following workflow:
 
-1. **Original LaTeX**: `../notes/note_lswt_restructured.tex`
+1. **Original LaTeX**: `../sources/lswt/note_lswt_restructured.tex`
 2. **Pandoc Conversion**: LaTeX → Markdown (with equation preservation)
 3. **Refinement**: Python script processing for:
    - Simplifying equation references
@@ -78,7 +83,7 @@ These documents were created through the following workflow:
 
 ## 🔗 Related Files
 
-- **Original LaTeX**: [`../notes/note_lswt_restructured.tex`](../notes/note_lswt_restructured.tex)
+- **Original LaTeX**: [`../sources/lswt/note_lswt_restructured.tex`](../sources/lswt/note_lswt_restructured.tex)
 
 ## 📚 Usage for Developers
 
@@ -128,7 +133,7 @@ If you use these theoretical notes or the LSWT package, please cite:
 ## 🤝 Contributing
 
 Found an error or typo? Please:
-1. Check the original LaTeX source: `research-space/notes/note_lswt_restructured.tex`
+1. Check the original LaTeX source: `research-space/sources/lswt/note_lswt_restructured.tex`
 2. Open an issue describing the problem
 3. If you fix it, submit a PR with changes to both LaTeX and Markdown
 

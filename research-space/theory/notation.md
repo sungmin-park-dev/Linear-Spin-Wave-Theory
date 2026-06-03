@@ -108,5 +108,5 @@ The original LaTeX document uses custom commands for mathematical notation. In t
 
 ## References
 
-- Original LaTeX document: `research-space/notes/note_lswt_restructured.tex`
+- Original LaTeX document: `research-space/sources/lswt/note_lswt_restructured.tex`
 - For detailed theory, see the [theory sections](sections/)
