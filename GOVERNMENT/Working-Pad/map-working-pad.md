@@ -19,6 +19,7 @@ LSWT 프로젝트의 진행 중 작업, 제안, 이슈, 검토 대기 문서를 
 
 | Item | Role |
 |---|---|
+| `handoff/` | 대화/작업 세션 인수인계 문서. 색인: `handoff/map-handoff.md` |
 | `idea-proposals/` | 구조·철학·방향 제안 백로그. 색인: `idea-proposals/map-idea-proposals.md` |
 | `issues/` | 미해결/종결 이슈 기록. 색인: `issues/map-issues.md` |
 | `staging/` | 정본 승격 전 검토 대기 문서. 색인: `staging/map-staging.md` |
