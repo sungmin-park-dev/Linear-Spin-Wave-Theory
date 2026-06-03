@@ -32,12 +32,20 @@ project-root/
 ├── pyproject.toml
 │
 ├── GOVERNMENT/                  # 운영 지식
+│   ├── User-Constitution/
+│   │   └── map-user-constitution.md
+│   ├── Court-Precedents/
+│   │   └── map-decisions.md
+│   ├── Agents-Bylaws/
+│   │   ├── map-agents-bylaws.md
+│   │   └── procedures/
+│   │       ├── map-procedures.md
+│   │       └── theory_code_verification_plan.md
 │   └── Working-Pad/
+│       ├── map-working-pad.md
 │       ├── idea-proposals/
-│       │   └── 2026-05-30-project-knowledge-philosophy.md
+│       ├── issues/
 │       └── staging/
-│           └── agents-bylaws-review/
-│               └── theory_code_verification_plan.md
 │
 ├── code-space/                  # 코드 구현
 │   ├── lswt/                    # 메인 패키지
@@ -128,7 +136,7 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 - [x] 루트 폴더를 `GOVERNMENT/`, `code-space/`, `doc-space/`, `research-space/` 기준으로 재편
 - [x] `pyproject.toml` 패키지 탐색 경로를 `code-space`로 갱신
 - [x] AAD 철학 문서 사본을 `GOVERNMENT/Working-Pad/idea-proposals/`에 배치
-- [x] 오래된 이론-코드 검증 계획서를 `GOVERNMENT/Working-Pad/staging/agents-bylaws-review/`로 이동
+- [x] 오래된 이론-코드 검증 계획서를 `GOVERNMENT/Agents-Bylaws/procedures/`로 이동하고 `needs-review`로 표시
 - [x] `.DS_Store`, `__pycache__`, `*.egg-info` 생성물 정리 및 ignore 규칙 추가
 
 ### 2026-05-31 사전 정리

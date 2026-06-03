@@ -1,8 +1,18 @@
+---
+frontmatter-version: 1
+title: Theory Notes & Code Verification Plan
+section: procedures
+status: needs-review
+last-edited-by: codex
+created: 2026-05-31
+updated: 2026-06-03
+---
+
 # Theory Notes & Code Verification Plan
 
 > 작성일: 2026-05-31  
 > 목적: 이론 노트 정리 + 코드 구현 일치 검증을 동시에 진행하기 위한 계획서
-> 상태: 검토 필요. 2026-06-01 구조 마이그레이션에서 `GOVERNMENT/Working-Pad/staging/agents-bylaws-review/`로 이동했으며, `Agents-Bylaws/` 정본으로 승격하기 전에 내용 검증이 필요하다.
+> 상태: 검토 필요. 현재 `GOVERNMENT/Agents-Bylaws/procedures/`에 있으나, 현 코드·문서 구조와 대조한 뒤 실행 기준으로 사용한다.
 
 ---
 

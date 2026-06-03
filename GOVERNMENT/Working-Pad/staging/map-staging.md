@@ -10,7 +10,7 @@ updated: 2026-06-03
 
 # Map - staging
 
-정본 레이어로 승격하기 전 검토 대기 문서를 보관하는 공간.
+정본 레이어로 이동하기 전 검토 대기 문서를 보관하는 공간.
 
 - `staging/`에 있는 문서는 아직 정본이 아니다.
 - 검토 후 승인되면 대상 레이어로 이동한다.
@@ -22,7 +22,7 @@ updated: 2026-06-03
 
 | 경로 | 대상 후보 | 상태 |
 |---|---|---|
-| `agents-bylaws-review/` | `GOVERNMENT/Agents-Bylaws/` | review-needed |
+| _없음_ | - | - |
 
 ## Agent Instructions
 
