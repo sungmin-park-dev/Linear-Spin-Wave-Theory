@@ -7,27 +7,9 @@
 
 - `research-space/sources/lswt/note_lswt_restructured.tex`
 
-## 확정된 1차 LSWT 정본 구조
+## 정본 구조 참조
 
-```text
-research-space/theory/lswt/
-├── README.md
-├── current-sections-audit.md
-├── section-migration-plan.md
-├── 00_introduction.md
-├── 01_from_spins_to_bosons.md
-├── 02_diagonalization.md
-├── 03_physical_quantities.md
-├── 04_thermodynamics.md
-├── 05_correlations_and_structure_factors.md
-├── 06_worked_example.md
-└── appendices/
-    ├── A_notation.md
-    ├── B_luttinger_tisza.md
-    ├── C_paraunitarity.md
-    ├── D_thermodynamic_derivations.md
-    └── E_topological_quantities.md
-```
+현재 LSWT 정본 파일 목록과 각 파일의 역할은 `map-lswt.md`에서 관리한다.
 
 ## 기존 Markdown에서 새 구조로 가는 mapping
 

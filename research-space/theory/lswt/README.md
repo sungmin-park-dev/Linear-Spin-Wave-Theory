@@ -34,13 +34,9 @@
   같은 별도 위치로 승격한다.
 - 이론 convention은 코드 구현보다 먼저 문서에서 설명한다.
 
-## 현재 파일
+## 파일 탐색
 
-| 파일 | 역할 |
-|---|---|
-| `README.md` | 이 디렉토리의 역할과 기준 소스 |
-| `current-sections-audit.md` | 현재 Markdown 문서가 담고 있는 내용 audit |
-| `section-migration-plan.md` | 기존 문서를 LSWT 정본 구조로 옮기는 source-to-target 계획 |
+파일 목록과 각 문서의 역할은 `map-lswt.md`에 둔다.
 
 ## 다음 단계
 
