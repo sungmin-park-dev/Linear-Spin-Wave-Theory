@@ -55,7 +55,7 @@ project-root/
 │       └── notation.md
 │
 ├── legacy/                      # 원본 legacy 코드 아카이브
-└── data/                        # 계산 결과 데이터
+└── data-space/                  # 계산 결과 데이터
 ```
 
 ---
