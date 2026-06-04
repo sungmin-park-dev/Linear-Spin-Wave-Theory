@@ -1,7 +1,24 @@
-# LSWT Section Migration Plan
+---
+frontmatter-version: 1
+title: LSWT Section Migration Record
+section: issue-notes/closed
+issue-type: migration-record
+status: closed
+resolution: implemented
+last-edited-by: codex
+created: 2026-06-03
+updated: 2026-06-04
+closed: 2026-06-04
+source-path: research-space/theory/lswt/section-migration-plan.md
+---
+
+# LSWT Section Migration Record
 
 이 문서는 기존 Markdown 문서를 `research-space/theory/lswt/` 정본 구조로
-옮기기 위한 계획과 source-to-target 대응표다. 아직 섹션 본문을 rewrite하지 않는다.
+옮기기 위해 사용한 source-to-target 대응 기록이다.
+
+초기 계획은 구현되어 `research-space/theory/lswt/` 루트에서 이 closed
+issue-note 기록으로 이동했다.
 
 기준 소스:
 
@@ -47,20 +64,20 @@
 | `Thermodynamic derivations` | `appendices/D_thermodynamic_derivations.md` | 새 파일 필요 |
 | `Topological quantities` | `appendices/E_topological_quantities.md` | 기존 topology 문서 이동 후보 |
 
-## 실행 방식
+## 실행 방식 기록
 
 - **선택 B 확정**: 기존 파일을 바로 이동/분할하지 않고, 새 LSWT 정본 파일을
   먼저 만든 뒤 내용을 점진적으로 이식한다.
 - 기존 `research-space/theory/sections/` 파일은 source material로 남긴다.
 
-## 이번 단계에서 하지 않는 일
+## 당시 제한 사항
 
 - 기존 theory section 본문을 아직 rewrite하지 않는다.
 - 기존 `sections/` 파일을 아직 삭제하지 않는다.
 - `research-space/theory/common/`을 아직 만들지 않는다.
 - code implementation은 건드리지 않는다.
 
-## 다음 승인 필요 항목
+## 당시 남은 승인 필요 항목
 
 - 새 skeleton 파일에 어느 섹션부터 내용을 이식할지.
 - 각 파일의 표준 frontmatter와 verification block 형식.

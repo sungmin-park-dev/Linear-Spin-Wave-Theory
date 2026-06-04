@@ -1,53 +1,60 @@
+---
+frontmatter-version: 1
+title: Introduction
+section: theory/lswt
+status: draft
+last-edited-by: codex
+created: 2026-06-03
+updated: 2026-06-04
+source: research-space/sources/lswt/note_lswt_restructured.tex
+source-section: Introduction
+---
+
 # Introduction
 
-> Source: `research-space/sources/lswt/note_lswt_restructured.tex` §Introduction
-> Status: First draft
+Linear Spin Wave Theory (LSWT) is a method for describing quantum fluctuations
+around a classically ordered magnetic state. The central idea is to choose a
+local spin frame aligned with the classical order, express spin fluctuations in
+terms of Holstein-Primakoff bosons, and keep the quadratic part of the resulting
+bosonic Hamiltonian. The magnon modes are then obtained by diagonalizing this
+quadratic bosonic problem.
 
-This document is the canonical Linear Spin Wave Theory (LSWT) reference for
-this project. Its immediate purpose is not only to explain the current LSWT
-implementation, but also to make LSWT a benchmark against which future
-simulation methods for two-dimensional spin systems can be checked.
+## Scope
 
-The present LSWT scope is a commensurate ordered spin system with a finite
-magnetic unit cell. The document therefore starts from a lattice spin
-Hamiltonian, fixes the local classical spin frame, expands spin operators in
-bosons, constructs the quadratic bosonic Hamiltonian, diagonalizes it, and then
-derives the physical quantities computed from the resulting magnon modes.
+### Spin Model and Ordered Magnetic State
 
-The main quantities covered by the LSWT workflow are:
+LSWT starts from a spin Hamiltonian together with a classical ordered magnetic
+state. The spin operators are expanded around this ordered state after choosing
+local spin frames aligned with the classical spin directions.
 
-- classical and LSWT-corrected ground-state energy;
-- magnon band energies and eigenvectors;
-- thermodynamic quantities such as free energy, entropy, specific heat, and
-  boson occupation;
-- spin correlations, structure factors, and spectral functions;
-- topological quantities when the required band and Berry-curvature data are
-  well defined.
+The detailed Hamiltonian used for the derivation is introduced in
+`01_from_spins_to_bosons.md`.
 
-Because this project is being generalized beyond LSWT, several conventions in
-this document are deliberately treated as solver-facing definitions rather than
-as implementation details. In particular, the LSWT write-up must clarify:
+### Remark
 
-- how a physical site is indexed relative to a crystallographic unit cell,
-  basis site, and magnetic sublattice;
-- whether a link/coupling is counted once or represented by symmetric pairs;
-- whether displacement coordinates are fractional cell displacements or real
-  vectors;
-- how commensurate magnetic structure, magnetic supercell, and spin angles
-  determine magnetic sublattices;
-- when the Brillouin zone is crystallographic and when it is folded by the
-  magnetic unit cell;
-- which definitions belong to the generic spin-system model and which are
-  specific to the LSWT solver.
+The current codebase starts from commensurate magnetic structures with finite
+magnetic unit cells. This is an implementation starting point rather than a
+fundamental restriction of LSWT.
 
-These convention questions are first resolved inside the LSWT document. Only
-after they are stable should they be extracted into a shared `common/` theory
-layer for Monte Carlo, tensor-network, neural quantum state, or other solvers.
+## Overview of the LSWT Framework
 
-## 작업 메모
+The LSWT construction in this document follows the structure of the source
+LaTeX note:
 
-- LaTeX source의 Introduction은 TODO 상태였으므로, 위 본문은 source TODO와
-  현재 migration note의 프로젝트 방향을 반영한 첫 초안이다.
-- 다음 이식 대상은 `01_from_spins_to_bosons.md`의 Hamiltonian 정의와
-  link-counting convention이다.
-- `common/` 후보는 아직 별도 파일로 분리하지 않는다.
+1. Start from a spin Hamiltonian written in the laboratory frame.
+2. Choose a classical magnetic structure and rotate each spin into its local
+   frame.
+3. Apply the Holstein-Primakoff transformation in the local frame.
+4. Keep the quadratic bosonic Hamiltonian.
+5. Transform the quadratic Hamiltonian to momentum space when the magnetic
+   structure is commensurate.
+6. Diagonalize the bosonic Bogoliubov-de Gennes Hamiltonian.
+7. Use the resulting magnon modes to compute physical observables.
+
+The following sections develop these steps in order, beginning with the mapping
+from spin operators to bosonic degrees of freedom.
+
+## Reference
+
+- Physical quantities are organized in `03_physical_quantities.md` and the
+  following observable-specific sections.

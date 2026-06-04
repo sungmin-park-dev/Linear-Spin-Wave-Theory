@@ -5,7 +5,7 @@ section: issue-notes
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-04
 ---
 
 # Map - issue-notes
@@ -30,7 +30,7 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 
 | 파일 | 유형 | 역할 | 결과 |
 |---|---|---|---|
-| _없음_ | - | - | - |
+| `closed/260604-lswt-section-migration-record.md` | migration-record | 기존 Markdown/LaTeX source에서 새 LSWT 정본 파일로 가는 mapping 기록 | implemented |
 
 ## Agent Instructions
 
