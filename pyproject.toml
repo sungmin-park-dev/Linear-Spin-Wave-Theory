@@ -38,8 +38,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sungmin-park0226/Linear-Spin-Wave-Theory"
-Repository = "https://github.com/sungmin-park0226/Linear-Spin-Wave-Theory"
+Homepage = "https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory"
+Repository = "https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory"
 
 [tool.setuptools.packages.find]
 where = ["code-space"]
