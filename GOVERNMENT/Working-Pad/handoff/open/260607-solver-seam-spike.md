@@ -46,6 +46,11 @@ H = Σ_<ij> [ Jxy (Sx_i Sx_j + Sy_i Sy_j) + Jz Sz_i Sz_j ] − h Σ_i Sz_i
   2. **2D 정사각 4×4 PBC** — geometry / MPS-1D-ordering seam 본 분석.
 - 파라미터 세트: `(Jxy=1, Jz=1, h=0)` Heisenberg / `(1, 0.5, 0)` XXZ / `(1, 1, 0.5)` +field.
 - **probe 옵션:** 횡자장 `h_x` 추가 → TeNPy의 Sz charge-conservation on/off seam 확인.
+- **구현 방식:** 1D·2D는 *같은 솔버 파일*(`ed.py`/`tenpy_dmrg.py`/`netket_vmc.py`)에서
+  geometry를 **인자로** 받아 처리(스테이지 = 실행 순서일 뿐, 별도 코드 아님).
+  **각 프레임워크에서 1D→2D 시 바뀌는 코드 자체가 Geometry seam(S3) 관찰 데이터**:
+  ED는 edge 리스트만, TeNPy는 2D Lattice + 2D→1D MPS ordering(snake), NetKet은 graph
+  교체. 이 1D↔2D diff를 프레임워크별로 `findings.md`에 기록.
 
 ## 무엇을 설치 vs 빌드
 
@@ -83,6 +88,9 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
 레퍼런스: Bethe 1931; Hulthén 1938; **Yang & Yang, Phys. Rev. 150, 321 (1966)
 [I, 유한계] & 327 (1966) [II, 무한계]**. 일반 Δ(예: 0.5) 적분 닫힌형은 Yang-Yang II
 — 필요 시 출처 확인해 추가.
+- 무료·교육용 (실제 유도): **Karbach & Müller, "Introduction to the Bethe Ansatz I",
+  arXiv:cond-mat/9809162** (Heisenberg 바닥에너지 ¼−ln2 단계별 유도);
+  XXZ 일반 Δ 공식은 integrability.org XXZ 페이지 / Takahashi 교과서.
 
 ## 산출물 / 환경
 
