@@ -94,13 +94,41 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
 
 ## 산출물 / 환경
 
-- **위치: 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space` 밖의 버리는
-  탐색 코드. `README.md`에 "findings 기록 후 폴더째 삭제 가능" 명시):
-  `ed.py`, `tenpy_dmrg.py`, `netket_vmc.py`, `crosscheck.py`, `findings.md`.
-- **결론 승격:** 스파이크 종료 시 `findings.md`(교훈)는 `research-space/`로 승격하고
-  `sandbox/solver-seam-xxz/` 코드는 삭제 가능. (코드는 버리고 결론만 남김)
+**위치: 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space` 밖의 버리는 탐색
+코드. `README.md`에 "findings 기록 후 폴더째 삭제 가능" 명시).
+
+제안 파일 구조 (상세·확정은 `PLAN.md`에서 codex가 작성):
+
+```text
+sandbox/solver-seam-xxz/
+├── PLAN.md         # ★ 구현 전 상세 설계 — 성민 리뷰 게이트 (아래 절)
+├── README.md       # throwaway 명시 + 실행법
+├── geometry.py     # 공통 geometry: 1D chain N / 2D square LxL (PBC) → sites + bonds
+├── model.py        # 공통 XXZ 파라미터 (Jxy, Jz, h[, hx]) — geometry 독립
+├── viewer.py       # ★ 시스템/geometry 뷰어 (아래 절)
+├── ed.py           # hand-built ED → GS
+├── tenpy_dmrg.py   # TeNPy DMRG → GS
+├── netket_vmc.py   # NetKet VMC → GS
+├── exact_xxz.py    # exact 1D XXZ 체크값 (XX 유한-N, Heisenberg 1/4-ln2)
+├── crosscheck.py   # 세 솔버 + exact 비교표
+└── findings.md     # 결론 (→ research-space 승격)
+```
+
+- **결론 승격:** 종료 시 `findings.md`(교훈)는 `research-space/`로 승격, 코드는 삭제 가능.
 - 환경: miniconda env(`/Users/david/miniconda3/bin/python`)에
   `pip install physics-tenpy netket`. 설치 버전을 `findings.md`에 기록.
+
+## 시스템/Geometry 뷰어 (`viewer.py`)
+
+Geometry를 *눈으로* 검증하기 위한 뷰어. 목적: (a) 세 솔버가 **같은 계**를 푸는지
+시각 확인, (b) Geometry seam을 눈에 보이게.
+
+- 공통 `geometry.py`의 **sites + bonds**를 플롯: 1D 사슬, 2D 정사각(PBC 결합 포함),
+  사이트 인덱스·부분격자 라벨.
+- **프레임워크 파생 view overlay** (seam 가시화):
+  - TeNPy: 2D→1D **MPS ordering(snake) 경로**를 2D 격자 위에 그림.
+  - NetKet: **graph edges**.
+- 출력 PNG를 폴더에 저장 + `findings.md`에서 참조. (옵션: 스핀/자기장 방향 표시)
 
 ## findings.md — 핵심 산출물 (각 솔버: ED/TN/NQS, + LSWT는 기존 코드 대조)
 
@@ -117,15 +145,28 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
   (4×4는 가능). VMC는 변분이라 ED와 정확히 안 맞음(오차 내 일치로 판정).
 - 비결정성(VMC seed) — seed 고정해 재현.
 
+## 구현 전 게이트 — 파일구조 계획 (`PLAN.md`, 성민 리뷰 필수)
+
+코딩 전에 codex는 **`PLAN.md`를 먼저 작성**한다. 성민이 *파일을 직접 읽고 이해할 수
+있을 만큼 상세히*:
+- 각 파일의 책임 / 공개 함수·클래스 / 입출력,
+- `geometry.py`·`model.py`가 세 솔버로 어떻게 흐르는지(데이터 흐름),
+- geometry가 1D↔2D로 어떻게 파라미터화되는지,
+- `viewer.py`가 무엇을 어떻게 그리는지,
+- `exact_xxz.py`·`crosscheck.py`의 판정 기준.
+
+**성민 리뷰·승인 후에야 실제 솔버 코드 구현 시작.** (CLAUDE.md 제안-우선 원칙)
+
 ## 첫 실행 순서
 
-1. miniconda env에 `physics-tenpy`, `netket` 설치 + import 스모크.
-2. **1D N=8**: ED(빌드) + DMRG + VMC 세 방법 GS 에너지 → `crosscheck.py`로 일치 확인.
-   추가로 **XX점(Δ=0) 자유페르미온 유한-N 닫힌형과 ED 머신정밀도 대조**,
-   **Heisenberg점(Δ=1) 1/4−ln2 외삽 앵커** 확인.
-3. **2D 4×4 PBC**: 동일 3방법 + 교차검증. (geometry/MPS-ordering 관찰)
-4. TeNPy/NetKet 패키지 구조 + 모델 정의 API가 요구하는 입력 정리.
-5. `findings.md`에 1~4 작성 + seam S1~S5 검증/수정 결론.
+1. **`PLAN.md` 작성 → 성민 리뷰·승인** (위 게이트). 승인 전 솔버 코드 작성 금지.
+2. miniconda env에 `physics-tenpy`, `netket` 설치 + import 스모크.
+3. `geometry.py`/`model.py`/`viewer.py` 구현 → **1D·2D geometry를 뷰어로 시각 확인**.
+4. **1D N=8**: ED(빌드)+DMRG+VMC GS → `crosscheck.py` 일치 + **XX점 머신정밀도**,
+   **Heisenberg점 1/4−ln2 외삽** 대조.
+5. **2D 4×4 PBC**: 동일 3방법 + 교차검증 (+ 뷰어로 2D geometry·MPS snake 확인).
+6. TeNPy/NetKet 패키지 구조 + 모델 정의 API 요구 입력 정리.
+7. `findings.md` 작성 + seam S1~S5 검증/수정 결론.
 
 ## 범위 밖 (하지 않음)
 
