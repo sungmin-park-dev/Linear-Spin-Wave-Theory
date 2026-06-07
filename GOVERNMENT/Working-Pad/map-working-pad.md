@@ -3,9 +3,9 @@ frontmatter-version: 1
 title: Map - working-pad
 section: working-pad
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-07
 must-read: GOVERNMENT/Working-Pad/TASK-QUEUE.md
 ---
 
@@ -26,6 +26,7 @@ LSWT 프로젝트의 진행 중 작업, 제안, 이슈, 검토 대기 문서를 
 | `issue-notes/` | 미해결/종결 이슈와 논의 기록. 색인: `issue-notes/map-issue-notes.md` |
 | `vault-staging/` | 정본 승격 전 사용자 승인 대기 문서. 색인: `vault-staging/map-vault-staging.md` |
 | `inbox/` | 아직 분류하지 않은 임시 캡처. 색인: `inbox/map-inbox.md` |
+| `roadmap.md` | 범용 2D 스핀 solver 최종 목표까지의 단계별 로드맵 |
 | `TASK-QUEUE.md` | 활성 작업 큐. 새 open 항목 추가/종결 시 함께 갱신 |
 | `map-working-pad.md` | This navigation file |
 
