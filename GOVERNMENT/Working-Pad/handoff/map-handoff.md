@@ -3,9 +3,9 @@ frontmatter-version: 1
 title: Map - handoff
 section: handoff
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-07
 ---
 
 # Map - handoff
@@ -21,6 +21,7 @@ updated: 2026-06-03
 | 파일 | 목적 | 상태 |
 |---|---|---|
 | `open/260603-next-chat-general-2d-spin-tool.md` | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | pending |
+| `open/260607-solver-seam-spike.md` | ED/TN/NQS로 작은 XXZ 모델을 풀어 시스템↔솔버 seam을 실측 검증(throwaway, codex 구현) | pending |
 
 ## Closed
 

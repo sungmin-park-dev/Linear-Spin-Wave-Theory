@@ -3,9 +3,9 @@ frontmatter-version: 1
 title: Task Queue
 section: working-pad
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-04
+updated: 2026-06-07
 ---
 
 # Task Queue
@@ -17,11 +17,12 @@ updated: 2026-06-04
 
 | 순위 | 유형 | 내용 | 상태 | 파일 |
 |---|---|---|---|---|
-| 1 | handoff | 범용 2D spin-system simulation tool 전환 작업 | pending | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
-| 2 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
-| 3 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
-| 4 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
-| 5 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
+| 1 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending | `handoff/open/260607-solver-seam-spike.md` |
+| 2 | handoff | 범용 2D spin-system simulation tool 전환 작업 | pending | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
+| 3 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
+| 4 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
+| 5 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
+| 6 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
 
 ## 동기화 규칙
 
