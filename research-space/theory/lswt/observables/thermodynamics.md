@@ -1,6 +1,6 @@
-# Thermodynamics in Linear Spin Wave Theory
+# Thermodynamics
 
-> Source: `research-space/sources/lswt/note_lswt_restructured.tex` §Thermodynamics in Linear Spin Wave Theory
+> Source: `/Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf` §Thermodynamics in Linear Spin Wave Theory
 > Status: Draft skeleton
 
 ## 작업 메모

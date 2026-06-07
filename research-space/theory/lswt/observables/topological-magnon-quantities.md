@@ -1,11 +1,10 @@
-# Appendix E: Topological Quantities
+# Topological Magnon Quantities
 
-> Source: `research-space/sources/lswt/note_lswt_restructured.tex` Appendix: Topological quantities
+> Source: `/Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf` §Skyrmions, Topological Magnons, and Hall Effects
 > Status: Draft skeleton
 
 ## 작업 메모
 
-- 성민 결정에 따라 topology는 appendix로 이식한다.
 - Skyrmion number
 - Chern number
 - Thermal Hall conductance

@@ -3,6 +3,10 @@
 이 문서는 현재 `research-space/theory/` 아래에 있는 Markdown 문서가 무엇을
 담고 있는지 파악하기 위한 audit이다. 아직 이론 내용 자체는 수정하지 않는다.
 
+> 2026-06-04 update: 이 audit은 번호형 파일 배치를 벗어나기 전의 상태를
+> 기록한 문서다. 현재 활성 구조는 `map-lswt.md`의 `foundations/`,
+> `derivation/`, `observables/`, `examples/`, `appendices/` 구성을 따른다.
+
 기준 소스:
 
 - `research-space/sources/lswt/note_lswt_restructured.tex`

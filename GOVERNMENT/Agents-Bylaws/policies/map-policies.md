@@ -19,6 +19,7 @@ LSWT 운영 문서의 구조, frontmatter, 이름 규칙을 정의하는 정책 
 |---|---|
 | `directory-structure-guide.md` | `GOVERNMENT/` 문서 배치 기준 |
 | `frontmatter-policy.md` | 운영 문서 frontmatter 기준 |
+| `lswt-writing-style.md` | LSWT 정본 문서 작성·교정 문체 기준 |
 | `naming-convention.md` | 파일·폴더·문서 이름 규칙 |
 | `map-policies.md` | This navigation file |
 

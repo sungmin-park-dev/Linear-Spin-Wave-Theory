@@ -5,7 +5,7 @@ section: idea-proposals
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-04
 ---
 
 # Map - idea-proposals
@@ -28,6 +28,7 @@ updated: 2026-06-03
 |---|---|---|
 | `2026-05-30-project-knowledge-philosophy.md` | Project Knowledge Philosophy - 프로젝트 정의 및 지식 관리 체계 | draft |
 | `260603-general-2d-spin-tool-migration-note.md` | 범용 2D 스핀 시스템 도구 전환 노트 | draft |
+| `2026-06-04-general-spin-model-ir.md` | General SpinModel IR | draft |
 
 ## Agent Instructions
 

@@ -1,11 +1,12 @@
-# Diagonalization
+# Paraunitary Diagonalization
 
-> Source: `research-space/sources/lswt/note_lswt_restructured.tex` §Diagonalization
+> Source: `/Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf` §Diagonalization of Quadratic Boson Hamiltonian, §Paraunitary Diagonalization
 > Status: Draft skeleton
 
 ## 작업 메모
 
 - Colpa algorithm
+- Bogoliubov transformation
 - Positive-definite condition and Goldstone-mode caveat
 - Validity and limitations
 

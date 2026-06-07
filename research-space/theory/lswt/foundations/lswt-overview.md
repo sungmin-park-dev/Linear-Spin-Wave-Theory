@@ -1,16 +1,16 @@
 ---
 frontmatter-version: 1
-title: Introduction
-section: theory/lswt
+title: LSWT Overview
+section: theory/lswt/foundations
 status: draft
 last-edited-by: codex
 created: 2026-06-03
 updated: 2026-06-04
-source: research-space/sources/lswt/note_lswt_restructured.tex
-source-section: Introduction
+source: /Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf
+source-section: Introduction to Spin Wave Theory
 ---
 
-# Introduction
+# LSWT Overview
 
 Linear Spin Wave Theory (LSWT) is a method for describing quantum fluctuations
 around a classically ordered magnetic state. The central idea is to choose a
@@ -28,7 +28,7 @@ state. The spin operators are expanded around this ordered state after choosing
 local spin frames aligned with the classical spin directions.
 
 The detailed Hamiltonian used for the derivation is introduced in
-`01_from_spins_to_bosons.md`.
+`bilinear-spin-hamiltonian.md`.
 
 ### Remark
 
@@ -39,7 +39,7 @@ fundamental restriction of LSWT.
 ## Overview of the LSWT Framework
 
 The LSWT construction in this document follows the structure of the source
-LaTeX note:
+note:
 
 1. Start from a spin Hamiltonian written in the laboratory frame.
 2. Choose a classical magnetic structure and rotate each spin into its local
@@ -56,5 +56,5 @@ from spin operators to bosonic degrees of freedom.
 
 ## Reference
 
-- Physical quantities are organized in `03_physical_quantities.md` and the
-  following observable-specific sections.
+- Physical quantities are organized in `../observables/magnon-observables.md`
+  and the following observable-specific sections.

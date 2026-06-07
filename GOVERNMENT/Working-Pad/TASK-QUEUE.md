@@ -5,7 +5,7 @@ section: working-pad
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-04
 ---
 
 # Task Queue
@@ -20,7 +20,8 @@ updated: 2026-06-03
 | 1 | handoff | 범용 2D spin-system simulation tool 전환 작업 | pending | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
 | 2 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
 | 3 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
-| 4 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
+| 4 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
+| 5 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
 
 ## 동기화 규칙
 
