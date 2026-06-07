@@ -86,8 +86,11 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
 
 ## 산출물 / 환경
 
-- 위치: `doc-space/spikes/seam-analysis/` (버리는 스파이크임을 README에 명시):
+- **위치: 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space` 밖의 버리는
+  탐색 코드. `README.md`에 "findings 기록 후 폴더째 삭제 가능" 명시):
   `ed.py`, `tenpy_dmrg.py`, `netket_vmc.py`, `crosscheck.py`, `findings.md`.
+- **결론 승격:** 스파이크 종료 시 `findings.md`(교훈)는 `research-space/`로 승격하고
+  `sandbox/solver-seam-xxz/` 코드는 삭제 가능. (코드는 버리고 결론만 남김)
 - 환경: miniconda env(`/Users/david/miniconda3/bin/python`)에
   `pip install physics-tenpy netket`. 설치 버전을 `findings.md`에 기록.
 
