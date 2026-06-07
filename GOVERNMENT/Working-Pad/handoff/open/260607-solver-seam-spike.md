@@ -92,6 +92,23 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
   arXiv:cond-mat/9809162** (Heisenberg 바닥에너지 ¼−ln2 단계별 유도);
   XXZ 일반 Δ 공식은 integrability.org XXZ 페이지 / Takahashi 교과서.
 
+## Bethe ansatz 정확해 정리 (`bethe-ansatz-xxz.md`, durable → research-space/theory/)
+
+검증값의 *근거가 되는 정확해*를 별도 이론 노트로 정리한다. **버리지 않는다** —
+스파이크 종료 시 `research-space/theory/`(예: `exact-benchmarks/`, 위치는 codex/성민
+확정)로 승격. `exact_xxz.py`는 이 노트의 식을 구현한 것.
+
+담을 내용:
+- 모델·convention 명시: H = Σ[SˣSˣ+SʸSʸ + Δ SᶻSᶻ], Δ=Jz/Jxy.
+- **XX점(Δ=0):** Jordan-Wigner → 자유페르미온. ε(k)=cos k, 바닥=음에너지 모드 채움.
+  **유한-N 닫힌형**(PBC fermion-parity 주의) + 열역학극한 −1/π. (머신정밀도 검증 근거)
+- **Heisenberg점(Δ=1):** Bethe ansatz 바닥에너지 1/4−ln2 (Hulthén; Karbach-Müller 유도).
+- **일반 −1<Δ<1:** Yang-Yang II 적분 닫힌형(Δ=cos γ 매개). **출처 확인 후 정확히
+  전사**(메모리로 적지 말 것) — Takahashi / integrability.org 대조.
+- **유한크기 보정:** c=1 CFT, E(N)/N = e∞ + a/N² + … (유한 N ≠ 열역학극한 이유).
+- 레퍼런스: Bethe 1931; Hulthén 1938; Yang-Yang 1966 (Phys. Rev. 150, 321 & 327);
+  Karbach-Müller arXiv:cond-mat/9809162.
+
 ## 산출물 / 환경
 
 **위치: 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space` 밖의 버리는 탐색
@@ -110,6 +127,7 @@ sandbox/solver-seam-xxz/
 ├── tenpy_dmrg.py   # TeNPy DMRG → GS
 ├── netket_vmc.py   # NetKet VMC → GS
 ├── exact_xxz.py    # exact 1D XXZ 체크값 (XX 유한-N, Heisenberg 1/4-ln2)
+├── bethe-ansatz-xxz.md  # ★ durable 이론 정리 (→ research-space/theory/)
 ├── crosscheck.py   # 세 솔버 + exact 비교표
 └── findings.md     # 결론 (→ research-space 승격)
 ```
@@ -163,10 +181,11 @@ Geometry를 *눈으로* 검증하기 위한 뷰어. 목적: (a) 세 솔버가 **
 2. miniconda env에 `physics-tenpy`, `netket` 설치 + import 스모크.
 3. `geometry.py`/`model.py`/`viewer.py` 구현 → **1D·2D geometry를 뷰어로 시각 확인**.
 4. **1D N=8**: ED(빌드)+DMRG+VMC GS → `crosscheck.py` 일치 + **XX점 머신정밀도**,
-   **Heisenberg점 1/4−ln2 외삽** 대조.
+   **Heisenberg점 1/4−ln2 외삽** 대조. (`exact_xxz.py` 구현 + `bethe-ansatz-xxz.md` 정리)
 5. **2D 4×4 PBC**: 동일 3방법 + 교차검증 (+ 뷰어로 2D geometry·MPS snake 확인).
 6. TeNPy/NetKet 패키지 구조 + 모델 정의 API 요구 입력 정리.
-7. `findings.md` 작성 + seam S1~S5 검증/수정 결론.
+7. `findings.md` 작성 + seam S1~S5 검증/수정 결론. **durable 노트(`findings.md`,
+   `bethe-ansatz-xxz.md`)를 `research-space/`로 승격.**
 
 ## 범위 밖 (하지 않음)
 
