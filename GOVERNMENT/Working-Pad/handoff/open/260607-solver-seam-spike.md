@@ -1,6 +1,6 @@
 ---
 frontmatter-version: 1
-title: Solver Seam Spike - ED / TN / NQS empirical seam verification
+title: Solver Seam Spike - XXZ multi-solver (reuse Tensor-Network-Study)
 section: handoff/open
 status: draft
 execution-status: pending
@@ -8,202 +8,140 @@ last-edited-by: claude
 created: 2026-06-07
 updated: 2026-06-07
 branch: main
+cross-repo: ~/GitHub/Tensor-Network-Study
 ---
 
-# Solver Seam Spike — ED / TN / NQS 실측 seam 검증
+# Solver Seam Spike — XXZ 멀티솔버 (TN-Study 하네스 재사용)
 
 ## 목적 (Goal)
 
-LSWT 코드를 "시스템 정의 ↔ 솔버 엔진"으로 재구성하기 전에, **각 솔버가
-'시스템'에서 무엇을 읽는지를 실측으로 검증**한다. 현재 seam 지도(아래 S1~S5)는
-TeNPy/NetKet *문서*와 일반 지식 기반의 armchair 분석이라, ED·TN·NQS로 작은
-모델을 실제로 풀어 검증·수정한다.
+LSWT 코드를 "시스템 정의 ↔ 솔버 엔진"으로 재구성하기 전에, **각 솔버가 '시스템'에서
+무엇을 읽는지를 실측 검증**한다(seam 지도 S1~S5). 작은 XXZ 모델을 ED·DMRG·NQS로
+풀고 exact 1D XXZ(Bethe)와 대조한다.
 
-- **탐색 스파이크** — 프로덕션 솔버 아님, 우리 패키지 리팩터 아님. 단 **코드를 버리지
-  않는다**: publishable 품질로 작성해 추후 **포스팅/튜토리얼 후보**로 보존·승격.
-- 산출물: seam 검증(`findings.md`) + 정확해 정리(`bethe-ansatz-xxz.md`) + 다듬은 코드
-  (포스팅 후보). seam 결론은 Phase 0 재구성 plan 입력.
-- 부산물: TeNPy/NetKet *자체 패키지 구조* = 우리 seam 배치의 실전 레퍼런스.
+- **그린필드 아님 — 기존 자산 재사용·개선:** `~/GitHub/Tensor-Network-Study`의
+  `Projects/Cluster_Ising/main.py`가 이미 **Exact/ED/DMRG/NQS 멀티솔버 벤치마크
+  하네스**(TeNPy+NetKet, 표·플롯·CLI). 이를 재사용해 XXZ 프로젝트를 만든다.
+- **작업 위치 = Tensor-Network-Study** (그 리포의 publishable 학습 자산을 개선).
+- **LSWT로 돌려보낼 산출물:** seam 결론(`findings.md`) + Bethe 정확해 노트
+  (`bethe-ansatz-xxz.md`) → **LSWT `research-space/`**.
+
+## 기존 자산 재사용 (`~/GitHub/Tensor-Network-Study`)
+
+- `Projects/Cluster_Ising/main.py` (634줄): `run_exact()`, `run_solver(name,…)`
+  (ED/DMRG/NQS 디스패치), 결과표·플롯(λ/size sweep, NQS 수렴), argparse CLI.
+  deps: `physics-tenpy` + numpy/scipy/matplotlib (+ NQS는 jax/netket).
+  → **하네스(솔버 통합·플롯·CLI)를 재사용**, 모델만 XXZ로 교체 + geometry/뷰어/seam 추가.
+- `src/{tn_core,models,observables}/`는 **빈 스켈레톤** — 채워야 하면 이 기회에.
+- 참고: `Tutorials/Notebooks/TNTs-1..4.ipynb`, `~/GitHub/nqs-learning/NQS_Tutorial01_1D_TFIM.ipynb`,
+  `~/GitHub/ITensor-Tutorial`.
+- ※ TN-study는 별도 repo(고유 구조·conventions) — 그 리포 관례를 따른다.
 
 ## 검증 대상 — seam 지도 (S1~S5)
 
-| Seam | 무엇을 분리 | 검증 질문 |
+| Seam | 분리 대상 | 검증 질문 |
 |---|---|---|
-| S1 Term 연산자 내용 | term의 연산자 내용(수치 J ↔ named-op) | ED/TN/NQS는 정말 named-op를 요구하나? 변환 경계는? |
-| S2 LocalSpace | 국소 자유도(S·dim·연산자 basis)를 Site 위치/순서와 분리 | 각 솔버가 LocalSpace로 뭘 요구하나(dim·연산자·charge)? |
-| S3 Geometry base vs 파생 view | base(격자·이웃·BC) ↔ 파생(BZ / MPS 1D순서 / graph) | TN의 2D→1D ordering, NQS graph가 어떻게 들어오나? |
-| S4 자기질서/고전최적화 = LSWT단계 | system 정의에서 분리(전처리) | ED/TN/NQS가 정말 자기질서 불필요한가(확인)? |
-| S5 관측량 스키마 vs 계산 | 공통 결과형 ↔ 방법별 계산 | 각 솔버 결과/관측량 형태가 얼마나 다른가? |
+| S1 Term 연산자 내용 | 수치 J ↔ named-op | ED/DMRG/NQS는 named-op를 요구? 변환 경계? |
+| S2 LocalSpace | S·dim·연산자 basis | 각 솔버가 LocalSpace로 뭘 요구(dim·연산자·charge)? |
+| S3 Geometry base vs 파생 | base(격자·이웃·BC) ↔ BZ/MPS순서/graph | TN의 2D→1D ordering, NQS graph가 어떻게? |
+| S4 자기질서/고전최적화 = LSWT단계 | system 정의에서 분리 | ED/TN/NQS는 정말 자기질서 불필요? |
+| S5 관측량 스키마 vs 계산 | 공통 결과형 ↔ 방법별 계산 | 결과/관측량 형태가 얼마나 다른가? |
 
-(전체 맥락: `GOVERNMENT/Working-Pad/roadmap.md` Phase 0)
+(맥락: LSWT `GOVERNMENT/Working-Pad/roadmap.md` Phase 0)
 
-## 모델 (하나로 고정, 차원은 스테이지)
+## 모델 (스테이지 1D → 2D)
 
-spin-½, **XXZ + 종방향 자기장**, PBC:
+spin-½, XXZ + 종자장, PBC:
+H = Σ_<ij> [ Jxy(SˣSˣ+SʸSʸ) + Jz SᶻSᶻ ] − h Σ_i Sᶻ.
 
-H = Σ_<ij> [ Jxy (Sx_i Sx_j + Sy_i Sy_j) + Jz Sz_i Sz_j ] − h Σ_i Sz_i
+- **차원 스테이지:** ① 1D 사슬 N=8(스모크·toolchain) → ② 2D 정사각 4×4 PBC(seam 본 분석).
+  geometry는 **인자**로(같은 코드, 격자만 교체). **1D→2D 코드 diff가 Geometry seam(S3)
+  관찰 데이터**: ED=edge 리스트, TeNPy=2D Lattice+MPS snake, NetKet=graph.
+- 파라미터: `(Jxy=1, Jz=1, h=0)` Heisenberg / `(1, 0.5, 0)` XXZ / `(1, 1, 0.5)` +field.
+- probe: 횡자장 `h_x` → TeNPy Sz charge-conservation on/off seam.
 
-- **차원 = 스테이지 1D → 2D:**
-  1. **1D 사슬 N=8** — toolchain/설치/API/교차검증을 싸게 확정(스모크).
-  2. **2D 정사각 4×4 PBC** — geometry / MPS-1D-ordering seam 본 분석.
-- 파라미터 세트: `(Jxy=1, Jz=1, h=0)` Heisenberg / `(1, 0.5, 0)` XXZ / `(1, 1, 0.5)` +field.
-- **probe 옵션:** 횡자장 `h_x` 추가 → TeNPy의 Sz charge-conservation on/off seam 확인.
-- **구현 방식:** 1D·2D는 *같은 솔버 파일*(`ed.py`/`tenpy_dmrg.py`/`netket_vmc.py`)에서
-  geometry를 **인자로** 받아 처리(스테이지 = 실행 순서일 뿐, 별도 코드 아님).
-  **각 프레임워크에서 1D→2D 시 바뀌는 코드 자체가 Geometry seam(S3) 관찰 데이터**:
-  ED는 edge 리스트만, TeNPy는 2D Lattice + 2D→1D MPS ordering(snake), NetKet은 graph
-  교체. 이 1D↔2D diff를 프레임워크별로 `findings.md`에 기록.
+## 솔버 / 교차검증
 
-## 무엇을 설치 vs 빌드
-
-| 방법 | 결정 | 비고 |
-|---|---|---|
-| ED | **직접 빌드** (numpy + `scipy.sparse.linalg.eigsh`) | 정확 기준 + "system에서 뭘 읽나"를 투명하게 작성 |
-| TN | **TeNPy 설치** (`physics-tenpy`), DMRG GS | 모듈 구조(Site/Lattice/Model/Algorithm) 공부 대상 |
-| NQS | **NetKet 설치** (`netket`→jax), VMC GS | 모듈 구조(Hilbert/Graph/Operator/Driver) 공부 대상 |
-| (QuSpin) | 선택: 구조 참고만 | ED 레퍼런스 곁눈질 |
-
-## 교차검증
-
-세 방법 바닥상태 에너지/site 비교. **ED = 유한-N 정확 기준.** DMRG ≈ ED (~1e-6),
-VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자체가 seam 정보.
+- Cluster_Ising의 `run_exact`/`run_solver`(ED/DMRG/NQS)를 **재사용** — 모델을 XXZ로 교체.
+  ED는 hand-built(투명성) 또는 하네스 기존 ED 재사용 중 PLAN.md에서 결정.
+- 비교: **ED = 유한-N 정확 기준**, DMRG ≈ ED(~1e-6), VMC ≈ ED(오차 내 ~1%).
 
 ## 검증 기준 — exact 1D XXZ (Bethe ansatz)
 
-1D 스테이지는 **해석적 정답과도 대조**한다(세 솔버 상호일치만으로는 *공유 버그*를
-못 잡으므로 독립 기준 필요). convention: H = Σ[SˣSˣ+SʸSʸ + Δ SᶻSᶻ], Δ=Jz/Jxy.
+세 솔버 상호일치만으로는 *공유 버그*를 못 잡으므로 **해석적 정답과도 대조**.
+convention: Δ=Jz/Jxy.
 
 | 점 | 열역학극한 E/N | 근거 |
 |---|---|---|
 | Δ=1 (Heisenberg AFM) | 1/4 − ln2 ≈ −0.443147 | Hulthén 1938 |
 | Δ=0 (XX) | −1/π ≈ −0.318310 | 자유페르미온(JW) |
 
-**주의:** 위 값은 N→∞. 유한 N=8 PBC는 1/N²(c=1 CFT) 보정이 있어 *정확히* 그 값이
-아님. 그래서 두 갈래로:
-- **XX점(Δ=0):** 자유페르미온 유한-N 닫힌형 `E₀ = Σ_{k: cos k<0} cos k`,
-  `k=2πm/N`, PBC fermion-parity 주의 → **ED와 머신정밀도(~1e-12) 일치** 요구.
-  연산자 구성·JW까지 잡는 가장 강한 독립 검증.
-- **Heisenberg점(Δ=1):** 열역학극한 1/4−ln2를 **외삽 앵커**로. N=8,12,16…에서
-  ED/DMRG가 1/N²로 수렴하는지 확인. (더 엄밀히는 Yang-Yang I의 유한-N Bethe
-  방정식을 풀어 정확 유한-N 값과 대조 — 선택)
+**주의:** 위 값은 N→∞. 유한 N=8은 1/N²(c=1 CFT) 보정. →
+- **XX점:** 자유페르미온 **유한-N 닫힌형**(PBC parity 주의) → ED와 **머신정밀도(~1e-12)** 일치.
+- **Heisenberg점:** 1/4−ln2를 **외삽 앵커**(N=8,12,16 수렴).
 
-레퍼런스: Bethe 1931; Hulthén 1938; **Yang & Yang, Phys. Rev. 150, 321 (1966)
-[I, 유한계] & 327 (1966) [II, 무한계]**. 일반 Δ(예: 0.5) 적분 닫힌형은 Yang-Yang II
-— 필요 시 출처 확인해 추가.
-- 무료·교육용 (실제 유도): **Karbach & Müller, "Introduction to the Bethe Ansatz I",
-  arXiv:cond-mat/9809162** (Heisenberg 바닥에너지 ¼−ln2 단계별 유도);
-  XXZ 일반 Δ 공식은 integrability.org XXZ 페이지 / Takahashi 교과서.
+## Bethe ansatz 정확해 정리 (`bethe-ansatz-xxz.md`, durable → LSWT research-space/theory/)
 
-## Bethe ansatz 정확해 정리 (`bethe-ansatz-xxz.md`, durable → research-space/theory/)
+검증값의 근거가 되는 정확해를 **버리지 않는 이론 노트**로 정리. `exact_xxz` 코드가
+이를 구현. 담을 내용: 모델·convention / XX점(JW 자유페르미온, 유한-N + −1/π) /
+Heisenberg점(1/4−ln2) / 일반 −1<Δ<1(Yang-Yang II 적분 — **출처 확인 후 정확히
+전사, 메모리로 쓰지 말 것**) / 유한크기 c=1 CFT 보정 / 레퍼런스(Bethe 1931; Hulthén
+1938; Yang-Yang Phys. Rev. 150, 321 & 327 (1966); Karbach-Müller arXiv:cond-mat/9809162).
 
-검증값의 *근거가 되는 정확해*를 별도 이론 노트로 정리한다. **버리지 않는다** —
-스파이크 종료 시 `research-space/theory/`(예: `exact-benchmarks/`, 위치는 codex/성민
-확정)로 승격. `exact_xxz.py`는 이 노트의 식을 구현한 것.
+## 산출물 / 위치
 
-담을 내용:
-- 모델·convention 명시: H = Σ[SˣSˣ+SʸSʸ + Δ SᶻSᶻ], Δ=Jz/Jxy.
-- **XX점(Δ=0):** Jordan-Wigner → 자유페르미온. ε(k)=cos k, 바닥=음에너지 모드 채움.
-  **유한-N 닫힌형**(PBC fermion-parity 주의) + 열역학극한 −1/π. (머신정밀도 검증 근거)
-- **Heisenberg점(Δ=1):** Bethe ansatz 바닥에너지 1/4−ln2 (Hulthén; Karbach-Müller 유도).
-- **일반 −1<Δ<1:** Yang-Yang II 적분 닫힌형(Δ=cos γ 매개). **출처 확인 후 정확히
-  전사**(메모리로 적지 말 것) — Takahashi / integrability.org 대조.
-- **유한크기 보정:** c=1 CFT, E(N)/N = e∞ + a/N² + … (유한 N ≠ 열역학극한 이유).
-- 레퍼런스: Bethe 1931; Hulthén 1938; Yang-Yang 1966 (Phys. Rev. 150, 321 & 327);
-  Karbach-Müller arXiv:cond-mat/9809162.
+- **코드 → `~/GitHub/Tensor-Network-Study`** 에 새 프로젝트(예: `Projects/XXZ_Multisolver/`,
+  이름·구조는 PLAN.md에서 TN-study 관례 따라 확정). Cluster_Ising 하네스 재사용 +
+  `geometry`(1D/2D), `viewer`, `exact_xxz`, seam 추출 추가. **publishable 품질**(아래).
+- **LSWT로 승격:** `findings.md`(seam S1~S5 결론) + `bethe-ansatz-xxz.md` →
+  LSWT `research-space/`(예: `research-space/theory/exact-benchmarks/`, 위치 성민 확정).
+- 환경: miniconda env(`/Users/david/miniconda3/bin/python`)에 `physics-tenpy`,
+  `netket` 설치(Cluster_Ising `requirements.txt` 참고). 버전을 `findings.md`에 기록.
 
-## 산출물 / 환경
+## 시스템/Geometry 뷰어 (`viewer`)
 
-**개발 위치(workshop): 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space`와
-분리. `README.md`에 "탐색 코드지만 publishable 품질 — 포스팅/튜토리얼 후보" 명시).
+Geometry를 *눈으로* 검증: (a) 세 솔버가 같은 계를 푸는지, (b) Geometry seam 가시화.
+- 공통 geometry의 **sites + bonds** 플롯(1D/2D, PBC 결합, 인덱스·부분격자 라벨).
+- **파생 view overlay:** TeNPy 2D→1D **MPS snake 경로**, NetKet **graph edges**.
+- PNG 저장 + `findings.md`/글에서 참조. (옵션: 스핀/자기장 방향)
 
-제안 파일 구조 (상세·확정은 `PLAN.md`에서 codex가 작성):
+## 코드 품질 / 포스팅
 
-```text
-sandbox/solver-seam-xxz/
-├── PLAN.md         # ★ 구현 전 상세 설계 — 성민 리뷰 게이트 (아래 절)
-├── README.md       # 포스팅 후보 명시 + 재현 절차(설치·실행)
-├── geometry.py     # 공통 geometry: 1D chain N / 2D square LxL (PBC) → sites + bonds
-├── model.py        # 공통 XXZ 파라미터 (Jxy, Jz, h[, hx]) — geometry 독립
-├── viewer.py       # ★ 시스템/geometry 뷰어 (아래 절)
-├── ed.py           # hand-built ED → GS
-├── tenpy_dmrg.py   # TeNPy DMRG → GS
-├── netket_vmc.py   # NetKet VMC → GS
-├── exact_xxz.py    # exact 1D XXZ 체크값 (XX 유한-N, Heisenberg 1/4-ln2)
-├── bethe-ansatz-xxz.md  # ★ durable 이론 정리 (→ research-space/theory/)
-├── crosscheck.py   # 세 솔버 + exact 비교표
-└── findings.md     # 결론 (→ research-space 승격)
-```
+TN-study는 이미 publishable 학습 리포. 그 톤으로 작성:
+- 명료성(docstring·좋은 이름), 자기완결·재현성(seed 고정, 버전 명시, 재현 절차),
+  서사 일관성(ED/DMRG/NQS *동일 흐름* geometry→model→solve→check — "비교"가 핵심),
+  정확성 축 = exact 1D XXZ(Bethe). 단 **과도한 일반화 금지**(작은 스파이크).
 
-- **승격 (삭제 X):** 종료 시 `findings.md`(seam 결론)·`bethe-ansatz-xxz.md`(정확해)는
-  `research-space/`로, **다듬은 코드는 포스팅/튜토리얼 위치로 승격**(위치는 완료 시
-  성민 확정 — 예: `doc-space/`). **코드를 버리지 않는다.**
-- 환경: miniconda env(`/Users/david/miniconda3/bin/python`)에
-  `pip install physics-tenpy netket`. 설치 버전을 `findings.md`에 기록.
+## 구현 전 게이트 — `PLAN.md` (성민 리뷰 필수)
 
-## 코드 품질 / 포스팅 후보
+코딩 전 codex는 TN-study 새 프로젝트 안에 **`PLAN.md`를 먼저 작성**한다. 성민이
+*파일을 직접 읽고 이해할 만큼 상세히*:
+- Cluster_Ising에서 **무엇을 재사용/리팩터**하고 무엇이 새로운지,
+- 각 파일 책임·공개 함수·입출력 / geometry·model의 데이터 흐름 / 1D↔2D 파라미터화,
+- `viewer`가 무엇을 그리는지 / `exact_xxz`·crosscheck 판정 기준,
+- LSWT로 승격할 `findings.md`·`bethe-ansatz-xxz.md` 형식.
 
-이 코드는 버리지 않고 추후 **포스팅(블로그/튜토리얼)** 으로 쓸 수 있게 작성한다:
-- **명료성:** 각 파일·함수에 docstring, 의도가 드러나는 이름, 과한 한 줄 트릭 금지.
-- **자기완결·재현성:** seed 고정, 의존 버전 명시, `README.md`에 설치·실행을 한 번에
-  따라할 수 있는 절차. viewer PNG·교차검증 표가 그대로 글에 들어갈 수 있게.
-- **서사 일관성:** 같은 모델을 ED/DMRG/VMC로 푸는 *동일 흐름*(geometry→model→solve
-  →check)을 세 파일에 평행하게 — "비교"가 글의 핵심이 되도록.
-- **정확성 축:** exact 1D XXZ(Bethe ansatz) 대조를 글의 검증 축으로.
-- 단, **과도한 일반화 금지**(여전히 작은 스파이크). "읽기 좋고 재현되는" 수준이면 충분.
-
-## 시스템/Geometry 뷰어 (`viewer.py`)
-
-Geometry를 *눈으로* 검증하기 위한 뷰어. 목적: (a) 세 솔버가 **같은 계**를 푸는지
-시각 확인, (b) Geometry seam을 눈에 보이게.
-
-- 공통 `geometry.py`의 **sites + bonds**를 플롯: 1D 사슬, 2D 정사각(PBC 결합 포함),
-  사이트 인덱스·부분격자 라벨.
-- **프레임워크 파생 view overlay** (seam 가시화):
-  - TeNPy: 2D→1D **MPS ordering(snake) 경로**를 2D 격자 위에 그림.
-  - NetKet: **graph edges**.
-- 출력 PNG를 폴더에 저장 + `findings.md`에서 참조. (옵션: 스핀/자기장 방향 표시)
-
-## findings.md — 핵심 산출물 (각 솔버: ED/TN/NQS, + LSWT는 기존 코드 대조)
-
-1. **모델 정의에 반드시 입력하는 것** → 5요소(LocalSpace/SiteSet/Geometry/Term/
-   Parameters)에 매핑.
-2. **솔버가 파생하는 것**(=system 아님): Hilbert basis / MPS 1D순서 /
-   graph+symmetry / ansatz / sampler.
-3. **라이브러리 자체 모듈 구조** → 우리 seam 배치 레퍼런스로 요약.
-4. **seam S1~S5 검증/수정** + symmetry·charge-conservation seam 특별 확인.
-
-## 알려진 리스크
-
-- NetKet 설치가 jax 의존으로 무겁/느릴 수 있음. TeNPy 2D DMRG는 bond-dim 필요
-  (4×4는 가능). VMC는 변분이라 ED와 정확히 안 맞음(오차 내 일치로 판정).
-- 비결정성(VMC seed) — seed 고정해 재현.
-
-## 구현 전 게이트 — 파일구조 계획 (`PLAN.md`, 성민 리뷰 필수)
-
-코딩 전에 codex는 **`PLAN.md`를 먼저 작성**한다. 성민이 *파일을 직접 읽고 이해할 수
-있을 만큼 상세히*:
-- 각 파일의 책임 / 공개 함수·클래스 / 입출력,
-- `geometry.py`·`model.py`가 세 솔버로 어떻게 흐르는지(데이터 흐름),
-- geometry가 1D↔2D로 어떻게 파라미터화되는지,
-- `viewer.py`가 무엇을 어떻게 그리는지,
-- `exact_xxz.py`·`crosscheck.py`의 판정 기준.
-
-**성민 리뷰·승인 후에야 실제 솔버 코드 구현 시작.** (CLAUDE.md 제안-우선 원칙)
+**성민 리뷰·승인 후에야 솔버 코드 구현 시작.** (제안-우선)
 
 ## 첫 실행 순서
 
-1. **`PLAN.md` 작성 → 성민 리뷰·승인** (위 게이트). 승인 전 솔버 코드 작성 금지.
-2. miniconda env에 `physics-tenpy`, `netket` 설치 + import 스모크.
-3. `geometry.py`/`model.py`/`viewer.py` 구현 → **1D·2D geometry를 뷰어로 시각 확인**.
-4. **1D N=8**: ED(빌드)+DMRG+VMC GS → `crosscheck.py` 일치 + **XX점 머신정밀도**,
-   **Heisenberg점 1/4−ln2 외삽** 대조. (`exact_xxz.py` 구현 + `bethe-ansatz-xxz.md` 정리)
-5. **2D 4×4 PBC**: 동일 3방법 + 교차검증 (+ 뷰어로 2D geometry·MPS snake 확인).
-6. TeNPy/NetKet 패키지 구조 + 모델 정의 API 요구 입력 정리.
-7. `findings.md` 작성 + seam S1~S5 검증/수정 결론. **durable 노트(`findings.md`,
-   `bethe-ansatz-xxz.md`)를 `research-space/`로 승격.**
+1. **`PLAN.md` 작성 → 성민 리뷰·승인** (위 게이트). 승인 전 코드 작성 금지.
+2. `Projects/Cluster_Ising` 하네스 구조 파악 + env(`physics-tenpy`,`netket`) 설치·스모크.
+3. XXZ 프로젝트 골격: `geometry`/`model`/`viewer` + 하네스 재사용 →
+   **1D·2D geometry를 뷰어로 시각 확인**.
+4. **1D N=8**: ED+DMRG+VMC GS 교차검증 + **XX점 머신정밀도**, **Heisenberg점 1/4−ln2 외삽**
+   (`exact_xxz` 구현 + `bethe-ansatz-xxz.md` 정리).
+5. **2D 4×4 PBC**: 동일 3방법 + 교차검증 (+ 뷰어로 2D·MPS snake 확인).
+6. TeNPy/NetKet(+Cluster_Ising 하네스) 구조 + 모델정의 API 요구 입력 정리.
+7. `findings.md`(seam S1~S5) 작성 → **LSWT `research-space/`로 `bethe-ansatz-xxz.md`와 함께 승격.**
+
+## 알려진 리스크
+
+- NetKet/jax 설치 무게. 2D DMRG bond-dim(4×4 가능). VMC는 변분 → 오차 내 일치로 판정.
+- 크로스레포: 코드=TN-study, 결론=LSWT. 두 repo 혼동 주의.
+- 비결정성(VMC seed) 고정.
 
 ## 범위 밖 (하지 않음)
 
-- 프로덕션 ED/TN/NQS 솔버 구현 / 우리 `lswt` 패키지 리팩터 — 안 함. 과도한 일반화 금지.
-- seam 결론(`findings.md`)은 Phase 0 재구성 plan 입력. (코드·정확해 노트는 포스팅/
-  research로 보존 — 별개 산출물)
+- 프로덕션 ED/TN/NQS 솔버 / LSWT `lswt` 패키지 리팩터 — 안 함. 과도한 일반화 금지.
+- seam 결론은 Phase 0 재구성 plan 입력. (코드는 TN-study 자산으로 보존)

@@ -21,7 +21,7 @@ updated: 2026-06-07
 | 파일 | 목적 | 상태 |
 |---|---|---|
 | `open/260603-next-chat-general-2d-spin-tool.md` | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | pending |
-| `open/260607-solver-seam-spike.md` | ED/TN/NQS로 작은 XXZ 모델을 풀어 시스템↔솔버 seam을 실측 검증(코드는 포스팅 후보로 보존, codex 구현) | pending |
+| `open/260607-solver-seam-spike.md` | XXZ를 ED/DMRG/NQS로 풀어 시스템↔솔버 seam 실측 검증 — Tensor-Network-Study의 Cluster_Ising 하네스 재사용(코드는 TN-study), seam findings·Bethe 노트는 LSWT research-space로 (codex) | pending |
 
 ## Closed
 
