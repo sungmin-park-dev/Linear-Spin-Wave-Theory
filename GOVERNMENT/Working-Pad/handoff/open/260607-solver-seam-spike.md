@@ -26,6 +26,16 @@ LSWT 코드를 "시스템 정의 ↔ 솔버 엔진"으로 재구성하기 전에
 - **LSWT로 돌려보낼 산출물:** seam 결론(`findings.md`) + Bethe 정확해 노트
   (`bethe-ansatz-xxz.md`) → **LSWT `research-space/`**.
 
+## 작업 레포 (codex) — 어디서 여나
+
+**`~/GitHub/Tensor-Network-Study`에서 연다.** 코드·`PLAN.md`·하네스 재사용이 모두
+거기고, 그 리포의 conventions를 따르며 **코드 커밋은 TN-study repo**로 간다.
+LSWT는 **양 끝(bookend)만** 건드린다:
+- 시작: LSWT의 이 핸드오프를 읽어 스펙 확보.
+- 끝: `findings.md` + `bethe-ansatz-xxz.md`를 LSWT `research-space/`에 쓰고,
+  이 핸드오프를 `closed/`로 이동 + `TASK-QUEUE.md` 갱신. (결론 커밋 = LSWT repo)
+- 두 repo는 git이 별개 — **코드=TN-study / 결론=LSWT**.
+
 ## 기존 자산 재사용 (`~/GitHub/Tensor-Network-Study`)
 
 - `Projects/Cluster_Ising/main.py` (634줄): `run_exact()`, `run_solver(name,…)`
