@@ -19,8 +19,10 @@ LSWT 코드를 "시스템 정의 ↔ 솔버 엔진"으로 재구성하기 전에
 TeNPy/NetKet *문서*와 일반 지식 기반의 armchair 분석이라, ED·TN·NQS로 작은
 모델을 실제로 풀어 검증·수정한다.
 
-- **버리는(throwaway) 스파이크.** 프로덕션 솔버 아님, 우리 패키지 리팩터 아님.
-- 산출물(`findings.md`)은 **Phase 0 재구성 plan의 입력**으로만 쓴다.
+- **탐색 스파이크** — 프로덕션 솔버 아님, 우리 패키지 리팩터 아님. 단 **코드를 버리지
+  않는다**: publishable 품질로 작성해 추후 **포스팅/튜토리얼 후보**로 보존·승격.
+- 산출물: seam 검증(`findings.md`) + 정확해 정리(`bethe-ansatz-xxz.md`) + 다듬은 코드
+  (포스팅 후보). seam 결론은 Phase 0 재구성 plan 입력.
 - 부산물: TeNPy/NetKet *자체 패키지 구조* = 우리 seam 배치의 실전 레퍼런스.
 
 ## 검증 대상 — seam 지도 (S1~S5)
@@ -111,15 +113,15 @@ VMC ≈ ED (VMC 오차 내, ~1%). 불일치 시 모델 정의 차이 → 그 자
 
 ## 산출물 / 환경
 
-**위치: 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space` 밖의 버리는 탐색
-코드. `README.md`에 "findings 기록 후 폴더째 삭제 가능" 명시).
+**개발 위치(workshop): 최상위 `sandbox/solver-seam-xxz/`** (canonical `*-space`와
+분리. `README.md`에 "탐색 코드지만 publishable 품질 — 포스팅/튜토리얼 후보" 명시).
 
 제안 파일 구조 (상세·확정은 `PLAN.md`에서 codex가 작성):
 
 ```text
 sandbox/solver-seam-xxz/
 ├── PLAN.md         # ★ 구현 전 상세 설계 — 성민 리뷰 게이트 (아래 절)
-├── README.md       # throwaway 명시 + 실행법
+├── README.md       # 포스팅 후보 명시 + 재현 절차(설치·실행)
 ├── geometry.py     # 공통 geometry: 1D chain N / 2D square LxL (PBC) → sites + bonds
 ├── model.py        # 공통 XXZ 파라미터 (Jxy, Jz, h[, hx]) — geometry 독립
 ├── viewer.py       # ★ 시스템/geometry 뷰어 (아래 절)
@@ -132,9 +134,22 @@ sandbox/solver-seam-xxz/
 └── findings.md     # 결론 (→ research-space 승격)
 ```
 
-- **결론 승격:** 종료 시 `findings.md`(교훈)는 `research-space/`로 승격, 코드는 삭제 가능.
+- **승격 (삭제 X):** 종료 시 `findings.md`(seam 결론)·`bethe-ansatz-xxz.md`(정확해)는
+  `research-space/`로, **다듬은 코드는 포스팅/튜토리얼 위치로 승격**(위치는 완료 시
+  성민 확정 — 예: `doc-space/`). **코드를 버리지 않는다.**
 - 환경: miniconda env(`/Users/david/miniconda3/bin/python`)에
   `pip install physics-tenpy netket`. 설치 버전을 `findings.md`에 기록.
+
+## 코드 품질 / 포스팅 후보
+
+이 코드는 버리지 않고 추후 **포스팅(블로그/튜토리얼)** 으로 쓸 수 있게 작성한다:
+- **명료성:** 각 파일·함수에 docstring, 의도가 드러나는 이름, 과한 한 줄 트릭 금지.
+- **자기완결·재현성:** seed 고정, 의존 버전 명시, `README.md`에 설치·실행을 한 번에
+  따라할 수 있는 절차. viewer PNG·교차검증 표가 그대로 글에 들어갈 수 있게.
+- **서사 일관성:** 같은 모델을 ED/DMRG/VMC로 푸는 *동일 흐름*(geometry→model→solve
+  →check)을 세 파일에 평행하게 — "비교"가 글의 핵심이 되도록.
+- **정확성 축:** exact 1D XXZ(Bethe ansatz) 대조를 글의 검증 축으로.
+- 단, **과도한 일반화 금지**(여전히 작은 스파이크). "읽기 좋고 재현되는" 수준이면 충분.
 
 ## 시스템/Geometry 뷰어 (`viewer.py`)
 
@@ -189,5 +204,6 @@ Geometry를 *눈으로* 검증하기 위한 뷰어. 목적: (a) 세 솔버가 **
 
 ## 범위 밖 (하지 않음)
 
-- 프로덕션 ED/TN/NQS 솔버 구현 / 우리 `lswt` 패키지 리팩터 — 안 함.
-- 결과는 `findings.md`로 Phase 0 재구성 plan에 입력만.
+- 프로덕션 ED/TN/NQS 솔버 구현 / 우리 `lswt` 패키지 리팩터 — 안 함. 과도한 일반화 금지.
+- seam 결론(`findings.md`)은 Phase 0 재구성 plan 입력. (코드·정확해 노트는 포스팅/
+  research로 보존 — 별개 산출물)
