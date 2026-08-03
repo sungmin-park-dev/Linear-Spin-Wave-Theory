@@ -1,24 +1,31 @@
 ---
 frontmatter-version: 1
+template-version: 1
 title: Map - procedures
 section: procedures
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-08-01
+must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
 # Map - procedures
 
 LSWT 프로젝트의 에이전트 실행 절차 문서.
 
-## Procedures
+## 목차
 
 | 파일 | 제목 | 상태 |
 |---|---|---|
-| `theory_code_verification_plan.md` | Theory Notes & Code Verification Plan | in-review |
+| [[GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle\|lswt-canonical-document-lifecycle]] | LSWT Canonical Document Lifecycle | in-review |
+| [[GOVERNMENT/Agents-Bylaws/procedures/theory_code_verification_plan\|theory_code_verification_plan]] | Historical theory-code plan; source-authority clauses superseded | closed |
 
-## Agent Instructions
+## 에이전트 지침
 
 - 검토 필요 절차 문서는 현 코드·문서 구조와 대조한 뒤 사용한다.
 - 절차가 최신화되면 status를 갱신하고 이 map도 수정한다.
+
+## 참고 문서
+
+- [[GOVERNMENT/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준

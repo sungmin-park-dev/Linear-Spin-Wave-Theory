@@ -1,11 +1,13 @@
 ---
 frontmatter-version: 1
+template-version: 1
 title: Map - idea-proposals
 section: idea-proposals
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-04
+updated: 2026-06-30
+must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
 # Map - idea-proposals
@@ -18,20 +20,24 @@ updated: 2026-06-04
 
 파일명 형식: `YYYY-MM-DD-{topic}.md` 또는 짧은 작업 메모의 경우 `YYMMDD-{topic}.md`
 
----
-
-## 검토 중 제안
+## 목차
 
 ### Knowledge / Project Structure
 
 | 파일 | 제목 | 상태 |
 |---|---|---|
-| `2026-05-30-project-knowledge-philosophy.md` | Project Knowledge Philosophy - 프로젝트 정의 및 지식 관리 체계 | draft |
-| `260603-general-2d-spin-tool-migration-note.md` | 범용 2D 스핀 시스템 도구 전환 노트 | draft |
-| `2026-06-04-general-spin-model-ir.md` | General SpinModel IR | draft |
+| [[GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy\|2026-05-30-project-knowledge-philosophy]] | Project Knowledge Philosophy - 프로젝트 정의 및 지식 관리 체계 | draft |
+| [[GOVERNMENT/Working-Pad/idea-proposals/260603-general-2d-spin-tool-migration-note\|260603-general-2d-spin-tool-migration-note]] | 범용 2D 스핀 시스템 도구 전환 노트 | draft |
+| [[GOVERNMENT/Working-Pad/idea-proposals/2026-06-04-general-spin-model-ir\|2026-06-04-general-spin-model-ir]] | General SpinModel IR | draft |
 
-## Agent Instructions
+## 에이전트 지침
 
 - 새 제안은 이 map과 `../TASK-QUEUE.md`에 한 줄 등록한다.
 - 확정된 운영 원칙은 `Working-Pad/`에 계속 두지 말고 사용자 확인 후 정본 레이어로 승격한다.
 - AAD 원본에서 가져온 문서는 원본을 수정하지 않고 LSWT 내부 사본만 다룬다.
+
+## 참고 문서
+
+- [[GOVERNMENT/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
+- [[GOVERNMENT/Agents-Bylaws/templates/idea-proposals-template|idea-proposals-template]] — idea proposal 작성 기준
+- [[GOVERNMENT/Working-Pad/TASK-QUEUE|TASK-QUEUE]] — 활성 작업 큐
