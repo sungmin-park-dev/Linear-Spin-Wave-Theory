@@ -1,3 +1,13 @@
+---
+frontmatter-version: 1
+title: Spin Correlations
+section: theory/lswt/observables
+status: draft
+last-edited-by: codex
+created: 2026-06-07
+updated: 2026-07-31
+---
+
 # Spin Correlations
 
 > Source: `/Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf` §Correlations in Linear Spin Wave Theory

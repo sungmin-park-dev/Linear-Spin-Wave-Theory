@@ -5,7 +5,7 @@ section: theory/common
 status: draft
 last-edited-by: codex
 created: 2026-06-04
-updated: 2026-06-04
+updated: 2026-07-31
 related-notation: research-space/theory/common/notation.md
 ---
 
@@ -13,13 +13,17 @@ related-notation: research-space/theory/common/notation.md
 
 ## Purpose
 
-- This note fixes the common convention for writing a spin Hamiltonian.
+- This note records a draft candidate convention for writing a spin
+  Hamiltonian.
 - The Hamiltonian defined here is the object to which solver methods such as
   LSWT, tensor-network methods, neural quantum states, and later approaches are
   applied.
 - This section specifies only the operator structure. Lattice geometry,
   magnetic ordering, momentum-space conventions, and solver-specific
   approximations are introduced in separate sections.
+
+> Lifecycle: This document is not accepted common canon and does not override
+> LSWT-specific conventions or the current code contract.
 
 
 ## 1. Local Hamiltonian

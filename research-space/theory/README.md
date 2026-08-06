@@ -1,12 +1,44 @@
+---
+frontmatter-version: 1
+title: Linear Spin Wave Theory Documentation
+section: theory
+status: in-review
+last-edited-by: codex
+created: 2026-03-22
+updated: 2026-08-01
+---
+
 # Linear Spin Wave Theory Documentation
 
-This directory contains refined theoretical documentation for Linear Spin Wave Theory (LSWT), converted from the original LaTeX document.
+This directory is the gateway for the project's spin-theory documentation.
 
 The active LSWT canonical workspace is now [`lswt/`](lswt/). The older
 `sections/` files remain as converted Markdown source material until their
 contents are migrated into the canonical LSWT structure.
 
-## 📖 Table of Contents
+Here, `canonical workspace` means the active target for canonicalization. It
+does not mean that the documents have been accepted as user-approved canon.
+
+## Active Workspace
+
+| Path | Role | Editing status |
+|---|---|---|
+| [`lswt/README.md`](lswt/README.md) | Goal, approved source authority, and editing rules | Active, in review |
+| [`lswt/map-lswt.md`](lswt/map-lswt.md) | Navigation and document-role boundaries | Active, in review |
+| [`lswt/current-sections-audit.md`](lswt/current-sections-audit.md) | Coverage, lifecycle, review issues, and open questions | Active audit |
+| [`lswt/`](lswt/) subdirectories | Draft canonical LSWT theory documents | Active drafts and skeletons |
+| [`common/README.md`](common/README.md) | Draft cross-solver convention candidate 영역 | In review; 2 drafts, accepted 0 |
+| [`sections/`](sections/) | Earlier converted Markdown used for comparison | Source-only; preserve |
+| [`notation.md`](notation.md) | Earlier converted notation summary | Source-only; preserve |
+
+The legacy converted files still contain material that has not been migrated.
+Do not delete, rename, or treat them as the current reading path until
+`lswt/current-sections-audit.md` confirms that their coverage has been reviewed.
+
+## Legacy Converted Sources
+
+The links below describe the earlier converted Markdown layout. They are
+retained for source comparison, not as the active canonical reading order.
 
 ### Core Documentation
 
@@ -53,48 +85,68 @@ contents are migrated into the canonical LSWT structure.
 7. **[VI. Worked Example](sections/06_worked_example.md)**
    Step-by-step example of solving a quadratic boson Hamiltonian using LSWT methods.
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 research-space/theory/
-├── README.md                    # This file
-├── notation.md                  # Notation reference
-├── lswt/                        # Active LSWT canonical workspace
-└── sections/                    # Converted LSWT sections pending migration
-│   ├── 01_spin_wave_theory_intro.md
-│   ├── 02_physical_quantities.md
-│   ├── 03_thermodynamics.md
-│   ├── 04_correlations.md
-│   ├── 05_topology.md
-│   └── 06_worked_example.md
+├── README.md                    # This gateway
+├── lswt/                        # Active LSWT canonicalization workspace
+├── common/                      # Provisional cross-solver candidates; accepted 0
+├── notation.md                  # Legacy converted notation source
+└── sections/                    # Legacy converted sections pending migration
+    ├── 01_spin_wave_theory_intro.md
+    ├── 02_physical_quantities.md
+    ├── 03_thermodynamics.md
+    ├── 04_correlations.md
+    ├── 05_topology.md
+    └── 06_worked_example.md
 ```
 
-## 🔄 Conversion Process
+## Historical Conversion Process
 
-These documents were created through the following workflow:
+The legacy converted Markdown was created through a conversion workflow whose
+exact input provenance has not yet been verified. Its headings and section
+order align with `legacy/research-notes/lswt/note_lswt_reviewed.tex`, while an
+older README record named the restructured TeX as the input.
 
-1. **Original LaTeX**: `../sources/lswt/note_lswt_restructured.tex`
-2. **Pandoc Conversion**: LaTeX → Markdown (with equation preservation)
-3. **Refinement**: Python script processing for:
+1. **Conversion source**: Unverified; compare the reviewed and restructured TeX
+   before relying on converted text.
+2. **Pandoc conversion**: LaTeX → Markdown with equation preservation.
+3. **Refinement**: Script processing recorded for:
    - Simplifying equation references
    - Converting custom LaTeX commands (e.g., `\kvec` → `\mathbf{k}`)
    - Cleaning up formatting artifacts
    - Organizing into logical sections
 
-## 🔗 Related Files
+This historical conversion record does not define current evidence authority.
+Use the approved routing and active editing authority in
+[`lswt/README.md`](lswt/README.md) when sources disagree.
 
-- **Original LaTeX**: [`../sources/lswt/note_lswt_restructured.tex`](../sources/lswt/note_lswt_restructured.tex)
+## Related Files
 
-## 📚 Usage for Developers
+- **Editable transcription**:
+  [`../../legacy/research-notes/lswt/note_lswt_reviewed.tex`](../../legacy/research-notes/lswt/note_lswt_reviewed.tex)
+- **Structural reference TeX**:
+  [`../sources/lswt/note_lswt_restructured.tex`](../sources/lswt/note_lswt_restructured.tex)
+- **Approved source authority**: [`lswt/README.md`](lswt/README.md)
+- **Decision record**:
+  [`../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md`](../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md)
+
+## Usage for Developers
 
 When working with the LSWT package:
 
-1. **Reference Implementation**: These documents explain the theoretical foundation for the code in `code-space/lswt/solvers/` and `code-space/lswt/observables/`
-2. **Physical Quantities**: Section II provides a quick reference for what can be computed
-3. **Notation**: Check `notation.md` when encountering unfamiliar symbols
-4. **Worked Example**: Section VI demonstrates the complete workflow
+1. Start from `lswt/map-lswt.md` for the theory-document structure.
+2. Check `lswt/current-sections-audit.md` before relying on a draft equation.
+3. Use the approved evidence routing in `lswt/README.md`; do not assume the
+   restructured TeX, generated PDF, and primary PDF are interchangeable.
+4. Treat documentation cleanup and theory-code verification as separate steps.
 
-## 🔍 Key Concepts
+## Legacy Reader Notes (Unverified)
+
+The material below is retained from the older gateway and has not yet been
+checked claim-by-claim against the primary PDF. It is not part of the active
+canonical reading path.
 
 ### Spin Wave Theory Basics
 - Represents quantum spin fluctuations as bosonic excitations (magnons)
@@ -113,9 +165,8 @@ When working with the LSWT package:
 - Frustrated magnets (triangular, kagome, honeycomb lattices)
 - Magnetic skyrmion systems
 - Topological magnon bands
-- Quantum spin liquids (at mean-field level)
 
-## 📝 Citation
+### Draft Citation
 
 If you use these theoretical notes or the LSWT package, please cite:
 
@@ -133,17 +184,18 @@ If you use these theoretical notes or the LSWT package, please cite:
 ## 🤝 Contributing
 
 Found an error or typo? Please:
-1. Check the original LaTeX source: `research-space/sources/lswt/note_lswt_restructured.tex`
-2. Open an issue describing the problem
-3. If you fix it, submit a PR with changes to both LaTeX and Markdown
+1. Read the approved evidence routing and conflict rules in `lswt/README.md`.
+2. Record unresolved source or physical conflicts in
+   `lswt/current-sections-audit.md`.
+3. Update an active `lswt/` document only after identifying its source and
+   review status. Do not rewrite the legacy converted Markdown in place.
 
 ## 📧 Contact
 
 **Author**: Sung-Min Park
 **Email**: sungmin.park.0226@gmail.com
-**Status**: On military leave (Oct 2024 - Apr 2025)
 
 ---
 
-**Last Updated**: 2025-11-28
-**Document Version**: 1.0
+**Last Updated**: 2026-08-01
+**Document Status**: Working gateway

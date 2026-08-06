@@ -2,17 +2,24 @@
 frontmatter-version: 1
 title: Theory Notes & Code Verification Plan
 section: procedures
-status: in-review
+status: closed
 last-edited-by: codex
 created: 2026-05-31
-updated: 2026-06-03
+updated: 2026-08-01
+superseded-by: GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md
 ---
 
 # Theory Notes & Code Verification Plan
 
+> **Historical / superseded**: 이 문서의 editable LaTeX master 지정과 실행
+> 순서는 2026-08-01 source-authority 결정으로 대체됐다. 아래 §2-§8을 현재
+> 절차로 실행하지 않는다. 현재 권한 계약은
+> `GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md`,
+> 실행 초안은 `lswt-canonical-document-lifecycle.md`를 따른다.
+
 > 작성일: 2026-05-31
 > 목적: 이론 노트 정리 + 코드 구현 일치 검증을 동시에 진행하기 위한 계획서
-> 상태: 검토 필요. 현재 `GOVERNMENT/Agents-Bylaws/procedures/`에 있으나, 현 코드·문서 구조와 대조한 뒤 실행 기준으로 사용한다.
+> 상태: 역사 기록으로 보존. 현재 실행 기준으로 사용하지 않는다.
 
 ---
 

@@ -33,19 +33,23 @@ project-root/
 │
 ├── GOVERNMENT/                  # 운영 지식
 │   ├── User-Constitution/
-│   │   └── map-user-constitution.md
+│   │   ├── map-user-constitution.md
+│   │   └── single-knowledge-canon.md
 │   ├── Court-Precedents/
-│   │   └── map-decisions.md
+│   │   ├── map-decisions.md
+│   │   └── 2026-08-01-lswt-markdown-source-authority.md
 │   ├── Agents-Bylaws/
 │   │   ├── map-agents-bylaws.md
 │   │   └── procedures/
 │   │       ├── map-procedures.md
+│   │       ├── lswt-canonical-document-lifecycle.md
 │   │       └── theory_code_verification_plan.md
 │   └── Working-Pad/
+│       ├── TASK-QUEUE.md
 │       ├── map-working-pad.md
 │       ├── idea-proposals/
-│       ├── issues/
-│       └── staging/
+│       ├── issue-notes/
+│       └── vault-staging/
 │
 ├── code-space/                  # 코드 구현
 │   ├── lswt/                    # 메인 패키지
@@ -56,9 +60,12 @@ project-root/
 │       ├── nbcp_ground_state.py
 │       └── nbcp_hamiltonian_check.py
 │
-├── research-space/              # 이론·논문·수식 정리
-│   ├── notes/                   # LaTeX 소스와 참고 PDF
+├── research-space/              # 현재 이론·논문·수식 작업
+│   ├── sources/                 # 정본 작업 중 실제 참조하는 원자료
+│   │   └── lswt/
 │   └── theory/
+│       ├── common/              # cross-solver convention 후보
+│       ├── lswt/                # LSWT Markdown 정본 작성면
 │       ├── sections/
 │       └── notation.md
 │
@@ -127,10 +134,17 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 3. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
 4. **물리적 의도 불명확 시 질문**: legacy 로직의 물리적 의미가 불분명하면 임의 해석하지 말고 반드시 질문할 것.
 5. **단계별 검증 후 진행**: 각 단계는 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서. 검증 전 다음 단계 착수 금지.
+6. **이론 source authority 준수**: 현재 LSWT 이론 claim은 `research-space/theory/lswt/`의 사용자 승인 Markdown만 정본으로 삼는다. 원본 PDF와 기존 TeX는 evidence/reference이며, 향후 generated TeX·PDF·HTML은 accepted Markdown의 파생물이다. 자세한 경계는 `GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md`를 따른다.
 
 ---
 
 ## 진행 상황
+
+### 2026-08-01 이론 지식 정본 결정
+- [x] LSWT 이론의 유일한 정본 작성면을 Markdown으로 확정
+- [x] 원본 PDF와 기존 TeX를 evidence/transcription/reference로 분리
+- [x] 향후 generated TeX·PDF·HTML을 accepted Markdown의 단방향 파생물로 정의
+- [ ] Notation·수식 ID·인용 계약과 HTML·TeX·PDF 출력 pilot
 
 ### 2026-06-01 구조 마이그레이션
 - [x] 루트 폴더를 `GOVERNMENT/`, `code-space/`, `doc-space/`, `research-space/` 기준으로 재편
@@ -142,7 +156,7 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 ### 2026-05-31 사전 정리
 - [x] 코드, 지식, 운영 문서의 중간 분류 작업 수행
 - [x] `research-space/theory/latex_sections/` 삭제 (pandoc 쓰레기 파일)
-- [x] `research-space/notes/` 정리 (빌드 찌꺼기 삭제, master = `note_lswt_restructured.tex` 확정)
+- [x] `research-space/sources/lswt/` 정리 (당시 master = `note_lswt_restructured.tex` 기록; 2026-08-01 source-authority 결정으로 superseded)
 - [x] 이론-코드 검증 계획서 초안 작성
 - [x] AAD 마이그레이션 사전 작업 문서 사본 준비
 
