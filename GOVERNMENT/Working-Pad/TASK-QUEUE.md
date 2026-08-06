@@ -5,7 +5,7 @@ section: working-pad
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-07
+updated: 2026-08-02
 ---
 
 # Task Queue
@@ -17,12 +17,13 @@ updated: 2026-06-07
 
 | 순위 | 유형 | 내용 | 상태 | 파일 |
 |---|---|---|---|---|
-| 1 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending | `handoff/open/260607-solver-seam-spike.md` |
-| 2 | handoff | 범용 2D spin-system simulation tool 전환 작업 | pending | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
-| 3 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
-| 4 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
-| 5 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
-| 6 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
+| 1 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending — TN-Study에 findings draft v1(1D, Heisenberg점) 있음, 2D 4×4 단계 미완료라 LSWT 승격 전 | `handoff/open/260607-solver-seam-spike.md` |
+| 2 | handoff | 범용 2D spin-system simulation tool 전환 작업 | 2단계(code-space audit) 완료, 3–4단계 대기 | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
+| 3 | issue | code-space audit — 범용 2D spin-tool 대상 분류 | draft | `issue-notes/open/260802-code-space-audit-general-2d-spin-tool.md` |
+| 4 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
+| 5 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
+| 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
+| 7 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
 
 ## 동기화 규칙
 
