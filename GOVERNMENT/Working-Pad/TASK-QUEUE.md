@@ -21,9 +21,11 @@ updated: 2026-08-02
 | 2 | handoff | 범용 2D spin-system simulation tool 전환 작업 | 2단계(code-space audit) 완료, 3–4단계 대기 | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
 | 3 | issue | code-space audit — 범용 2D spin-tool 대상 분류 | draft | `issue-notes/open/260802-code-space-audit-general-2d-spin-tool.md` |
 | 4 | issue | `CommensurateStructure` pytest 실패 | draft | `issue-notes/open/260602-commensurate-structure-test-failures.md` |
-| 5 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
-| 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
-| 7 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
+| 5 | issue | `LSWTHamiltonian` B/B† 블록 치환 오류 | draft | `issue-notes/open/260802-hamiltonian-b-block-substitution-bug.md` |
+| 6 | issue | Thermal Hall `real_space_volume` 단위/계수 오류 | draft | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
+| 7 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
+| 8 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
+| 9 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
 
 ## 동기화 규칙
 
