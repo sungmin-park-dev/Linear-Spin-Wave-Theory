@@ -5,7 +5,7 @@ section: theory/lswt/foundations
 status: draft
 last-edited-by: codex
 created: 2026-06-04
-updated: 2026-06-04
+updated: 2026-08-06
 source: /Users/david/Downloads/Linear_Spin_Wave_Theory___Note.pdf
 source-section: Introduction to Spin Wave Theory, Eq. (1)-Eq. (3)
 ---
@@ -26,8 +26,7 @@ $$
   \hat{S}^{\alpha}_{I} J_{\ell}^{\alpha\beta}
   \hat{S}^{\beta}_{J}
 - \sum_{I,\alpha} h_{I}^{\alpha}\hat{S}^{\alpha}_{I}.
-\tag{1}
-$$
+$$ {#eq-lswt-bilinear-spin-hamiltonian}
 
 이 식에서 $I$와 $J$는 physical spin site이고,
 $\alpha,\beta\in\{x,y,z\}$는 spin-component index다.
@@ -47,11 +46,11 @@ $$
 \sum_{I,J}
 \sum_{\alpha,\beta}
 \hat{S}^{\alpha}_{I}J_{IJ}^{\alpha\beta}\hat{S}^{\beta}_{J}.
-\tag{2}
-$$
+$$ {#eq-lswt-link-sum-equivalence}
 
-Eq. (2)는 새로운 물리 가정이 아니라 convention statement다. 이 식은 원본
-노트의 link sum이 full site-pair sum으로 오해되는 것을 막기 위한 것이다.
+One-link sum과 ordered-pair sum의 동등성: @eq-lswt-link-sum-equivalence.
+이는 새로운 물리 가정이 아니라 convention statement이며, 원본 노트의 link
+sum이 full site-pair sum으로 오해되는 것을 막는다.
 
 ## Exchange Interactions
 
@@ -67,8 +66,7 @@ $$
 +
 \sum_I
 \hat{\mathbf{S}}_{I}\cdot\mathbf{A}_{I}\cdot\hat{\mathbf{S}}_{I}.
-\tag{3}
-$$
+$$ {#eq-lswt-bilinear-exchange-support}
 
 Inter-site tensor $\mathbf{J}_{\ell}$는 isotropic exchange,
 Dzyaloshinskii-Moriya interaction, Kitaev-type coupling 같은 anisotropic
@@ -76,7 +74,7 @@ exchange를 표현할 수 있다. On-site tensor $\mathbf{A}_{I}$는 single-ion
 anisotropy를 나타낸다. 예를 들어 $-A\sum_I(\hat{S}^x_I)^2$는 $x$ direction의
 easy-axis anisotropy를 기술한다.
 
-이 문서에서는 Eq. (3)의 support class를 LSWT의 출발 Hamiltonian으로 둔다.
+LSWT 출발 Hamiltonian의 support class: @eq-lswt-bilinear-exchange-support.
 Scalar spin chirality나 ring exchange처럼 두 개보다 많은 spin operator에
 support를 갖는 interaction은 이 bilinear starting point 밖에 있다.
 
@@ -90,8 +88,7 @@ $$
 \sum_I
 \sum_{\alpha,\beta}
 B_I^\alpha g_I^{\alpha\beta}\hat{S}_I^\beta.
-\tag{4}
-$$
+$$ {#eq-lswt-zeeman-g-tensor}
 
 Energy를 meV로, magnetic field를 tesla로 측정할 때 Bohr magneton은
 $\mu_B=0.057883\,\mathrm{meV/T}$다. Tensor $g_I^{\alpha\beta}$는 external
@@ -115,10 +112,11 @@ anisotropic할 수 있다.
 
 - Source review note A4는 이 파일에서 처리한다. 본문은 ambiguous
   $\sum_{ij}$ 대신 one-link counting $\sum_{\ell\in\mathcal{L}}$를 쓴다.
-- Source review note C22는 이 파일에서 처리한다. 본문은 `Eq.` 표기를
-  기준으로 둔다.
-- Eq. (3)의 on-site anisotropy를 link set에 포함할지, 별도 on-site support로
-  둘지는 code convention과 대조할 때 다시 확인한다.
+- Source review note C22는 이 파일에서 처리한다. Canonical equation은 semantic
+  ID로 참조하고, 원본의 번호가 필요할 때만 `Source Eq.` 표기를 사용한다.
+- 검토 대상 수식: @eq-lswt-bilinear-exchange-support. On-site anisotropy를 link
+  set에 포함할지, 별도 on-site support로 둘지는 code convention과 대조할 때
+  다시 확인한다.
 
 ## Common 후보 메모
 

@@ -5,7 +5,7 @@ section: procedures
 status: in-review
 last-edited-by: codex
 created: 2026-08-01
-updated: 2026-08-01
+updated: 2026-08-06
 must-read:
   - GOVERNMENT/User-Constitution/single-knowledge-canon.md
   - GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md
@@ -67,8 +67,27 @@ README, map, audit, Working-Pad와 `theory/common/` candidate는 LSWT 이론
    locator로만 사용한다. Frontmatter의 `source-section`, source trace 또는
    audit에서는 `Source Eq. (3)`처럼 기록할 수 있지만 canonical equation의
    이름이나 cross-reference로 사용하지 않는다.
-6. Semantic ID의 구체적인 prefix, Markdown 문법과 reference 문법은 출력
-   pilot 전에 별도로 결정한다.
+6. Semantic equation ID는 Quarto native cross-reference 문법으로 작성한다.
+   수식 block 바로 뒤에 `{#eq-lswt-<semantic-slug>}`를 붙이고, 본문에서는
+   `@eq-lswt-<semantic-slug>`로 참조한다.
+7. ID는 repository 전체에서 고유한 lowercase ASCII kebab-case로 작성한다.
+   표시 번호, 원본 PDF의 equation number, 파일 내 순번과 underscore는 넣지
+   않는다.
+8. ID는 수식의 물리적 의미를 나타낸다. 파일 이동, section 재배치 또는 표시
+   번호 변경만으로는 ID를 바꾸지 않으며, 수식의 물리적 정체가 달라질 때 새
+   ID를 부여한다.
+9. 하나의 ID는 하나의 logical equation block만 가리킨다. 독립적으로 참조할
+   수식이 한 display block에 함께 있으면 block을 나누고 각각 ID를 부여한다.
+10. Semantic equation reference가 있는 HTML, TeX와 PDF는 Quarto transform을
+    거쳐 생성한다. Standalone Pandoc 변환은 이 cross-reference contract의
+    지원 대상이 아니다.
+11. GitHub와 일반 Obsidian source view에서 `{#eq-...}`와 `@eq-...`가 그대로
+    보일 수 있다. 따라서 reference 주위의 문장은 semantic ID가 해석되지
+    않아도 대상 수식의 의미를 파악할 수 있도록 작성한다.
+12. 한국어 조사나 어미를 `@eq-...` 바로 뒤에 붙이지 않는다. Quarto가 이를
+    ID의 일부로 해석할 수 있으므로, reference는 같은 source line의 설명 문구와
+    colon 뒤에 독립된 token으로 배치한다. `@eq-...`로 source line을 시작하지
+    않는다. Pandoc 계열 parser가 이를 example-list label로 해석할 수 있다.
 
 ### 4. Human physics and mathematics review
 
