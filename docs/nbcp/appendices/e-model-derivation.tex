@@ -1,0 +1,191 @@
+\clearpage
+
+\section{Effective-spin description and Hamiltonian derivation}\label{app-nbcp-model-derivation}
+
+\subsection{Magnetic degrees of freedom and the two-dimensional
+approximation}\label{magnetic-degrees-of-freedom-and-the-two-dimensional-approximation}
+
+The Co ions form triangular magnetic layers. Crystal-field effects and
+atomic spin-orbit coupling produce a low-energy effective spin-\(1/2\)
+doublet; higher multiplets lie approximately 71 meV above it. A dominant
+in-plane nearest-neighbor model is motivated by the exchange paths and
+weaker interlayer coupling. These are the material assumptions used in
+Gao et al.~(2022)~\cite{gao2022},
+rather than a claim that every further-neighbor or interlayer
+interaction vanishes exactly.
+
+Atomic spin-orbit coupling, which helps create the effective doublet,
+must be distinguished from the coefficients of the residual
+bond-dependent exchanges. A small fitted \(J_{\rm PD}\) or \(J_\Gamma\)
+does not imply that the atomic spin-orbit interaction is absent. In this
+note, ``zero SOC'' is shorthand for the exchange-model limit
+\(J_{\rm PD}=J_\Gamma=0\).
+
+We use \(z\parallel c\) and \(x\) along one nearest-neighbor bond. The
+external field is \(B\parallel z\), and \(h=g_z\mu_B B\) is its Zeeman
+energy. Spin operators are dimensionless, with eigenvalues measured in
+units of \(\hbar\); exchange constants, \(h\), and excitation gaps are
+expressed in meV. Energies denoted by \(e\) are per physical spin.
+
+\subsection{Symmetry-constrained nearest-neighbor
+exchange}\label{symmetry-constrained-nearest-neighbor-exchange}
+
+The nearest-neighbor vectors in Fig.~\ref{fig-nbcp-bond-phases} are
+\begin{equation*}
+\boldsymbol\delta_1=a(1,0),\qquad
+\boldsymbol\delta_2=a(-1/2,\sqrt3/2),\qquad
+\boldsymbol\delta_3=a(-1/2,-\sqrt3/2),
+\end{equation*}
+where \(a\) is the lattice spacing. Translations along
+\(\boldsymbol\delta_1\) and \(\boldsymbol\delta_2\) generate the lattice;
+\(\boldsymbol\delta_3=-\boldsymbol\delta_1-\boldsymbol\delta_2\).
+We first constrain the zero-field exchange tensor and then add the Zeeman
+term. The symmetry argument fixes its form, not its coefficients~\cite{park2026}.
+
+\subsubsection*{Bond-centered inversion.}
+For one unoriented bond counted once, write
+\(\hat H_{ij}=\hat{\mathbf S}_i^{\mathsf T}\mathsf J_{ij}\hat{\mathbf S}_j\).
+Site-centered inversion followed by translation through
+\(\boldsymbol\delta_1\) is inversion about the midpoint of the reference
+bond. It exchanges \(i\) and \(j\). Spin is an axial vector, so
+\(\mathcal I\hat{\mathbf S}_i\mathcal I^{-1}=\hat{\mathbf S}_j\)
+without a component sign change. Since operators on different sites commute,
+\begin{equation*}
+\mathcal I\hat H_{ij}\mathcal I^{-1}
+=\hat{\mathbf S}_j^{\mathsf T}\mathsf J_{ij}\hat{\mathbf S}_i
+=\hat{\mathbf S}_i^{\mathsf T}\mathsf J_{ij}^{\mathsf T}\hat{\mathbf S}_j.
+\end{equation*}
+Invariance therefore requires \(\mathsf J_{ij}=\mathsf J_{ij}^{\mathsf T}\),
+excluding antisymmetric exchange on this bond.
+
+\subsubsection*{Twofold rotation about the reference bond.}
+The rotation \(C_{2x}\) acts on the spin components through
+\(D_x=\operatorname{diag}(1,-1,-1)\). The constraint
+\(D_x^{\mathsf T}\mathsf J_0D_x=\mathsf J_0\) removes the \(xy\) and
+\(xz\) entries, leaving
+\begin{equation*}
+\mathsf J_0=\begin{pmatrix}
+J_{xx}&0&0\\0&J_{yy}&J_{yz}\\0&J_{yz}&J_{zz}
+\end{pmatrix}.
+\end{equation*}
+The coefficients are defined by
+\begin{equation*}
+J=\frac{J_{xx}+J_{yy}}2,\quad J_z=J_{zz},\quad
+J_{\rm PD}=\frac{J_{xx}-J_{yy}}4,\quad J_\Gamma=J_{yz}.
+\end{equation*}
+\newpage
+These four independent coefficients give
+
+\begin{equation}\phantomsection\label{eq-nbcp-reference-bond}{
+\mathsf J_0=
+\begin{pmatrix}
+J+2J_{\rm PD}&0&0\\
+0&J-2J_{\rm PD}&J_\Gamma\\
+0&J_\Gamma&J_z
+\end{pmatrix}.
+}\end{equation}
+
+\subsubsection*{Threefold rotation and the other bond directions.}
+Use the active Cartesian rotation
+\begin{equation*}
+R_z(\beta)=\begin{pmatrix}
+\cos\beta&-\sin\beta&0\\
+\sin\beta&\cos\beta&0\\0&0&1
+\end{pmatrix}.
+\end{equation*}
+Rotating the reference bond and both spins gives the covariance relation
+\begin{align*}
+\mathsf J_\beta&=R_z(\beta)\mathsf J_0R_z(\beta)^{\mathsf T}\\
+&=\begin{pmatrix}
+J+2J_{\rm PD}\cos2\beta&2J_{\rm PD}\sin2\beta&-J_\Gamma\sin\beta\\
+2J_{\rm PD}\sin2\beta&J-2J_{\rm PD}\cos2\beta&J_\Gamma\cos\beta\\
+-J_\Gamma\sin\beta&J_\Gamma\cos\beta&J_z
+\end{pmatrix}.
+\end{align*}
+Only the discrete rotations \(\beta=0,\pm2\pi/3\) generate the three
+bond representatives. Setting \(\beta=\varphi_d\), the identities
+\(\cos2\varphi_d=\cos\varphi_d\) and
+\(\sin2\varphi_d=-\sin\varphi_d\) give
+
+\begin{equation}\phantomsection\label{eq-nbcp-bond-matrix}{
+\mathsf J_d=
+\begin{pmatrix}
+J+2J_{\rm PD}\cos\varphi_d&-2J_{\rm PD}\sin\varphi_d&-J_\Gamma\sin\varphi_d\\
+-2J_{\rm PD}\sin\varphi_d&J-2J_{\rm PD}\cos\varphi_d&J_\Gamma\cos\varphi_d\\
+-J_\Gamma\sin\varphi_d&J_\Gamma\cos\varphi_d&J_z
+\end{pmatrix}.
+}\end{equation}
+
+The microscopic Hamiltonian is consequently
+
+\begin{equation}\phantomsection\label{eq-nbcp-model}{
+\hat H=\sum_{\langle ij\rangle}\hat{\mathbf S}_i^{\mathsf T}
+\mathsf J_{d(ij)}\hat{\mathbf S}_j-h\sum_i\hat S_i^z.
+}\end{equation}
+
+The bond phase \(\varphi_d\) labels a fixed exchange tensor. The
+collective angle \(\phi\) introduced below rotates the spins while
+keeping these tensors fixed. They must not be varied together when
+evaluating the order-by-disorder energy.
+
+With \(\hat S^\pm=\hat S^x\pm i\hat S^y\), the transverse XXZ
+interaction is \(J(\hat S_i^+\hat S_j^-+\hat S_i^-\hat S_j^+)/2\). Thus
+a convention with coefficient \(J_\pm\) multiplying that entire bracket
+has \(J=2J_\pm\), not \(J=J_\pm\). The original notes contain both
+identifications; the Cartesian matrix fixes the convention used here.
+
+\newpage
+\subsection{Parameter sets and the scope of the
+calculation}\label{parameter-sets-and-the-scope-of-the-calculation}
+
+The original notes contain several parameter sets with different
+origins. They should remain separate when comparing a field quoted in
+tesla with an exchange or field quoted in meV.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter set
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(J\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(J_z\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(g_z\)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter set
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(J\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(J_z\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(g_z\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\caption{Exchange and Zeeman parameter sets and their distinct source conventions.}\label{tab-nbcp-02-model-hamiltonian-1}\\
+\endlastfoot
+Thermodynamic fit, Gao et al. & \(0.88\,k_B\mathrm{K}\) &
+\(1.48\,k_B\mathrm{K}\) & 4.89 \\
+Older Overleaf phase calculations & 0.076 meV & 0.125 meV & 4.645 \\
+Current Y/V gap comparison & 0.075 meV & 0.125 meV & 4.645 \\
+\end{longtable}
+
+The thermodynamic values are reported in
+Gao et al.~\cite{gao2022}; the last
+row follows the Figure 4 parameters of
+Park et al.,
+arXiv:2601.20963v1~\cite{park2026}. The middle row records the historical local
+convention, not a new fit. The present calculation uses \(S=1/2\),
+nearest-neighbor bonds and a single layer. The earlier
+next-nearest-neighbor draft is not included: its axis and angular
+conventions require further review.

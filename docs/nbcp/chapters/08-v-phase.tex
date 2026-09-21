@@ -1,0 +1,210 @@
+\clearpage
+
+\section{Supersolidity in the V Phase}\label{sec-nbcp-v-phase}
+
+The pure-PD limit has an additional exact spin symmetry that changes the
+allowed angular anisotropy of the V state. At \(J_\Gamma=0\), a common
+spin rotation by \(\pi\) leaves the microscopic Hamiltonian invariant.
+Together with the threefold operation on the V orbit, this forbids a
+threefold pinning term and permits sixfold pinning. The saved
+zero-point-energy scans exhibit precisely this distinction: sixfold
+modulation for pure PD and threefold modulation for pure \(\Gamma\).
+
+This is a qualification of the finite-temperature argument, not a
+demonstration of a thermal V supersolid. A nonzero zero-temperature
+pseudo-Goldstone gap is compatible with an intermediate algebraic phase
+when the clock anisotropy is irrelevant there. Whether that phase occurs
+in this microscopic model also depends on its stiffness, defects and
+competing orders.
+
+\subsection{The claim being examined}\label{the-claim-being-examined}
+
+Park et al.,
+arXiv:2601.20963v1~\cite{park2026} use sixfold and threefold clock descriptions for Y
+and V, respectively, in Eqs. (3) and (4). Their thermal argument permits
+an intermediate BKT regime for Y and excludes it for V. The symmetry
+analysis in Section~\ref{sec-nbcp-v-symmetry} distinguishes PD from
+\(\Gamma\) through a spin-only \(\pi\) rotation. The present review asks
+how the thermal conclusion must be scoped on the exactly \(J_\Gamma=0\)
+axis.
+
+The reference state, exchange conventions, fields and energy
+normalization are those of the \hyperref[sec-nbcp-gap-appendix]{Y/V
+curvature note}. The angular variable \(\phi\) is the same physical
+global-\(z\) rotation, with period \(2\pi\). The derivation below
+follows one three-sublattice domain and does not identify the full
+manifold, including translation domains, with a single clock variable.
+
+\subsection{The extra symmetry at zero Gamma
+coupling}\label{sec-nbcp-v-symmetry}
+
+Under \(R_z(\pi)\), the spin components transform as
+
+\[
+(\hat S^x,\hat S^y,\hat S^z)\longmapsto(-\hat S^x,-\hat S^y,\hat S^z).
+\]
+
+The XXZ terms, longitudinal Zeeman term and PD terms contain an even
+number of transverse spin components. Each \(\Gamma\) term contains one
+transverse component and one longitudinal component. Consequently,
+rotation of every spin maps the family of Hamiltonians according to
+
+\[
+\hat U_\pi\hat H(J_{\rm PD},J_\Gamma)\hat U_\pi^\dagger
+=\hat H(J_{\rm PD},-J_\Gamma).
+\]
+
+Only at \(J_\Gamma=0\) is this a symmetry of the same generic PD
+Hamiltonian. An effective angular energy or free energy that preserves
+this exact microscopic symmetry must then satisfy
+
+\[
+v(\phi+\pi)=v(\phi).
+\]
+
+For the V configuration, the combined lattice-spin threefold operation
+preserves the equivalent pair of sublattices and shifts the orbit
+coordinate by \(2\pi/3\), up to its sign convention. Thus
+
+\[
+v(\phi+2\pi/3)=v(\phi).
+\]
+
+Write a real angular potential as
+
+\[
+v(\phi)=v_0+\sum_{n\ge1}\bigl[a_n\cos(n\phi)+b_n\sin(n\phi)\bigr].
+\]
+
+The first symmetry requires even \(n\) and the second requires
+\(n\in3\mathbb Z\). Their intersection is \(n\in6\mathbb Z\), so the
+leading symmetry-allowed potential on the pure-PD V branch is
+
+\[
+v_{\rm V}^{\rm PD}(\phi)
+=v_0-\lambda_6\cos(6\phi-\delta_6)+\text{higher multiples of six}.
+\]
+
+This statement does not require a nonzero \(\lambda_6\) at every
+parameter point. At the representative point below, the sixfold
+coefficient is nonzero. At generic nonzero \(J_\Gamma\), the spin-only
+\(\pi\) symmetry is lost and a term \(-\lambda_3\cos(3\phi-\delta_3)\)
+is allowed. The phase offsets \(\delta_p\) specify the origin of
+\(\phi\) and do not change the harmonic order.
+
+\subsection{Numerical evidence without a symmetry-constrained
+fit}\label{numerical-evidence-without-a-symmetry-constrained-fit}
+
+The diagnostic reanalyzes the saved \(T=0\) energies at \(S=1/2\),
+\(J=0.075\) meV and \(J_z=0.125\) meV. The fields are \(B=0.2\) T for Y
+and \(B=1.4\) T for V. Exactly one SOC coupling is \(0.010\) meV in each
+row. With \(M=72\) uniformly spaced angles and
+\(\bar e=M^{-1}\sum_j e_j\), the discrete coefficients are
+
+\[
+c_n=\frac{2}{M}\sum_{j=0}^{M-1}(e_j-\bar e)e^{-\mathrm i n\phi_j},
+\qquad A_n=|c_n|=\sqrt{a_n^2+b_n^2}.
+\]
+
+All sampled harmonics below the Nyquist mode are evaluated. No threefold
+or sixfold selection rule is imposed. At base mesh \(N=48\), the
+amplitudes are:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2222}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2222}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nonzero coupling
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(A_3\) (meV/spin)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(A_6\) (meV/spin)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Dominant harmonic
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nonzero coupling
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(A_3\) (meV/spin)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(A_6\) (meV/spin)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Dominant harmonic
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\caption{Unconstrained angular-energy harmonics for the sampled Y and V states.}\label{tab-nbcp-08-v-phase-1}\\
+\endlastfoot
+Y & PD & \(7.19\times10^{-19}\) & \(1.4367745\times10^{-6}\) & 6 \\
+Y & Gamma & \(1.93\times10^{-18}\) & \(1.6429350\times10^{-12}\) & 6 \\
+V & PD & \(4.28\times10^{-19}\) & \(1.0239780\times10^{-5}\) & 6 \\
+V & Gamma & \(7.1609759\times10^{-7}\) & \(8.9632094\times10^{-11}\) &
+3 \\
+\end{longtable}
+
+The forbidden threefold amplitudes are at the scale of numerical noise;
+the exact vanishing follows from symmetry, not from declaring those
+fitted numbers to be zero. The same dominant harmonic is obtained from
+the \(N=12\) and \(N=24\) saved scans. For pure-PD V, the largest
+sampled difference \(|e(\phi+\pi/3)-e(\phi)|\) is \(2.35\times10^{-17}\)
+meV/spin or less at \(N=48\). With pure \(\Gamma\), that difference
+reaches \(1.4322\times10^{-6}\) meV/spin, whereas the \(2\pi/3\) shift
+remains invariant to numerical precision.
+
+\begin{figure}
+
+\centering{
+
+\nbcpbounded{\includegraphics[keepaspectratio]{../../data-space/verification/260916-clock-anisotropy/v-clock-anisotropy.png}}
+
+}
+
+\caption{\label{fig-nbcp-clock}The V-state zero-point energy along the
+common global-z orbit. Pure PD produces six minima while pure Gamma
+produces three. Each panel uses absolute energy differences per physical
+spin, with its own vertical scale; the curves are not normalized by
+their angular ranges.}
+
+\end{figure}%
+
+The saved Brillouin-zone quadrature includes rotated momentum copies. To
+check that the pure-PD result is not solely a consequence of that
+averaging, an additional calculation uses Cartesian Holstein-Primakoff
+matrices at 128 fresh, unsymmetrized momenta and \(\phi=0.173\) rad. For
+pure-PD V, the largest matrix difference after \(\phi\mapsto\phi+\pi\)
+is \(2.87\times10^{-17}\) meV. The individual exchange matrices obey
+\(R_z(\pi)^\mathsf T\mathsf J R_z(\pi)=\mathsf J\) exactly in
+floating-point arithmetic. For nonzero \(\Gamma\), the corresponding
+test passes only after also reversing \(J_\Gamma\), with a maximum
+matrix residual below \(2.9\times10^{-17}\) meV across the four
+representative cases.
+
+These checks share the existing bond geometry and state inputs. They
+support the stated symmetry identities; they are not an independent
+microscopic-model reconstruction or a finite-temperature calculation.
+Finite angular sampling can alias higher harmonics, so the table alone
+is not an all-orders Fourier theorem.
+
+\subsection{Local gap and missing spatial
+matching}\label{local-gap-and-missing-spatial-matching}
+
+The V canonical response and representative zero-temperature gaps are
+recorded in Section~\ref{sec-states} and Section~\ref{sec-results}. They
+establish a local curvature comparison under the conditions of
+Section~\ref{sec-interpretation}. The sixfold potential on the pure-PD
+axis changes the symmetry-based thermal question, but the V stiffness,
+defect weights and thermal RG initial conditions have not been matched.
+The Y gradient and wall results cannot be transferred to V without
+repeating those phase-specific calculations.

@@ -1,0 +1,45 @@
+{
+  "generated_utc": "2026-09-21T06:03:36.277228+00:00",
+  "canonical_source": "docs/nbcp/main.tex",
+  "source_format": "LaTeX",
+  "review_status": "in-review",
+  "engine": "XeTeX 3.141592653-2.6-0.999997 (TeX Live 2025)",
+  "inputs_sha256": {
+    "docs/nbcp/main.tex": "5edc15ef592d6c63e2af2ac8264d314de9a34d274c7340c0b71d614f140d1f5d",
+    "docs/nbcp/preamble.tex": "e8aaaeb72b96d0ebf7af25e3ac8e3d696984cbb18e117880352a84738b4035dc",
+    "docs/nbcp/metadata.tex": "e5281141916289f35c93eefc02e1b662dcbac1cafad70cb4313a2095c5013533",
+    "docs/nbcp/chapters/01-introduction.tex": "05bf123f8dd092e53fb2aaeb0831596c475f41f8291fd0c5ad88a28452f2d1d3",
+    "docs/nbcp/chapters/02-model-hamiltonian.tex": "69cd1869a95a6ace82ed2211611fe006a20cef48dcddb29a60a394608ee0099d",
+    "docs/nbcp/chapters/03-phase-diagram.tex": "daddecafc69101b805bbfd5c71e513a82c418a8907cc3f77c6bc0bc0478f38bb",
+    "docs/nbcp/chapters/04-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
+    "docs/nbcp/chapters/05-yv-low-energy.tex": "2b26bc104d545b18dd3c9925c7e219fcabd06005198659a220525e57468a6442",
+    "docs/nbcp/chapters/06-supersolidity.tex": "dac7dd624fb2cfd55ad503c8039d5f16557e7340a6b1de065c7650ba7b824922",
+    "docs/nbcp/chapters/07-y-phase.tex": "0b0c4455c79a793fe72d639417a620c66856671896495458ab783228e4b80a0c",
+    "docs/nbcp/chapters/08-v-phase.tex": "a2389eac1ffe454edabae530b1cd0c65cbc4779a1663fa230517fdf43b605259",
+    "docs/nbcp/chapters/09-discussion.tex": "dc0c1e808b2a7e4285f0a70851eb1e6f9766f83bd7a5a3681a0d278f0bdadf35",
+    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "b6f60f8f4db37162d082a8c8f60e114b25e046742727c795ed98b35991177e08",
+    "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
+    "docs/nbcp/appendices/c-y-stiffness.tex": "1ce3e4c58d8104baf0793405c2ccd147c0ecde0048f584fbf9643195ee8c3f92",
+    "docs/nbcp/appendices/d-numerical-verification.tex": "15acc57d6ca791bda2f1221d075448cc997547b9b91291acdbd30a916fd2cba5",
+    "docs/nbcp/appendices/e-model-derivation.tex": "7d87d70c034de5d315876ade178b942c403fbd5ff30e92e26a771fb767a5fd1a",
+    "docs/nbcp/references.tex": "f8cec6e112cd26afc905a022bca567e1a142c397de45f0f2c0010515a5c17828",
+    "examples/nbcp_research_export.py": "ea3ec330bf9171198f894258f2350c1e5848e01f5f3d20b304a936414803dbf3"
+  },
+  "figure_inputs_sha256": {
+    "docs/nbcp/sources/figures/gao-2022-figure-1.png": "9ea97c4a25d03ceefc7984091698eefb1ad0203c50bef79da158109d7dd7c2d5",
+    "data-space/verification/260917-y-stability/y-stability-screen.png": "c641d0804c90742e69084022c007a303f3b76fc13d058e58ab043173af5de179",
+    "data-space/verification/260918-y-angular-matching/y-angular-matching.png": "6f48978405d30cd45596aeaf5c4100f394e6f1ee5441250d79edbc709e4d56ae",
+    "data-space/verification/260918-y-nonlinear-gradient/nonlinear-gradient-convergence.png": "6bb4161b27b913dd303195977e8789a6c3d8069067074c47b4b6ee6c22c5f51b",
+    "data-space/verification/260918-y-density-wall/density-wall-diagnostic.png": "8b0ada9868d5e586fde5fd6d81ac63a7a771cdcadc3689dc47101edfcd8825fd",
+    "data-space/verification/260916-clock-anisotropy/v-clock-anisotropy.png": "74900d7b0ddb5ebd4b24f9a01f05ff244e173350e28ec93cf58a0c9edb2e544a",
+    "data-space/verification/260917-clock-matching/yv-angular-energy-four-cases.png": "9981d1a30340bcf4486af52feb91ece98dff33e692ac1929d7a112d32162ae0d",
+    "data-space/verification/260912-pseudo-goldstone/yv-pseudo-gap-comparison.png": "1ae078165dab205fa8906c24306e7b0d4a8de89f1f8e427e99b40d4dabdff957",
+    "data-space/verification/260917-y-stiffness/y-stiffness-validation.png": "a275fec0f92d8b5e05c9cdea65bac825f8cdfbf5bb5baa1aae37168986e81a99"
+  },
+  "outputs_sha256": {
+    "research-note.pdf": "2699aa5ce83ba34cb31d453d9f948eed8d6e5ec0f26d0c233830f2a013cbbf3f"
+  },
+  "latex_review_messages": [],
+  "source_display_equations": 89,
+  "scope": "PDF preview from canonical TeX; no physics scan rerun"
+}
