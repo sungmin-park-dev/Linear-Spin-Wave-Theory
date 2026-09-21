@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-11",
+  "scope": "Gapped individual bands; local numerical isolation screen, not proof of a continuum gap",
+  "new_regression_before": {
+    "passed": 6,
+    "failed": 19
+  },
+  "new_regression_after": {
+    "passed": 25,
+    "failed": 0
+  },
+  "topology_and_hall_regression": {
+    "passed": 97,
+    "failed": 0
+  },
+  "full_suite": {
+    "passed": 188,
+    "failed": 5,
+    "existing_failure_group": "CommensurateStructure",
+    "legacy_syntax_warnings": 2
+  },
+  "source_sha256": {
+    "code-space/lswt/observables/topology.py": "14b4010420e04efd4c894cd10a331f1c4a15c763a8dd43b3a0e8c6d2ffc84446",
+    "code-space/lswt/observables/thermodynamics.py": "abd56e23e68a28f9518a9f10a1d038db18e4be0cba9ca867251f3b7b868b6e39",
+    "code-space/lswt/config.py": "8d81ce0fe24775da46e3ab9fa2d9a9a7e85f15015d91e00101e5ed087d4c55e5",
+    "code-space/lswt/core/diagonalization.py": "ff72efd4098431bc7003702ecf1f21a75240f77fad21693cce0e8c9ec8e75efb",
+    "code-space/lswt/core/brillouin_zone.py": "c9b61a30a1c70d42002b2505b42370ff9b7ef5c3ba85ebd18ea842c165d85ed0",
+    "code-space/tests/test_solvers/test_band_isolation.py": "476e3824f4fa8b71fac85b43a1706c53beeb3180d43ddf36e4e732cbb3911a8e",
+    "examples/band_degeneracy_check.py": "a317e1bd4420c297408fcaac965d31fefbfd7c9993230c651549635b23296d8a",
+    "examples/bz_chern_reference_check.py": "73ed0d0c540f26d1005673e94b54c0b7fd07261fc7c7d0d6edc83a7aefbbd23a"
+  },
+  "test_logs": "/private/tmp/lswt-band-gap-6c0mzvg1"
+}

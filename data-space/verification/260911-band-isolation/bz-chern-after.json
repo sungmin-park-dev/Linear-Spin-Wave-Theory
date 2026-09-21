@@ -1,0 +1,272 @@
+[
+  {
+    "bz_type": "simple",
+    "N": 6,
+    "num_k_points": 144,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 9.097698164794722e-17,
+    "curvature_max_error": 2.4424906541753444e-15,
+    "chern": [
+      1.0009944716825447,
+      -1.0009944716825447
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3557080038787438e-13,
+    "independent_kappa_W_per_K": 1.3557080038591356e-13
+  },
+  {
+    "bz_type": "simple",
+    "N": 12,
+    "num_k_points": 576,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.151543873523936e-16,
+    "curvature_max_error": 2.4424906541753444e-15,
+    "chern": [
+      1.0000002407250375,
+      -1.0000002407250375
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3551062525639212e-13,
+    "independent_kappa_W_per_K": 1.3551062525443188e-13
+  },
+  {
+    "bz_type": "simple",
+    "N": 24,
+    "num_k_points": 2304,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.1951312061045705e-16,
+    "curvature_max_error": 2.886579864025407e-15,
+    "chern": [
+      1.0000000000000138,
+      -1.0000000000000138
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3551061478285852e-13,
+    "independent_kappa_W_per_K": 1.3551061478089813e-13
+  },
+  {
+    "bz_type": "Hex_60",
+    "N": 6,
+    "num_k_points": 144,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.1564939102149283e-16,
+    "curvature_max_error": 1.199040866595169e-14,
+    "chern": [
+      -1.000994471682545,
+      1.000994471682545
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3557080038787425e-13,
+    "independent_kappa_W_per_K": -1.3557080038591359e-13
+  },
+  {
+    "bz_type": "Hex_60",
+    "N": 12,
+    "num_k_points": 576,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.1288215971780082e-16,
+    "curvature_max_error": 1.199040866595169e-14,
+    "chern": [
+      -1.0000002407250375,
+      1.0000002407250375
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3551062525639194e-13,
+    "independent_kappa_W_per_K": -1.3551062525443188e-13
+  },
+  {
+    "bz_type": "Hex_60",
+    "N": 24,
+    "num_k_points": 2304,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 9.734394083175004e-17,
+    "curvature_max_error": 1.3100631690576847e-14,
+    "chern": [
+      -1.0000000000000138,
+      1.0000000000000138
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3551061478285852e-13,
+    "independent_kappa_W_per_K": -1.3551061478089813e-13
+  },
+  {
+    "bz_type": "Hex_30",
+    "N": 6,
+    "num_k_points": 144,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 8.269869762749409e-17,
+    "curvature_max_error": 7.327471962526033e-15,
+    "chern": [
+      -1.0009944716825454,
+      1.0009944716825452
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3557080038787448e-13,
+    "independent_kappa_W_per_K": -1.355708003859136e-13
+  },
+  {
+    "bz_type": "Hex_30",
+    "N": 12,
+    "num_k_points": 576,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 7.954640748536553e-17,
+    "curvature_max_error": 7.327471962526033e-15,
+    "chern": [
+      -1.000000240725038,
+      1.000000240725038
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3551062525639207e-13,
+    "independent_kappa_W_per_K": -1.3551062525443193e-13
+  },
+  {
+    "bz_type": "Hex_30",
+    "N": 24,
+    "num_k_points": 2304,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 6.608160605363646e-17,
+    "curvature_max_error": 9.547918011776346e-15,
+    "chern": [
+      -1.0000000000000138,
+      1.000000000000014
+    ],
+    "expected_chern": [
+      -1.0,
+      1.0
+    ],
+    "kappa_W_per_K": -1.3551061478285847e-13,
+    "independent_kappa_W_per_K": -1.3551061478089818e-13
+  },
+  {
+    "bz_type": "Tetra",
+    "N": 6,
+    "num_k_points": 144,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.019410285920899e-16,
+    "curvature_max_error": 4.884981308350689e-15,
+    "chern": [
+      1.0009944716825447,
+      -1.0009944716825447
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3557080038787413e-13,
+    "independent_kappa_W_per_K": 1.3557080038591356e-13
+  },
+  {
+    "bz_type": "Tetra",
+    "N": 12,
+    "num_k_points": 576,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.3471791867356764e-16,
+    "curvature_max_error": 4.884981308350689e-15,
+    "chern": [
+      1.0000002407250372,
+      -1.0000002407250372
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3551062525639224e-13,
+    "independent_kappa_W_per_K": 1.3551062525443188e-13
+  },
+  {
+    "bz_type": "Tetra",
+    "N": 24,
+    "num_k_points": 2304,
+    "grid_area_over_MBZ": 0.9999999999999998,
+    "first_fourier_moment": 1.3625349018420485e-16,
+    "curvature_max_error": 5.662137425588298e-15,
+    "chern": [
+      1.0000000000000135,
+      -1.0000000000000135
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.355106147828586e-13,
+    "independent_kappa_W_per_K": 1.3551061478089813e-13
+  },
+  {
+    "bz_type": "wigner_seitz",
+    "N": 6,
+    "num_k_points": 144,
+    "grid_area_over_MBZ": 1.0000000000000002,
+    "first_fourier_moment": 2.2679457036569126e-16,
+    "curvature_max_error": 1.2212453270876722e-15,
+    "chern": [
+      1.0009944716825436,
+      -1.0009944716825436
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3557080038787443e-13,
+    "independent_kappa_W_per_K": 1.3557080038591343e-13
+  },
+  {
+    "bz_type": "wigner_seitz",
+    "N": 12,
+    "num_k_points": 576,
+    "grid_area_over_MBZ": 1.0000000000000002,
+    "first_fourier_moment": 9.734947461604889e-17,
+    "curvature_max_error": 1.8318679906315083e-15,
+    "chern": [
+      1.000000240725037,
+      -1.000000240725037
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.355106252563919e-13,
+    "independent_kappa_W_per_K": 1.3551062525443183e-13
+  },
+  {
+    "bz_type": "wigner_seitz",
+    "N": 24,
+    "num_k_points": 2304,
+    "grid_area_over_MBZ": 1.0000000000000002,
+    "first_fourier_moment": 6.58732616703826e-18,
+    "curvature_max_error": 2.7200464103316335e-15,
+    "chern": [
+      1.0000000000000133,
+      -1.0000000000000133
+    ],
+    "expected_chern": [
+      1.0,
+      -1.0
+    ],
+    "kappa_W_per_K": 1.3551061478285895e-13,
+    "independent_kappa_W_per_K": 1.355106147808981e-13
+  }
+]

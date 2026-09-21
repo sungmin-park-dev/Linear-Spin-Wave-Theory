@@ -1,0 +1,344 @@
+{
+  "created_utc": "2026-09-15T01:48:38.316114+00:00",
+  "scope": "Verify the relaxed canonical partner of the Y/V common-z orbit.\n\nThis independent review script checks explicit phase formulas against field\nresponse, constrained classical minimization, coordinate changes, and the\nsix-dimensional weak-pinning dynamics. It does not recompute quantum gaps.\n",
+  "S": 0.5,
+  "J_meV": 0.075,
+  "Jz_meV": 0.125,
+  "results": [
+    {
+      "phase": "Y",
+      "h_meV": 0.05377406697774,
+      "theta_rad": [
+        0.636389179413206,
+        -0.636389179413206,
+        3.141592653589793
+      ],
+      "polar_hessian_meV_per_cell": [
+        [
+          0.056250000000000015,
+          0.0032719589932982632,
+          -0.04523888755832624
+        ],
+        [
+          0.0032719589932982632,
+          0.056250000000000015,
+          -0.04523888755832625
+        ],
+        [
+          -0.04523888755832624,
+          -0.04523888755832625,
+          0.1239092583722175
+        ]
+      ],
+      "w_per_cell": [
+        -0.29714766533016806,
+        0.29714766533016806,
+        -6.123233995736766e-17
+      ],
+      "response_per_meV": [
+        -5.608883599387503,
+        5.608883599387505,
+        8.847365555657623e-16
+      ],
+      "canonical_partner_per_dm": [
+        -5.0479952394487535,
+        5.047995239448755,
+        7.962629000091862e-16
+      ],
+      "chi_per_spin_per_meV": 1.111111111111111,
+      "explicit_formula": {
+        "chi_formula": "2 / (9 * (J + Jz))"
+      },
+      "uniform_polar_Berry_coefficient": -2.041077998578922e-17,
+      "uniform_polar_stiffness_meV_per_spin": 0.02066587537516969,
+      "uniform_trial_chi_per_meV": 2.0158833442344467e-32,
+      "field_checks": [
+        {
+          "dh_meV": 0.0001,
+          "relative_tangent_error": 3.405025692221989e-07
+        },
+        {
+          "dh_meV": 3e-05,
+          "relative_tangent_error": 3.0645771824199366e-08
+        },
+        {
+          "dh_meV": 1e-05,
+          "relative_tangent_error": 3.4034424521824386e-09
+        }
+      ],
+      "constraint_checks": [
+        {
+          "dm_per_spin": 0.0001,
+          "relative_tangent_error": 0.0003418431561563915,
+          "energy_curvature_meV": 0.9000000023018373,
+          "expected_curvature_meV": 0.9000000000000001
+        },
+        {
+          "dm_per_spin": 1e-05,
+          "relative_tangent_error": 3.415946685216537e-05,
+          "energy_curvature_meV": 0.9000003520220899,
+          "expected_curvature_meV": 0.9000000000000001
+        }
+      ],
+      "coordinate_chart_checks": [
+        {
+          "polar_signs": [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.5414337584118698e-09,
+          "relative_chi_error": 1.346840750038325e-08
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            -1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.3872361176447967e-09,
+          "relative_chi_error": 1.346840750038325e-08
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.3872361176447967e-09,
+          "relative_chi_error": 1.880449906899173e-08
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.4643349380283333e-09,
+          "relative_chi_error": 1.880449906899173e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.5414337584118698e-09,
+          "relative_chi_error": 1.492370516054109e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            -1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.3872361176447967e-09,
+          "relative_chi_error": 1.492370516054109e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.3872361176447967e-09,
+          "relative_chi_error": 1.492370516054109e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.4643349241505454e-09,
+          "relative_chi_error": 1.492370516054109e-08
+        }
+      ],
+      "weak_pinning_checks": [
+        {
+          "pinning_curvature_meV_per_cell": 1e-07,
+          "relative_frequency_error": 9.229772501839761e-11,
+          "relative_partner_error": 1.7111509655891944e-13
+        },
+        {
+          "pinning_curvature_meV_per_cell": 1e-09,
+          "relative_frequency_error": 1.3583687730189808e-08,
+          "relative_partner_error": 1.932811417337232e-12
+        }
+      ],
+      "uniform_trial_status": "zero Berry pairing analytically; not a canonical pair"
+    },
+    {
+      "phase": "V",
+      "h_meV": 0.37641846884417995,
+      "theta_rad": [
+        0.4093648608853258,
+        0.4093648608853258,
+        -1.223629193858957
+      ],
+      "polar_hessian_meV_per_cell": [
+        [
+          0.0766409264771502,
+          0.06219094846407168,
+          -0.017531889450771727
+        ],
+        [
+          0.06219094846407168,
+          0.07664092647715019,
+          -0.017531889450771724
+        ],
+        [
+          -0.017531889450771727,
+          -0.017531889450771724,
+          0.04761893959019154
+        ]
+      ],
+      "w_per_cell": [
+        -0.19901337415814843,
+        -0.19901337415814843,
+        0.4701701630794682
+      ],
+      "response_per_meV": [
+        -0.20576623741162045,
+        -0.2057662374116235,
+        9.722081701307419
+      ],
+      "canonical_partner_per_dm": [
+        -0.13266872421959142,
+        -0.1326687242195934,
+        6.268356715348331
+      ],
+      "chi_per_spin_per_meV": 1.5509777351219498,
+      "explicit_formula": {
+        "a_meV": 0.1388318749412219,
+        "b_meV": -0.017531889450771727,
+        "c_meV": 0.04761893959019154,
+        "determinant_meV_squared": 0.005996292370590911
+      },
+      "uniform_polar_Berry_coefficient": 0.024047804921057108,
+      "uniform_polar_stiffness_meV_per_spin": 0.08505171055651613,
+      "uniform_trial_chi_per_meV": 0.006799356741178593,
+      "field_checks": [
+        {
+          "dh_meV": 0.0001,
+          "relative_tangent_error": 7.964200581049051e-07
+        },
+        {
+          "dh_meV": 3e-05,
+          "relative_tangent_error": 7.167754223920846e-08
+        },
+        {
+          "dh_meV": 1e-05,
+          "relative_tangent_error": 7.964898064002118e-09
+        }
+      ],
+      "constraint_checks": [
+        {
+          "dm_per_spin": 0.0001,
+          "relative_tangent_error": 0.00027274435834314043,
+          "energy_curvature_meV": 0.644876640976122,
+          "expected_curvature_meV": 0.6447545811619096
+        },
+        {
+          "dm_per_spin": 1e-05,
+          "relative_tangent_error": 2.7273544188239906e-05,
+          "energy_curvature_meV": 0.6447672951104265,
+          "expected_curvature_meV": 0.6447545811619096
+        }
+      ],
+      "coordinate_chart_checks": [
+        {
+          "polar_signs": [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.627278513327557e-09,
+          "relative_chi_error": 2.0279903978348557e-08
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            -1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.627278513327557e-09,
+          "relative_chi_error": 1.8714555238830144e-08
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.78147615409463e-09,
+          "relative_chi_error": 3.71694985901172e-09
+        },
+        {
+          "polar_signs": [
+            -1.0,
+            1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.78147615409463e-09,
+          "relative_chi_error": 1.613753797258255e-09
+        },
+        {
+          "polar_signs": [
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.78147615409463e-09,
+          "relative_chi_error": 2.0415301227316718e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            -1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.78147615409463e-09,
+          "relative_chi_error": 1.8459663131409343e-08
+        },
+        {
+          "polar_signs": [
+            1.0,
+            1.0,
+            -1.0
+          ],
+          "hessian_error_meV": 1.627278513327557e-09,
+          "relative_chi_error": 3.846734708545796e-09
+        },
+        {
+          "polar_signs": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "hessian_error_meV": 1.627278513327557e-09,
+          "relative_chi_error": 1.4858396735206725e-09
+        }
+      ],
+      "weak_pinning_checks": [
+        {
+          "pinning_curvature_meV_per_cell": 1e-07,
+          "relative_frequency_error": -7.200313334454478e-08,
+          "relative_partner_error": 2.589829882058122e-07
+        },
+        {
+          "pinning_curvature_meV_per_cell": 1e-09,
+          "relative_frequency_error": 1.0979851916559369e-08,
+          "relative_partner_error": 2.5898296826134918e-09
+        }
+      ],
+      "uniform_trial_status": "canonicalizable, but not the relaxed low-energy partner",
+      "Berry_corrected_uniform_gap_ratio": 15.103196324471115
+    }
+  ],
+  "source_sha256": {
+    "examples/pseudo_goldstone_conjugate_mode.py": "d170f2f087207e4e276dded30d67d3a11900a9f7c345068872251d985105fb20",
+    "examples/pseudo_goldstone_comparison.py": "6c36720e58d8a1ef8344e844597cc8da279b86eedec3d15ca288eb3597bf6bc2",
+    "examples/nbcp_ground_state.py": "a74e05ab1fd0eada71a7feca872ba31eb2c4ce5911db2c9bada771880b73ee13"
+  }
+}

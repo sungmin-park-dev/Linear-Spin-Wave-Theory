@@ -1,0 +1,15 @@
+{
+  "scope": "NBCP figure/table captions and numeric literature citations",
+  "figures_with_bottom_captions": 9,
+  "tables_with_top_captions": 19,
+  "preserved_longtable_data_blocks": 18,
+  "preserved_display_equations": 87,
+  "bibliography_entries": 11,
+  "unresolved_citation_keys": [],
+  "intro_page_count": 1,
+  "pdf_pages": 52,
+  "latex_review_messages": [],
+  "pdf_sha256": "c670406d1ca362dc6a8bcc4109cc8b6c312ab5d9fd5785f10f44c4348ba97cbc",
+  "visual_review": "Complete manuscript reviewed in rendered contact sheets; Introduction, bibliography and final Y-page layout inspected at page size. Final build has 52 pages, no isolated Y closing line, no clipping or overlap.",
+  "physics_review_status": "in-review"
+}

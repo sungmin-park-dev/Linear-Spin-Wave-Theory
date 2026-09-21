@@ -1,0 +1,139 @@
+{
+  "created_utc": "2026-09-11T14:42:44.365290+00:00",
+  "scope": "Local finite-energy degeneracy; no BZ integral or material verdict",
+  "numpy_version": "2.4.3",
+  "source_sha256": {
+    "examples/band_degeneracy_check.py": "a317e1bd4420c297408fcaac965d31fefbfd7c9993230c651549635b23296d8a",
+    "code-space/lswt/core/diagonalization.py": "ff72efd4098431bc7003702ecf1f21a75240f77fad21693cce0e8c9ec8e75efb",
+    "code-space/lswt/observables/topology.py": "14b4010420e04efd4c894cd10a331f1c4a15c763a8dd43b3a0e8c6d2ffc84446"
+  },
+  "records": [
+    {
+      "delta_meV": 0.01,
+      "physical_energies_meV": [
+        0.81,
+        0.79
+      ],
+      "physical_band_gap_meV": 0.020000000000000018,
+      "returned_curvature": [
+        -49.99999999999993,
+        49.99999999999993
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        0.020000000000000018,
+        0.020000000000000018
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -50.0,
+        50.0
+      ],
+      "relative_curvature_error": 1.4432899320127035e-15
+    },
+    {
+      "delta_meV": 0.0001,
+      "physical_energies_meV": [
+        0.8000999999999999,
+        0.7999
+      ],
+      "physical_band_gap_meV": 0.00019999999999986695,
+      "returned_curvature": [
+        -500000.0000006651,
+        500000.0000006651
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        0.00019999999999986695,
+        0.00019999999999986695
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -500000.0,
+        500000.0
+      ],
+      "relative_curvature_error": 1.3302692281058626e-12
+    },
+    {
+      "delta_meV": 1e-06,
+      "physical_energies_meV": [
+        0.8000010000000001,
+        0.7999990000000001
+      ],
+      "physical_band_gap_meV": 1.999999999946489e-06,
+      "returned_curvature": [
+        -5000000000.267554,
+        5000000000.267554
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.999999999946489e-06,
+        1.999999999946489e-06
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -5000000000.0,
+        5000000000.0
+      ],
+      "relative_curvature_error": 5.351075138548822e-11
+    },
+    {
+      "delta_meV": 1e-15,
+      "physical_energies_meV": [
+        0.8000000000000009,
+        0.7999999999999989
+      ],
+      "physical_band_gap_meV": 1.9984014443252818e-15,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        1.9984014443252818e-15,
+        1.9984014443252818e-15
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -5e+27,
+        5e+27
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 0.0,
+      "physical_energies_meV": [
+        0.7999999999999999,
+        0.7999999999999999
+      ],
+      "physical_band_gap_meV": 0.0,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        0.0,
+        0.0
+      ],
+      "individual_band_reference_defined": false,
+      "analytic_curvature": null,
+      "relative_curvature_error": null
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+	"scope":"Classical harmonic Y at phi0=0; hard subspace stable; not quantum pinning or a full SOC phase scan",
+	"wolfram_version":"15.0.0 for Mac OS X ARM (64-bit) (May 19, 2026)",
+	"checks":{
+		"bond_sum_SOC_cancels":true,
+		"uniform_Hessian_SOC_independent":true,
+		"Goldstone_null":true,
+		"moment_x":true,
+		"moment_y":true,
+		"phase_gradient_hard_sources":true,
+		"direct_gradient_tensor":true,
+		"uniform_susceptibility":true,
+		"Gamma_drift":true,
+		"static_tensor_diagonal_phi0":true,
+		"zero_SOC_limit":true,
+		"Y_canting_stationarity":true,
+		"Y_canting_Q_squared_shift":true
+	},
+	"first_moments_InputForm":"{{{3*a*p, 0, 0}, {0, -3*a*p, (3*a*ga)\/2}, {0, (3*a*ga)\/2, 0}}, {{0, -3*a*p, (-3*a*ga)\/2}, {-3*a*p, 0, 0}, {(-3*a*ga)\/2, 0, 0}}}",
+	"uniform_Hessian_InputForm":"{{3*j*sp^2, 3*(-jz + c^2*(j + jz))*sp^2, -3*c*j*sp^2, 0, 0, 0}, {3*(-jz + c^2*(j + jz))*sp^2, 3*j*sp^2, -3*c*j*sp^2, 0, 0, 0}, {-3*c*j*sp^2, -3*c*j*sp^2, 3*(jz + c*(-j + jz))*sp^2, 0, 0, 0}, {0, 0, 0, 3*j*sp^2, 3*j*sp^2, 3*j*sp^2}, {0, 0, 0, 3*j*sp^2, 3*j*sp^2, 3*j*sp^2}, {0, 0, 0, 3*j*sp^2, 3*j*sp^2, 3*(jz + c*(-j + jz))*sp^2}}",
+	"hard_sources_InputForm":"{{(3*a*(-1 + c^2)*ga*sp^2)\/2, (-3*a*(-1 + c^2)*ga*sp^2)\/2, 0, -3*a*Sqrt[1 - c^2]*p*sp^2, -3*a*Sqrt[1 - c^2]*p*sp^2, 6*a*Sqrt[1 - c^2]*p*sp^2}, {-3*a*c*Sqrt[1 - c^2]*p*sp^2, -3*a*c*Sqrt[1 - c^2]*p*sp^2, -6*a*Sqrt[1 - c^2]*p*sp^2, 0, 0, 0}}",
+	"direct_D_InputForm":"{{(-3*a^2*(-1 + c^2)*(j - p)*sp^2)\/2, 0}, {0, (-3*a^2*(-1 + c^2)*(j + p)*sp^2)\/2}}",
+	"relaxation_subtraction_InputForm":"{{(-3*a^2*(-1 + c)*((1 + c)*ga^2*j*(j - jz) + 2*(j + jz)*((-8 + c)*j - (1 + c)*jz)*p^2)*sp^2)\/(2*j*(j - jz)*(j + jz)), 0}, {0, (-6*a^2*(-1 + c)*(-2*j + (-6 + c)*c^2*j + 2*jz - c^2*(3 + c)*jz)*p^2*sp^2)\/((1 + c)*(j - jz)*(-jz + c*(j + jz)))}}",
+	"static_C_InputForm":"{{(3*a^2*(-((-1 + c^2)*(j - p)) + (-1 + c)*(((1 + c)*ga^2)\/(j + jz) + (2*((-8 + c)*j - (1 + c)*jz)*p^2)\/(j*(j - jz))))*sp^2)\/2, 0}, {0, (3*a^2*((4*(-1 + c)*(-2*j + (-6 + c)*c^2*j + 2*jz - c^2*(3 + c)*jz)*p^2)\/((1 + c)*(j - jz)*(-jz + c*(j + jz))) - (-1 + c^2)*(j + p))*sp^2)\/2}}",
+	"drift_InputForm":"{(3*a*Sqrt[1 - c^2]*ga*sp)\/2, 0}",
+	"chi_cell_InputForm":"2\/(3*(j + jz))",
+	"source_sha256":"6d9c13c9f8c04cd2a8054f9bef36b70e91b727be992f657366fdcf6c37243d99"
+}

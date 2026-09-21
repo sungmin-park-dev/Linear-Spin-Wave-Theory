@@ -1,0 +1,11 @@
+{
+  "scope": "All NBCP table captions below; prose shortening restricted to Section 1",
+  "bottom_captioned_tables": 19,
+  "other_chapter_and_appendix_prose_unchanged": true,
+  "intro_pages": 1,
+  "approximate_intro_words_including_table_caption": 259,
+  "pdf_pages": 52,
+  "latex_review_messages": [],
+  "pdf_sha256": "88d291bd40869fdee1a88fc85bc9817176f4484fa9f8dc3451476b0d3aae1c47",
+  "visual_review": "Complete: all 52 pages inspected in contact sheets; Introduction and representative table page inspected at page size. No caption overlap or clipping observed."
+}

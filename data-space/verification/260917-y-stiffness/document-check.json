@@ -1,0 +1,14 @@
+{
+  "source_sha256": "79a0217d96a8097b7d7c1df96c3b1b2d3d0104b9c58f4117e77083f9876e0cb1",
+  "existing_display_equations_preserved": 42,
+  "new_display_equations": 7,
+  "existing_table_lines_preserved": 67,
+  "unique_semantic_ids": 53,
+  "local_links_checked": 265,
+  "broken_links": [],
+  "preexisting_code_legacy_and_data_files_unchanged": 123,
+  "latex_review_messages": [],
+  "scope": "Y zero-SOC classical baseline; physics status remains in-review",
+  "pdf_pages": 24,
+  "visual_review": "All 24 pages rendered and inspected; the new stiffness derivation, equations, table and figure checked at full page size; no clipping or overlaps observed."
+}

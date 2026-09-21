@@ -1,0 +1,15 @@
+{
+  "source_record": "docs/nbcp/sources/260921-triangular-lattice-integration.md",
+  "general_angle_rotation_symbolically_verified": true,
+  "pdf_pages": 55,
+  "changed_pages_visually_checked": [
+    4,
+    52,
+    53,
+    54
+  ],
+  "latex_review_messages": [],
+  "pdf_sha256": "2699aa5ce83ba34cb31d453d9f948eed8d6e5ec0f26d0c233830f2a013cbbf3f",
+  "scope": "Nearest-neighbor diagram and Appendix E derivation; no production code or physical parameter changes",
+  "review_status": "in-review"
+}

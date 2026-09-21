@@ -1,0 +1,52 @@
+{
+  "source": "docs/nbcp/research-note.md",
+  "source_sha256": "22ee4af528e7ec95ae2d6c1d51a6a86b5a6cb12567e85d08fa65895ed7d0e79c",
+  "preserved_source_content": {
+    "research-note.md": {
+      "display_equations": 15,
+      "table_lines": 15,
+      "sha256": "e3b57a6c61bdc5d4a6256847a77d1882ceaddab9ed91db256e046e165c28708b"
+    },
+    "pseudo-goldstone/comparison-report.md": {
+      "display_equations": 16,
+      "table_lines": 46,
+      "sha256": "d96f855bbce282ff111afe70cec2356dd5d932dd35273e8d998e94629afb84cf"
+    },
+    "pseudo-goldstone/clock-anisotropy-review.md": {
+      "display_equations": 12,
+      "table_lines": 6,
+      "sha256": "94eeb7f8117e8e7eb7b327a17df888bf5c4bbfe01d8c74941be0f365a41adfcd"
+    }
+  },
+  "display_equations_after": 42,
+  "duplicate_equation_removed": "clock RG window; both original displays were identical",
+  "table_lines_after": 67,
+  "unique_semantic_ids": 44,
+  "equation_references_resolve": true,
+  "detailed_note_scientific_paragraphs_preserved": true,
+  "preexisting_data_files_unchanged": 26,
+  "local_links_checked": 256,
+  "broken_local_links": [],
+  "figure_regeneration": "Both PNGs byte-identical; no Markdown created or changed",
+  "pdf_pages": 21,
+  "latex_review_messages": [],
+  "backup_sha256": "e1c0c1341ae6f95926b3834c27abca435dbbfbcc63989d08912e08eee3e1ae5f",
+  "retired_outputs_sha256": {
+    "docs/build/README.md": "30c6ba9670c124e9b7038c653777256e0bb88ef712931652e3e367977ad1bd33",
+    "docs/build/nbcp/yv-pseudo-gap-comparison.png": "1ae078165dab205fa8906c24306e7b0d4a8de89f1f8e427e99b40d4dabdff957",
+    "docs/build/nbcp/report-export.json": "3caa171a0ce16e9836e898f5f9e6cb939037e2896412c1ccfb21b9366e26855d",
+    "docs/build/nbcp/yv-equal-energy-orbits.png": "9572c5dd31d4927170e9876df76a23442fad5d40e7f7d3f8f8240f404cbb4bb2",
+    "docs/build/nbcp/comparison-report.tex": "f1228fc9f7d8e82c95f68a707d669b75aa074658a582264337a24670929f9fc4",
+    "docs/build/nbcp/comparison-report.pdf": "a3995378276d56f32caf5dd6528d65c98945fe0823cfde3dc4409a267a51902b",
+    "docs/build/nbcp/research-note/yv-pseudo-gap-comparison.png": "1ae078165dab205fa8906c24306e7b0d4a8de89f1f8e427e99b40d4dabdff957",
+    "docs/build/nbcp/research-note/research-note.md": "114f9e39506a2c0b4fa416a970e21a36e3ab252b7ba317a5af80a872f97928b4",
+    "docs/build/nbcp/research-note/v-clock-anisotropy.png": "74900d7b0ddb5ebd4b24f9a01f05ff244e173350e28ec93cf58a0c9edb2e544a",
+    "docs/build/nbcp/research-note/yv-equal-energy-orbits.png": "9572c5dd31d4927170e9876df76a23442fad5d40e7f7d3f8f8240f404cbb4bb2",
+    "docs/build/nbcp/research-note/research-note.pdf": "3e3b4a2e3a55f1621df471ed342c4e86d901ea9dbeff1b1f0c075af8a2f4df53",
+    "docs/build/nbcp/research-note/research-note.tex": "c5ce3646fbf916c84d7ba37566093c24b3ae93173e08222cbc6734599a1f82b5",
+    "docs/build/nbcp/research-note/research-export.json": "6530c526b7700039f39852ce0df3a962fa8d3e470510093d6ef35dac6d135bd3"
+  },
+  "scope": "Structure and export consolidation; no physical calculation or acceptance change",
+  "pdf_sha256": "6e4ab38e225b82c1020f5fc0c62a02accceb48e8f24a553c4b37c0dcb6e6f377",
+  "visual_review": "All 21 final PDF pages rendered and inspected; references consolidated to remove the near-empty page; no clipping or overlapping content observed."
+}

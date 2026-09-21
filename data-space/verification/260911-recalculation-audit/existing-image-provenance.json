@@ -1,0 +1,21 @@
+{
+  "scope": "Three real-space spin drawings in the main checkout; no parameter/optimization provenance inferred from pixels",
+  "historical_git_head": "197931f7e17cd878cf5f0a1cb148672640ce2507",
+  "images": [
+    {
+      "path": "examples/nbcp_one_msl.png",
+      "sha256": "9b9e012e0756471d1e86a4e2c8e1475c2f4b424ddf4f63349a7a319f097b6015",
+      "identical_to_HEAD_doc_space_bytes": true
+    },
+    {
+      "path": "examples/nbcp_three_msl.png",
+      "sha256": "3dea6d00e401bdf141d208184cec17030899c9daa5e927655fb1371cb5634175",
+      "identical_to_HEAD_doc_space_bytes": true
+    },
+    {
+      "path": "examples/nbcp_spin_config.png",
+      "sha256": "e7ab9d18385cf6665a4c1977bf85a1797dc34cb3ca124dac0b6be9adc0b3b6b2",
+      "identical_to_HEAD_doc_space_bytes": true
+    }
+  ]
+}

@@ -1,0 +1,900 @@
+{
+  "created_utc": "2026-09-12T01:38:47.447718+00:00",
+  "scope": "Measure optional diagnostics and a fixed numerical band-gap cutoff.\n\nRun with PYTHONPATH=code-space. Timings use warm, single-k complex positive\nmatrices, not NBCP ground states or an end-to-end solver benchmark. Residual\nand orthogonality diagnostics are not certified error bounds: Cholesky,\nmatrix-construction and floating-point evaluation errors are not propagated.\n",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "numpy_version": "2.4.3",
+  "seed": 20260912,
+  "timings": [
+    {
+      "matrix_size": 2,
+      "physical_bands": 1,
+      "iterations_per_repeat": 250,
+      "median_us_per_k": {
+        "baseline": 20.194,
+        "fixed_cutoff": 27.244332,
+        "frobenius_diagnostics": 26.286331999999998,
+        "spectral_diagnostics": 78.730168
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          20.194,
+          13.439,
+          13.828168,
+          28.084832,
+          22.030668000000002
+        ],
+        "fixed_cutoff": [
+          50.285668,
+          36.171664,
+          21.9205,
+          27.244332,
+          22.525831999999998
+        ],
+        "frobenius_diagnostics": [
+          26.0105,
+          26.286331999999998,
+          40.061664,
+          37.696,
+          24.012664
+        ],
+        "spectral_diagnostics": [
+          74.904668,
+          74.270332,
+          84.303668,
+          78.730168,
+          114.245832
+        ]
+      }
+    },
+    {
+      "matrix_size": 4,
+      "physical_bands": 2,
+      "iterations_per_repeat": 250,
+      "median_us_per_k": {
+        "baseline": 15.81,
+        "fixed_cutoff": 22.230836,
+        "frobenius_diagnostics": 27.97,
+        "spectral_diagnostics": 55.016332000000006
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          17.638336,
+          16.158168,
+          15.81,
+          14.600836,
+          14.945167999999999
+        ],
+        "fixed_cutoff": [
+          43.433664,
+          22.230836,
+          26.369336,
+          20.278664,
+          19.621836
+        ],
+        "frobenius_diagnostics": [
+          33.845,
+          31.772668000000003,
+          24.193164,
+          27.97,
+          24.518668
+        ],
+        "spectral_diagnostics": [
+          63.989168,
+          55.016332000000006,
+          57.836,
+          48.062163999999996,
+          48.175832
+        ]
+      }
+    },
+    {
+      "matrix_size": 6,
+      "physical_bands": 3,
+      "iterations_per_repeat": 250,
+      "median_us_per_k": {
+        "baseline": 19.5575,
+        "fixed_cutoff": 23.148668,
+        "frobenius_diagnostics": 29.8615,
+        "spectral_diagnostics": 57.580667999999996
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          19.5575,
+          17.012668,
+          17.944668,
+          21.3895,
+          23.998
+        ],
+        "fixed_cutoff": [
+          23.148668,
+          25.6145,
+          22.891668000000003,
+          22.6985,
+          27.955835999999998
+        ],
+        "frobenius_diagnostics": [
+          29.8615,
+          34.654832,
+          27.682168,
+          29.8155,
+          49.1805
+        ],
+        "spectral_diagnostics": [
+          55.8575,
+          57.580667999999996,
+          56.334836,
+          63.383836,
+          84.571
+        ]
+      }
+    },
+    {
+      "matrix_size": 8,
+      "physical_bands": 4,
+      "iterations_per_repeat": 250,
+      "median_us_per_k": {
+        "baseline": 35.193168,
+        "fixed_cutoff": 54.3005,
+        "frobenius_diagnostics": 44.669,
+        "spectral_diagnostics": 83.329
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          35.193168,
+          40.0535,
+          35.058332,
+          74.3405,
+          27.704664
+        ],
+        "fixed_cutoff": [
+          54.383,
+          34.549167999999995,
+          250.1445,
+          54.3005,
+          32.968832
+        ],
+        "frobenius_diagnostics": [
+          44.410668,
+          44.669,
+          177.410336,
+          257.87733199999997,
+          33.152832000000004
+        ],
+        "spectral_diagnostics": [
+          82.01666800000001,
+          156.487832,
+          83.329,
+          176.2165,
+          76.552832
+        ]
+      }
+    },
+    {
+      "matrix_size": 32,
+      "physical_bands": 16,
+      "iterations_per_repeat": 15,
+      "median_us_per_k": {
+        "baseline": 171.28893333333332,
+        "fixed_cutoff": 177.75279999999998,
+        "frobenius_diagnostics": 209.95833333333334,
+        "spectral_diagnostics": 344.025
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          171.28893333333332,
+          272.3111333333334,
+          221.0778,
+          156.76666666666665,
+          147.79166666666666
+        ],
+        "fixed_cutoff": [
+          177.75279999999998,
+          197.20553333333334,
+          179.49720000000002,
+          154.775,
+          153.73333333333335
+        ],
+        "frobenius_diagnostics": [
+          221.62779999999998,
+          209.95833333333334,
+          237.68893333333332,
+          198.8222,
+          185.075
+        ],
+        "spectral_diagnostics": [
+          380.83053333333334,
+          380.9055333333333,
+          342.4583333333333,
+          344.025,
+          335.36386666666664
+        ]
+      }
+    },
+    {
+      "matrix_size": 64,
+      "physical_bands": 32,
+      "iterations_per_repeat": 15,
+      "median_us_per_k": {
+        "baseline": 763.4944,
+        "fixed_cutoff": 790.0,
+        "frobenius_diagnostics": 817.6194666666667,
+        "spectral_diagnostics": 1781.975
+      },
+      "samples_us_per_k": {
+        "baseline": [
+          795.0722,
+          763.4944,
+          762.3972666666667,
+          767.9278,
+          729.9083333333334
+        ],
+        "fixed_cutoff": [
+          810.7805333333333,
+          762.2889333333334,
+          738.6111333333333,
+          793.8638666666667,
+          790.0
+        ],
+        "frobenius_diagnostics": [
+          950.0583333333334,
+          813.2056,
+          817.6194666666667,
+          855.9805333333334,
+          796.25
+        ],
+        "spectral_diagnostics": [
+          1797.9444666666666,
+          1680.3361333333332,
+          1821.2916666666667,
+          1758.9222666666667,
+          1781.975
+        ]
+      }
+    }
+  ],
+  "source_sha256": {
+    "examples/band_gap_cutoff_check.py": "a38065d2670c0bb4bcd19241302259fe76c33d58dbc878f14d3c988228011ff4",
+    "examples/band_degeneracy_check.py": "3b9a3a6949ecf1b5770d1876a61956ba02e90172f5786e716dc0c1b621284369",
+    "code-space/lswt/observables/topology.py": "c8df46a38e5ff95ec73802444ba86e3dbf75d6938cd87ab46f6af358daf30ae9",
+    "code-space/lswt/config.py": "147d64c66ae4f010f70c83a1677be9191d92ce087a11b27519c95ba4ccca01a9",
+    "code-space/lswt/core/diagonalization.py": "ff72efd4098431bc7003702ecf1f21a75240f77fad21693cce0e8c9ec8e75efb"
+  },
+  "sensitivity": [
+    {
+      "delta_meV": 5e-07,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.8000004999999999,
+        0.7999995000000002
+      ],
+      "physical_band_gap_meV": 9.999999996956888e-07,
+      "returned_curvature": [
+        -20000000012.17245,
+        20000000012.17245
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999996956888e-07,
+        9.999999996956888e-07
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -20000000000.0,
+        20000000000.0
+      ],
+      "relative_curvature_error": 6.086224857426714e-10
+    },
+    {
+      "delta_meV": 5e-07,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.8000004999999999,
+        0.7999995000000002
+      ],
+      "physical_band_gap_meV": 9.999999996956888e-07,
+      "returned_curvature": [
+        -20000000012.17245,
+        20000000012.17245
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999996956888e-07,
+        9.999999996956888e-07
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -20000000000.0,
+        20000000000.0
+      ],
+      "relative_curvature_error": 6.086224857426714e-10
+    },
+    {
+      "delta_meV": 5e-07,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.8000004999999999,
+        0.7999995000000002
+      ],
+      "physical_band_gap_meV": 9.999999996956888e-07,
+      "returned_curvature": [
+        -20000000012.17245,
+        20000000012.17245
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999996956888e-07,
+        9.999999996956888e-07
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -20000000000.0,
+        20000000000.0
+      ],
+      "relative_curvature_error": 6.086224857426714e-10
+    },
+    {
+      "delta_meV": 5e-07,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.8000004999999999,
+        0.7999995000000002
+      ],
+      "physical_band_gap_meV": 9.999999996956888e-07,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        9.999999996956888e-07,
+        9.999999996956888e-07
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -20000000000.0,
+        20000000000.0
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-08,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.80000005,
+        0.7999999500000001
+      ],
+      "physical_band_gap_meV": 9.999999983634211e-08,
+      "returned_curvature": [
+        -2000000006546.3152,
+        2000000006546.3152
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999983634211e-08,
+        9.999999983634211e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2000000000000.0002,
+        2000000000000.0002
+      ],
+      "relative_curvature_error": 3.273157522798442e-09
+    },
+    {
+      "delta_meV": 5e-08,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.80000005,
+        0.7999999500000001
+      ],
+      "physical_band_gap_meV": 9.999999983634211e-08,
+      "returned_curvature": [
+        -2000000006546.3152,
+        2000000006546.3152
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999983634211e-08,
+        9.999999983634211e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2000000000000.0002,
+        2000000000000.0002
+      ],
+      "relative_curvature_error": 3.273157522798442e-09
+    },
+    {
+      "delta_meV": 5e-08,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.80000005,
+        0.7999999500000001
+      ],
+      "physical_band_gap_meV": 9.999999983634211e-08,
+      "returned_curvature": [
+        -2000000006546.3152,
+        2000000006546.3152
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999999983634211e-08,
+        9.999999983634211e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2000000000000.0002,
+        2000000000000.0002
+      ],
+      "relative_curvature_error": 3.273157522798442e-09
+    },
+    {
+      "delta_meV": 5e-08,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.80000005,
+        0.7999999500000001
+      ],
+      "physical_band_gap_meV": 9.999999983634211e-08,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        9.999999983634211e-08,
+        9.999999983634211e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2000000000000.0002,
+        2000000000000.0002
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-09,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.8000000050000001,
+        0.7999999950000001
+      ],
+      "physical_band_gap_meV": 1.0000000050247593e-08,
+      "returned_curvature": [
+        -199999997990096.22,
+        199999997990096.22
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.0000000050247593e-08,
+        1.0000000050247593e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -199999999999999.97,
+        199999999999999.97
+      ],
+      "relative_curvature_error": 1.0049518772703436e-08
+    },
+    {
+      "delta_meV": 5e-09,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.8000000050000001,
+        0.7999999950000001
+      ],
+      "physical_band_gap_meV": 1.0000000050247593e-08,
+      "returned_curvature": [
+        -199999997990096.22,
+        199999997990096.22
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.0000000050247593e-08,
+        1.0000000050247593e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -199999999999999.97,
+        199999999999999.97
+      ],
+      "relative_curvature_error": 1.0049518772703436e-08
+    },
+    {
+      "delta_meV": 5e-09,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.8000000050000001,
+        0.7999999950000001
+      ],
+      "physical_band_gap_meV": 1.0000000050247593e-08,
+      "returned_curvature": [
+        -199999997990096.22,
+        199999997990096.22
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.0000000050247593e-08,
+        1.0000000050247593e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -199999999999999.97,
+        199999999999999.97
+      ],
+      "relative_curvature_error": 1.0049518772703436e-08
+    },
+    {
+      "delta_meV": 5e-09,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.8000000050000001,
+        0.7999999950000001
+      ],
+      "physical_band_gap_meV": 1.0000000050247593e-08,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        1.0000000050247593e-08,
+        1.0000000050247593e-08
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -199999999999999.97,
+        199999999999999.97
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-10,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.8000000005,
+        0.7999999994999999
+      ],
+      "physical_band_gap_meV": 1.000000082740371e-09,
+      "returned_curvature": [
+        -1.9999996690385572e+16,
+        1.9999996690385572e+16
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.000000082740371e-09,
+        1.000000082740371e-09
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2e+16,
+        2e+16
+      ],
+      "relative_curvature_error": 1.654807213480325e-07
+    },
+    {
+      "delta_meV": 5e-10,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.8000000005,
+        0.7999999994999999
+      ],
+      "physical_band_gap_meV": 1.000000082740371e-09,
+      "returned_curvature": [
+        -1.9999996690385572e+16,
+        1.9999996690385572e+16
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        1.000000082740371e-09,
+        1.000000082740371e-09
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2e+16,
+        2e+16
+      ],
+      "relative_curvature_error": 1.654807213480325e-07
+    },
+    {
+      "delta_meV": 5e-10,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.8000000005,
+        0.7999999994999999
+      ],
+      "physical_band_gap_meV": 1.000000082740371e-09,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        1.000000082740371e-09,
+        1.000000082740371e-09
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2e+16,
+        2e+16
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-10,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.8000000005,
+        0.7999999994999999
+      ],
+      "physical_band_gap_meV": 1.000000082740371e-09,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        1.000000082740371e-09,
+        1.000000082740371e-09
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -2e+16,
+        2e+16
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-11,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.8000000000499999,
+        0.7999999999500002
+      ],
+      "physical_band_gap_meV": 9.999978622943217e-11,
+      "returned_curvature": [
+        -2.0000085508501317e+18,
+        2.0000085508501317e+18
+      ],
+      "band_curvature_available": [
+        true,
+        true
+      ],
+      "reported_spacing_meV": [
+        9.999978622943217e-11,
+        9.999978622943217e-11
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -1.9999999999999997e+18,
+        1.9999999999999997e+18
+      ],
+      "relative_curvature_error": 4.275425065980443e-06
+    },
+    {
+      "delta_meV": 5e-11,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.8000000000499999,
+        0.7999999999500002
+      ],
+      "physical_band_gap_meV": 9.999978622943217e-11,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        9.999978622943217e-11,
+        9.999978622943217e-11
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -1.9999999999999997e+18,
+        1.9999999999999997e+18
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-11,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.8000000000499999,
+        0.7999999999500002
+      ],
+      "physical_band_gap_meV": 9.999978622943217e-11,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        9.999978622943217e-11,
+        9.999978622943217e-11
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -1.9999999999999997e+18,
+        1.9999999999999997e+18
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 5e-11,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.8000000000499999,
+        0.7999999999500002
+      ],
+      "physical_band_gap_meV": 9.999978622943217e-11,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        9.999978622943217e-11,
+        9.999978622943217e-11
+      ],
+      "individual_band_reference_defined": true,
+      "analytic_curvature": [
+        -1.9999999999999997e+18,
+        1.9999999999999997e+18
+      ],
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 0.0,
+      "band_gap_cutoff_meV": 0,
+      "physical_energies_meV": [
+        0.7999999999999999,
+        0.7999999999999999
+      ],
+      "physical_band_gap_meV": 0.0,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        0.0,
+        0.0
+      ],
+      "individual_band_reference_defined": false,
+      "analytic_curvature": null,
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 0.0,
+      "band_gap_cutoff_meV": 1e-10,
+      "physical_energies_meV": [
+        0.7999999999999999,
+        0.7999999999999999
+      ],
+      "physical_band_gap_meV": 0.0,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        0.0,
+        0.0
+      ],
+      "individual_band_reference_defined": false,
+      "analytic_curvature": null,
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 0.0,
+      "band_gap_cutoff_meV": 1e-08,
+      "physical_energies_meV": [
+        0.7999999999999999,
+        0.7999999999999999
+      ],
+      "physical_band_gap_meV": 0.0,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        0.0,
+        0.0
+      ],
+      "individual_band_reference_defined": false,
+      "analytic_curvature": null,
+      "relative_curvature_error": null
+    },
+    {
+      "delta_meV": 0.0,
+      "band_gap_cutoff_meV": 1e-06,
+      "physical_energies_meV": [
+        0.7999999999999999,
+        0.7999999999999999
+      ],
+      "physical_band_gap_meV": 0.0,
+      "returned_curvature": [
+        null,
+        null
+      ],
+      "band_curvature_available": [
+        false,
+        false
+      ],
+      "reported_spacing_meV": [
+        0.0,
+        0.0
+      ],
+      "individual_band_reference_defined": false,
+      "analytic_curvature": null,
+      "relative_curvature_error": null
+    }
+  ]
+}

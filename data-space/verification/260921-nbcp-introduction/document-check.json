@@ -1,0 +1,17 @@
+{
+  "scope": "Section 1 introduction only, plus figure asset and source ledger",
+  "intro_page": 3,
+  "intro_page_count": 1,
+  "total_pdf_pages": 52,
+  "changed_existing_tex_or_exporter": [
+    "docs/nbcp/chapters/01-introduction.tex"
+  ],
+  "other_existing_tex_and_exporter_unchanged": 17,
+  "latex_review_messages": [],
+  "pdf_sha256": "aa4c995fb9406b33d137aadf6a75923520f314ab67cce59cd5619abf8ecfc760",
+  "source_sha256": "4399bb49f1835e6001da91f2e0a98fb091f615d68311dcab0f76766a00bab213",
+  "image_sha256": "9ea97c4a25d03ceefc7984091698eefb1ad0203c50bef79da158109d7dd7c2d5",
+  "source_ledger": "docs/nbcp/sources/260921-introduction-sources.md",
+  "physics_status": "in-review",
+  "visual_review": "Introduction inspected at 108 dpi; all 52 pages inspected in contact sheets. No clipping or overlaps found. Section 1 occupies PDF page 3 only."
+}

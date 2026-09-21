@@ -1,0 +1,17 @@
+{
+  "scope": "Clock reduction assessment and four-panel replot; no thermal calculation",
+  "pdf_pages": 34,
+  "figure3_pdf_page": 26,
+  "display_equations": 79,
+  "previous_equations_preserved": 75,
+  "explicit_ids": 91,
+  "unresolved_references_or_links": [],
+  "preserved_previous_code_legacy_data_files": 132,
+  "latex_review_messages": [],
+  "visual_review": "All 34 pages rendered and contact sheets viewed; pages 20-22 and Figure 3 on page 26 viewed individually. Standalone four-panel PNG inspected. No clipped equations, labels or overlaps observed.",
+  "manuscript_sha256": "333c85211d73c6c20ef8cb03c7da03f863ed37eece28b8fc51c6062ccdcb3f33",
+  "pdf_sha256": "c2ae9f90f523e9cec6ee43ec92618fcf08ee0e27c071931292e407aec4920f37",
+  "figure_panels_verified": 4,
+  "active_couplings_separate": true,
+  "new_diagonalization_or_thermal_simulation": false
+}

@@ -1,0 +1,468 @@
+{
+  "description": "Current Hamiltonian, T=0, local five-point curvature, no shifts. The finest derivative step can be less accurate for tiny angular signals.",
+  "measurements": [
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.227551457024315e-05,
+      "gap_meV": 0.006859151777969258
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.2308379491219314e-05,
+      "gap_meV": 0.006861307567956518
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.231048265993272e-05,
+      "gap_meV": 0.0068614455032405125
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.231061483718797e-05,
+      "gap_meV": 0.0068614541719280745
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.228653029902278e-05,
+      "gap_meV": 0.0068598744353756584
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.231938768969535e-05,
+      "gap_meV": 0.00686202950450709
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.232149034052151e-05,
+      "gap_meV": 0.006862167391318094
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.232162249753832e-05,
+      "gap_meV": 0.006862176057766552
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.228812622537609e-05,
+      "gap_meV": 0.006859979125539558
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.232098238060028e-05,
+      "gap_meV": 0.006862134080775474
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.232308495797175e-05,
+      "gap_meV": 0.006862271960668317
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.2323217163777656e-05,
+      "gap_meV": 0.0068622806301841
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.911099608199809e-11,
+      "gap_meV": 7.2938259146896484e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.914232500727387e-11,
+      "gap_meV": 7.295758528525083e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.91591301409474e-11,
+      "gap_meV": 7.296794990052322e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.924658911619456e-11,
+      "gap_meV": 7.302186672810762e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.911203510908006e-11,
+      "gap_meV": 7.29389001823938e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.914494516252404e-11,
+      "gap_meV": 7.295920137054109e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.916997216267225e-11,
+      "gap_meV": 7.297463596785189e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.928995720309398e-11,
+      "gap_meV": 7.3048587585787436e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 5.911135748272225e-11,
+      "gap_meV": 7.293848211640412e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 5.914223465709283e-11,
+      "gap_meV": 7.295752955753337e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 5.91533477293608e-11,
+      "gap_meV": 7.296438374743169e-06
+    },
+    {
+      "phase": "Y",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 5.924803471909121e-11,
+      "gap_meV": 7.302275758089535e-06
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 0.000379367483343047,
+      "gap_meV": 0.01563965865450055
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 0.00037966663513214633,
+      "gap_meV": 0.01564582379792699
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 0.00037968603109579554,
+      "gap_meV": 0.015646223440568572
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 24,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 0.0003796872547148026,
+      "gap_meV": 0.015646248652190015
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 0.00037940562166131317,
+      "gap_meV": 0.015640444772598825
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 0.00037970475555142055,
+      "gap_meV": 0.015646609237491088
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 0.0003797241503167553,
+      "gap_meV": 0.015647008835382614
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 48,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 0.000379725373869626,
+      "gap_meV": 0.01564703404437596
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 0.0003794117894861045,
+      "gap_meV": 0.01564057190188402
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 0.00037971091742604253,
+      "gap_meV": 0.01564673619409596
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 0.00037973031179903163,
+      "gap_meV": 0.015647135780661774
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0.01,
+      "JGamma_meV": 0,
+      "N": 96,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 0.00037973153534648135,
+      "gap_meV": 0.015647160989338913
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 6.447867616487256e-06,
+      "gap_meV": 0.0020389438894819253
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 6.4480909117645615e-06,
+      "gap_meV": 0.0020389791943785686
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 6.448104935196861e-06,
+      "gap_meV": 0.0020389814115829735
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 24,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 6.44810616215232e-06,
+      "gap_meV": 0.002038981605573245
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 6.447868321783356e-06,
+      "gap_meV": 0.0020389440009962443
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 6.448091615502122e-06,
+      "gap_meV": 0.0020389793056445403
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 6.448105637398468e-06,
+      "gap_meV": 0.0020389815226059794
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 48,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 6.4481068524277025e-06,
+      "gap_meV": 0.0020389817147106206
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.08,
+      "curvature_meV_per_spin": 6.447867921599817e-06,
+      "gap_meV": 0.0020389439377232524
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.04,
+      "curvature_meV_per_spin": 6.448091214799069e-06,
+      "gap_meV": 0.002038979242290505
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.02,
+      "curvature_meV_per_spin": 6.448105232448957e-06,
+      "gap_meV": 0.0020389814585806184
+    },
+    {
+      "phase": "V",
+      "JPD_meV": 0,
+      "JGamma_meV": 0.01,
+      "N": 96,
+      "step_rad": 0.01,
+      "curvature_meV_per_spin": 6.448106454886906e-06,
+      "gap_meV": 0.002038981651856635
+    }
+  ],
+  "comparisons": [
+    {
+      "phase": "Y",
+      "axis": "PD",
+      "mesh_48_to_96_relative_gap_change": 1.5239845342351899e-05,
+      "step_004_to_002_relative_gap_change": 2.00928590465832e-05
+    },
+    {
+      "phase": "Y",
+      "axis": "Gamma",
+      "mesh_48_to_96_relative_gap_change": -2.2914354547709515e-05,
+      "step_004_to_002_relative_gap_change": 9.394766982762093e-05
+    },
+    {
+      "phase": "V",
+      "axis": "PD",
+      "mesh_48_to_96_relative_gap_change": 8.114001119663428e-06,
+      "step_004_to_002_relative_gap_change": 2.5538013861625686e-05
+    },
+    {
+      "phase": "V",
+      "axis": "Gamma",
+      "mesh_48_to_96_relative_gap_change": -3.107144586067534e-08,
+      "step_004_to_002_relative_gap_change": 1.0869606061891801e-06
+    }
+  ],
+  "source_sha256": {
+    "examples/pseudo_goldstone_validation.py": "f85b1f016ba127db7e9f7c6bb55d97511c08741f97a3457f67ba4808c8cb5466",
+    "examples/pseudo_goldstone_comparison.py": "6c36720e58d8a1ef8344e844597cc8da279b86eedec3d15ca288eb3597bf6bc2",
+    "code-space/lswt/solvers/hamiltonian.py": "97db8a081151d2501d6d19454629be50f88d5210e379c39811c5e978d3580c3d"
+  }
+}

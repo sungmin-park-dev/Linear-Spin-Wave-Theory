@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-12",
+  "default_band_gap_cutoff_meV": 1e-08,
+  "meaning": "Configurable calculation policy, not certified eigenvalue error or physical degeneracy",
+  "topology_hall_tests": {
+    "passed": 107,
+    "failed": 0
+  },
+  "full_suite": {
+    "passed": 198,
+    "failed": 5,
+    "existing_failure_group": "CommensurateStructure"
+  },
+  "test_summary_lines": {
+    "targeted": "107 passed in 3.44s",
+    "full": "5 failed, 198 passed in 4.14s"
+  },
+  "source_sha256": {
+    "code-space/lswt/config.py": "147d64c66ae4f010f70c83a1677be9191d92ce087a11b27519c95ba4ccca01a9",
+    "code-space/lswt/observables/topology.py": "c8df46a38e5ff95ec73802444ba86e3dbf75d6938cd87ab46f6af358daf30ae9",
+    "code-space/lswt/observables/thermodynamics.py": "da89141ce4e13d7658fe09c7c992fc52a82a15fa32aa3392f51a8553d45b5f79",
+    "code-space/tests/test_solvers/test_band_isolation.py": "74f4c0844026042f77d04f2727a2ac1d9e7a1a7e951b0df01d11708468543afc",
+    "examples/band_gap_cutoff_check.py": "a38065d2670c0bb4bcd19241302259fe76c33d58dbc878f14d3c988228011ff4",
+    "examples/band_degeneracy_check.py": "3b9a3a6949ecf1b5770d1876a61956ba02e90172f5786e716dc0c1b621284369"
+  }
+}

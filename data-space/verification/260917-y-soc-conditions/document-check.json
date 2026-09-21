@@ -1,0 +1,20 @@
+{
+  "scope": "Y derivation expansion and classical SOC conditions; research draft in-review, not physics acceptance",
+  "pdf_pages": 28,
+  "source_display_equations": 63,
+  "previous_display_equations_preserved": 49,
+  "explicit_semantic_ids": 68,
+  "unresolved_internal_references": [],
+  "broken_local_links": [],
+  "latex_review_messages": [],
+  "pdf_visual_review": "All 28 pages rendered and contact-sheet reviewed; new derivation pages 10,11,13,14,15 viewed individually. No clipped equations or overlaps observed.",
+  "preserved_previous_code_legacy_data_files": 127,
+  "production_or_legacy_changes_this_step": false,
+  "single_markdown_authoring_source": "docs/nbcp/research-note.md",
+  "manuscript_sha256": "c304b519484635dcc61700c44d07a46a846878cf494e137121a31acf6af8bbc4",
+  "pdf_sha256": "909a36f9fdefdffe9c5a43b568a32c40da77072131b65f46984a9607386a56cc",
+  "numerical_input_hashes_current": true,
+  "symbolic_exact_checks_passed": 13,
+  "numerical_cases": 12,
+  "orientation_issue": "NBCP stored displacement is opposite the forward API wording modulo magnetic lattice vectors; current code coordinates used and production unchanged."
+}

@@ -1,0 +1,42 @@
+수치미분 방법: 2점 공식 (O(h²))
+수치미분 간격: dtheta=3.141593e-03, dphi=1.570796e-01
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+D2E_DTHETA2 = (-0.04212821 + -0.04212821 - 2*-0.04212831) / 9.87e-06 = 2.066582e-02
+D2E_DPHI2 = (-0.00816368 + -0.00816368 - 2*-0.00816368) / 2.47e-02 = 1.234962e-11
+
+=== Type I 특성 검증 ===
+E_cl_00: -0.04212831
+E_cl_0p1: -0.04212831
+E_cl_0m1: -0.04212831
+Classical phi-invariance check: |ΔE| = 0.00e+00
+
+=== Hessian 계산 ===
+Hessian determinant = 2.066582e-02 * 1.234962e-11 - 0² = 2.552150e-13
+Pseudo gap: 2.525940e-07
+수치미분 방법: 5점 공식 (O(h⁴))
+수치미분 간격: dtheta=3.141593e-03, dphi=1.570796e-01
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+[Note] MAGSWT potential (numerical): 1e-09
+D2E_DTHETA2 = (--0.042128 + 16*-0.042128 - 30*-0.042128 + 16*-0.042128 - -0.042128) / (12*9.87e-06) = 2.066588e-02
+D2E_DPHI2 = (--0.008164 + 16*-0.008164 - 30*-0.008164 + 16*-0.008164 - -0.008164) / (12*2.47e-02) = 1.319801e-11
+
+=== Type I 특성 검증 ===
+E_cl_00: -0.04212831
+E_cl_0p1: -0.04212831
+E_cl_0m1: -0.04212831
+Classical phi-invariance check: |ΔE| = 0.00e+00
+
+=== Hessian 계산 ===
+Hessian determinant = 2.066588e-02 * 1.319801e-11 - 0² = 2.727484e-13
+Pseudo gap: 2.611266e-07

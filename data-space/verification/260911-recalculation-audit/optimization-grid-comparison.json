@@ -1,0 +1,93 @@
+{
+  "created_utc": "2026-09-11T14:21:03.516072+00:00",
+  "scope": "BZ-only comparison with fixed diagnostic states, not optimization or material validation",
+  "N": 4,
+  "num_k_points": 64,
+  "bz_type_used_by_EnergyFunction": "simple",
+  "config": {
+    "Jxy": 0.076,
+    "Jz": 0.125,
+    "JGamma": 0.1,
+    "JPD": 0.0,
+    "Kxy": 0.0,
+    "Kz": 0.0,
+    "KPD": 0.0,
+    "KGamma": 0.0,
+    "h": [
+      0.0,
+      0.0,
+      0.376418
+    ]
+  },
+  "angles_radians": {
+    "One MSL": [
+      0.4,
+      1.7
+    ],
+    "Two MSL": [
+      0.4,
+      0.8333333333333333,
+      1.2666666666666666,
+      1.7
+    ],
+    "Three MSL": [
+      0.4,
+      0.6599999999999999,
+      0.9199999999999999,
+      1.1799999999999997,
+      1.44,
+      1.7
+    ],
+    "Four MSL": [
+      0.4,
+      0.5857142857142857,
+      0.7714285714285714,
+      0.9571428571428571,
+      1.1428571428571428,
+      1.3285714285714285,
+      1.5142857142857142,
+      1.7
+    ]
+  },
+  "energy_call": "EnergyFunction.quantum_energy_density_func(angles), default reg_type=0",
+  "energy_unit": "meV per spin",
+  "comparison": "Current EnergyFunction with current versus before-BZ-fix simple grid; identical current Hamiltonian and energy formula",
+  "before_bz_snapshot": "/private/tmp/lswt-bz-chern-gnw9ay5s/before/code-space/lswt/core/brillouin_zone.py",
+  "before_bz_sha256": "325feeb2f2fb6288c4c2fa30fe84ea79941e48331c69ac51e78df66aa6a67395",
+  "current_source_sha256": {
+    "examples/nbcp_ground_state.py": "a74e05ab1fd0eada71a7feca872ba31eb2c4ce5911db2c9bada771880b73ee13",
+    "code-space/lswt/solvers/energy.py": "9b7f5a70a75ddcbccc3bc0075c4e4262d5dfa7a0d0c21d2b5be145edb4f23c0d",
+    "code-space/lswt/core/brillouin_zone.py": "c9b61a30a1c70d42002b2505b42370ff9b7ef5c3ba85ebd18ea842c165d85ed0",
+    "code-space/lswt/solvers/hamiltonian.py": "97db8a081151d2501d6d19454629be50f88d5210e379c39811c5e978d3580c3d"
+  },
+  "records": [
+    {
+      "phase": "One MSL",
+      "grid_max_delta": 0.0,
+      "new_quantum_energy": -0.00377015361056647,
+      "old_grid_quantum_energy": -0.00377015361056647,
+      "energy_delta": 0.0
+    },
+    {
+      "phase": "Two MSL",
+      "grid_max_delta": 0.0,
+      "new_quantum_energy": -0.0052255566517153355,
+      "old_grid_quantum_energy": -0.0052255566517153355,
+      "energy_delta": 0.0
+    },
+    {
+      "phase": "Three MSL",
+      "grid_max_delta": 0.0,
+      "new_quantum_energy": -0.008378304125512437,
+      "old_grid_quantum_energy": -0.008378304125512437,
+      "energy_delta": 0.0
+    },
+    {
+      "phase": "Four MSL",
+      "grid_max_delta": 0.0,
+      "new_quantum_energy": -0.006422969638389566,
+      "old_grid_quantum_energy": -0.006422969638389566,
+      "energy_delta": 0.0
+    }
+  ]
+}
