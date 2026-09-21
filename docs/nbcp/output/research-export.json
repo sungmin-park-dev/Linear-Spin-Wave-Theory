@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-21T06:03:36.277228+00:00",
+  "generated_utc": "2026-09-21T09:44:07.519225+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -22,8 +22,9 @@
     "docs/nbcp/appendices/c-y-stiffness.tex": "1ce3e4c58d8104baf0793405c2ccd147c0ecde0048f584fbf9643195ee8c3f92",
     "docs/nbcp/appendices/d-numerical-verification.tex": "15acc57d6ca791bda2f1221d075448cc997547b9b91291acdbd30a916fd2cba5",
     "docs/nbcp/appendices/e-model-derivation.tex": "7d87d70c034de5d315876ade178b942c403fbd5ff30e92e26a771fb767a5fd1a",
-    "docs/nbcp/references.tex": "f8cec6e112cd26afc905a022bca567e1a142c397de45f0f2c0010515a5c17828",
-    "examples/nbcp_research_export.py": "ea3ec330bf9171198f894258f2350c1e5848e01f5f3d20b304a936414803dbf3"
+    "docs/nbcp/references.tex": "fd339a135cc065ef0d0e91891e2028bbed387ef5aa1a019dff9b76fb082ad9a8",
+    "docs/nbcp/references.bib": "f35f6170dd9f8ac7e7c536d9b5d3b51ef0e1981d5c951d33f738bb40f5ec0bfc",
+    "examples/nbcp_research_export.py": "50280d30d9e400d5eb726e05c51bab3667b95cc48000e7dfb013505afdb1648c"
   },
   "figure_inputs_sha256": {
     "docs/nbcp/sources/figures/gao-2022-figure-1.png": "9ea97c4a25d03ceefc7984091698eefb1ad0203c50bef79da158109d7dd7c2d5",
@@ -37,7 +38,7 @@
     "data-space/verification/260917-y-stiffness/y-stiffness-validation.png": "a275fec0f92d8b5e05c9cdea65bac825f8cdfbf5bb5baa1aae37168986e81a99"
   },
   "outputs_sha256": {
-    "research-note.pdf": "2699aa5ce83ba34cb31d453d9f948eed8d6e5ec0f26d0c233830f2a013cbbf3f"
+    "research-note.pdf": "32bd69502405084028286c3efe89ee265277cbbc9fc0955634ca3f19aeeb242f"
   },
   "latex_review_messages": [],
   "source_display_equations": 89,
