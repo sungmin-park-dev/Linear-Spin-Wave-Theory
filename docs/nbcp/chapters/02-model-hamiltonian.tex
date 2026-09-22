@@ -58,28 +58,28 @@ The bond phase is \(\varphi=0\) for \(\pm\boldsymbol\delta_1\) (teal),
 \newpage
 \subsection{Symmetries}\label{sec-nbcp-model-symmetry-properties}
 
-The three terms have distinct symmetry properties~\cite{park2026}.
-First, a nonzero perpendicular field reduces the unitary crystallographic
-point group from \(\mathsf D_{3d}\) to \(\mathsf S_6\).
-Second, the bond-dependent PD and \(\Gamma\) exchanges explicitly break
-the global spin-\(z\) U(1) symmetry of \(H_{\rm XXZ}\), while preserving
-\(\mathsf S_6\) under simultaneous transformations of lattice sites and
-spins. In the paper's convention, a sixfold spatial rotation followed
-by reflection in the layer acts on the axial spin as
+The three terms in Eq.~\eqref{eq-nbcp-model-decomposition} have distinct
+symmetries~\cite{park2026}:
+\begin{itemize}
+\item The field $h\neq0$ reduces the point group from $\mathsf D_{3d}$
+to $\mathsf S_6$, a sixfold rotation followed by reflection in the layer.
+\item $H_{\rm PD}$ and $H_\Gamma$ break the global spin-$z$ U(1)
+symmetry of $H_{\rm XXZ}$. $\mathsf S_6$ survives, but only as a
+combined operation on lattice sites and spins:
 \begin{equation}\label{eq-nbcp-s6-transform}
 S_6:\quad
 \hat S_j^x\pm i\hat S_j^y\longrightarrow
  e^{\mp i2\pi/3}(\hat S_{j'}^x\pm i\hat S_{j'}^y),
 \qquad \hat S_j^z\longrightarrow\hat S_{j'}^z,
 \end{equation}
-where \(j'\) is the transformed lattice site. This combined symmetry
-constrains the angular pinning discussed below; it is not a continuous
-spin rotation at fixed lattice positions.
-
-Third, a pure spin rotation \(U_\pi=\exp(-i\pi\sum_j\hat S_j^z)\)
-leaves \(H_{\rm PD}\) invariant but sends \(H_\Gamma\) to
-\(-H_\Gamma\). Thus nonzero \(J_\Gamma\) removes the additional
-\(\pi\)-rotation symmetry retained by the XXZ+PD model.
+with $j'$ the transformed site. Unlike U(1), $\mathsf S_6$ is not a
+spin rotation at fixed sites, so it only constrains the discrete angular
+pinning of Section~\ref{from-a-classical-orbit-to-quantum-pinning}.
+\item A global spin rotation $U_\pi=\exp(-i\pi\sum_j\hat S_j^z)$ leaves
+$H_{\rm PD}$ invariant but sends $H_\Gamma\to-H_\Gamma$: nonzero
+$J_\Gamma$ removes the extra $\pi$-rotation symmetry that the
+XXZ+PD model retains.
+\end{itemize}
 
 \subsection{Parameters and conventions}\label{sec-nbcp-model-parameters}
 

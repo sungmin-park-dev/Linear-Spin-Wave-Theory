@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-22T10:06:19.246536+00:00",
+  "generated_utc": "2026-09-22T10:20:38.481340+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -9,7 +9,7 @@
     "docs/nbcp/preamble.tex": "e8aaaeb72b96d0ebf7af25e3ac8e3d696984cbb18e117880352a84738b4035dc",
     "docs/nbcp/metadata.tex": "e5281141916289f35c93eefc02e1b662dcbac1cafad70cb4313a2095c5013533",
     "docs/nbcp/chapters/01-introduction.tex": "05bf123f8dd092e53fb2aaeb0831596c475f41f8291fd0c5ad88a28452f2d1d3",
-    "docs/nbcp/chapters/02-model-hamiltonian.tex": "17347bb1b99b8dc1beac5c08ed122936ab71433d22ea00d618c2a16a0b0a148c",
+    "docs/nbcp/chapters/02-model-hamiltonian.tex": "cb12719e4030631ac2df1bde862e7a68cdb81224953f6123cee98a9013efa01c",
     "docs/nbcp/chapters/03-phase-diagram.tex": "23ecfa72d58bdfcdb17661e7e6f06f28ad8763db0ea73102ba620a2c18955c1b",
     "docs/nbcp/chapters/04-phase-characterization.tex": "d68a48419e3034a63db53a3e94a91bd9f4a52c64b0753789306a6e9961caad14",
     "docs/nbcp/chapters/05-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
@@ -49,7 +49,7 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "794827f91e77b24ff8c5775f2e6328eb2961b06b071f65da11eb24ec052d3c23"
+    "research-note.pdf": "e0370405ad620a4bdd7b94cb78e9b1539ae0b33de62c24603ca7acfbd29d2157"
   },
   "latex_review_messages": [],
   "source_display_equations": 89,
