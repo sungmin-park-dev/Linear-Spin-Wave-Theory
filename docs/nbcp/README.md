@@ -10,7 +10,7 @@ updated: 2026-09-21
 
 # NBCP 연구 노트
 
-**NBCP 내용은 LaTeX에서 직접 편집한다.** [main.tex](main.tex)가 본문 9장, 부록 4개와 참고문헌을 연결한다. 각 내용은 해당 TeX 파일 한 곳에서만 관리하며 PDF는 읽기용 출력이다.
+**NBCP 내용은 LaTeX에서 직접 편집한다.** [main.tex](main.tex)가 본문 10장, 부록 4개와 참고문헌을 연결한다. 각 내용은 해당 TeX 파일 한 곳에서만 관리하며 PDF는 읽기용 출력이다.
 
 [전체 문서](../README.md) · [LSWT 일반 이론](../lswt/README.md) · [연구노트 PDF](output/research-note.pdf)
 
@@ -18,13 +18,14 @@ updated: 2026-09-21
 
 1. [Introduction](chapters/01-introduction.tex): 연구 질문, 방법과 근거의 범위.
 2. [Model Hamiltonian](chapters/02-model-hamiltonian.tex): effective spin, 대칭, 교환행렬, 단위와 매개변수.
-3. [Phase Diagram](chapters/03-phase-diagram.tex): 고전 상도, 영점에너지 보정, 후보 상의 구분.
-4. [Skyrmion Phase](chapters/04-skyrmion-phase.tex): texture·위상전하의 검토 범위와 미검증 항목.
-5. [Y and V: Symmetry and Low-Energy Theory](chapters/05-yv-low-energy.tex): 정확한 U(1), accidental degeneracy, pinning과 gap.
-6. [Supersolidity: Definition and Conditions](chapters/06-supersolidity.tex): 정의, 유효모델·RG 조건과 미시적 검증 기준.
-7. [Supersolidity in Y](chapters/07-y-phase.tex): 안정성, angular matching, smooth wave와 density wall, 남은 thermal 검증.
-8. [Supersolidity in V](chapters/08-v-phase.tex): PD/Gamma 대칭 차이, 기존 angular/gap 결과와 미계산 항목.
-9. [Discussion and Conclusions](chapters/09-discussion.tex): 근거가 확보된 주장과 적용 한계.
+3. [Phase Diagram](chapters/03-phase-diagram.tex): 고전 상도 구성, 영점에너지 보정.
+4. [Characterization of Magnetic Phases](chapters/04-phase-characterization.tex): Y·UUD·V·P 정의와 에너지, stripe·4-sublattice 경쟁 상.
+5. [Skyrmion Phase](chapters/05-skyrmion-phase.tex): texture·위상전하의 검토 범위와 미검증 항목.
+6. [Y and V: Symmetry and Low-Energy Theory](chapters/06-yv-low-energy.tex): 정확한 U(1), accidental degeneracy, pinning과 gap.
+7. [Supersolidity: Definition and Conditions](chapters/07-supersolidity.tex): 정의, 유효모델·RG 조건과 미시적 검증 기준.
+8. [Supersolidity in Y](chapters/08-y-phase.tex): 안정성, angular matching, smooth wave와 density wall, 남은 thermal 검증.
+9. [Supersolidity in V](chapters/09-v-phase.tex): PD/Gamma 대칭 차이, 기존 angular/gap 결과와 미계산 항목.
+10. [Discussion and Conclusions](chapters/10-discussion.tex): 근거가 확보된 주장과 적용 한계.
 
 - [부록 A — pseudo-Goldstone gap](appendices/a-pseudo-goldstone-gap.tex): 공액 응답과 Y/V 상세 유도.
 - [부록 B — clock RG](appendices/b-clock-rg.tex): 정규화, shell 계산과 coupled flow.
