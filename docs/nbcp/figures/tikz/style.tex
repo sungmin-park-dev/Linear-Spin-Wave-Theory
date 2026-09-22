@@ -1,0 +1,18 @@
+% Shared presentation settings for standalone TikZ figures; no scientific content.
+% Keep the fonts and colors identical to ../../preamble.tex so that figure labels
+% match the body text. Compile with XeLaTeX (see examples/nbcp_research_export.py).
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{unicode-math}
+\defaultfontfeatures{Scale=MatchLowercase}
+\defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\setmainfont[BoldFont=texgyrepagella-bold.otf,ItalicFont=texgyrepagella-italic.otf,BoldItalicFont=texgyrepagella-bolditalic.otf]{texgyrepagella-regular.otf}
+\setsansfont[BoldFont=texgyreheros-bold.otf,ItalicFont=texgyreheros-italic.otf]{texgyreheros-regular.otf}
+\setmathfont{texgyrepagella-math.otf}
+\setmathfont{texgyrepagella-math.otf}[version=bold,FakeBold=1.3]
+\definecolor{NoteInk}{HTML}{24384A}
+\definecolor{NoteAccent}{HTML}{126B78}
+\definecolor{NoteMuted}{HTML}{63717B}
+\definecolor{NotePale}{HTML}{F1F6F6}
+\AtBeginDocument{\color{NoteInk}}

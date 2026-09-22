@@ -44,49 +44,14 @@ in Fig.~\ref{fig-nbcp-bond-phases}; reversing a bond leaves its phase unchanged.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=1.2, font=\small]
-  % Triangular Bravais lattice, adapted from the supplied source diagram.
-  \begin{scope}
-    \clip (-2.05,-1.42) rectangle (2.05,1.42);
-    \foreach \m in {-4,...,4} {
-      \foreach \n in {-3,...,3} {
-        \coordinate (v) at ({\m-\n/2},{sqrt(3)*\n/2});
-        \foreach \a in {0,60,120} {
-          \draw[gray!35] (v)--++(\a:1);
-        }
-        \fill[gray!65] (v) circle (1.6pt);
-      }
-    }
-  \end{scope}
-  \draw[very thick,teal!80!black] (-1,0)--(0,0);
-  \draw[very thick,orange!85!black] (300:1)--(0,0);
-  \draw[very thick,violet!80!black] (60:1)--(0,0);
-  \draw[->,very thick,teal!80!black] (0,0)--(0:1)
-    node[below right,fill=white,inner sep=1pt] {\(\boldsymbol\delta_1\)};
-  \draw[->,very thick,orange!85!black] (0,0)--(120:1)
-    node[above left,fill=white,inner sep=1pt] {\(\boldsymbol\delta_2\)};
-  \draw[->,very thick,violet!80!black] (0,0)--(240:1)
-    node[below left,fill=white,inner sep=1pt] {\(\boldsymbol\delta_3\)};
-  \fill[black] (0,0) circle (2.5pt);
-  \node[below right,fill=white,inner sep=1pt] at (0,-0.05) {\(i\)};
-  \node[anchor=west,teal!80!black] at (2.45,1.10)
-    {\(\pm\boldsymbol\delta_1:\ \varphi=0\)};
-  \node[anchor=west,orange!85!black] at (2.45,0.62)
-    {\(\pm\boldsymbol\delta_2:\ \varphi=+2\pi/3\)};
-  \node[anchor=west,violet!80!black] at (2.45,0.14)
-    {\(\pm\boldsymbol\delta_3:\ \varphi=-2\pi/3\)};
-  \begin{scope}[shift={(2.7,-1.15)}]
-    \draw[->] (0,0)--(0.75,0) node[right] {\(x\)};
-    \draw[->] (0,0)--(0,0.65) node[above] {\(y\)};
-    \draw (0,0) circle (0.09);
-    \fill (0,0) circle (0.025);
-    \node[anchor=west] at (1.15,0) {\(B\parallel z\parallel c\)};
-  \end{scope}
-\end{tikzpicture}
-\caption{Triangular lattice and nearest-neighbor vectors
-\(\boldsymbol\delta_{1,2,3}\). Opposite bonds share the indicated phase;
-\(\boldsymbol\delta_1\parallel x\). The dot-in-circle denotes a field
-out of the plane.}
+\includegraphics{figures/bond-phases.pdf}
+\caption{Triangular lattice with nearest-neighbor vectors
+\(\boldsymbol\delta_1\), \(\boldsymbol\delta_2\), \(\boldsymbol\delta_3\).
+The bond phase is \(\varphi=0\) for \(\pm\boldsymbol\delta_1\) (teal),
+\(+2\pi/3\) for \(\pm\boldsymbol\delta_2\) (orange) and \(-2\pi/3\) for
+\(\pm\boldsymbol\delta_3\) (purple); opposite bonds share a phase.
+\(\boldsymbol\delta_1\parallel x\), and the dot-in-circle marks
+\(z\parallel c\), along the field \(B\).}
 \label{fig-nbcp-bond-phases}
 \end{figure}
 

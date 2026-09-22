@@ -4,3 +4,20 @@ __pycache__/
 .pytest_cache/
 *.py[cod]
 *.egg-info/
+
+# Generated REVTeX control files for the preserved LSWT TeX notes
+docs/lswt/sources/01-editable-notes/*Notes.bib
+
+# LaTeX intermediate files from direct editor compiles (e.g. docs/nbcp/main.tex).
+# Canonical PDFs (docs/nbcp/output/*.pdf, docs/nbcp/figures/*.pdf) are tracked
+# outputs from examples/nbcp_research_export.py and are not matched by these.
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+docs/nbcp/main.pdf

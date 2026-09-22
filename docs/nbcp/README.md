@@ -38,6 +38,8 @@ updated: 2026-09-21
 |---|---|---|
 | [main.tex](main.tex) | 장 순서·부록 전환·전체 조립 | 구성 변경 시 |
 | [chapters/](chapters/) · [appendices/](appendices/) | 연구 내용의 유일한 편집 원본 | 해당 장에서 직접 |
+| [figures/tikz/](figures/tikz/) | TikZ 그림의 편집 원본(`<이름>.tex`)과 공통 서식(`style.tex`) | 해당 `.tex`에서 직접 |
+| [figures/](figures/) | 위 원본에서 생성된 벡터 PDF(`<이름>.pdf`) | 원본 수정 후 재생성 |
 | [references.bib](references.bib) · [references.tex](references.tex) | 문헌 항목과 근거의 역할(`.bib`), 참고문헌 절(`.tex`) | 출처를 보완할 때 |
 | [preamble.tex](preamble.tex) · [metadata.tex](metadata.tex) | 공통 서식·제목·날짜·검토 상태 | 서식·메타데이터 변경 시 |
 | [output/](output/) | 생성 PDF와 입력 파일 해시 기록 | 원본 수정 후 재생성 |
@@ -55,7 +57,7 @@ XeLaTeX와 BibTeX가 설치된 환경에서 저장소 루트 기준으로 실행
 python examples/nbcp_research_export.py
 ```
 
-계산을 다시 실행하지 않고 기존 그림을 읽어 `output/research-note.pdf`와 `output/research-export.json`을 갱신한다. 빌드 중간 파일과 그림 사본은 임시 폴더에서 처리한다. 문서를 구성하는 TeX 파일·출력 프로그램·그림의 해시와 컴파일 진단을 생성 기록에 남긴다.
+계산을 다시 실행하지 않고 기존 그림을 읽어 `output/research-note.pdf`와 `output/research-export.json`을 갱신한다. `figures/tikz/`의 TikZ 그림은 원본이나 `style.tex`가 바뀐 것만 XeLaTeX로 다시 컴파일해 `figures/<이름>.pdf`로 저장한다. 빌드 중간 파일과 그림 사본은 임시 폴더에서 처리한다. 문서를 구성하는 TeX 파일·출력 프로그램·그림의 해시와 컴파일 진단을 생성 기록에 남긴다.
 
 편집기의 직접 컴파일을 사용할 때에는 `docs/nbcp/`를 작업 디렉토리로 하고 XeLaTeX로 `main.tex`를 연다. 참고문헌 번호를 갱신하려면 XeLaTeX → BibTeX → XeLaTeX 두 번 순서로 컴파일한다(Overleaf는 자동). 그림은 저장소의 `data-space/verification/`에서 상대 경로로 읽는다. 이 폴더만 Overleaf에 올리면 그림이 포함되지 않으므로 별도 업로드용 묶음이 필요하다. 현재 저장소가 유일한 편집 원본이며 온라인 사본은 만들지 않았다.
 
@@ -69,6 +71,7 @@ python examples/nbcp_research_export.py
 ## 캡션과 문헌 인용
 
 - 모든 그림에는 아래쪽에 번호와 캡션을 둔다.
+- TikZ 그림은 `figures/tikz/<이름>.tex`(`standalone`)에서 만들고, 본문에는 `\includegraphics{figures/<이름>.pdf}`를 원래 크기로 넣는다. 본문에 `tikzpicture`를 직접 쓰지 않는다.
 - 모든 표에는 아래쪽에 번호와 캡션을 둔다. 여러 페이지에 걸친 표는 마지막 부분 아래에 캡션을 두고 열 머리글을 반복한다.
 - 문헌은 `\cite{key}`로 인용하여 `[번호]`로 표시한다. 동일 문헌은 `references.bib`의 항목 하나로 관리하며, BibTeX(`unsrturl`)가 본문 첫 인용 순서로 번호를 매긴다.
 - 원 논문의 절·수식·그림 위치는 번호 인용 옆에 남긴다. 계산 데이터·코드·라이선스 링크는 문헌 인용과 구분하여 직접 연결한다.
