@@ -185,6 +185,8 @@ class SpinOptimizer:
         result : scipy.optimize.OptimizeResult
             Optimization result.
         """
+        # Copy so the caller's array (e.g. the DE optimum) is never modified.
+        init_points = np.array(init_points, dtype=float)
         if randomness != 0.0:
             init_points += 2 * np.pi * np.random.rand(len(bounds)) * randomness
         result = minimize(
@@ -252,7 +254,11 @@ class SpinOptimizer:
         -------
         opt_result : dict
             Optimization result with keys: 'energy', 'angles', 'method',
-            'E_cl', 'E_qm', 'MAGSWT'.
+            'E_cl', 'E_qm', 'MAGSWT'. 'energy' is E_cl + E_qm and 'angles'
+            is the full angle list. For the quantum methods, the L-BFGS-B
+            result ('DE+BFGS') is kept only if it lowers E_cl + E_qm below
+            its value at the DE angles; otherwise the DE angles are returned
+            with method 'DE'.
         cl_result : dict
             Classical optimization result with keys: 'E_cl', 'angles'.
         """
@@ -310,9 +316,18 @@ class SpinOptimizer:
             mu_magswt = MAGSWT_result["mu_MAGSWT"]
 
         elif opt_method in QUANTUM_METHOD_NAME:
+            # Fallback: the DE optimum with its quantum correction, as in
+            # the classical branch. BFGS must beat this total energy.
+            E_cl = best_energy
+            E_qm = cef_obj.quantum_energy_density_func(full_angles)
+            mu_magswt = cef_obj.mu_magswt
+            best_energy = E_cl + E_qm
+            best_method = 'DE'
+
             LSWT_result = self.find_optimum_w_BFGS_from_DE(
                 E_tot_func, bounds, best_angles
             )
+            best_angles = full_angles
 
             if LSWT_result.fun < best_energy:
                 # Optimization results from classical + quantum energy function
