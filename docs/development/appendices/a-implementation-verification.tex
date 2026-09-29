@@ -127,7 +127,7 @@ from spintoolkit.methods.classical import (
 
 model = stk.models.triangular_heisenberg(J=1.0, S=0.5)
 state = stk.models.state_120(model)
-cond  = stk.ExternalConditions(B=(0, 0, 0.0))
+cond  = stk.ExternalConditions(field=(0, 0, 0.0))
 geom  = stk.CalculationGeometry.finite_torus(
             [[3, 0], [0, 3]])
 
@@ -167,7 +167,7 @@ classical_energy(model, state, cond)  # -0.375
     \midrule
     정확한 고전 에너지 & 일치, 토크 0 & 사각 Néel $-2JS^2$, 삼각 120° $-\tfrac32JS^2$, 편극상 $zJS^2-hS$ \\
     국소장 & 수치 미분과 일치 & DM·비등방 $g$·비대각 초격자의 두 사이트 모델 \\
-    NBCP 교차 확인 & 차이 $<10^{-15}$ & 기본 셀 fixture 대 기존 \texttt{EnergyFunction} One MSL; $\mu_B$ 환산, D13 변위 해석 \\
+    NBCP 교차 확인 & 차이 $<10^{-15}$ & 기본 셀 fixture 대 기존 \texttt{EnergyFunction} One MSL; 장 변환, D13 변위 해석 \\
     규약 검증 사례 & 새 테스트 53개 통과 & 단위·중복·kind·endpoint·분수 셀·배열 보호·초격자·토러스 정합·주기 최소성 \\
     기존 테스트 & 225개 결과 불변 & 273 통과 / 같은 5 실패 \\
     수치 스냅샷 & 208개 값, 차이 0 & 0단계와 같은 대조 \\

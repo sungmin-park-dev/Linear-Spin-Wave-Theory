@@ -3,10 +3,10 @@
 from .spin_system import SpinSystem, SpinSite, Coupling
 from . import exchange
 from .brillouin_zone import BrillouinZone
-from .model import SpinModel, Site, Term, Units, SpinModelError, validate_spin_model
+from .model import SpinModel, Site, Term, SpinModelError, validate_spin_model
 from .conditions import ExternalConditions
 from .geometry import CalculationGeometry
 
 __all__ = ['SpinSystem', 'SpinSite', 'Coupling', 'exchange', 'BrillouinZone',
-           'SpinModel', 'Site', 'Term', 'Units', 'SpinModelError', 'validate_spin_model',
+           'SpinModel', 'Site', 'Term', 'SpinModelError', 'validate_spin_model',
            'ExternalConditions', 'CalculationGeometry']

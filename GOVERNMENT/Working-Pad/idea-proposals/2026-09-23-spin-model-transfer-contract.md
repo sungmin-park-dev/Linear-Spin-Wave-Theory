@@ -35,8 +35,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 
 | 규약 | 구현 |
 |---|---|
-| §2 `SpinModel`, `Site`, `Term`, `Units`, §4 모델 검증, `fingerprint` | `system/model.py` |
-| §5 외부 조건(`B`, `T`, 단위 환산) | `system/conditions.py`의 `ExternalConditions` |
+| §2 `SpinModel`, `Site`, `Term`, §4 모델 검증, `fingerprint` | `system/model.py` |
+| §5 외부 조건(무차원 `field`, `temperature`; D20) | `system/conditions.py`의 `ExternalConditions` |
 | §5 계산계 실현(열역학 극한·유한 토러스) | `system/geometry.py`의 `CalculationGeometry` |
 | §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
@@ -71,7 +71,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D09 | 모델은 g-텐서, 장 `B`는 외부 변수; Zeeman 부호 `-mu_B` | 사용자 결정 2026-09-29 | §1, §3 |
 | D10 | 최소 ED 검증 도구를 `methods/ed/`에 두고 ED 솔버로 확장 | 사용자 결정 2026-09-29 | 개발 계획 |
 | D11 | 패키지 `spintoolkit`, 별칭 `stk`; 키타에프는 후속 벤치마크 | 사용자 결정 2026-09-29 | 개발 계획 |
-| D12 | 선택적 Zeeman 항, `g_(alpha beta)` 인덱스, relative 단위 `mu_B = 1`, 상태 검증과 기준 상태 진단의 분리 | 사용자 결정 2026-09-29 | §2–§4 |
+| D12 | 선택적 Zeeman 항, `g_(alpha beta)` 인덱스, relative 단위 `mu_B = 1`(D20으로 대체), 상태 검증과 기준 상태 진단의 분리 | 사용자 결정 2026-09-29 | §2–§4 |
 | D13 | 표준 Fourier 부호와 전체 위치 게이지; NBCP 변위는 `r_target = r_source - d` | 사용자 결정 2026-09-29 | §3, §6 |
 | D14 | 상태·계산 요청·결과를 공통·방법별 부분으로 분리; `SpinState`는 정수 초격자 `M` | 사용자 결정 2026-09-29 | §5 |
 | D15 | 표준 벤치마크 모델은 `spintoolkit/models/`, 연구 모델은 `model/<name>/` | 사용자 결정 2026-09-29 | 개발 계획 |
@@ -79,6 +79,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D17 | 영점 에너지 상태 선택은 고전 바닥상태 manifold 위에서만: E_cl Hessian 영공간으로 정한 축 `n`의 궤도 `R_n(phi)`에서 E_qm 최소화, 궤도 전체의 E_cl 일정성 검사 | 사용자 결정 2026-09-29 (구현 전) | §1 |
 | D18 | D17 구현 계획: `quantum`(E_cl + E_qm 제약 없는 최소화)은 과거의 실수로 보고 D17 구현과 함께 삭제, 그 전까지 호출 시 경고; MAGSWT 격자 탐색은 유지하고 궤도 탐색으로 재현되는지 검증 뒤 재결정; D17은 2단계 뒤 새 자료형 위에 구현; 3단계 삼각격자 벤치마크는 h = 0과 h > h_sat, 여러 차원 영공간 확장은 후속 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
 | D19 | D17 판정 기준: 물리 근거 모드(기본)와 고정 상수 모드를 선택; 물리 근거는 수치 정확도 추정·C_cl 대 C_qm·대칭 검사·공선성; 고정 상수의 기본값은 `definitions/defaults.py`, 실행별 값은 방법 설정으로 전달, 판정에 쓴 값은 결과에 기록 | 사용자 결정 2026-09-29 | §1 |
+| D20 | 수치 계산은 무차원: 모든 값은 계수의 에너지 단위 E0 기준(`field = mu_B B / E0`, `temperature = k_B T / E0`); 물리 단위는 테슬라·켈빈·meV로 통일해 문서에만 명시하고 변환은 사용자가 함; `Units` 제거, `metadata.energy_unit`은 기록용 라벨; g를 모르면 `g = I`와 Zeeman 에너지 h. 기존 LSWT 모듈은 4단계까지 켈빈·meV 유지 | 사용자 결정 2026-09-29 | §2, §3, §5 |
 
 ## Proposal
 
@@ -252,17 +253,17 @@ Python의 명시적 자료형으로 표현한다. 아래 표는 필드의 의미
 | `terms[].participants` | 필수, `(site_id, cell_offset)` 목록 | 항에 참여하는 사이트와 정수 셀 좌표 `(2,)`. 길이는 kind가 정함 |
 | `terms[].coefficient` | 필수, 실수 배열 | kind별 계수. 형태는 아래 표 |
 | `terms[].label` | 선택, 문자열 | NN·NNN 또는 x·y·z 등 의미 라벨. 수신 모듈은 이것으로 계수를 재구성하지 않음 |
-| `units` | 선택, `Units` | §3의 에너지·길이 단위 선언. 생략하면 relative 에너지·길이 |
 | `metadata.model_id` | 필수, 문자열 | 모델 식별·출처 추적용. 솔버 분기용이 아님 |
 | `metadata.parameters` | 매핑, 생략 시 빈 매핑 | 적용한 모델별 입력 파라미터의 값·단위 |
 | `metadata.sources` | 목록, 생략 시 빈 목록 | 파라미터·모델 출처 |
+| `metadata.energy_unit` | 선택, 문자열 | 계수의 에너지 단위 E0의 이름(예: `"meV"`). 기록용 라벨이며 계산에 쓰지 않음(D20) |
 
 **1차에서 허용하는 항의 종류(D08).**
 
 | kind | 참여자 수 | `coefficient` | 해밀토니안 기여 |
 |---|---|---|---|
 | `bilinear` | 2, 서로 다른 물리 사이트 | 실수 `(3, 3)` 행렬 `J` | `S_(R+n1,a)^T J S_(R+n2,b)` |
-| `zeeman` | 1, `cell_offset = (0, 0)`; 사이트당 최대 하나 | 실수 `(3, 3)` g-텐서 `g_a` | `-mu_B B^T g_a S_(R,a)` |
+| `zeeman` | 1, `cell_offset = (0, 0)`; 사이트당 최대 하나 | 실수 `(3, 3)` 무차원 g-텐서 `g_a` | `-b^T g_a S_(R,a)`, `b`는 무차원 장 |
 
 `zeeman` 항은 계수가 고정된 항이 아니다. 모델은 장 결합 방식인 `g_a`만 담고,
 장 `B`는 계산 요청에서 받는다(D09). `zeeman` 항은 선택 사항이다(D12). 항이 없는
@@ -318,32 +319,37 @@ Berry 곡률을 적분하므로 국소 값의 영향을 받는다. 위치 정보
 
 ```text
 H = sum_R sum_(bilinear) S_(R+n1,a)^T J S_(R+n2,b)
-    - mu_B sum_R sum_a B^T g_a S_(R,a)
+    - sum_R sum_a b^T g_a S_(R,a),        b = mu_B B / E0
 ```
 
 이는 인터페이스 규약이며 새 이론 claim이나 실제 물질 모델의 정당성을 승인하는
 수식이 아니다.
 
-**Zeeman 부호와 성분(D09, D12).** 부호는 `-mu_B`를 사용한다. 스핀이 장 방향으로
+**Zeeman 부호와 성분(D09, D12).** 부호는 음(`-mu_B B^T g S`)이다. 스핀이 장 방향으로
 정렬하는 자성 문헌의 관례이며, 현재 고전 에너지 코드의 `-h . S`와 부호가 같다.
 기존 코드의 사이트별 장 계수와는 `h_a = mu_B g_a^T B`로 대응하며, 기존 NBCP 예제의
 `h = g_z mu_B B`와도 부호가 같다. 성분 규약은 `g_(alpha beta)`가 스핀 성분 `beta`를
 장 성분 `alpha`에 연결하는 것이다. Einstein 합 규약으로
-`H_Z = -mu_B B_alpha g_(alpha beta) S_beta`이다.
+`H_Z = -mu_B B_alpha g_(alpha beta) S_beta`이다. 코드에서는 무차원 장 `b = mu_B B / E0`를
+쓴다(D20).
 
-**단위(D05, D12).** 물리 단위 입력은 에너지 `meV`, 길이 `angstrom`으로 정규화하는
-안을 제안한다. `J=1`, `a=1` 같은 상대 단위 모델도 허용한다. 따라서 `Units`에는
-`energy: meV | relative`, `length: angstrom | relative`를 명시한다.
-상대 단위를 물리 단위로 환산할 근거가 있다면 양의 유한값
-`energy_scale_meV`, `length_scale_angstrom`을 기록한다. 없으면 `None`으로 둔다.
-물리 단위 모드에서는 별도 scale을 저장하지 않는다. 모든 항은 하나의 에너지 단위를,
-모든 위치는 하나의 길이 단위를 공유한다.
+**단위(D20).** 수치 계산은 무차원이다. 모든 계수, 에너지, 장과 온도는 계수의 에너지
+단위 E0로 표현한다. J를 meV로 넣었으면 E0 = meV이고, `J = 1`로 넣었으면 E0 = J다.
+길이는 격자 행렬 `A`의 단위를 그대로 쓴다.
 
-장 `B`는 계산 요청에서 단위와 함께 받는다. 에너지 단위가 `meV`이면 `B`는 테슬라로
-받고 `mu_B = 5.7883818060e-2 meV/T`를 사용한다. 이 상수는 구현 시
-`definitions/constants.py`에 추가한다. 에너지 단위가 `relative`이면 `mu_B = 1`로
-두고 `B`를 에너지 단위의 값으로 해석한다. g-텐서는 무차원이다. Kelvin 또는 SI 단위
-출력에 필요한 scale이 없으면 해당 변환을 지원하지 않는다고 알린다.
+| 양 | 코드 안의 값 | 물리 단위로의 변환(사용자) |
+|---|---|---|
+| 장 | `field = mu_B B / E0` | `B[T] = field * E0[meV] / mu_B` |
+| 온도 | `temperature = k_B T / E0` | `T[K] = temperature * E0[meV] / k_B` |
+| 에너지 결과 | E0 단위 | E0를 곱함 |
+
+물리 단위는 장 테슬라, 온도 켈빈, 에너지 meV로 통일해 문서에만 명시한다.
+`mu_B = 5.7883818060e-2 meV/T`, `k_B = 8.617333262e-2 meV/K`는 사용자의 변환을 위해
+`definitions/constants.py`에 둔다. g를 모르면 모델의 `zeeman` 항을 `g = I`로 두고
+`field`에 Zeeman 에너지 `h / E0`를 넣는다. `metadata.energy_unit`은 E0의 이름을 적는
+기록용 라벨이다. 기존 LSWT 모듈(`methods/lswt`, `observables`)은 4단계에서 새 자료형을
+직접 읽게 될 때까지 켈빈과 meV를 유지하며, 변환 다리(`system/conversion.py`)가 그
+경계에서만 환산한다.
 
 **항 수와 중복(D05).** 각 항의 병진 궤도를 한 번 기록하고 위 식에 `1/2`를
 추가하지 않는다. 전체 참여자의 셀 좌표를 같은 정수만큼 옮긴 레코드는 같은 항이다.
@@ -455,7 +461,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 
 | 부분 | 내용 |
 |---|---|
-| 외부 조건 | 장 `B`와 단위; 온도 `T`와 단위. 에너지 단위가 `meV`이면 `T`는 K, `k_B = 8.617333262e-2 meV/K`; `relative`이면 `k_B = 1`이고 `T`는 에너지 단위 값 |
+| 외부 조건 | 무차원 장 `field = mu_B B / E0`와 온도 `temperature = k_B T / E0`(D20) |
 | 계산계 실현 | `thermodynamic_limit` 또는 `finite_torus`. 유한 토러스는 정수 클러스터 행렬 `L`로 주고, `L @ inv(M)`가 정수여야 한다. 원통·열린 클러스터는 TN·ED 솔버 도입 시 추가 |
 | 목표 물리량 | 스펙트럼, 바닥상태 에너지, 열역학량, 상관함수, 위상량 중 요청한 항목 |
 | 방법 설정 | 방법별. LSWT: 열역학 극한에서의 k점 격자 `(N1, N2)`, regularization(없음·MAGSWT), 밴드 경로, 허용오차 |
@@ -565,6 +571,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   정정했다. `angle_setting=None` 결함을 고쳐 §6과 Open Questions를 맞췄다.
 - 2026-09-29 (claude): D18(D17 구현 계획, `quantum` 삭제 방침과 근거)과 D19(판정 기준의 두 모드와
   물리 근거, 기본값 위치)를 추가하고 검토안을 대체했다. `quantum` 호출에 경고를 추가했다.
+- 2026-09-29 (claude): D20(무차원 수치 계산)을 추가했다. `Units`와 단위 환산을 없애고 §2의
+  필드 표, §3의 해밀토니안·Zeeman·단위 절, §5의 외부 조건을 무차원 규약으로 고쳤다.
 
 ## 관련 기록
 

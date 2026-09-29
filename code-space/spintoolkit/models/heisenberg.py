@@ -11,19 +11,19 @@ Two kinds of builders live here:
   Neel state for ``J > 0`` at zero field, the polarized state above the
   saturation field.
 
-Defaults use relative units with ``g = 1`` and ``mu_B = 1``, so the field
-``B`` given in relative units equals the Zeeman energy ``h`` in units of ``J``
+All values are dimensionless in the unit of ``J``. With the default ``g = 1``
+the field (``ExternalConditions.field``) equals the Zeeman energy ``h``
 (saturation at ``h = 8JS`` on the square and ``9JS`` on the triangular lattice).
 """
 
 from __future__ import annotations
 
-from typing import Any, Optional, Sequence
+from typing import Any, Sequence
 
 import numpy as np
 
 from spintoolkit.states.spin_state import SpinState
-from spintoolkit.system.model import Site, SpinModel, Term, Units
+from spintoolkit.system.model import Site, SpinModel, Term
 
 SQUARE_LATTICE = np.array([[1.0, 0.0], [0.0, 1.0]])
 TRIANGULAR_LATTICE = np.array([[1.0, 0.0], [0.5, np.sqrt(3) / 2]])
@@ -34,7 +34,7 @@ def _g_tensor(g: Any) -> np.ndarray:
     return g * np.eye(3) if g.ndim == 0 else g
 
 
-def _heisenberg(model_id, lattice, offsets, J, S, g, units, lattice_constant):
+def _heisenberg(model_id, lattice, offsets, J, S, g, lattice_constant):
     exchange = J * np.eye(3)
     terms = [Term.bilinear(("A", (0, 0)), ("A", offset), exchange, label="NN")
              for offset in offsets]
@@ -44,7 +44,6 @@ def _heisenberg(model_id, lattice, offsets, J, S, g, units, lattice_constant):
         lattice=lattice_constant * lattice,
         sites=[Site("A", (0.0, 0.0), S)],
         terms=terms,
-        units=units or Units(),
         metadata={"model_id": model_id,
                   "parameters": {"J": J, "S": S, "g": None if g is None else np.asarray(g).tolist(),
                                  "lattice_constant": lattice_constant}},
@@ -52,7 +51,6 @@ def _heisenberg(model_id, lattice, offsets, J, S, g, units, lattice_constant):
 
 
 def square_heisenberg(J: float = 1.0, S: float = 0.5, g: Any = 1.0,
-                      units: Optional[Units] = None,
                       lattice_constant: float = 1.0) -> SpinModel:
     """Nearest-neighbour Heisenberg model ``J sum S_i . S_j`` on the square lattice.
 
@@ -65,8 +63,6 @@ def square_heisenberg(J: float = 1.0, S: float = 0.5, g: Any = 1.0,
     g : float or (3, 3) array or None
         g-tensor of the zeeman term (scalar means isotropic); None omits the
         zeeman term, so the model does not couple to a field.
-    units : Units, optional
-        Default: relative energy and length.
     lattice_constant : float
         Length of the primitive vectors.
 
@@ -75,11 +71,10 @@ def square_heisenberg(J: float = 1.0, S: float = 0.5, g: Any = 1.0,
     One site per cell and two bond records per site, ``(1, 0)`` and ``(0, 1)``.
     """
     return _heisenberg("square_heisenberg", SQUARE_LATTICE, [(1, 0), (0, 1)],
-                       J, S, g, units, lattice_constant)
+                       J, S, g, lattice_constant)
 
 
 def triangular_heisenberg(J: float = 1.0, S: float = 0.5, g: Any = 1.0,
-                          units: Optional[Units] = None,
                           lattice_constant: float = 1.0) -> SpinModel:
     """Nearest-neighbour Heisenberg model on the triangular lattice.
 
@@ -88,7 +83,7 @@ def triangular_heisenberg(J: float = 1.0, S: float = 0.5, g: Any = 1.0,
     Parameters as in :func:`square_heisenberg`.
     """
     return _heisenberg("triangular_heisenberg", TRIANGULAR_LATTICE,
-                       [(1, 0), (0, 1), (-1, 1)], J, S, g, units, lattice_constant)
+                       [(1, 0), (0, 1), (-1, 1)], J, S, g, lattice_constant)
 
 
 def _unit(vector: Sequence[float]) -> np.ndarray:

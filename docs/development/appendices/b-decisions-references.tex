@@ -39,7 +39,7 @@
     D09 & 모델은 g-텐서, 장 $B$는 외부 변수; Zeeman 부호 $-\mu_B$ & \textbf{사용자 결정} \\
     D10 & 최소 ED 검증 도구를 \texttt{methods/ed/}에 두고 ED 솔버로 확장 & \textbf{사용자 결정} \\
     D11 & 패키지 \texttt{spintoolkit}, 별칭 \texttt{stk}; 키타에프는 후속 벤치마크 & \textbf{사용자 결정} \\
-    D12 & 선택적 Zeeman 항, $g_{\alpha\beta}$ 인덱스, relative $\mu_B=1$, 상태 검증·기준 상태 진단 & \textbf{사용자 결정} \\
+    D12 & 선택적 Zeeman 항, $g_{\alpha\beta}$ 인덱스, relative $\mu_B=1$(D20으로 대체), 상태 검증·기준 상태 진단 & \textbf{사용자 결정} \\
     D13 & 표준 Fourier 부호 $e^{+\mathrm i\mathbf k\cdot\mathbf r}$와 전체 위치 게이지; NBCP 변위는 $r_t=r_s-d$ & \textbf{사용자 결정} \\
     D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
     D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
@@ -51,7 +51,7 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=decisions-selection]{결정 기록 (상태 선택)}
+\begin{frame}[label=decisions-selection]{결정 기록 (D17--D20)}
   \framesubtitle{2026-09-29 사용자 결정. 근거와 수치 자료는 이 부록의 뒤쪽에 있다.}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
@@ -61,6 +61,7 @@
     D17 & 영점 에너지 상태 선택은 고전 manifold 위에서: $E_{\mathrm{cl}}$ Hessian 영공간으로 정한 축 $\hat n$의 궤도 $R_{\hat n}(\phi)$에서 $E_{\mathrm{qm}}$ 최소화(2b단계) & \textbf{사용자 결정} \\
     D18 & D17 구현 계획: \texttt{quantum} 삭제(과거의 실수), MAGSWT 유지·재현 검증, 2b단계, 삼각격자 $h=0$·$h>h_{\mathrm{sat}}$ & \textbf{사용자 결정} \\
     D19 & D17 판정: 물리 근거 모드(기본)와 고정 상수 모드; 기본값은 \texttt{definitions/defaults.py}; 판정 값 기록 & \textbf{사용자 결정} \\
+    D20 & 수치 계산은 무차원($E_0$ 기준: 장 $\mu_B\mathbf B/E_0$, 온도 $k_BT/E_0$); 물리 단위 T·K·meV는 문서 규약, 변환은 사용자 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -80,7 +81,7 @@
       & 영행렬 항을 강제하면 모델 작성 부담만 늘고, 계산 비용 차이는 대각화에 비해 무시할 수 있다. \\
     2 & $H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
       & Einstein 합 규약에서 자연스럽고, 비대칭 $g$의 전치 모호성을 없앤다. \\
-    3 & 에너지 단위가 \texttt{relative}인 모델은 $\mu_B=1$로 두고 $B$를 에너지 단위 값으로 해석한다.
+    3 & (D20으로 대체) 에너지 단위가 \texttt{relative}인 모델은 $\mu_B=1$로 두고 $B$를 에너지 단위 값으로 해석한다.
       & 상대 단위 모델에서 환산 근거를 추정하지 않는다. \\
     4 & 상태 검증(사이트 대응, 단위 벡터, 초격자 유효성, 계산계 정합, 주기 최소성)과
       기준 상태 진단(정상성, 안정성)을 나눈다. 방향은 단위 벡터로 저장한다.

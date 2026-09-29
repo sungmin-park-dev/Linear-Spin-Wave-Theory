@@ -21,7 +21,7 @@
       \begin{block}{모든 생성 함수의 반환형}
         \texttt{SpinModel}\\[0.6em]
         \texttt{lattice / sites / terms}\\
-        \texttt{units / metadata / schema\_version}
+        \texttt{metadata / schema\_version}
       \end{block}
       \medskip
       \textbf{모델 생성 단계}에서 수치 계수를 평가하고 규약을 맞춘다.\\[0.5em]
@@ -74,7 +74,7 @@
     kind & 참여자 & 계수 & 해밀토니안 기여 \\
     \midrule
     \texttt{bilinear} & 서로 다른 두 물리 사이트 & $J$, 실수 $3\times3$ & $S_{R+n_1,a}^{\mathsf T}\,J\,S_{R+n_2,b}$ \\
-    \texttt{zeeman} & 한 사이트, 셀 $(0,0)$ & $g_a$, 실수 $3\times3$ & $-\mu_B\,B^{\mathsf T}g_a\,S_{R,a}$ \\
+    \texttt{zeeman} & 한 사이트, 셀 $(0,0)$ & 무차원 $g_a$, $3\times3$ & $-\mathbf b^{\mathsf T}g_a\,S_{R,a}$ \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -86,19 +86,19 @@
 \end{frame}
 
 \begin{frame}[label=hamiltonian-convention]{해밀토니안과 장의 규약}
-  \framesubtitle{규약 검토 · Zeeman 부호, $g$ 인덱스, relative 단위는 2026-09-29 결정이다.}
+  \framesubtitle{규약 검토 · Zeeman 부호, $g$ 인덱스, 무차원 계산(D20)은 2026-09-29 결정이다.}
   \[
     H=\sum_{R}\sum_{\mathrm{bilinear}} S_{R+n_1,a}^{\mathsf T}J\,S_{R+n_2,b}
-      -\mu_B\sum_{R,a}B^{\mathsf T}g_a\,S_{R,a},
+      -\sum_{R,a}\mathbf b^{\mathsf T}g_a\,S_{R,a},
     \qquad \delta=(n_2-n_1+f_b-f_a)A
   \]
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.48\textwidth}
-      \begin{block}{장과 단위}
-        부호 $-\mu_B$: 스핀이 장 방향으로 정렬한다. 현재 코드의 $-h\cdot S$와 같다.\\[0.4em]
-        기존 장 계수와의 대응: $h_a=\mu_B\,g_a^{\mathsf T}B$\\[0.4em]
-        meV 모델: $B$는 테슬라, $\mu_B=5.788\times10^{-2}$ meV/T\\[0.4em]
-        relative 모델: $\mu_B=1$, $B$는 에너지 단위 값
+      \begin{block}{장과 단위(D20)}
+        무차원 장 $\mathbf b=\mu_B\mathbf B/E_0$; $E_0$는 계수의 에너지 단위.\\[0.4em]
+        부호 음: 스핀이 장 방향으로 정렬, 현재 코드의 $-h\cdot S$와 같다.\\[0.4em]
+        기존 장 계수와의 대응: $h_a=E_0\,g_a^{\mathsf T}\mathbf b$\\[0.4em]
+        $g$를 모르면 $g=I$, $\mathbf b$에 Zeeman 에너지 $h/E_0$
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
@@ -110,7 +110,7 @@
       \end{block}
     \end{column}
   \end{columns}
-  \supportingtext{$H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
+  \supportingtext{$H_Z=-b_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
   Zeeman 항은 선택 사항이며, 항이 없는 사이트는 장과 결합하지 않는다.}
   \slidesource{제안된 항의 의미; 현재 고전 에너지의 부호와 대조}{contract,implementation}
 \end{frame}
@@ -143,12 +143,11 @@
   \framesubtitle{규약 검토 · 상태 검증과, 모델·장이 필요한 기준 상태 진단을 구분한다.}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.48\textwidth}
-      \begin{block}{단위 선언}
-        에너지: \texttt{meV} 또는 \texttt{relative}\\
-        길이: \texttt{angstrom} 또는 \texttt{relative}\\
-        장 $B$: 계산 요청에서 단위와 함께 받는다.\\[0.4em]
-        $J=1$, $a=1$도 허용한다. 환산 근거가 있으면 scale을,
-        없으면 \texttt{None}을 기록하고 추정하지 않는다.
+      \begin{block}{단위: 계산은 무차원(D20)}
+        모든 값은 계수의 에너지 단위 $E_0$ 기준.\\
+        장 $\mathbf b=\mu_B\mathbf B/E_0$, 온도 $k_BT/E_0$.\\[0.4em]
+        물리 단위는 T·K·meV로 문서에 명시하고,
+        변환은 사용자가 한다($\mu_B$, $k_B$는 \texttt{definitions/}).
       \end{block}
       \begin{block}{상태 검증: 상태·계산계}
         사이트 대응 · 단위 방향 벡터\\
@@ -231,7 +230,7 @@
     \toprule
     요청 & 내용 \\
     \midrule
-    외부 조건 & $B$와 단위; $T$와 단위. meV 모델은 K와 $k_B=8.617\times10^{-2}$ meV/K, relative 모델은 $k_B=1$ \\
+    외부 조건 & 무차원 \texttt{field} $=\mu_B\mathbf B/E_0$, \texttt{temperature} $=k_BT/E_0$(D20) \\
     계산계 실현 & 열역학 극한, 또는 정수 클러스터 행렬 $L$의 유한 토러스($LM^{-1}$ 정수). 토러스에서는 $L$이 k점을 정한다 \\
     방법 설정 & LSWT: 열역학 극한의 k점 격자 $(N_1,N_2)$, regularization(없음·MAGSWT), 밴드 경로, 허용오차 \\
     \midrule

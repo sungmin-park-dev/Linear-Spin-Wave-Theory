@@ -50,7 +50,7 @@ from spintoolkit.system.brillouin_zone import BrillouinZone
 
 # Common model definition (transfer contract)
 from spintoolkit.system.model import (
-    SpinModel, Site, Term, Units, SpinModelError, validate_spin_model,
+    SpinModel, Site, Term, SpinModelError, validate_spin_model,
 )
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
@@ -70,7 +70,7 @@ __all__ = [
     'heisenberg', 'xxz', 'xxz_with_soc', 'dzyaloshinskii_moriya', 'kitaev',
     'BrillouinZone',
     # Common model definition
-    'SpinModel', 'Site', 'Term', 'Units', 'SpinModelError', 'validate_spin_model',
+    'SpinModel', 'Site', 'Term', 'SpinModelError', 'validate_spin_model',
     'ExternalConditions', 'CalculationGeometry',
     'SpinState', 'SpinStateError', 'validate_spin_state',
     'models',

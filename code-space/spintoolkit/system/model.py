@@ -5,13 +5,22 @@ lattice. It stores the primitive cell, the spin quantum number of each site,
 and one record per translation orbit of each term:
 
     H = sum_R sum_bilinear S_(R+n1,a)^T J S_(R+n2,b)
-        - mu_B sum_R sum_a B^T g_a S_(R,a)
+        - sum_R sum_a b^T g_a S_(R,a)
 
 Positions are fractional coordinates ``f`` of the lattice matrix ``A`` whose
 rows are the primitive vectors, so a site sits at ``(R + f) @ A``. Spin
 components use one global Cartesian frame and ``S`` operators (not Pauli
-matrices). The field ``B`` is an external variable supplied with each
-calculation; the model stores only the g-tensor of each ``zeeman`` term.
+matrices). The field ``b`` is an external variable supplied with each
+calculation; the model stores only the dimensionless g-tensor of each
+``zeeman`` term.
+
+All numbers are dimensionless: energies, the field ``b = mu_B B`` and the
+temperature ``k_B T`` are expressed in the energy unit ``E0`` of the
+coefficients (e.g. meV if the couplings are given in meV). Conversion to
+physical units (tesla, kelvin, meV) is left to the user; the physical
+conventions and the constants ``MU_B_MEV_PER_T`` and ``K_BOLTZMANN_MEV`` are
+documented in :mod:`spintoolkit.definitions`. ``metadata["energy_unit"]`` may
+record the name of ``E0``; it is a label only.
 
 The term format is open to later kinds, but validation accepts only the kinds
 in :data:`SUPPORTED_KINDS`. A model is validated when it is constructed, so a
@@ -36,9 +45,6 @@ BILINEAR = "bilinear"
 ZEEMAN = "zeeman"
 #: Number of participants required by each kind accepted in the 1st scope.
 SUPPORTED_KINDS = {BILINEAR: 2, ZEEMAN: 1}
-
-ENERGY_UNITS = ("meV", "relative")
-LENGTH_UNITS = ("angstrom", "relative")
 
 #: Relative tolerance for lattice degeneracy and half-integer spin checks.
 LATTICE_TOLERANCE = 1e-10
@@ -150,7 +156,7 @@ class Term:
 
     @classmethod
     def zeeman(cls, site: str, g: Any, label: Optional[str] = None) -> "Term":
-        """Field coupling ``-mu_B B^T g S`` of one site.
+        """Field coupling ``-b^T g S`` of one site (``b = mu_B B`` in units of E0).
 
         Parameters
         ----------
@@ -158,31 +164,12 @@ class Term:
             Site identifier.
         g : array_like, shape (3, 3)
             Dimensionless g-tensor; ``g[alpha, beta]`` links spin component
-            ``beta`` to field component ``alpha``.
+            ``beta`` to field component ``alpha``. Use the identity when ``g`` is
+            unknown and supply the Zeeman energy ``h`` as the field.
         label : str, optional
             Descriptive label.
         """
         return cls(ZEEMAN, ((site, (0, 0)),), g, label)
-
-
-@dataclass(frozen=True)
-class Units:
-    """Energy and length units shared by every coefficient and position.
-
-    Parameters
-    ----------
-    energy : {"meV", "relative"}
-    length : {"angstrom", "relative"}
-    energy_scale_meV : float, optional
-        For relative energies with a known physical scale: meV per energy unit.
-    length_scale_angstrom : float, optional
-        For relative lengths with a known physical scale: angstrom per unit.
-    """
-
-    energy: str = "relative"
-    length: str = "relative"
-    energy_scale_meV: Optional[float] = None
-    length_scale_angstrom: Optional[float] = None
 
 
 def _freeze_metadata(metadata: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -206,11 +193,10 @@ class SpinModel:
         Sites of the primitive cell.
     terms : sequence of Term
         One record per translation orbit of each term.
-    units : Units, optional
-        Unit declaration (default: relative energy and length).
     metadata : mapping
         Must contain ``model_id``; ``parameters`` and ``sources`` default to
-        empty. Records only: solvers never recompute coefficients from it.
+        empty; ``energy_unit`` optionally names E0. Records only: solvers never
+        recompute coefficients from it.
     schema_version : int, optional
         Transfer-contract version.
 
@@ -223,7 +209,6 @@ class SpinModel:
     lattice: np.ndarray
     sites: Tuple[Site, ...]
     terms: Tuple[Term, ...]
-    units: Units = field(default_factory=Units)
     metadata: Mapping[str, Any] = field(default_factory=dict)
     schema_version: int = SCHEMA_VERSION
 
@@ -262,7 +247,7 @@ class SpinModel:
 
     # -- identity -------------------------------------------------------
     def fingerprint(self) -> str:
-        """SHA-256 of the physical content: lattice, sites, units and terms.
+        """SHA-256 of the physical content: lattice, sites and terms.
 
         Independent of term order, labels and metadata. Equivalent records of
         one bilinear term (translated or with reversed orientation and a
@@ -274,7 +259,6 @@ class SpinModel:
         for site in sorted(self.sites, key=lambda s: s.id):
             digest.update(f"site={site.id};S={site.spin!r};".encode())
             digest.update(_float_bytes(site.position))
-        digest.update(repr(tuple(self.units.__dict__.items())).encode())
         for key, coefficient in sorted(_canonical_term(t) for t in self.terms):
             digest.update(repr(key).encode())
             digest.update(coefficient)
@@ -317,7 +301,6 @@ def validate_spin_model(model: SpinModel) -> None:
     violations += _check_lattice(model.lattice)
     violations += _check_sites(model.sites)
     violations += _check_terms(model.terms, {site.id for site in model.sites})
-    violations += _check_units(model.units)
     if violations:
         raise SpinModelError(violations)
 
@@ -415,23 +398,4 @@ def _check_terms(terms, site_ids):
             if site in zeeman_sites:
                 out.append(f"{name}: site {site!r} has more than one zeeman term")
             zeeman_sites.add(site)
-    return out
-
-
-def _check_units(units):
-    out = []
-    if not isinstance(units, Units):
-        return ["units must be a Units instance"]
-    if units.energy not in ENERGY_UNITS:
-        out.append(f"energy unit {units.energy!r} is not one of {ENERGY_UNITS}")
-    if units.length not in LENGTH_UNITS:
-        out.append(f"length unit {units.length!r} is not one of {LENGTH_UNITS}")
-    for scale, unit, name in [(units.energy_scale_meV, units.energy, "energy_scale_meV"),
-                              (units.length_scale_angstrom, units.length, "length_scale_angstrom")]:
-        if scale is None:
-            continue
-        if unit != "relative":
-            out.append(f"{name} is only allowed with relative units")
-        elif not (np.isfinite(scale) and scale > 0):
-            out.append(f"{name} must be positive and finite, got {scale}")
     return out

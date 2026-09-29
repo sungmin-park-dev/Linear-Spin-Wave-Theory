@@ -4,16 +4,16 @@ import numpy as np
 import pytest
 
 from spintoolkit.system.model import (
-    Site, SpinModel, SpinModelError, Term, Units,
+    Site, SpinModel, SpinModelError, Term,
 )
 
 SQUARE = [[1.0, 0.0], [0.0, 1.0]]
 META = {"model_id": "test"}
 
 
-def make(terms, sites=None, lattice=SQUARE, units=None, metadata=META):
+def make(terms, sites=None, lattice=SQUARE, metadata=META):
     sites = sites or [Site("A", (0, 0), 0.5), Site("B", (0.5, 0.5), 0.5)]
-    return SpinModel(lattice, sites, terms, units or Units(), metadata)
+    return SpinModel(lattice, sites, terms, metadata)
 
 
 def violations(**kwargs):
@@ -31,17 +31,6 @@ def test_valid_model_exposes_sites_and_terms():
     assert len(model.terms_of_kind("bilinear")) == 1
     np.testing.assert_allclose(model.cartesian_position("B", (1, 0)), [1.5, 0.5])
     assert model.metadata["parameters"] == {}
-
-
-@pytest.mark.parametrize("units, expected", [
-    (Units(energy="eV"), "energy unit"),
-    (Units(length="nm"), "length unit"),
-    (Units(energy="meV", energy_scale_meV=2.0), "only allowed with relative"),
-    (Units(energy_scale_meV=-1.0), "positive and finite"),
-])
-def test_invalid_units_are_rejected(units, expected):
-    found = violations(terms=[], units=units)
-    assert any(expected in v for v in found)
 
 
 def test_duplicate_zeeman_term_is_rejected():
@@ -140,5 +129,5 @@ def test_fingerprint_depends_only_on_physical_content():
                                       metadata={"model_id": "renamed"}).fingerprint()
     changed = Term.bilinear(("A", (0, 0)), ("B", (1, 0)), J * 1.0000001)
     assert base.fingerprint() != make([changed, zeeman]).fingerprint()
-    assert base.fingerprint() != make([forward, zeeman],
-                                      units=Units(energy="meV")).fingerprint()
+    assert base.fingerprint() == make([forward, zeeman], metadata={
+        "model_id": "test", "energy_unit": "meV"}).fingerprint()

@@ -11,7 +11,6 @@ import pytest
 
 from model import nbcp
 from model.nbcp.unit_cells import DISP_NN, DISP_NNN
-from spintoolkit.definitions import MU_B_MEV_PER_T
 from spintoolkit.methods.classical import classical_energy, local_fields, torques
 from spintoolkit.methods.lswt.energy import EnergyFunction
 from spintoolkit.models import (
@@ -19,7 +18,7 @@ from spintoolkit.models import (
 )
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.model import Site, SpinModel, Term, Units
+from spintoolkit.system.model import Site, SpinModel, Term
 
 NBCP_LATTICE = np.array([[0.5, np.sqrt(3) / 2], [0.5, -np.sqrt(3) / 2]])
 NBCP_CONFIG = {"Jxy": 0.076, "Jz": 0.125, "JPD": 0.013, "JGamma": -0.021,
@@ -40,7 +39,7 @@ def nbcp_primitive_model(config):
             terms.append(Term.bilinear(("A", (0, 0)), ("A", offset), J, label))
     terms.append(Term.zeeman("A", np.eye(3)))
     return SpinModel(NBCP_LATTICE, [Site("A", (0, 0), 0.5)], terms,
-                     Units(energy="meV"), {"model_id": "nbcp_primitive_fixture"})
+                     {"model_id": "nbcp_primitive_fixture", "energy_unit": "meV"})
 
 
 def spherical(theta, phi):
@@ -69,7 +68,7 @@ def test_polarized_state_in_field(builder, bonds_per_site):
     J, S, h = 1.0, 0.5, 3.2
     model = builder(J, S)
     state = polarized_state(model)
-    field = ExternalConditions(B=(0, 0, h))
+    field = ExternalConditions(field=(0, 0, h))
     expected = bonds_per_site * J * S**2 - h * S
     assert classical_energy(model, state, field) == pytest.approx(expected, abs=1e-14)
     assert max_torque(model, state, field) < 1e-14
@@ -80,7 +79,7 @@ def test_energy_per_site_does_not_depend_on_the_chosen_supercell():
     n = spherical(0.4, 1.3)
     small = SpinState.from_function(model, np.eye(2, dtype=int), lambda s, c: n)
     large = SpinState.from_function(model, [[2, 1], [1, 2]], lambda s, c: n)
-    field = ExternalConditions(B=(0.3, -0.1, 0.8))
+    field = ExternalConditions(field=(0.3, -0.1, 0.8))
     assert classical_energy(model, small, field) == pytest.approx(
         classical_energy(model, large, field), abs=1e-14)
 
@@ -96,13 +95,13 @@ def test_local_fields_match_finite_differences():
          Term.bilinear(("B", (0, 0)), ("A", (1, 0)), rng.normal(size=(3, 3))),
          Term.zeeman("A", np.diag([1.0, 1.2, 2.0])),
          Term.zeeman("B", rng.normal(size=(3, 3)))],
-        Units(), {"model_id": "random_two_site"})
+        {"model_id": "random_two_site"})
     supercell = [[1, 1], [-1, 2]]
     raw = {(s, c): spherical(*rng.uniform(0, np.pi, 2) * (1, 2))
            for s in model.site_ids for c in SpinState.from_function(
                model, supercell, lambda s, c: np.array([0, 0, 1.0])).cells}
     state = SpinState(model.fingerprint(), supercell, raw)
-    field = ExternalConditions(B=(0.4, -0.3, 0.7))
+    field = ExternalConditions(field=(0.4, -0.3, 0.7))
     fields = local_fields(model, state, field)
     total_sites = model.num_sites * state.num_cells
     eps = 1e-6
@@ -125,7 +124,7 @@ def test_missing_zeeman_term_warns_only_with_a_field():
     model = square_heisenberg(g=None)
     state = polarized_state(model)
     with pytest.warns(UserWarning, match="no zeeman term"):
-        classical_energy(model, state, ExternalConditions(B=(0, 0, 1.0)))
+        classical_energy(model, state, ExternalConditions(field=(0, 0, 1.0)))
     classical_energy(model, state)
 
 
@@ -134,7 +133,8 @@ def test_nbcp_primitive_fixture_matches_existing_classical_energy(angles):
     model = nbcp_primitive_model(NBCP_CONFIG)
     n = spherical(*angles)
     state = SpinState.from_function(model, np.eye(2, dtype=int), lambda s, c: n)
-    field = ExternalConditions(B=np.array(NBCP_CONFIG["h"]) / MU_B_MEV_PER_T, B_unit="T")
+    # g = I in the fixture, so the field is the legacy Zeeman energy h (E0 = meV).
+    field = ExternalConditions(field=NBCP_CONFIG["h"])
     system = nbcp.one_msl(NBCP_CONFIG, np.array(angles),
                           nbcp.make_nn_exchange_matrices(NBCP_CONFIG),
                           nbcp.make_nnn_exchange_matrices(NBCP_CONFIG))

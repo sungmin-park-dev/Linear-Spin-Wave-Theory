@@ -3,9 +3,10 @@
 Reads only the model's terms, so it works for any :class:`SpinModel` without
 model-specific code. Spins are classical vectors ``S n`` of length ``S``:
 
-    E = sum_bilinear S_i^T J S_j - sum_zeeman (mu_B B)^T g S_i
+    E = sum_bilinear S_i^T J S_j - sum_zeeman b^T g S_i
 
-evaluated over one magnetic supercell and reported per site. The local field
+evaluated over one magnetic supercell and reported per site, dimensionless in
+the energy unit E0 of the coefficients (``b`` is ``ExternalConditions.field``). The local field
 ``h_i = -dE/dS_i`` collects every term that contains spin ``i``; the torque
 ``S_i x h_i`` vanishes at a classical stationary point, the condition for the
 linear boson terms of LSWT to vanish.
@@ -35,7 +36,7 @@ def _prepare(model: SpinModel, state: SpinState,
         raise NotImplementedError(f"classical methods do not support term kinds {unsupported}")
     validate_spin_state(state, model)
     conditions = conditions or ExternalConditions()
-    field = conditions.zeeman_field(model.units)
+    field = conditions.field
     if np.any(field != 0):
         coupled = {t.participants[0][0] for t in model.terms_of_kind(ZEEMAN)}
         uncoupled = sorted(set(model.site_ids) - coupled)
@@ -53,7 +54,7 @@ def _shift(cell, offset):
 
 def classical_energy(model: SpinModel, state: SpinState,
                      conditions: Optional[ExternalConditions] = None) -> float:
-    """Classical energy per site in the model's energy unit.
+    """Classical energy per site in units of E0.
 
     Parameters
     ----------
@@ -61,7 +62,7 @@ def classical_energy(model: SpinModel, state: SpinState,
     state : SpinState
         Must belong to ``model``.
     conditions : ExternalConditions, optional
-        Applied field (default zero). The temperature is not used.
+        Dimensionless field (default zero). The temperature is not used.
     """
     field, spins = _prepare(model, state, conditions)
     energy = 0.0
@@ -85,7 +86,7 @@ def local_fields(model: SpinModel, state: SpinState,
     Returns
     -------
     dict
-        ``(site_id, cell) -> (3,)`` array in the model's energy unit.
+        ``(site_id, cell) -> (3,)`` array in units of E0.
     """
     field, spins = _prepare(model, state, conditions)
     fields = {key: np.zeros(3) for key in spins}
@@ -111,7 +112,7 @@ def torques(model: SpinModel, state: SpinState,
     Returns
     -------
     dict
-        ``(site_id, cell) -> (3,)`` array in the model's energy unit.
+        ``(site_id, cell) -> (3,)`` array in units of E0.
     """
     fields = local_fields(model, state, conditions)
     return {key: np.cross(model.site(key[0]).spin * state.direction(*key), value)

@@ -1,4 +1,12 @@
-"""Physical constants in the existing meV convention."""
+"""Physical constants in the meV convention.
+
+The common model (``spintoolkit.system.model``) computes dimensionlessly in the
+energy unit E0 of its coefficients. Physical units are tesla (field), kelvin
+(temperature) and meV (energy); these constants convert between them, e.g.
+``field = MU_B_MEV_PER_T * B[T] / E0[meV]`` and
+``temperature = K_BOLTZMANN_MEV * T[K] / E0[meV]``. The existing LSWT modules
+still take temperatures in kelvin and energies in meV.
+"""
 
 # Boltzmann constant in meV/K
 K_BOLTZMANN_MEV = 8.617333262e-2
