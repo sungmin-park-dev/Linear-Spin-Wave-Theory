@@ -340,5 +340,6 @@
       "maximum_difference_vs_6f90198": 0.0
     },
     "orbit_axis_check": "Rerun on the merged code; JSON report identical."
-  }
+  },
+  "correction_2026_09_29": "The J_Gamma = 0.010 summary line is superseded: the spread is a converged selection (lambda_6 = 1.64e-12, minimum at phi = 0 mod pi/3); see state-selection-criteria-2026-09-29.json."
 }

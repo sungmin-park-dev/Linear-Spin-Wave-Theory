@@ -201,7 +201,8 @@ classical_energy(model, state, cond)  # -0.375
   전체 테스트 225 통과 / 같은 5 실패(변경 전 220 / 5). 새 테스트 5건은 수정 전 모두 실패했다.
   수치 snapshot 208개 값은 차이 0이다. snapshot은 \texttt{quantum} 경로를 쓰지 않으므로 이 경로는 새 테스트로 확인했다.
   \par\medskip
-  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D17으로 바꾼다(부록 B).}
+  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D17로 바꾼다(부록 B).
+  \texttt{angle\_setting=None}이 TypeError를 내던 결함은 \texttt{8f4dd1e}에서 고쳤다(새 테스트 2건).}
   \slidesource{상태 선택 검증 기록}{selection}
 \end{frame}
 
@@ -276,8 +277,8 @@ classical_energy(model, state, cond)  # -0.375
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
-    D17 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 단계 배치, \texttt{angle\_setting=None} & D17 구현 전 \\
-    D17 판정: 영공간 판정 기준, mesh 오차보다 작은 $E_{\mathrm{qm}}$ 변동의 처리 & D17 구현 시 \\
+    D17 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 개발 단계 배치 & D17 구현 전 \\
+    D17 판정 검토안의 채택과 임계값: 정밀화·간격비, 조화 성분 fit, ``선택 없음'' 여유 & D17 구현 시 \\
     D17 확장: 사이트별 회전축(숨은 U(1)), 여러 차원의 영공간 & 필요 시 \\
     \bottomrule
   \end{tabularx}
