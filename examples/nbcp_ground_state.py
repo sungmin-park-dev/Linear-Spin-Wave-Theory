@@ -7,12 +7,24 @@ antiferromagnet with bond-angle dependent exchange interactions.
 Parameters match legacy/scripts/modified_do_it.py for benchmarking.
 """
 
+from pathlib import Path
+import sys
+
+# Support both repository imports and direct execution of this example.
+if __package__ in (None, ""):
+    _ROOT = Path(__file__).resolve().parents[1]
+    sys.path[:0] = [str(_ROOT / "code-space"), str(_ROOT)]
+
 import numpy as np
 
-from lswt.core.exchange import bond_angle_exchange, nnn_exchange
-from lswt.core.spin_system import SpinSystem
-from lswt.solvers.energy import EnergyFunction
-from lswt.solvers.optimizer import SpinOptimizer
+# Re-export the existing builder names for callers of this example module.
+from model.nbcp.exchange import make_nn_exchange_matrices, make_nnn_exchange_matrices
+from model.nbcp.unit_cells import (
+    DEFAULT_SPIN, DISP_NN, DISP_NNN,
+    one_msl, two_msl, three_msl, four_msl,
+)
+from lswt.methods.spin_wave.energy import EnergyFunction
+from lswt.methods.optimization import SpinOptimizer
 
 
 # ======================================================================
@@ -30,196 +42,6 @@ NBCP_CONFIG = {
     "KGamma": 0.0,
     "h": (0.00, 0.00, 0.376418),
 }
-
-DEFAULT_SPIN = 1 / 2
-
-
-# ======================================================================
-# Exchange matrices from config
-# ======================================================================
-
-def make_nn_exchange_matrices(config):
-    """Build 3 nearest-neighbor exchange matrices for bond angles 0, 2pi/3, 4pi/3."""
-    Jx = Jy = config["Jxy"]
-    Jz = config["Jz"]
-    Jpd = config.get("JPD", 0.0)
-    Gamma = config.get("JGamma", 0.0)
-    Dx = config.get("Dx", 0.0)
-    Dy = config.get("Dy", 0.0)
-    Dz = config.get("Dz", 0.0)
-
-    nn_angles = [0, 2 * np.pi / 3, 4 * np.pi / 3]
-    return [bond_angle_exchange(phi, Jx, Jy, Jz, Jpd, Gamma, Dx, Dy, Dz)
-            for phi in nn_angles]
-
-
-def make_nnn_exchange_matrices(config):
-    """Build 3 next-nearest-neighbor exchange matrices for bond angles pi/2, 7pi/6, 11pi/6."""
-    Kx = Ky = config.get("Kxy", 0.0)
-    Kz = config.get("Kz", 0.0)
-    Kpd = config.get("KPD", 0.0)
-    KGamma = config.get("KGamma", 0.0)
-
-    if all(v == 0 for v in (Kx, Ky, Kz, Kpd, KGamma)):
-        return None
-
-    nnn_angles = [np.pi / 2, 7 * np.pi / 6, 11 * np.pi / 6]
-    return [nnn_exchange(phi, Kx, Ky, Kz, Kpd, KGamma) for phi in nnn_angles]
-
-
-# ======================================================================
-# Displacement vectors
-# ======================================================================
-
-# Nearest-neighbor displacements (lattice_constant = 1)
-DISP_NN = [
-    (1.0, 0.0),
-    (-0.5, np.sqrt(3) / 2),
-    (-0.5, -np.sqrt(3) / 2),
-]
-
-# Next-nearest-neighbor displacements
-_d_nnn = np.sqrt(3)
-DISP_NNN = [
-    (0.0, _d_nnn),
-    (-np.sqrt(3) / 2 * _d_nnn, -0.5 * _d_nnn),
-    (+np.sqrt(3) / 2 * _d_nnn, -0.5 * _d_nnn),
-]
-
-
-# ======================================================================
-# Unit cell builders  (return SpinSystem via builder pattern)
-# ======================================================================
-
-def one_msl(config, angles=None, Exch_J=None, Exch_K=None):
-    """One magnetic sublattice unit cell (1 site).
-
-    Returns
-    -------
-    SpinSystem
-    """
-    if angles is None:
-        angles = np.pi * (2 * np.random.rand(2) - 1)
-    theta_a, phi_a = angles
-
-    system = SpinSystem(lattice_vectors=[[0.5, +np.sqrt(3) / 2],
-                                         [0.5, -np.sqrt(3) / 2]])
-    system.add_site("A", [0, 0], DEFAULT_SPIN, [theta_a, phi_a], config["h"])
-
-    if Exch_J is not None:
-        for J, d in zip(Exch_J, DISP_NN):
-            system.add_coupling("A", "A", J, d)
-    if Exch_K is not None:
-        for K, d in zip(Exch_K, DISP_NNN):
-            system.add_coupling("A", "A", K, d)
-
-    return system
-
-
-def two_msl(config, angles=None, Exch_J=None, Exch_K=None):
-    """Two magnetic sublattice unit cell (2 sites).
-
-    Returns
-    -------
-    SpinSystem
-    """
-    if angles is None:
-        angles = np.pi * (2 * np.random.rand(4) - 1)
-    theta_a, phi_a, theta_b, phi_b = angles
-
-    system = SpinSystem(lattice_vectors=[[1.0, 0.0],
-                                         [0.0, np.sqrt(3)]])
-    system.add_site("A", [0, 0], DEFAULT_SPIN, [theta_a, phi_a], config["h"])
-    system.add_site("B", [0.5, np.sqrt(3) / 2], DEFAULT_SPIN, [theta_b, phi_b], config["h"])
-
-    if Exch_J is not None:
-        for lj, J, d in zip(["A", "B", "B"], Exch_J, DISP_NN):
-            system.add_coupling("A", lj, J, d)
-        for lj, J, d in zip(["B", "A", "A"], Exch_J, DISP_NN):
-            system.add_coupling("B", lj, J, d)
-    if Exch_K is not None:
-        for lj, K, d in zip(["A", "B", "B"], Exch_K, DISP_NNN):
-            system.add_coupling("A", lj, K, d)
-        for lj, K, d in zip(["B", "A", "A"], Exch_K, DISP_NNN):
-            system.add_coupling("B", lj, K, d)
-
-    return system
-
-
-def three_msl(config, angles=None, Exch_J=None, Exch_K=None):
-    """Three magnetic sublattice unit cell (3 sites).
-
-    Returns
-    -------
-    SpinSystem
-    """
-    if angles is None:
-        angles = np.pi * (2 * np.random.rand(6) - 1)
-    theta_a, phi_a, theta_b, phi_b, theta_c, phi_c = angles
-
-    system = SpinSystem(lattice_vectors=[[1.5, +np.sqrt(3) / 2],
-                                         [1.5, -np.sqrt(3) / 2]])
-    system.add_site("A", [0.5, np.sqrt(3) / 2], DEFAULT_SPIN, [theta_a, phi_a], config["h"])
-    system.add_site("B", [-0.5, np.sqrt(3) / 2], DEFAULT_SPIN, [theta_b, phi_b], config["h"])
-    system.add_site("C", [0, 0], DEFAULT_SPIN, [theta_c, phi_c], config["h"])
-
-    if Exch_J is not None:
-        for J, d in zip(Exch_J, DISP_NN):
-            system.add_coupling("A", "B", J, d)
-        for J, d in zip(Exch_J, DISP_NN):
-            system.add_coupling("B", "C", J, d)
-        for J, d in zip(Exch_J, DISP_NN):
-            system.add_coupling("C", "A", J, d)
-    if Exch_K is not None:
-        for K, d in zip(Exch_K, DISP_NNN):
-            system.add_coupling("A", "A", K, d)
-        for K, d in zip(Exch_K, DISP_NNN):
-            system.add_coupling("B", "B", K, d)
-        for K, d in zip(Exch_K, DISP_NNN):
-            system.add_coupling("C", "C", K, d)
-
-    return system
-
-
-def four_msl(config, angles=None, Exch_J=None, Exch_K=None):
-    """Four magnetic sublattice unit cell (4 sites).
-
-    Returns
-    -------
-    SpinSystem
-    """
-    if angles is None:
-        angles = np.pi * (2 * np.random.rand(8) - 1)
-    theta_a, phi_a, theta_b, phi_b, theta_c, phi_c, theta_d, phi_d = angles
-
-    system = SpinSystem(lattice_vectors=[[1.0, +np.sqrt(3)],
-                                         [1.0, -np.sqrt(3)]])
-    system.add_site("A", [1, 0], DEFAULT_SPIN, [theta_a, phi_a], config["h"])
-    system.add_site("B", [0.5, np.sqrt(3) / 2], DEFAULT_SPIN, [theta_b, phi_b], config["h"])
-    system.add_site("C", [-0.5, np.sqrt(3) / 2], DEFAULT_SPIN, [theta_c, phi_c], config["h"])
-    system.add_site("D", [0, 0], DEFAULT_SPIN, [theta_d, phi_d], config["h"])
-
-    if Exch_J is not None:
-        for lj, J, d in zip(["D", "B", "C"], Exch_J, DISP_NN):
-            system.add_coupling("A", lj, J, d)
-        for lj, J, d in zip(["C", "A", "D"], Exch_J, DISP_NN):
-            system.add_coupling("B", lj, J, d)
-        for lj, J, d in zip(["B", "D", "A"], Exch_J, DISP_NN):
-            system.add_coupling("C", lj, J, d)
-        for lj, J, d in zip(["A", "C", "B"], Exch_J, DISP_NN):
-            system.add_coupling("D", lj, J, d)
-    if Exch_K is not None:
-        for lj, K, d in zip(["D", "B", "C"], Exch_K, DISP_NNN):
-            system.add_coupling("A", lj, K, d)
-        for lj, K, d in zip(["C", "A", "D"], Exch_K, DISP_NNN):
-            system.add_coupling("B", lj, K, d)
-        for lj, K, d in zip(["B", "D", "A"], Exch_K, DISP_NNN):
-            system.add_coupling("C", lj, K, d)
-        for lj, K, d in zip(["A", "C", "B"], Exch_K, DISP_NNN):
-            system.add_coupling("D", lj, K, d)
-
-    return system
-
 
 # ======================================================================
 # Phase search: optimize all 4 MSL structures, pick lowest energy

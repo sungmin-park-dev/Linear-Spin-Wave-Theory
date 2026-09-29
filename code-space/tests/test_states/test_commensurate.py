@@ -10,7 +10,7 @@ Tests magnetic structure properties:
 
 import numpy as np
 import pytest
-from lswt.core.magnetic_structure import CommensurateStructure
+from lswt.states import CommensurateStructure
 
 
 class TestCommensurateStructureCreation:

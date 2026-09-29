@@ -142,8 +142,11 @@ def main():
         'input_sha256': inputs,
         'code_sha256': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in [Path(__file__).resolve(), ROOT/'examples/pseudo_goldstone_comparison.py',
-                                 ROOT/'examples/nbcp_ground_state.py', ROOT/'code-space/lswt/core/exchange.py',
-                                 ROOT/'code-space/lswt/core/spin_system.py']},
+                                 ROOT/'examples/nbcp_ground_state.py',
+                                 ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+                                 ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
+                                 ROOT/'code-space/lswt/system/exchange.py',
+                                 ROOT/'code-space/lswt/system/spin_system.py']},
         'parameters': {key: report[key] for key in ['S', 'J_meV', 'Jz_meV', 'temperature_K', 'g_z']},
         'states': report['states'],
         'fourier_convention': 'E(phi)-mean = sum_n [a_n cos(n phi)+b_n sin(n phi)]; A_n=hypot(a_n,b_n)',

@@ -10,7 +10,7 @@ Tests geometric properties:
 
 import numpy as np
 import pytest
-from lswt.core.lattice import TriangularLattice
+from lswt.system.lattice import TriangularLattice
 
 
 class TestTriangularLatticeGeometry:

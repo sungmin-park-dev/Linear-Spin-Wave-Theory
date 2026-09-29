@@ -137,6 +137,39 @@ def find_intersection_of_perp_plane(v1, v2):
     return np.array([g1_sq / 2, g2_sq / 2]) @ np.linalg.inv(gmat).T
 
 
+def _reduced_reciprocal_basis(G1, G2):
+    """Gauss-reduce a 2D reciprocal basis without changing its lattice."""
+    basis = np.asarray([G1, G2], dtype=float).copy()
+    scale = np.max(np.abs(basis))
+    if not np.isfinite(scale) or scale == 0:
+        raise ValueError("Reciprocal vectors must be finite and independent")
+    basis /= scale
+    if np.linalg.det(basis) == 0:
+        raise ValueError("Reciprocal vectors must be independent")
+    for _ in range(100):
+        if np.dot(basis[1], basis[1]) < np.dot(basis[0], basis[0]):
+            basis = basis[::-1].copy()
+        multiple = np.rint(np.dot(basis[0], basis[1]) / np.dot(basis[0], basis[0]))
+        if multiple == 0:
+            return basis * scale
+        basis[1] -= multiple * basis[0]
+    raise ValueError("Could not reduce reciprocal basis")
+
+
+def _fold_to_wigner_seitz(points, G1, G2):
+    """Choose a nearest reciprocal-lattice representative of each point.
+
+    A reduced 2D basis needs only the nine translations surrounding the
+    rounded fractional coordinates. Boundary ties retain one representative.
+    """
+    basis = _reduced_reciprocal_basis(G1, G2)
+    centres = np.rint(points @ np.linalg.inv(basis))
+    offsets = np.array([(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1)])
+    candidates = points[:, None, :] - (centres[:, None, :] + offsets) @ basis
+    nearest = np.argmin(np.sum(candidates**2, axis=2), axis=1)
+    return candidates[np.arange(len(points)), nearest]
+
+
 def get_wigner_seitz_corners(G1, G2):
     """Calculate corners of the Wigner-Seitz Brillouin zone.
 
@@ -152,7 +185,11 @@ def get_wigner_seitz_corners(G1, G2):
     corners : np.ndarray
         BZ corner vertices sorted counter-clockwise.
     """
-    sorted_bz_corners = get_nearest_lattices(G1, G2)
+    # The short-neighbour construction assumes a reduced basis. Normalizing
+    # here also makes its orthogonality tolerance independent of length units.
+    basis = _reduced_reciprocal_basis(G1, G2)
+    scale = np.max(np.abs(basis))
+    sorted_bz_corners = get_nearest_lattices(*(basis / scale))
     corners = []
 
     for j in range(len(sorted_bz_corners)):
@@ -162,7 +199,7 @@ def get_wigner_seitz_corners(G1, G2):
         corners.append(corner)
 
     corners = sorting_vectors_counter_clockwise(corners)
-    return corners
+    return corners * scale
 
 
 # ---------------------------------------------------------------------------
@@ -501,6 +538,7 @@ class _AnyBZ:
     """
 
     def __init__(self, r1, r2):
+        self._wigner_seitz = False
         self.Gamma = np.array([0.0, 0.0])
 
         if isinstance(r1, (list, tuple)):
@@ -529,6 +567,7 @@ class _AnyBZ:
             Dictionary with keys: ``reciprocal_vectors``, ``BZ_corners``,
             ``high_symmetry_points``, ``band_paths``.
         """
+        self._wigner_seitz = False
         if G_vector is None:
             G1, G2 = self.G1, self.G2
         else:
@@ -578,6 +617,7 @@ class _AnyBZ:
             Dictionary with keys: ``reciprocal_vectors``, ``BZ_corners``,
             ``high_symmetry_points``, ``band_paths``.
         """
+        self._wigner_seitz = True
         if G_vector is None:
             G1, G2 = self.G1, self.G2
         else:
@@ -638,6 +678,8 @@ class _AnyBZ:
         grid_indices : np.ndarray or None
             Grid indices if *print_idx* is True, else None.
         """
+        if not isinstance(N, (int, np.integer)) or N < 1:
+            raise ValueError("N must be a positive integer")
         dG1, dG2 = self.G1 / (2 * N), self.G2 / (2 * N)
 
         if center == "shift":
@@ -665,6 +707,8 @@ class _AnyBZ:
                     indices.append((i, j))
 
         grid_points = np.array(points)
+        if self._wigner_seitz:
+            grid_points = _fold_to_wigner_seitz(grid_points, self.G1, self.G2)
 
         if print_idx:
             grid_indices = np.array(indices)
@@ -693,7 +737,12 @@ class BrillouinZone:
         pair of 2D arrays and *bz_type* is one of ``"simple"``, ``"Hex_60"``,
         ``"Hex_30"``, ``"Tetra"``, ``"wigner_seitz"``.
     bz_type : str, optional
-        Override BZ type (default: None).
+        Override the representation, preserving the supplied lattice vectors.
+        "simple" uses a reciprocal parallelogram. "wigner_seitz", "Hex_60"
+        and "Hex_30" use the Wigner-Seitz cell of the actual lattice; the Hex
+        names are compatibility aliases and do not impose a fixed lattice.
+        "Tetra" (also "tetra") uses a rectangular cell and requires orthogonal
+        lattice vectors. Every grid covers one reciprocal primitive cell.
 
     Attributes
     ----------
@@ -723,22 +772,17 @@ class BrillouinZone:
         resolved_setting : tuple
             ``(lattice_vectors, bz_type)`` tuple.
         """
-        if bz_type is None:
-            bz_setting = bz_setting
-
-        elif bz_type == "simple":
-            bz_setting = (bz_setting[0], "simple")
-
-        elif bz_type == "Hex_60":
-            bz_setting = (
-                (np.array([1 / 2, np.sqrt(3) / 2]),
-                 np.array([1 / 2, -np.sqrt(3) / 2])),
-                "Hex_60",
-            )
-        else:
-            raise ValueError(f"Unknown BZ type: {bz_type}")
-
-        return bz_setting
+        vectors = np.asarray(bz_setting[0], dtype=float)
+        mode = bz_setting[1] if bz_type is None else bz_type
+        if mode == "tetra":
+            mode = "Tetra"
+        if mode not in ("simple", "Hex_60", "Hex_30", "Tetra", "wigner_seitz"):
+            raise ValueError(f"Unknown BZ type: {mode}")
+        if vectors.shape != (2, 2) or not np.all(np.isfinite(vectors)):
+            raise ValueError("Lattice vectors must be two finite 2D vectors")
+        if np.linalg.det(vectors) == 0:
+            raise ValueError("Lattice vectors must be independent")
+        return vectors, mode
 
     def _get_bz_data(self, lattice_bz_setting=None):
         """Dispatch to the appropriate BZ helper and retrieve BZ data.
@@ -764,34 +808,32 @@ class BrillouinZone:
 
         rvec1, rvec2 = lattice_vectors
 
-        # Calculate the length of the lattice vectors
-        a = np.sum(rvec1**2) ** 0.5
-        b = np.sum(rvec2**2) ** 0.5
-
+        bz = _AnyBZ(rvec1, rvec2)
         if bz_type == "simple":
-            bz = _AnyBZ(rvec1, rvec2)
             bz_data = bz.get_bz_parallelogram()
             return bz_data, bz.get_fbz_grid
 
-        elif bz_type == "Hex_60":
-            bz_hex = _HexBZ(a, phi=0)
-            bz_data = bz_hex.get_bz_data()
-            return bz_data, bz_hex.get_fbz_grid
-
-        elif bz_type == "Hex_30":
-            bz_hex = _HexBZ(a, phi=np.pi / 6)
-            bz_data = bz_hex.get_bz_data()
-            return bz_data, bz_hex.get_fbz_grid
-
         elif bz_type == "Tetra":
-            bz_tetra = _TetraBZ(a, b)
-            bz_data = bz_tetra.get_bz_data()
-            return bz_data, bz_tetra.get_fbz_grid
+            cosine = np.dot(rvec1 / np.linalg.norm(rvec1), rvec2 / np.linalg.norm(rvec2))
+            if not np.isclose(cosine, 0, atol=1e-10):
+                raise ValueError("Tetra requires orthogonal lattice vectors; use simple or wigner_seitz")
+            bz_data = bz.get_bz_parallelogram()
+            g1, g2 = bz.G1, bz.G2
+            bz_data["high_symmetry_points"] = {
+                'Γ': np.zeros(2), 'X': g1 / 2, '-X': -g1 / 2,
+                'Y': g2 / 2, 'M': (g1 + g2) / 2,
+                "M'": (g2 - g1) / 2, '-M': -(g1 + g2) / 2,
+            }
+            bz_data["band_paths"] = {
+                "standard path": ['X', 'Γ', 'M', 'X'],
+                "rotated path": ['Y', 'Γ', "M'", 'Y'],
+                "inverse path": ['-X', 'Γ', '-M', '-X'],
+            }
+            return bz_data, bz.get_fbz_grid
 
-        elif bz_type == "wigner_seitz":
-            bz_any = _AnyBZ(rvec1, rvec2)
-            bz_data = bz_any.get_bz_wigner_seitz_cell()
-            return bz_data, bz_any.get_fbz_grid
+        elif bz_type in ("Hex_60", "Hex_30", "wigner_seitz"):
+            bz_data = bz.get_bz_wigner_seitz_cell()
+            return bz_data, bz.get_fbz_grid
 
         else:
             raise ValueError(f"Unknown BZ type: {bz_type}")
@@ -848,7 +890,8 @@ class BrillouinZone:
         center : tuple, optional
             Grid center (default: (0, 0)).
         buffer : float, optional
-            Boundary buffer (default: 0.1).
+            Unused compatibility argument (default: 0.1). The grid has one
+            representative per periodic sample, without boundary padding.
         print_idx : bool, optional
             Whether to return grid indices (default: False).
 
@@ -857,7 +900,9 @@ class BrillouinZone:
         bz_data : dict
             BZ information dictionary (includes ``"area"`` key).
         grid_points : np.ndarray
-            k-points inside the BZ.
+            (2*N)**2 equal-weight k-points in one full BZ. Boundary-equivalent
+            points are counted once; Wigner-Seitz representatives are folded
+            by reciprocal lattice translations.
         grid_indices : np.ndarray or None
             Grid indices if *print_idx* is True, else None.
         """

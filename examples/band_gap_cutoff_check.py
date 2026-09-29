@@ -16,8 +16,8 @@ import time
 
 import numpy as np
 
-from lswt.config import DEFAULT_BAND_GAP_CUTOFF
-from lswt.core.diagonalization import Diagonalizer
+from lswt.definitions import DEFAULT_BAND_GAP_CUTOFF
+from lswt.methods.spin_wave.diagonalization import Diagonalizer
 from lswt.observables.topology import _band_separation
 from band_degeneracy_check import probe
 
@@ -80,8 +80,8 @@ def main():
 
     root = Path(__file__).resolve().parents[1]
     sources = ['examples/band_gap_cutoff_check.py', 'examples/band_degeneracy_check.py',
-               'code-space/lswt/observables/topology.py', 'code-space/lswt/config.py',
-               'code-space/lswt/core/diagonalization.py']
+               'code-space/lswt/observables/topology.py', 'code-space/lswt/definitions/constants.py', 'code-space/lswt/definitions/defaults.py', 'code-space/lswt/definitions/spin_basis.py',
+               'code-space/lswt/methods/spin_wave/diagonalization.py']
     report = {
         'created_utc': datetime.now(timezone.utc).isoformat(),
         'scope': __doc__, 'platform': platform.platform(),

@@ -18,7 +18,7 @@ Regularization modes
 import numpy as np
 from typing import Tuple, Optional, Dict, List, Any, Union
 
-from lswt.config import (
+from lswt.definitions import (
     K_BOLTZMANN_MEV,  # noqa: F401 – reserved for future use
     TOLERANCE_DEFAULT, EPSILON_DEFAULT, THRESHOLD_DEFAULT,
 )

@@ -56,7 +56,7 @@ def main():
     result['source_sha256'] = {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
                               for name in ['examples/pseudo_goldstone_validation.py',
                                            'examples/pseudo_goldstone_comparison.py',
-                                           'code-space/lswt/solvers/hamiltonian.py']}
+                                           'code-space/lswt/methods/spin_wave/hamiltonian.py']}
     (args.directory/'curvature-validation.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
     print(json.dumps(comparisons, indent=2))
 

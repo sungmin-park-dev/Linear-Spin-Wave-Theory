@@ -12,11 +12,8 @@ import numpy as np
 from typing import Tuple, List, Dict
 
 from lswt.observables.bose_statistics import compute_bose_einstein_distribution
-from lswt.core.diagonalization import Diagonalizer
-from lswt.config import (
-    K_BOLTZMANN_MEV,
-    HIGH_BE_THRESHOLD, LOW_BE_THRESHOLD, ZERO_ENERGY_THRESHOLD,
-)
+from lswt.methods.spin_wave.diagonalization import Diagonalizer
+from lswt.definitions import K_BOLTZMANN_MEV
 
 
 # ---------------------------------------------------------------------------
@@ -29,54 +26,34 @@ def log_1_m_exp(energy, temperature):
     Parameters
     ----------
     energy : array_like
-        Magnon energies.
+        Non-negative magnon energies in meV.
     temperature : float
-        Temperature in energy units matching K_BOLTZMANN_MEV.
+        Temperature in Kelvin.
 
     Returns
     -------
     result : np.ndarray
-        Element-wise values of ln(1 - e^(-beta*E)) / beta.
+        Thermal free energy per mode in meV. At T=0 this is zero.
+        At T>0 an exact zero mode gives -inf (divergent partition sum).
     """
-    energy = np.asarray(energy)
-    beta = 1.0 / (K_BOLTZMANN_MEV * temperature)
-    beta_E = beta * energy
-    result = np.zeros_like(beta_E, dtype=float)
+    if not np.isfinite(temperature) or temperature < 0:
+        raise ValueError("Temperature must be finite and non-negative")
+    energy = np.asarray(energy, dtype=float)
+    if np.any(~np.isfinite(energy)) or np.any(energy < 0):
+        raise ValueError("Magnon energies must be finite and non-negative")
+    if temperature == 0:
+        return np.zeros_like(energy)
 
-    zero_mask = np.abs(energy) < ZERO_ENERGY_THRESHOLD
-    result[zero_mask] = -np.inf
-
-    valid_mask = ~zero_mask
-    if not np.any(valid_mask):
-        return result
-
-    beta_E_valid = beta_E[valid_mask]
-    energy_valid = energy[valid_mask] if energy.ndim > 0 else energy
-
-    # Low beta*E regime: Taylor expansion
-    low_be_mask = beta_E_valid < LOW_BE_THRESHOLD
-    if np.any(low_be_mask):
-        be_low = beta_E_valid[low_be_mask]
-        e_low = energy_valid[low_be_mask] if energy_valid.ndim > 0 else energy_valid
-        result[valid_mask][low_be_mask] = e_low * (
-            np.log(be_low) / be_low - 0.5 - be_low / 24.0 - be_low**3 / 2880.0
-        )
-
-    # High beta*E regime: asymptotic expansion
-    high_be_mask = beta_E_valid > HIGH_BE_THRESHOLD
-    if np.any(high_be_mask):
-        be_high = beta_E_valid[high_be_mask]
-        e_high = energy_valid[high_be_mask] if energy_valid.ndim > 0 else energy_valid
-        result[valid_mask][high_be_mask] = e_high * (-np.exp(-be_high) / be_high)
-
-    # Medium beta*E regime: direct evaluation
-    med_be_mask = ~(low_be_mask | high_be_mask)
-    if np.any(med_be_mask):
-        be_med = beta_E_valid[med_be_mask]
-        e_med = energy_valid[med_be_mask] if energy_valid.ndim > 0 else energy_valid
-        result[valid_mask][med_be_mask] = e_med * (np.log1p(-np.exp(-be_med)) / be_med)
-
-    return result
+    thermal_energy = K_BOLTZMANN_MEV * temperature
+    x = energy / thermal_energy
+    result = np.empty_like(x)
+    small = x <= np.log(2)
+    # expm1 avoids cancellation near zero; log1p retains exponentially small
+    # contributions at large x. Assign directly, not into a masked copy.
+    with np.errstate(divide="ignore"):
+        result[small] = np.log(-np.expm1(-x[small]))
+    result[~small] = np.log1p(-np.exp(-x[~small]))
+    return thermal_energy * result
 
 
 def bosonic_free_energy(energies, temperature):
@@ -85,19 +62,19 @@ def bosonic_free_energy(energies, temperature):
     Parameters
     ----------
     energies : array_like
-        Magnon energies.
+        Non-negative magnon energies in meV.
     temperature : float
-        Temperature.
+        Temperature in Kelvin.
 
     Returns
     -------
     free_energy : float
-        Total bosonic free energy contribution.
+        Total thermal free energy in meV. A zero mode at T>0 gives -inf;
+        divergent terms are not silently excluded from the sum.
     """
     energies = np.asarray(energies)
     terms = log_1_m_exp(energies, temperature)
-    finite_mask = np.isfinite(terms)
-    return np.sum(terms[finite_mask]) if np.any(finite_mask) else -np.inf
+    return np.sum(terms)
 
 
 # ---------------------------------------------------------------------------
@@ -400,7 +377,7 @@ class LSWTHamiltonian:
 
     def compute_quantum_energy(self, k_points, angles=None, T=0,
                                reg_type="MAGSWT", compute_free_energy=False):
-        """Compute the zero-point quantum energy correction.
+        """Compute the zero-point plus thermal internal-energy contribution.
 
         Parameters
         ----------
@@ -409,7 +386,7 @@ class LSWTHamiltonian:
         angles : array_like or None, optional
             Spin angles override.
         T : float, optional
-            Temperature (default: 0).
+            Temperature in Kelvin (default: 0); energies are in meV.
         reg_type : str, optional
             Regularization type (default: 'MAGSWT').
         compute_free_energy : bool, optional
@@ -418,10 +395,13 @@ class LSWTHamiltonian:
         Returns
         -------
         E_zero : float
-            Zero-point energy (plus thermal contribution if T > 0).
+            Quantum internal energy summed over k-points and physical bands.
+            Excludes classical energy; divide by Nk*Ns for energy per spin.
         mu_magswt : float
             Chemical potential from MAGSWT regularization.
         """
+        if not np.isfinite(T) or T < 0:
+            raise ValueError("Temperature must be finite and non-negative")
         K_Ham_num, _ = self.Quadratic_Bose_Hamiltonian(k_points, angles=angles)
         K_Ham_num, Bose_E, mu_magswt = Diagonalizer.get_eigenvalue(
             K_Ham_num, reg_type=reg_type
@@ -440,7 +420,7 @@ class LSWTHamiltonian:
                 sum_Ek = np.sum(Epk)
                 E_zero += sum_Ek / 2 - trace_hk / 4
                 BE_dist = compute_bose_einstein_distribution(Epk, Temperature=T)
-                E_zero += Epk * BE_dist
+                E_zero += np.sum(Epk * BE_dist)
 
         return E_zero, mu_magswt
 
@@ -455,17 +435,20 @@ class LSWTHamiltonian:
         angles : array_like or None, optional
             Spin angles override.
         T : float, optional
-            Temperature (default: 0).
+            Temperature in Kelvin (default: 0); energies are in meV.
         reg_type : str, optional
             Regularization type (default: 'MAGSWT').
 
         Returns
         -------
         E_zero : float
-            Free energy (zero-point + thermal if T > 0).
+            Quantum free energy summed over k-points and physical bands.
+            Excludes classical energy; divide by Nk*Ns for energy per spin.
         mu_magswt : float
             Chemical potential from MAGSWT regularization.
         """
+        if not np.isfinite(T) or T < 0:
+            raise ValueError("Temperature must be finite and non-negative")
         K_Ham_num, _ = self.Quadratic_Bose_Hamiltonian(k_points, angles=angles)
         K_Ham_num, Bose_E, mu_magswt = Diagonalizer.get_eigenvalue(
             K_Ham_num, reg_type=reg_type

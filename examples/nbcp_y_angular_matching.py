@@ -26,7 +26,7 @@ from examples.nbcp_y_soc_conditions import background, reduction, static_kernel
 from examples.nbcp_y_stability import COUPLINGS, TO_NAMBU, batch_kernel
 from examples.nbcp_y_stiffness import AREA, J, JZ, METRIC, S
 from examples.pseudo_goldstone_comparison import mesh, vacuum_energy
-from lswt.solvers.hamiltonian import LSWTHamiltonian
+from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
 
 OUT = ROOT / 'data-space/verification/260918-y-angular-matching'
 OLD = ROOT / 'data-space/verification/260912-pseudo-goldstone'
@@ -133,7 +133,9 @@ def new_scan(pd, gamma, n, count, old=None):
     dependencies = [Path(__file__), ROOT/'examples/nbcp_y_stability.py',
                     ROOT/'examples/nbcp_y_soc_conditions.py', ROOT/'examples/nbcp_y_stiffness.py',
                     ROOT/'examples/pseudo_goldstone_comparison.py', ROOT/'examples/nbcp_ground_state.py',
-                    ROOT/'code-space/lswt/solvers/hamiltonian.py']
+                    ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+                    ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
+                    ROOT/'code-space/lswt/methods/spin_wave/hamiltonian.py']
     hashes = {str(p.relative_to(ROOT)): digest(p) for p in dependencies}
     if path.exists():
         row = json.loads(path.read_text())
@@ -311,7 +313,10 @@ def main():
             'relative_to_mixed_lambda6': float(abs(mixed[5]-additive[5])/abs(mixed[5]))})
     inputs = [Path(__file__), ROOT/'examples/nbcp_y_soc_conditions.py', ROOT/'examples/nbcp_y_stiffness.py',
         ROOT/'examples/nbcp_y_stability.py', ROOT/'examples/pseudo_goldstone_comparison.py',
-        ROOT/'examples/nbcp_ground_state.py', ROOT/'code-space/lswt/solvers/hamiltonian.py',
+        ROOT/'examples/nbcp_ground_state.py',
+        ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+        ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
+        ROOT/'code-space/lswt/methods/spin_wave/hamiltonian.py',
         ROOT/'data-space/verification/260917-y-stability/stability-check.json',
         OLD/'curvature-validation.json'] + [OLD/f'scan-N{n}-P72.json' for n in [12, 24, 48]]
     report = {'created_utc': datetime.now(timezone.utc).isoformat(),

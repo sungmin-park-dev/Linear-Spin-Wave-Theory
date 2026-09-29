@@ -16,8 +16,8 @@ from lswt.observables.bose_statistics import (
     compute_lorentzian_kernel,
     compute_spectral_kernel,
 )
-from lswt.core.brillouin_zone import get_nearest_lattices
-from lswt.config import (
+from lswt.system.brillouin_zone import get_nearest_lattices
+from lswt.definitions import (
     DEFAULT_TOLERANCE, DEFAULT_TEMPERATURE, DEFAULT_TIME,
     DEFAULT_OMEGA, DEFAULT_ETA, DEFAULT_DELTA_PEAK, Mat_C,
 )

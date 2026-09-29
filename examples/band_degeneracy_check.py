@@ -16,8 +16,8 @@ from pathlib import Path
 
 import numpy as np
 
-from lswt.core.diagonalization import Diagonalizer
-from lswt.config import DEFAULT_BAND_GAP_CUTOFF
+from lswt.methods.spin_wave.diagonalization import Diagonalizer
+from lswt.definitions import DEFAULT_BAND_GAP_CUTOFF
 from lswt.observables.topology import compute_berry_curvature
 
 
@@ -74,9 +74,9 @@ def main():
     root = Path(__file__).resolve().parents[1]
     sources = [
         "examples/band_degeneracy_check.py",
-        "code-space/lswt/core/diagonalization.py",
+        "code-space/lswt/methods/spin_wave/diagonalization.py",
         "code-space/lswt/observables/topology.py",
-        "code-space/lswt/config.py",
+        "code-space/lswt/definitions/constants.py", "code-space/lswt/definitions/defaults.py", "code-space/lswt/definitions/spin_basis.py",
     ]
     report = {
         "created_utc": datetime.now(timezone.utc).isoformat(),

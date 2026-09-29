@@ -179,7 +179,9 @@ def check(phase):
 def main():
     results = [check(phase) for phase in ['Y', 'V']]
     sources = [Path(__file__), ROOT/'examples/pseudo_goldstone_comparison.py',
-               ROOT/'examples/nbcp_ground_state.py']
+               ROOT/'examples/nbcp_ground_state.py',
+               ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+               ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py']
     report = {'created_utc': datetime.now(timezone.utc).isoformat(),
               'scope': __doc__, 'S': S, 'J_meV': J, 'Jz_meV': JZ, 'results': results,
               'source_sha256': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()

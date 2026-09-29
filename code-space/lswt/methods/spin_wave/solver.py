@@ -11,11 +11,11 @@ Ported from: modules/LinearSpinWaveTheory/linear_spin_wave_theory.py
 import numpy as np
 from typing import Tuple, List, Dict, Optional, Union
 
-from lswt.core.spin_system import SpinSystem
-from lswt.core.brillouin_zone import BrillouinZone
+from lswt.system.spin_system import SpinSystem
+from lswt.system.brillouin_zone import BrillouinZone
 from lswt.observables.bose_statistics import compute_static_magnon_kernel
-from lswt.solvers.base import AbstractSolver, SolverResult
-from lswt.solvers.hamiltonian import LSWTHamiltonian
+from lswt.methods.base import AbstractSolver, SolverResult
+from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
 
 # TODO: Uncomment once observables modules are connected
 # from lswt.observables.thermodynamics import Thermodynamics
@@ -36,7 +36,7 @@ class LSWTSolver(AbstractSolver):
     Examples
     --------
     >>> from lswt import SpinSystem, LSWTSolver
-    >>> from lswt.core import exchange
+    >>> from lswt.system import exchange
     >>> import numpy as np
     >>>
     >>> sites = [SpinSystem.Site("A", [0, 0], spin=0.5,
@@ -89,12 +89,16 @@ class LSWTSolver(AbstractSolver):
         regularization : str, optional
             Regularization scheme (default: 'MAGSWT').
         temperature : float, optional
-            Temperature (default: 0).
+            Temperature in Kelvin for boson occupations (default: 0).
+            ``ground_state_energy`` remains the zero-temperature energy.
 
         Returns
         -------
         result : SolverResult
-            Standardized solver output.
+            Standardized solver output. ``ground_state_energy`` is the
+            zero-temperature energy per spin for the supplied reference
+            configuration. If regularization shifts the quadratic Hamiltonian,
+            its zero-point contribution uses that same shifted Hamiltonian.
         """
         if bz_type is None:
             bz_type = self._bz_type
@@ -106,13 +110,18 @@ class LSWTSolver(AbstractSolver):
 
         # Collect eigenvalues into array: (num_k, num_bands)
         eigenvalues = []
+        zero_point_per_k = []
         for k_key in sorted(k_data.keys()):
-            _, eigen_data, *_ = k_data[k_key]
+            hamiltonian_data, eigen_data, *_ = k_data[k_key]
             evals, _ = eigen_data
             eigenvalues.append(evals[:self.Ns])
+            # Full BdG trace includes both Nambu sectors. Subtract its vacuum
+            # constant using the same (possibly regularized) H as these modes.
+            trace_hk = np.trace(hamiltonian_data[0]).real
+            zero_point_per_k.append(np.sum(evals[:self.Ns]) / 2 - trace_hk / 4)
         eigenvalues = np.array(eigenvalues)
 
-        ground_state_energy = np.mean(eigenvalues) + self._classical_energy()
+        ground_state_energy = self._classical_energy() + np.mean(zero_point_per_k) / self.Ns
 
         return SolverResult(
             ground_state_energy=ground_state_energy,
@@ -132,7 +141,7 @@ class LSWTSolver(AbstractSolver):
 
     def _classical_energy(self) -> float:
         """Compute classical energy per site from current spin configuration."""
-        from lswt.solvers.energy import EnergyFunction
+        from lswt.methods.spin_wave.energy import EnergyFunction
         ef = EnergyFunction(self.spin_system_data, N=1, update_args=False)
         return ef.classical_energy_density_func(self.system.get_angles_flat())
 
@@ -149,7 +158,7 @@ class LSWTSolver(AbstractSolver):
         N : int, optional
             BZ mesh density (default: 10).
         temperature : float, optional
-            Temperature (default: 0).
+            Temperature in Kelvin for boson occupations (default: 0).
 
         Returns
         -------
@@ -160,6 +169,9 @@ class LSWTSolver(AbstractSolver):
         full_k_points : np.ndarray
             All k-points in the BZ mesh.
         """
+        if not np.isfinite(temperature) or temperature < 0:
+            raise ValueError("Temperature must be finite and non-negative")
+        self.T = temperature
         bz = BrillouinZone(self.lattice_bz_settings, bz_type=bz_type)
         bz_data, full_k_points, _ = bz.get_full(N)
 
@@ -171,6 +183,9 @@ class LSWTSolver(AbstractSolver):
             Berry_curvature=True,
             regularization=regularization
         )
+        # Private provenance for BZ integrals: a path or a sliced dictionary
+        # must not be normalized as the full grid produced by this diagnosis.
+        self._integration_k_keys = frozenset(k_data)
 
         self.msl_average_boson_number, self.average_boson_number = (
             self.lswt_correction(k_data=k_data)
@@ -186,7 +201,9 @@ class LSWTSolver(AbstractSolver):
         return k_data, bz_data, full_k_points
 
     def lswt_correction(self, k_data):
-        """Compute quantum corrections (average boson numbers per sublattice).
+        """Compute average boson numbers at the current diagnosis temperature.
+
+        Uses ``self.T``, set by ``diagnosing_lswt`` (zero on initialization).
 
         Parameters
         ----------
@@ -207,7 +224,7 @@ class LSWTSolver(AbstractSolver):
             _, Eigen_data, *_ = k_data[k_key]
             eval, evec = Eigen_data
             magnon_kernel = compute_static_magnon_kernel(
-                eval, Temperature=0, Ns=self.Ns
+                eval, Temperature=self.T, Ns=self.Ns
             )
             two_point = evec @ np.diag(magnon_kernel) @ evec.T.conj()
             diag_elements = np.diag(two_point)[self.Ns:]

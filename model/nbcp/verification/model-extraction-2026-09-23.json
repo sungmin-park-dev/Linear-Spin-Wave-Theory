@@ -1,0 +1,418 @@
+{
+  "scope": "Behavioral equivalence of NBCP model extraction, not physics acceptance.",
+  "baseline_example_sha256": "a74e05ab1fd0eada71a7feca872ba31eb2c4ce5911db2c9bada771880b73ee13",
+  "cases": {
+    "xxz": {
+      "Jxy": 0.076,
+      "Jz": 0.125,
+      "h": [
+        0.03,
+        -0.04,
+        0.2
+      ]
+    },
+    "nn_soc": {
+      "Jxy": 0.076,
+      "Jz": 0.125,
+      "h": [
+        0.03,
+        -0.04,
+        0.2
+      ],
+      "JPD": 0.013,
+      "JGamma": -0.021
+    },
+    "nn_nnn_soc": {
+      "Jxy": 0.076,
+      "Jz": 0.125,
+      "h": [
+        0.03,
+        -0.04,
+        0.2
+      ],
+      "JPD": 0.013,
+      "JGamma": -0.021,
+      "Kxy": 0.004,
+      "Kz": -0.005,
+      "KPD": 0.002,
+      "KGamma": -0.003
+    },
+    "dm": {
+      "Jxy": 0.076,
+      "Jz": 0.125,
+      "h": [
+        0.03,
+        -0.04,
+        0.2
+      ],
+      "Dx": 0.003,
+      "Dy": -0.004,
+      "Dz": 0.005
+    },
+    "zero_exchange": {
+      "Jxy": 0.0,
+      "Jz": 0.0,
+      "h": [
+        0.03,
+        -0.04,
+        0.2
+      ]
+    }
+  },
+  "random_seed": 7301,
+  "model_comparisons": 40,
+  "hamiltonian_kpoints": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.37,
+      -0.29
+    ],
+    [
+      -0.81,
+      0.46
+    ],
+    [
+      1.13,
+      0.67
+    ]
+  ],
+  "model_and_hamiltonian_max_difference": 0.0,
+  "searches": [
+    {
+      "config": {
+        "Jxy": 0.076,
+        "Jz": 0.125,
+        "h": [
+          0.0,
+          0.0,
+          0.2
+        ],
+        "JGamma": 0.02
+      },
+      "method": "classical",
+      "mesh_N": 3,
+      "constraints": {
+        "One MSL": [
+          null,
+          0.0
+        ],
+        "Two MSL": [
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Three MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Four MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ]
+      },
+      "best_phase": "Three MSL",
+      "best_energy": -0.071547127375763,
+      "best_classical_phase": "Three MSL",
+      "best_classical_energy": -0.06458333333195133,
+      "candidate_count": 4,
+      "before_after_max_difference": 0.0
+    },
+    {
+      "config": {
+        "Jxy": 0.076,
+        "Jz": 0.125,
+        "h": [
+          0.0,
+          0.0,
+          0.2
+        ],
+        "JGamma": 0.02
+      },
+      "method": "MAGSWT",
+      "mesh_N": 3,
+      "constraints": {
+        "One MSL": [
+          null,
+          0.0
+        ],
+        "Two MSL": [
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Three MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Four MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ]
+      },
+      "best_phase": "Three MSL",
+      "best_energy": -0.07154712737576303,
+      "best_classical_phase": "Three MSL",
+      "best_classical_energy": -0.06458333333195133,
+      "candidate_count": 4,
+      "before_after_max_difference": 0.0
+    },
+    {
+      "config": {
+        "Jxy": 0.076,
+        "Jz": 0.125,
+        "h": [
+          0.0,
+          0.0,
+          0.2
+        ],
+        "JPD": 0.01
+      },
+      "method": "classical",
+      "mesh_N": 3,
+      "constraints": {
+        "One MSL": [
+          null,
+          0.0
+        ],
+        "Two MSL": [
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Three MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Four MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ]
+      },
+      "best_phase": "Three MSL",
+      "best_energy": -0.0719997782307588,
+      "best_classical_phase": "Three MSL",
+      "best_classical_energy": -0.06458333333195133,
+      "candidate_count": 4,
+      "before_after_max_difference": 0.0
+    },
+    {
+      "config": {
+        "Jxy": 0.076,
+        "Jz": 0.125,
+        "h": [
+          0.0,
+          0.0,
+          0.2
+        ],
+        "JPD": 0.01
+      },
+      "method": "MAGSWT",
+      "mesh_N": 3,
+      "constraints": {
+        "One MSL": [
+          null,
+          0.0
+        ],
+        "Two MSL": [
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Three MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ],
+        "Four MSL": [
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0,
+          null,
+          0.0
+        ]
+      },
+      "best_phase": "Three MSL",
+      "best_energy": -0.07199977823075883,
+      "best_classical_phase": "Three MSL",
+      "best_classical_energy": -0.06458333333195133,
+      "candidate_count": 4,
+      "before_after_max_difference": 0.0
+    }
+  ],
+  "search_wall_seconds": 3.6067403329070657,
+  "inherited_from_main": {
+    "code-space/lswt/config.py": {
+      "main_sha256": "147d64c66ae4f010f70c83a1677be9191d92ce087a11b27519c95ba4ccca01a9",
+      "previous_worktree_sha256": "af118e7a11c675ad04d9a7f907d8e78b8b20a61eed804c90f149c86e153341a3"
+    },
+    "code-space/lswt/core/brillouin_zone.py": {
+      "main_sha256": "c9b61a30a1c70d42002b2505b42370ff9b7ef5c3ba85ebd18ea842c165d85ed0",
+      "previous_worktree_sha256": "325feeb2f2fb6288c4c2fa30fe84ea79941e48331c69ac51e78df66aa6a67395"
+    },
+    "code-space/lswt/observables/thermodynamics.py": {
+      "main_sha256": "da89141ce4e13d7658fe09c7c992fc52a82a15fa32aa3392f51a8553d45b5f79",
+      "previous_worktree_sha256": "5152c5bd5433ef42bcec61ece924df1af75822953b7b33cfc914417389d28a2c"
+    },
+    "code-space/lswt/observables/topology.py": {
+      "main_sha256": "c8df46a38e5ff95ec73802444ba86e3dbf75d6938cd87ab46f6af358daf30ae9",
+      "previous_worktree_sha256": "3b5f2ecc75fa6736a7cef550cf22695daa252092779815f438907274714cdbda"
+    },
+    "code-space/lswt/solvers/energy.py": {
+      "main_sha256": "9b7f5a70a75ddcbccc3bc0075c4e4262d5dfa7a0d0c21d2b5be145edb4f23c0d",
+      "previous_worktree_sha256": "39e0fd77f80993fb0b0a247154c546579234c1c2527d45e5890d7fcbb6434f6d"
+    },
+    "code-space/lswt/solvers/hamiltonian.py": {
+      "main_sha256": "97db8a081151d2501d6d19454629be50f88d5210e379c39811c5e978d3580c3d",
+      "previous_worktree_sha256": "53fbffd97de991eb4d5a4e6a1d136d0d19c4141b2d74c7734bb9bbabd54caa19"
+    },
+    "code-space/lswt/solvers/solver.py": {
+      "main_sha256": "68999b01c7bb5bfbafa29ed7fe8db969dff1110a5f13c0f78d1f3f3f3f4f524b",
+      "previous_worktree_sha256": "1b5c679fc03b3cccfd16b3a8426d31893bb5c90acad52547a8f67bdde317f438"
+    },
+    "code-space/tests/test_solvers/test_band_isolation.py": {
+      "main_sha256": "74f4c0844026042f77d04f2727a2ac1d9e7a1a7e951b0df01d11708468543afc",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_brillouin_zone_integration.py": {
+      "main_sha256": "92d390dca0ebef69ff256e5441c36e2b040589ed5f0ec7ef9f57e242e0cbbbc2",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_finite_temperature.py": {
+      "main_sha256": "30af14bad9ece1a6b7dd8d9e4315b15f18a8ab34ed60928e4147418b7136f3c1",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_hamiltonian_pairing.py": {
+      "main_sha256": "db3d485b4cc67b3a9462e361cea144430dadd15ff270bb8310936583553dcd46",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_thermal_hall_normalization.py": {
+      "main_sha256": "dd761578c5bf0309b2662ca2ebe8c3d43d3b3496c85dc46dfaefb92219dcc411",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_thermodynamic_normalization.py": {
+      "main_sha256": "8b272b11fdb570163db06ade4fcde982794beb3eb61a5d4bcf91d772ae5b65c8",
+      "previous_worktree_sha256": null
+    },
+    "code-space/tests/test_solvers/test_zero_point_energy.py": {
+      "main_sha256": "0de06b44c95c2a20c33ac2e01bacbc5e5f55999fbf7cbac786a58d693f64147f",
+      "previous_worktree_sha256": null
+    }
+  },
+  "date": "2026-09-23",
+  "baseline_git_head": "592b05a8583825c2ee1856aa86ee63d445b73720",
+  "baseline_source_checkout": "/Users/david/GitHub/Linear-Spin-Wave-Theory",
+  "baseline_note": "Seven uncommitted lswt source files and seven test_solvers files were copied from the source checkout before extraction. The source checkout was not edited.",
+  "environment": {
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pytest": "9.0.2"
+  },
+  "pytest": {
+    "command": "PYTHONPATH=code-space:. python -m pytest code-space/tests -q --tb=short",
+    "before": {
+      "passed": 198,
+      "failed": 5
+    },
+    "after": {
+      "passed": 215,
+      "failed": 5
+    },
+    "new_tests_passed": 17,
+    "unchanged_failures": [
+      "TestCommensurateStructureCreation::test_120_degree_structure",
+      "TestCommensurateStructureSpinDirections::test_120_degree_spins_in_xy_plane",
+      "TestCommensurateStructureSpinDirections::test_120_degree_total_magnetization_zero",
+      "TestCommensurateStructureOptimization::test_get_optimization_parameters",
+      "TestCommensurateStructureOptimization::test_set_optimization_parameters"
+    ],
+    "failure_file": "code-space/tests/test_core/test_magnetic_structure/test_commensurate.py",
+    "failure_reason": "Input angle counts do not match num_basis_sites * magnetic_supercell[0] * magnetic_supercell[1]."
+  },
+  "legacy_comparison": {
+    "cases": 12,
+    "classical_energy_checks": 36,
+    "fields": [
+      "sites",
+      "angles",
+      "magnetic fields",
+      "spin magnitudes",
+      "lattice vectors",
+      "coupling order",
+      "displacements",
+      "exchange matrices"
+    ],
+    "scope": "XXZ, NN SOC, and NN+NNN SOC with zero DM; excludes known archived DM rotation and quantum-Hamiltonian differences."
+  },
+  "compatibility": {
+    "research_module_imports": 9,
+    "provenance_lists_checked": 10,
+    "example_import_outside_repository": true,
+    "function_bodies_and_signatures_unchanged": 7
+  },
+  "source_sha256": {
+    "code-space/tests/test_models/test_nbcp.py": "8eea2d51a71a109cf1bd64922c98532e27643bfd49911b4264ec830fa0039e47",
+    "examples/nbcp_clock_anisotropy_audit.py": "ca2d11563198c5dea41cd5b0f5381f24abd641d504ac97b95af04737068335d8",
+    "examples/nbcp_ground_state.py": "0f1c54cf69199f51c13ea0bca155a11a88f9f4b958d9988b03f1cf256d2889e0",
+    "examples/nbcp_y_angular_matching.py": "5084202955ed8558b1080b1cbc67f958372885d341a91ca379e837c21aa9d1a6",
+    "examples/nbcp_y_density_wall.py": "f04828f09bdd8309edbce5e33c39380c6fec6f24e7b3763e994207b82e420e41",
+    "examples/nbcp_y_nonlinear_gradient.py": "33af025971738607d3e28bc02e33db3595fe18443406f669cc04a93c3af3f280",
+    "examples/nbcp_y_soc_conditions.py": "5f5d8e3ccbb6d26c06ffe38a7f2c4e77860899a3a350c2193a99d68a24dde5dc",
+    "examples/nbcp_y_stability.py": "ccba2c15ba1c7dc026da7a15829f62f7032c026af394e915e8ef0377107e4f89",
+    "examples/nbcp_y_stiffness.py": "06e392c197363a0db4808b859c7a848a88b9fb102d6b8eecc6d37aa5c7970abc",
+    "examples/pseudo_goldstone_comparison.py": "5232171aa532944878126e4122938579777d2d04243b0bf41c3d7dcee54e1574",
+    "examples/pseudo_goldstone_conjugate_mode.py": "1075bfbb747bb1dece2a2b228273839300e008529643ef65a00db97e9dd783e3",
+    "model/__init__.py": "8f503f6b15f1a7440342be06a1f2d714bb63546babdc0acf5013278124a0f0d9",
+    "model/nbcp/__init__.py": "047f609a9d4412d292c9be45a40a427c55c270155df25a761e77e7c19502fc9b",
+    "model/nbcp/exchange.py": "fdb21ea369052479f93aca1eadf6d08cb73449511a3264dff67d7f84bd824cba",
+    "model/nbcp/unit_cells.py": "1e2c0e068dbe5bb27f8e2eebfa03a9395bae495f83a71acd085648a8815199cd"
+  },
+  "limitations": [
+    "Search comparison uses N=3 and the explicit polar-angle constraints recorded above; it is not a mesh-convergence or global-ground-state validation.",
+    "The classical optimizer behavior, including its one quantum-energy evaluation, remains unchanged.",
+    "Further architecture migration and physics acceptance remain separate stages."
+  ]
+}

@@ -13,7 +13,7 @@ from types import SimpleNamespace
 import numpy as np
 from scipy.integrate import quad
 
-from lswt.core.diagonalization import Diagonalizer
+from lswt.methods.spin_wave.diagonalization import Diagonalizer
 from lswt.observables.thermodynamics import Thermodynamics
 from lswt.observables.topology import Topology
 

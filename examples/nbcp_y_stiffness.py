@@ -21,8 +21,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import root
 
-from examples.nbcp_ground_state import make_nn_exchange_matrices, three_msl
-from lswt.solvers.hamiltonian import LSWTHamiltonian
+from model.nbcp import make_nn_exchange_matrices, three_msl
+from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
 
 OUT = ROOT / 'data-space/verification/260917-y-stiffness'
 S, J, JZ = .5, .075, .125
@@ -208,7 +208,10 @@ def main():
                         'samples': samples})
     assert max_spectrum_error < 1e-10
     inputs = [Path(__file__), ROOT/'examples/nbcp_y_stiffness.wl',
-              ROOT/'examples/nbcp_ground_state.py', ROOT/'code-space/lswt/solvers/hamiltonian.py']
+              ROOT/'examples/nbcp_ground_state.py',
+              ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+              ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
+              ROOT/'code-space/lswt/methods/spin_wave/hamiltonian.py']
     report = {'scope': 'T=0 classical zero-SOC Y stiffness and harmonic dynamics only; no renormalized thermal stiffness',
               'parameters': {'S': S, 'J_meV': J, 'Jz_meV': JZ, 'gz': GZ, 'muB_meV_per_T': MU_B,
                              'a': 1., 'area_per_spin_a_squared': AREA},

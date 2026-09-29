@@ -53,7 +53,7 @@ class SpinSystem:
     --------
     >>> import numpy as np
     >>> from lswt import SpinSystem
-    >>> from lswt.core import exchange
+    >>> from lswt.system import exchange
     >>>
     >>> # Builder pattern
     >>> system = SpinSystem(lattice_vectors=[[1.0, 0.0], [0.5, np.sqrt(3)/2]])

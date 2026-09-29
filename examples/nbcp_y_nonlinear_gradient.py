@@ -238,7 +238,9 @@ def main():
         'validation': validation, 'minimum_checks': multistart, 'cases': cases, 'wall_seconds': time.monotonic()-start,
         'peak_RSS_MiB': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024**2,
         'inputs_sha256': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in
-            [Path(__file__), ROOT/'examples/nbcp_y_soc_conditions.py', ROOT/'examples/nbcp_y_stiffness.py', ROOT/'examples/nbcp_ground_state.py']},
+            [Path(__file__), ROOT/'examples/nbcp_y_soc_conditions.py', ROOT/'examples/nbcp_y_stiffness.py', ROOT/'examples/nbcp_ground_state.py',
+            ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
+            ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py']},
         'limitations': ['Local constrained minima in a regular Y chart, not a proof of the global constrained minimum.',
             'The cell phase and physical-site phase differ at finite q; the finite-q harmonic comparison uses the identical cell constraint.',
             'No density walls, vortex cores, quantum stiffness corrections, thermal coefficients or RG trajectory.']}

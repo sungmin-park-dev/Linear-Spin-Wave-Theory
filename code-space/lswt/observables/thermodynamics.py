@@ -15,10 +15,14 @@ from lswt.observables.bose_statistics import (
     compute_bose_einstein_distribution,
     compute_static_magnon_kernel,
 )
-from lswt.observables.topology import compute_berry_curvature, c_two_function
-from lswt.config import (
-    K_BOLTZMANN_MEV, H_BAR_MEV,
-    DEFAULT_INVALID_EXCLUDE, DEFAULT_TEMPERATURE,
+from lswt.observables.topology import (
+    compute_berry_curvature, c_two_function,
+    _magnetic_cell_area, _thermal_hall_conductivity, _validate_thermal_hall_inputs,
+    _matches_integration_grid, _validate_band_gap_cutoff,
+)
+from lswt.definitions import (
+    K_BOLTZMANN_MEV,
+    DEFAULT_INVALID_EXCLUDE, DEFAULT_TEMPERATURE, DEFAULT_BAND_GAP_CUTOFF,
 )
 
 
@@ -95,7 +99,7 @@ class Thermodynamics:
     def compute_internal_energy(self, k_data,
                                 Temperature=DEFAULT_TEMPERATURE,
                                 invalid_exclude=DEFAULT_INVALID_EXCLUDE):
-        """Compute the quantum contribution of internal energy per unit cell.
+        """Compute the quantum contribution of internal energy per spin.
 
         Parameters
         ----------
@@ -109,7 +113,8 @@ class Thermodynamics:
         Returns
         -------
         float
-            Internal energy per site, or np.nan if no valid k-points.
+            Zero-point plus thermal energy in meV per spin, excluding the
+            classical energy. Returns np.nan if no valid k-points remain.
         """
         num_sl = self.Ns if self.Ns is not None else self._infer_Ns_from_k_data(k_data)
         iter_count = len(k_data)
@@ -216,7 +221,7 @@ class Thermodynamics:
         return average_sublat_boson_numbers, average_total_boson_numbers
 
     def compute_entropy_density(self, k_data, T, invalid_exclude=True):
-        """Compute entropy density.
+        """Compute entropy per spin.
 
         Parameters
         ----------
@@ -230,7 +235,7 @@ class Thermodynamics:
         Returns
         -------
         float
-            Entropy density in meV/K.
+            Entropy in meV/(K spin), or np.nan if no valid k-points at T>0.
 
         Raises
         ------
@@ -259,12 +264,12 @@ class Thermodynamics:
 
             if valid_count == 0:
                 return np.nan
-            return K_BOLTZMANN_MEV * entropy / valid_count
+            return K_BOLTZMANN_MEV * entropy / (valid_count * num_sl)
         else:
             raise ValueError("T is temperature. T should be positive number")
 
     def compute_specific_heat(self, k_data, T, invalid_exclude=True, exclude_gamma=True):
-        """Compute specific heat.
+        """Compute specific heat per spin for a temperature-independent Hamiltonian.
 
         Parameters
         ----------
@@ -275,12 +280,13 @@ class Thermodynamics:
         invalid_exclude : bool, optional
             Whether to exclude invalid k-points (default: True).
         exclude_gamma : bool, optional
-            Whether to exclude the gamma point (default: True).
+            Unused compatibility argument (default: True). No Gamma-point
+            exclusion is currently performed.
 
         Returns
         -------
         float
-            Specific heat in meV/K.
+            Specific heat in meV/(K spin), or np.nan if no valid k-points at T>0.
 
         Raises
         ------
@@ -310,7 +316,7 @@ class Thermodynamics:
 
             if valid_count == 0:
                 return np.nan
-            return K_BOLTZMANN_MEV * Cv / valid_count
+            return K_BOLTZMANN_MEV * Cv / (valid_count * num_sl)
         else:
             raise ValueError("T is temperature. T should be positive number")
 
@@ -435,29 +441,57 @@ class Thermodynamics:
     def compute_thermodynamic_quantities_at_T(self,
                                               k_data,
                                               Temperature=DEFAULT_TEMPERATURE,
-                                              invalid_exclude=DEFAULT_INVALID_EXCLUDE):
+                                              invalid_exclude=DEFAULT_INVALID_EXCLUDE,
+                                              *, layer_spacing_m=None,
+                                              band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
         """Compute all thermodynamic quantities at a given temperature in a single pass.
 
         Parameters
         ----------
         k_data : dict
             Dictionary containing k-point data with eigenvalues and eigenvectors.
+            Hall integration requires equal-weight full magnetic BZ samples
+            and Cartesian derivatives in the reciprocal units of the magnetic
+            lattice vectors. Uniform repeated coverage is allowed. Band paths,
+            partial and nonuniform grids are unsupported; the caller must
+            verify coverage and nondegenerate band curvature. With a solver
+            parent, keys differing from its last full grid make Hall NaN.
         Temperature : float, optional
             Temperature in Kelvin (default: 0).
         invalid_exclude : bool, optional
             Whether to exclude k-points where Colpa's method fails (default: True).
+            Applies to the other observables. Hall is NaN if any sample fails,
+            regardless of this flag; the remaining points are not reweighted.
+        layer_spacing_m : float or None, optional
+            Positive spacing of independent equivalent layers in metres.
+            Divide the layer response by this spacing to obtain 3D kappa_xy.
+        band_gap_cutoff : float, optional
+            Numerical minimum signed band separation in meV (default: 1e-8).
+            Passed to compute_berry_curvature; finite and non-negative.
+            This calculation policy affects only the Hall result.
 
         Returns
         -------
         dict
             Dictionary containing:
-            - 'Sublattice Boson Numbers': Average boson numbers for each sublattice
-            - 'Total Boson Number': Average total boson number
-            - 'Internal Energy Density': Internal energy per unit cell
-            - 'Entropy Density': Entropy density
-            - 'Specific Heat Density': Specific heat
-            - 'Thermal Hall Conductance': Thermal Hall conductance
+            - 'Sublattice Boson Numbers': Occupation per site of each sublattice,
+              averaged over valid k-points (no division by sublattice count)
+            - 'Total Boson Number': Mean occupation per spin, not an extensive sum
+            - 'Internal Energy Density': Quantum energy in meV per spin,
+              excluding classical energy
+            - 'Entropy Density': Entropy in meV/(K spin)
+            - 'Specific Heat Density': Specific heat in meV/(K spin)
+            - 'Thermal Hall Conductance': Kappa_xy per layer in W/K, or
+              W/(m K) with layer_spacing_m. NaN if the parent has no magnetic
+              lattice vectors or any sample/derivative is unavailable, or any
+              band is excluded by band_gap_cutoff. This method reports NaN
+              also at T=0 in that case.
+              The key is retained for compatibility; the value is kappa,
+              not kappa/T, and has no micro prefix.
         """
+        _validate_thermal_hall_inputs(Temperature, layer_spacing_m)
+        _validate_band_gap_cutoff(band_gap_cutoff)
+        cell_area = _magnetic_cell_area(self.lswt_obj)
         num_sl = self.Ns if self.Ns is not None else self._infer_Ns_from_k_data(k_data)
 
         valid_count = len(k_data)
@@ -467,14 +501,17 @@ class Thermodynamics:
         internal_energy = 0
         entropy = 0
         specific_heat = 0
-        thermal_hall = 0
-        J_mat = np.diag(np.hstack([np.ones((self.Ns)), -np.ones((self.Ns))]))
+        thermal_hall = 0 if _matches_integration_grid(self.lswt_obj, k_data) else np.nan
+        J_mat = np.diag(np.hstack([np.ones(num_sl), -np.ones(num_sl)]))
 
         beta = 1 / (K_BOLTZMANN_MEV * Temperature) if Temperature > 0 else 0
 
         for k_key, contents in k_data.items():
             Ham_k_data, Eigen_data, Colpa_data, *_ = contents
             colpa_success = Colpa_data[0]
+
+            if not colpa_success or len(Ham_k_data[1:]) != 2:
+                thermal_hall = np.nan
 
             if not colpa_success and invalid_exclude:
                 valid_count -= self._handle_colpa_failure(kpt=k_key)
@@ -502,16 +539,19 @@ class Thermodynamics:
                     # 4. Specific heat
                     specific_heat += self.specific_heat_function_at_k(Epk=Epk, beta=beta)
 
-                    # 5. Thermal Hall conductance
+                # 5. Apply the same band-isolation contract at every T,
+                # including T=0, as the dedicated topology path.
+                if np.isfinite(cell_area) and np.isfinite(thermal_hall):
                     Omega_nk, _ = compute_berry_curvature(
                         eval=eval,
                         evec=evec,
                         pDiffHk=pDHk,
-                        num_sl=self.Ns,
+                        num_sl=num_sl,
                         J_mat=J_mat,
+                        band_gap_cutoff=band_gap_cutoff,
                     )
-
-                    thermal_hall += np.sum(Omega_nk * c_two_function(nk))
+                    weights = c_two_function(nk) if Temperature > 0 else np.zeros(num_sl)
+                    thermal_hall += np.sum(Omega_nk * weights)
 
                 # 6. Boson numbers
                 sl_boson_nums, total_boson_num = compute_bosonic_number_at_k(
@@ -530,19 +570,18 @@ class Thermodynamics:
                 'Thermal Hall Conductance': np.nan,
             }
         else:
-            number_of_lattices = valid_count * num_sl
+            # Site occupations are already resolved by sublattice, and each
+            # total_boson_num is already averaged over sublattices at that k.
+            sublattice_boson_numbers /= valid_count
+            total_boson_number /= valid_count
+            spin_sample_count = valid_count * num_sl
+            internal_energy /= spin_sample_count
+            entropy /= spin_sample_count
+            specific_heat /= spin_sample_count
 
-            sublattice_boson_numbers /= number_of_lattices
-            total_boson_number /= number_of_lattices
-            internal_energy /= number_of_lattices
-            entropy /= number_of_lattices
-            specific_heat /= number_of_lattices
-
-            real_space_volume = valid_count * np.sqrt(3) / 2
-            coefficiten_thc = (K_BOLTZMANN_MEV ** 2) / (H_BAR_MEV * real_space_volume)
-            coefficiten_thc *= 1.602176634 * 1e-12  # from meV, Angstrom to W/(m*K)
-
-            thermal_hall_conductance = -coefficiten_thc * thermal_hall
+            thermal_hall_conductance = _thermal_hall_conductivity(
+                thermal_hall, Temperature, len(k_data), cell_area, layer_spacing_m
+            )
 
             if Temperature > 0:
                 entropy *= K_BOLTZMANN_MEV
@@ -559,7 +598,8 @@ class Thermodynamics:
 
     def get_thermodynamic_quantities(self, k_data,
                                      Temperature_range=(0, 1, 0.02),
-                                     N=30):
+                                     N=30, *, layer_spacing_m=None,
+                                     band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
         """Compute thermodynamic quantities over a temperature range.
 
         Parameters
@@ -570,14 +610,24 @@ class Thermodynamics:
             (T_start, T_end, T_step) in Kelvin (default: (0, 1, 0.02)).
         N : int, optional
             Unused parameter kept for compatibility (default: 30).
+        layer_spacing_m : float or None, optional
+            Positive layer spacing in metres. Hall values are W/K per layer
+            by default, or W/(m K) when this spacing is supplied.
+        band_gap_cutoff : float, optional
+            Numerical minimum signed band separation in meV (default: 1e-8).
+            The same cutoff is used for every temperature.
 
         Returns
         -------
         Temperature_values : np.ndarray
             Array of temperature values.
         results : dict
-            Dictionary of thermodynamic quantities vs temperature.
+            Same normalization as ``compute_thermodynamic_quantities_at_T``.
+            Sublattice occupations have shape (num_sl, num_temperatures);
+            scalar observables have shape (num_temperatures,).
         """
+        _validate_thermal_hall_inputs(0, layer_spacing_m)
+        _validate_band_gap_cutoff(band_gap_cutoff)
         T_start, T_end, T_step = Temperature_range
         T_end += T_step / 2
 
@@ -585,7 +635,8 @@ class Thermodynamics:
 
         num_T = len(Temperature_values)
 
-        sublattice_boson_numbers = np.empty((self.Ns, num_T))
+        num_sl = self.Ns if self.Ns is not None else self._infer_Ns_from_k_data(k_data)
+        sublattice_boson_numbers = np.empty((num_sl, num_T))
         total_boson_number = np.empty(num_T)
         internal_energy = np.empty(num_T)
         entropy = np.empty(num_T)
@@ -594,7 +645,8 @@ class Thermodynamics:
 
         for j, T in enumerate(tqdm(Temperature_values, desc="Calculating thermodynamics")):
             result_T = self.compute_thermodynamic_quantities_at_T(
-                k_data=k_data, Temperature=T
+                k_data=k_data, Temperature=T, layer_spacing_m=layer_spacing_m,
+                band_gap_cutoff=band_gap_cutoff,
             )
 
             sublattice_boson_numbers[:, j] = result_T['Sublattice Boson Numbers']
