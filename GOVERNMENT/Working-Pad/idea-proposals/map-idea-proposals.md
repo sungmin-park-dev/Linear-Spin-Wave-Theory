@@ -4,9 +4,9 @@ template-version: 1
 title: Map - idea-proposals
 section: idea-proposals
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-30
+updated: 2026-09-29
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -29,6 +29,8 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 | [[GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy\|2026-05-30-project-knowledge-philosophy]] | Project Knowledge Philosophy - 프로젝트 정의 및 지식 관리 체계 | draft |
 | [[GOVERNMENT/Working-Pad/idea-proposals/260603-general-2d-spin-tool-migration-note\|260603-general-2d-spin-tool-migration-note]] | 범용 2D 스핀 시스템 도구 전환 노트 | draft |
 | [[GOVERNMENT/Working-Pad/idea-proposals/2026-06-04-general-spin-model-ir\|2026-06-04-general-spin-model-ir]] | General SpinModel IR | draft |
+| [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract\|2026-09-23-spin-model-transfer-contract]] | 모델 간 공통 SpinModel 전달 규약 — 모델·항·상태·요청·결과, 결정 목록, 코드 대응 | in-review |
+| [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-29-toolkit-first-development-plan\|2026-09-29-toolkit-first-development-plan]] | 2D Spin-System Toolkit 1차 개발 계획 — 범위·패키지·벤치마크·구현 단계 | in-review |
 
 ## 에이전트 지침
 

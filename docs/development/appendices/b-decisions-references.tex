@@ -50,6 +50,30 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
+  \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{0.4cm}YP{4.9cm}@{}}
+    \toprule
+    & 결정 & 근거 \\
+    \midrule
+    1 & \texttt{zeeman} 항은 선택 사항이다. 항이 없는 사이트는 장과 결합하지 않는다.
+      $B\neq0$인데 항이 없는 사이트가 있으면 경고하고 결과에 기록한다.
+      & 영행렬 항을 강제하면 모델 작성 부담만 늘고, 계산 비용 차이는 대각화에 비해 무시할 수 있다. \\
+    2 & $H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
+      & Einstein 합 규약에서 자연스럽고, 비대칭 $g$의 전치 모호성을 없앤다. \\
+    3 & 에너지 단위가 \texttt{relative}인 모델은 $\mu_B=1$로 두고 $B$를 에너지 단위 값으로 해석한다.
+      & 상대 단위 모델에서 환산 근거를 추정하지 않는다. \\
+    4 & 상태 검증(사이트 대응, 단위 벡터, 초격자 유효성, 계산계 정합, 주기 최소성)과
+      기준 상태 진단(정상성, 안정성)을 나눈다. 방향은 단위 벡터로 저장한다.
+      & 정상성·안정성은 모델과 $B$에 따라 달라진다. 접힌 밴드는 Chern 수를 모호하게 한다.
+      각도 표현은 극점에서 $\phi$가 정의되지 않는다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \slidesource{2026-09-29 세부 규칙 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=record-management]{설계 문서와 부록을 갱신하는 방법}
   \framesubtitle{변경 내용, 근거, 판정, 다음 작업을 함께 남긴다.}
   \begin{columns}[T,onlytextwidth]
@@ -88,6 +112,9 @@
     \bibitem{contract}
       모델 간 공통 SpinModel 전달 규약, 2026-09-23 작성 · 2026-09-29 갱신.
       \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review.
+    \bibitem{plan}
+      2D Spin-System Toolkit 1차 개발 계획, 2026-09-29.
+      \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review · 범위·패키지·벤치마크·단계.
     \bibitem{extraction}
       NBCP 모델 추출 검증 기록, 2026-09-23.
       \newblock \texttt{model/nbcp/verification/} · 모델·해밀토니안·탐색·pytest 기록.

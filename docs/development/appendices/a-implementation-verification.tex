@@ -98,66 +98,29 @@
   \slidesource{격리한 준비 공간에서 검증한 폴더 이행 기록}{layout}
 \end{frame}
 
-\begin{frame}[label=displacement-issue]{결합 변위의 방향: 2026-09-23 기하 검사}
-  \framesubtitle{NBCP Three MSL에서 설명과 기하 해석의 차이가 드러난다. 해석은 다음 쪽에서 정한다.}
-  \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.48\textwidth}
-      \begin{block}{확인한 사실}
-        \texttt{SpinSystem} 설명: source $\to$ target\\[0.6em]
-        Three MSL의 실제 NN 배치:
-        \[
-          r_{\mathrm{target}}=r_{\mathrm{source}}-d_{\mathrm{stored}}
-        \]
-        일 때 정수 셀 위치에 연결된다.
-      \end{block}
-      \smallskip
-      \begin{tabular}{@{}lr@{}}
-        \toprule
-        해석 & 최대 정수 셀 잔차 \\
-        \midrule
-        $r_i+d-r_j$ & $0.3333333$ \\
-        $r_i-d-r_j$ & $1.49\times10^{-16}$ \\
-        \bottomrule
-      \end{tabular}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{공통 형식으로 연결할 때}
-        \begin{enumerate}
-          \item 셀 이동과 endpoint를 명시한다.
-          \item $J$의 방향·전치 여부를 함께 확인한다.
-          \item 기존 Fourier 위상과 대응시킨다.
-          \item 에너지·행렬 계수·$k,-k$를 검증한다.
-        \end{enumerate}
-      \end{block}
-      \smallskip
-      \supportingtext{다른 후보 셀에서는 양쪽 해석이 모두 정수 셀에 놓일 수 있다.
-      기하 검사만으로 부호를 자동 결정하지 않는다.}
-    \end{column}
-  \end{columns}
-  \slidesource{현재 코드 재검사와 geometry\_audit; 해석은 다음 쪽}{contract,geometry}
-\end{frame}
-
 \begin{frame}[label=displacement-resolution]{결합 변위의 방향: 해석과 변환 규칙}
-  \framesubtitle{2026-09-29 재검사 · 채택한 Fourier 규약에서 기존 코드는 $d=r_{\mathrm{source}}-r_{\mathrm{target}}$로 일관된다.}
+  \framesubtitle{D13 · 채택한 Fourier 규약에서 기존 코드는 $d=r_{\mathrm{source}}-r_{\mathrm{target}}$로 일관된다.}
   \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.52\textwidth}
+    \begin{column}{0.54\textwidth}
       \small
-      \begin{tabular}{@{}lcc@{}}
+      \begin{tabular}{@{}lccc@{}}
         \toprule
-        후보 셀 & $r_t=r_s-d$ & $r_t=r_s+d$ \\
+        후보 셀 & NN 잔차 $+d$ / $-d$ & $r_t=r_s-d$ & $r_t=r_s+d$ \\
         \midrule
-        One MSL & 6/6 & 6/6 \\
-        Two MSL & 12/12 & 12/12 \\
-        Three MSL & 18/18 & 9/18, 격자 밖 9 \\
-        Four MSL & 24/24 & 24/24 \\
+        One & $10^{-16}$ / $10^{-16}$ & 6/6 & 6/6 \\
+        Two & 0 / 0 & 12/12 & 12/12 \\
+        Three & 0.3333333 / $10^{-16}$ & 18/18 & 9/18 \\
+        Four & $10^{-16}$ / $10^{-16}$ & 24/24 & 24/24 \\
         \bottomrule
       \end{tabular}\\[0.4em]
-      \supportingtext{NN·NNN 물리 결합을 중복 없이 한 번씩 덮는 수. One·Two·Four MSL은 두 해석의 결합 집합이 같다.}
+      \supportingtext{잔차: 2026-09-23, 가장 가까운 정수 셀까지의 최대 차이.
+      포함 수: 2026-09-29, NN·NNN 물리 결합을 한 번씩 덮는 수. Three MSL의 $+d$ 해석은 9개가 격자 밖이다.}
     \end{column}
-    \begin{column}{0.44\textwidth}
+    \begin{column}{0.42\textwidth}
       \begin{block}{판단}
-        코드 위상 $e^{-\mathrm i\mathbf k\cdot d}$가 규약의 $e^{+\mathrm i\mathbf k\cdot\symbf\Delta}$와
-        같으려면 $\symbf\Delta=-d$이다. 틀린 것은 \texttt{Coupling}의 ``source$\to$target'' 설명이다.
+        \texttt{SpinSystem} 설명은 source$\to$target이다. 코드 위상 $e^{-\mathrm i\mathbf k\cdot d}$가
+        규약의 $e^{+\mathrm i\mathbf k\cdot\symbf\Delta}$와 같으려면 $\symbf\Delta=-d$이다.
+        틀린 것은 설명이다.
       \end{block}
       \begin{block}{변환 규칙}
         $n=(r_s-d-r_t)A^{-1}$을 정수로 확인해 \texttt{cell\_offset}에 쓰고, $J$와 source·target은 유지한다.
@@ -167,7 +130,7 @@
   \par\smallskip
   \supportingtext{NBCP의 DM 항은 호출자가 설정하지 않아 0이므로 $J$는 대칭이다.
   2단계에서 변환 전후 $\mathsf H(\mathbf k)$의 원소 단위 일치로 수치 확정한다.}
-  \slidesource{현재 코드 재검사; 2026-09-29 Fourier 규약 결정}{contract,geometry}
+  \slidesource{현재 코드 재검사와 geometry\_audit; 2026-09-29 Fourier 규약 결정}{contract,geometry}
 \end{frame}
 
 \begin{frame}[label=next-steps]{이행 단계별 확인 조건}
@@ -208,7 +171,7 @@
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석, 상태·요청·결과의 공통 구조, 벤치마크 위치는 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15)는 2026-09-29 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}
