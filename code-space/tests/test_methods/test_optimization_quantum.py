@@ -88,3 +88,20 @@ def test_quantum_keeps_classical_result_at_de_optimum():
 
     assert_allclose(cef.classical_energy_density_func(classical["angles"]),
                     classical["E_cl"], rtol=0, atol=1e-10)
+
+
+@pytest.mark.parametrize("method", ["classical", "quantum"])
+def test_angle_setting_none_matches_all_free_list(method):
+    """angle_setting=None means all angles free, as the docstring states."""
+    cef = _energy_function()
+    optimizer = SpinOptimizer()
+    results = []
+    for angle_setting in (None, [None, None]):
+        np.random.seed(0)
+        results.append(optimizer.find_minimum(cef, method, angle_setting))
+
+    (best_none, classical_none), (best_list, classical_list) = results
+    assert best_none["method"] == best_list["method"]
+    assert_allclose(best_none["angles"], best_list["angles"])
+    assert_allclose(best_none["energy"], best_list["energy"])
+    assert_allclose(classical_none["angles"], classical_list["angles"])

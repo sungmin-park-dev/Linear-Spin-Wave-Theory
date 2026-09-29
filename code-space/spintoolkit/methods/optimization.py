@@ -497,13 +497,16 @@ class SpinOptimizer:
             Reduced angle array (free variables only).
         angle_setting : list or None
             Full angle constraint list. None entries correspond to free
-            variables; numeric entries are fixed.
+            variables; numeric entries are fixed. None means all angles
+            are free.
 
         Returns
         -------
         full_angles : np.ndarray
             Full angle array with fixed values restored.
         """
+        if angle_setting is None:
+            return np.array(angles, dtype=float)
         full_angles = []
         opt_idx = 0
         for angle in angle_setting:
