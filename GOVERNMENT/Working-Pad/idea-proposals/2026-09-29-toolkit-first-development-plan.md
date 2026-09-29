@@ -141,6 +141,15 @@ code-space/spintoolkit/
 비교한 208개 값(40건의 `H(k)`·고전 에너지와 16개 탐색 결과)의 최대 차이는 0이었다.
 기록은 `docs/development/verification/package-rename-2026-09-29.json`에 있다.
 
+1단계는 2026-09-29 완료했다. `SpinModel`·`SpinState`·`ExternalConditions`·
+`CalculationGeometry`와 검증, 고전 에너지·국소장·토크 계산(`methods/classical.py`),
+벤치마크 해밀토니안과 해석적 기준 스핀 배열(`models/heisenberg.py`)을 추가했다. 같은
+고전 에너지 함수가 모델명 분기 없이 사각 Néel `-2JS^2`, 삼각 120° `-3JS^2/2`, 편극상을
+정확히 재현하고, NBCP 기본 셀 fixture는 기존 `EnergyFunction`과 1e-15 안에서 일치했다.
+기존 테스트 225개의 결과는 그대로이고 새 테스트 53개가 통과했으며(273 통과 / 같은 5 실패),
+208개 수치 스냅샷의 차이는 0이었다. 기록은
+`docs/development/verification/stage1-common-types-2026-09-29.json`에 있다.
+
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
 
@@ -163,6 +172,7 @@ ED/TN 실행 가능성은 별도 검증이다.
   분리해 작성했다. 내용은 분리 전 규약 문서와 같다.
 - 2026-09-29 (claude): 0단계(패키지 이름 변경) 완료와 검증 결과를 기록하고, 배포 이름
   `spin-toolkit`과 `lswt` 호환 패키지의 위치를 반영했다.
+- 2026-09-29 (claude): 1단계 완료와 검증 결과를 기록했다.
 
 ## 관련 기록
 

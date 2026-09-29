@@ -12,9 +12,13 @@ Available structures:
 from .base import AbstractMagneticStructure
 from .commensurate import CommensurateStructure
 from .incommensurate import IncommensurateStructure
+from .spin_state import SpinState, SpinStateError, validate_spin_state
 
 __all__ = [
     'AbstractMagneticStructure',
     'CommensurateStructure',
     'IncommensurateStructure',
+    'SpinState',
+    'SpinStateError',
+    'validate_spin_state',
 ]

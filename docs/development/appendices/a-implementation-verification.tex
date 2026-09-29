@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 기능별 파일 배치, 패키지 이름 변경(0단계) & 공통 형식에 연결 \\
-    \textbf{미구현} & 공통 \texttt{SpinModel}·\texttt{terms} API, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 1단계부터 진행 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 기능별 파일 배치, 이름 변경(0단계), 공통 자료형(1단계) & NBCP 연결 \\
+    \textbf{미구현} & 결과 머리부, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 2단계부터 진행 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -116,6 +116,68 @@
   \slidesource{패키지 이름 변경 검증 기록}{rename}
 \end{frame}
 
+\begin{frame}[fragile,label=stage1-api]{1단계: 공통 자료형의 사용 예}
+  \framesubtitle{2026-09-29 · 모델은 해밀토니안, 상태·외부 조건·계산격자 조건은 별도 객체다(D16).}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.56\textwidth}
+\begin{semiverbatim}\scriptsize
+import spintoolkit as stk
+from spintoolkit.methods.classical import (
+    classical_energy, torques)
+
+model = stk.models.triangular_heisenberg(J=1.0, S=0.5)
+state = stk.models.state_120(model)
+cond  = stk.ExternalConditions(B=(0, 0, 0.0))
+geom  = stk.CalculationGeometry.finite_torus(
+            [[3, 0], [0, 3]])
+
+stk.validate_spin_state(state, model, geom)
+classical_energy(model, state, cond)  # -0.375
+\end{semiverbatim}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        파일 & 내용 \\
+        \midrule
+        \texttt{system/model.py} & \texttt{SpinModel}, 검증 \\
+        \texttt{system/conditions.py} & $B$, $T$, 단위 \\
+        \texttt{system/geometry.py} & 계산격자 조건 \\
+        \texttt{states/spin\_state.py} & \texttt{SpinState} \\
+        \texttt{methods/classical.py} & 에너지·토크 \\
+        \texttt{models/heisenberg.py} & 벤치마크 \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{벤치마크 해밀토니안 생성 함수(\texttt{square\_heisenberg} 등)는 \texttt{SpinModel}을,
+  기준 스핀 배열 생성 함수(\texttt{polarized\_state}, \texttt{neel\_state}, \texttt{state\_120})는
+  해석적으로 알려진 \texttt{SpinState}를 만든다. 배열이 바닥상태인지는 조건에 따라 다르다.}
+  \slidesource{1단계 구현 기록}{stage1}
+\end{frame}
+
+\begin{frame}[label=stage1-verification]{1단계: 검증 결과}
+  \framesubtitle{같은 고전 에너지 함수가 모델명 분기 없이 세 모델을 읽는다. 기존 계산 코드는 바꾸지 않았다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{3.6cm}p{3.3cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 확인 범위 \\
+    \midrule
+    정확한 고전 에너지 & 일치, 토크 0 & 사각 Néel $-2JS^2$, 삼각 120° $-\tfrac32JS^2$, 편극상 $zJS^2-hS$ \\
+    국소장 & 수치 미분과 일치 & DM·비등방 $g$·비대각 초격자의 두 사이트 모델 \\
+    NBCP 교차 확인 & 차이 $<10^{-15}$ & 기본 셀 fixture 대 기존 \texttt{EnergyFunction} One MSL; $\mu_B$ 환산, D13 변위 해석 \\
+    규약 검증 사례 & 새 테스트 53개 통과 & 단위·중복·kind·endpoint·분수 셀·배열 보호·초격자·토러스 정합·주기 최소성 \\
+    기존 테스트 & 225개 결과 불변 & 273 통과 / 같은 5 실패 \\
+    수치 스냅샷 & 208개 값, 차이 0 & 0단계와 같은 대조 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{후속: LSWT와 \texttt{SpinModel}의 연결(2단계), 결과 머리부·JSON 직렬화(4단계), 유한 토러스 항 전개(3단계).}
+  \slidesource{1단계 검증 기록}{stage1}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -139,7 +201,7 @@
   전체 테스트 225 통과 / 같은 5 실패(변경 전 220 / 5). 새 테스트 5건은 수정 전 모두 실패했다.
   수치 snapshot 208개 값은 차이 0이다. snapshot은 \texttt{quantum} 경로를 쓰지 않으므로 이 경로는 새 테스트로 확인했다.
   \par\medskip
-  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D16으로 바꾼다(부록 B).}
+  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D17으로 바꾼다(부록 B).}
   \slidesource{상태 선택 검증 기록}{selection}
 \end{frame}
 
@@ -186,7 +248,7 @@
     단계 & 작업 & 통과 조건 \\
     \midrule
     0 & 이름 변경(완료) & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
-    1 & 자료형·검증 & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
+    1 & 자료형·검증(완료) & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
     2 & NBCP 연결 & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
     4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
@@ -214,13 +276,13 @@
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
-    D16 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 단계 배치, \texttt{angle\_setting=None} & D16 구현 전 \\
-    D16 판정: 영공간 판정 기준, mesh 오차보다 작은 $E_{\mathrm{qm}}$ 변동의 처리 & D16 구현 시 \\
-    D16 확장: 사이트별 회전축(숨은 U(1)), 여러 차원의 영공간 & 필요 시 \\
+    D17 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 단계 배치, \texttt{angle\_setting=None} & D17 구현 전 \\
+    D17 판정: 영공간 판정 기준, mesh 오차보다 작은 $E_{\mathrm{qm}}$ 변동의 처리 & D17 구현 시 \\
+    D17 확장: 사이트별 회전축(숨은 U(1)), 여러 차원의 영공간 & 필요 시 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D16)은 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)은 2026-09-29 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

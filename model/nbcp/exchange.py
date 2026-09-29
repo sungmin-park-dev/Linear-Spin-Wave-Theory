@@ -1,7 +1,7 @@
 """NBCP bond exchange matrices assembled from model parameters.
 
 Parameters use the same energy unit as the caller's SpinSystem. This module
-selects NBCP bond angles; the general exchange formulas live in lswt.system.
+selects NBCP bond angles; the general exchange formulas live in spintoolkit.system.
 """
 
 import numpy as np

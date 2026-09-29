@@ -6,11 +6,17 @@
 | 위치 | 담당 기능 |
 | --- | --- |
 | `system/` | `SpinSystem`, 교환행렬, 실공간 격자와 Brillouin zone 기하 |
+| `system/model.py` | 공통 모델 `SpinModel`(`Site`, `Term`, `Units`)과 전달 규약 검증, `fingerprint` |
+| `system/conditions.py` | 외부 조건 `ExternalConditions`: 장 B와 온도 T, 단위 환산 |
+| `system/geometry.py` | 계산격자 조건 `CalculationGeometry`: 열역학 극한 또는 유한 토러스 |
 | `states/` | 정합·비정합 자기구조의 표현. 비정합 구현은 기존 stub 상태 |
+| `states/spin_state.py` | 고전 스핀 배열 `SpinState`: 정수 초격자와 (사이트, 셀)별 단위 벡터, 상태 검증 |
 | `methods/base.py` | `AbstractSolver`와 `SolverResult` 공통 인터페이스 |
 | `methods/optimization.py` | 고전·양자 에너지 함수를 사용하는 스핀상태 최적화 |
+| `methods/classical.py` | `SpinModel`의 항만 읽는 고전 에너지·국소장·토크 |
 | `methods/lswt/` | LSWT 솔버, 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`) |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
+| `models/` | 표준 벤치마크 해밀토니안(사각·삼각격자 하이젠버그)과 해석적 기준 스핀 배열 |
 | `observables/` | 보스 통계, 열역학, 위상, 상관함수 |
 | `visualization/` | 스핀 배열과 계산 결과 표시 |
 
@@ -24,7 +30,11 @@
 
 ## 현재 경계와 다음 단계
 
-이번 정리는 파일 소유 위치와 import 경로의 이행이다. 기존 `SpinSystem`에는
+1단계(2026-09-29)에서 공통 모델 `SpinModel`, 상태 `SpinState`, 외부 조건,
+계산격자 조건과 이를 읽는 고전 에너지 계산을 추가했다. LSWT는 아직 기존
+`SpinSystem`을 입력으로 받으며, 두 형식의 연결은 2단계다.
+
+2026-09-23 정리는 파일 소유 위치와 import 경로의 이행이다. 기존 `SpinSystem`에는
 여전히 스핀 방향이 들어 있고, `EnergyFunction`은 고전 항과 스핀파 보정을
 함께 평가한다. 이를 새로운 공통 `SpinModel` 규약으로 분리하는 작업은 아직
 수행하지 않았다. 현재 관측량 구현도 LSWT 결과 형식에 의존한다.

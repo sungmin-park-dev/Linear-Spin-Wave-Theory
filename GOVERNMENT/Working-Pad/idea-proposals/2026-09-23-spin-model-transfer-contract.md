@@ -27,8 +27,22 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 소유한다. 1차 개발 범위, 패키지 배치, 벤치마크, 구현 단계는
 [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-29-toolkit-first-development-plan|1차 개발 계획]]이
 소유한다. 사용자가 결정한 항목은 아래 결정 목록의 ID로 표시하고, 표시가 없는 세부
-필드명과 수치 규약은 검토안이다. 런타임 API를 구현하거나 기존 물리 규약을 변경한
-문서는 아니며, 이론 정본의 승인 상태와도 별개다.
+필드명과 수치 규약은 검토안이다. 이 문서는 기존 물리 규약을 변경하지 않으며, 이론
+정본의 승인 상태와도 별개다.
+
+**구현 상태(2026-09-29, 1단계).** §2–§5의 모델·상태·외부 조건·계산격자 조건과 검증을
+`code-space/spintoolkit/`에 구현했다(D16).
+
+| 규약 | 구현 |
+|---|---|
+| §2 `SpinModel`, `Site`, `Term`, `Units`, §4 모델 검증, `fingerprint` | `system/model.py` |
+| §5 외부 조건(`B`, `T`, 단위 환산) | `system/conditions.py`의 `ExternalConditions` |
+| §5 계산계 실현(열역학 극한·유한 토러스) | `system/geometry.py`의 `CalculationGeometry` |
+| §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
+| §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
+
+결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
+않았다. LSWT는 아직 기존 `SpinSystem`을 입력으로 받는다(2단계에서 연결).
 
 모델은 **해밀토니안**이다. 사이트별 스핀 크기, 상호작용 항과 장 결합 방식은
 해밀토니안을 이루는 요소로서 모델에 속한다. 모델이 정의하는 것은 무한 주기계에서
@@ -51,7 +65,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D03 | 모델 작업 공간은 작은 구성으로 시작 | 방향 합의 | 개발 계획 |
 | D04 | 원시·중간 계산은 모델 작업 공간, 정돈된 결과는 `data-space/` | 방향 합의 | 개발 계획 |
 | D05 | 분율 좌표·정수 셀 이동·단위 모드·항 수 규칙 | 규약 검토 | §3 |
-| D06 | 실제 자료형 API(dataclass 생성자·직렬화) | 규약 검토 | §2 |
+| D06 | 실제 자료형 API(dataclass 생성자·직렬화) | D16으로 결정·구현; 직렬화는 4단계 | §2 |
 | D07 | 1차 범위: NBCP와 두 하이젠버그 벤치마크, LSWT 물리량(위상량은 마지막 단계) | 사용자 결정 2026-09-29 | 개발 계획 |
 | D08 | `terms[]` 형식: 형식은 열고 1차 검증은 `bilinear`·`zeeman`으로 닫음 | 사용자 결정 2026-09-29 | §2 |
 | D09 | 모델은 g-텐서, 장 `B`는 외부 변수; Zeeman 부호 `-mu_B` | 사용자 결정 2026-09-29 | §1, §3 |
@@ -61,7 +75,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D13 | 표준 Fourier 부호와 전체 위치 게이지; NBCP 변위는 `r_target = r_source - d` | 사용자 결정 2026-09-29 | §3, §6 |
 | D14 | 상태·계산 요청·결과를 공통·방법별 부분으로 분리; `SpinState`는 정수 초격자 `M` | 사용자 결정 2026-09-29 | §5 |
 | D15 | 표준 벤치마크 모델은 `spintoolkit/models/`, 연구 모델은 `model/<name>/` | 사용자 결정 2026-09-29 | 개발 계획 |
-| D16 | 영점 에너지 상태 선택은 고전 바닥상태 manifold 위에서만: E_cl Hessian 영공간으로 정한 축 `n`의 궤도 `R_n(phi)`에서 E_qm 최소화, 궤도 전체의 E_cl 일정성 검사 | 사용자 결정 2026-09-29 (구현 전) | §1 |
+| D16 | 1단계 API: `Term.bilinear`·`Term.zeeman` 생성 함수, (사이트, 셀)로 찾는 방향 dict, 위반 일괄 보고, `system/conditions.py`·`system/geometry.py`, 최상위 노출, JSON 직렬화는 4단계·`fingerprint`는 지금 | 사용자 결정 2026-09-29 | §2, §5 |
+| D17 | 영점 에너지 상태 선택은 고전 바닥상태 manifold 위에서만: E_cl Hessian 영공간으로 정한 축 `n`의 궤도 `R_n(phi)`에서 E_qm 최소화, 궤도 전체의 E_cl 일정성 검사 | 사용자 결정 2026-09-29 (구현 전) | §1 |
 
 ## Proposal
 
@@ -121,7 +136,7 @@ LSWT의 국소 회전축은 각 방법의 변환 단계에서 정하며 모델�
 | `MAGSWT` | 모든 azimuth에 `k pi/6`(`k = 1..6`)을 더한 점들에서 E_cl + E_qm 비교 | z축 회전만 가정; `tl_angle`의 theta 성분은 회전이 아님; 격자 간격이 분해능 |
 | `quantum` | DE 각도에서 L-BFGS-B로 모든 자유 각도의 E_cl + E_qm 최소화, 교란 재시작 2회 | manifold 제약 없음; 교란이 전역 `np.random` 사용 |
 
-**영점 에너지 상태 선택(D16).** 영점 에너지는 고전 바닥상태 manifold 위에서만
+**영점 에너지 상태 선택(D17).** 영점 에너지는 고전 바닥상태 manifold 위에서만
 비교한다. manifold 밖의 상태는 토크가 0이 아니어서 보손 선형항이 남고, O(S^2)인
 E_cl과 O(S^0)인 E_qm의 합을 자유롭게 최소화하면 manifold에서 O(1/S)만큼 벗어난
 해가 나와 LSWT의 차수를 넘는다. 해밀토니안의 정확한 대칭 방향에서는 E_qm도
@@ -190,10 +205,10 @@ Python의 명시적 자료형으로 표현한다. 아래 표는 필드의 의미
 | `terms[].participants` | 필수, `(site_id, cell_offset)` 목록 | 항에 참여하는 사이트와 정수 셀 좌표 `(2,)`. 길이는 kind가 정함 |
 | `terms[].coefficient` | 필수, 실수 배열 | kind별 계수. 형태는 아래 표 |
 | `terms[].label` | 선택, 문자열 | NN·NNN 또는 x·y·z 등 의미 라벨. 수신 모듈은 이것으로 계수를 재구성하지 않음 |
-| `units` | 필수 | §3의 에너지·길이 단위 선언 |
+| `units` | 선택, `Units` | §3의 에너지·길이 단위 선언. 생략하면 relative 에너지·길이 |
 | `metadata.model_id` | 필수, 문자열 | 모델 식별·출처 추적용. 솔버 분기용이 아님 |
-| `metadata.parameters` | 필수, 매핑 | 적용한 모델별 입력 파라미터의 값·단위. 비어 있을 수 있음 |
-| `metadata.sources` | 필수, 목록 | 파라미터·모델 출처. 알 수 없으면 빈 목록으로 유지 |
+| `metadata.parameters` | 매핑, 생략 시 빈 매핑 | 적용한 모델별 입력 파라미터의 값·단위 |
+| `metadata.sources` | 목록, 생략 시 빈 목록 | 파라미터·모델 출처 |
 
 **1차에서 허용하는 항의 종류(D08).**
 
@@ -270,8 +285,8 @@ H = sum_R sum_(bilinear) S_(R+n1,a)^T J S_(R+n2,b)
 `H_Z = -mu_B B_alpha g_(alpha beta) S_beta`이다.
 
 **단위(D05, D12).** 물리 단위 입력은 에너지 `meV`, 길이 `angstrom`으로 정규화하는
-안을 제안한다. `J=1`, `a=1` 같은 상대 단위 모델도 허용한다. 따라서 `units`에는
-`energy_unit: meV | relative`, `length_unit: angstrom | relative`를 명시한다.
+안을 제안한다. `J=1`, `a=1` 같은 상대 단위 모델도 허용한다. 따라서 `Units`에는
+`energy: meV | relative`, `length: angstrom | relative`를 명시한다.
 상대 단위를 물리 단위로 환산할 근거가 있다면 양의 유한값
 `energy_scale_meV`, `length_scale_angstrom`을 기록한다. 없으면 `None`으로 둔다.
 물리 단위 모드에서는 별도 scale을 저장하지 않는다. 모든 항은 하나의 에너지 단위를,
@@ -368,15 +383,15 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | 필드 | 형태 | 의미 |
 |---|---|---|
 | `schema_version` | 정수 | 상태 규약의 버전 |
-| `model_ref` | `model_id`와 계수 해시 | 이 상태가 대응하는 모델 |
+| `model_ref` | 모델의 `fingerprint` | 이 상태가 대응하는 모델 |
 | `supercell` | 정수 `(2, 2)` 행렬 `M`, `det M != 0` | 자기 격자벡터의 행 = `M @ A` |
-| `directions` | `(site_id, cell, vector)` 레코드 목록 | 각 사이트마다 `abs(det M)`개; `cell`은 초격자의 대표 셀 좌표; `vector`는 단위 벡터 |
+| `directions` | `(site_id, cell) → vector` 매핑(D16) | 각 사이트마다 `abs(det M)`개; `cell`은 초격자의 대표 셀 좌표; `vector`는 단위 벡터 |
 | `provenance` | 기원과 선택 에너지 | 초기값·최적화·직접 지정; 선택에 쓴 에너지(고전, quantum, MAGSWT) |
 
 방향은 단위 벡터로 저장한다(D12). 각도 표현은 극점(`theta = 0`)에서 `phi`가
 정의되지 않으므로 저장 형식으로 쓰지 않는다. LSWT의 국소 좌표축은 방법의 변환
-단계에서 정한다. 대표 셀은 `cell @ inv(M)`가 `[0, 1)^2`에 놓이는 정수 좌표로 두는
-안을 제안한다.
+단계에서 정한다. 대표 셀은 `cell @ inv(M)`가 `[0, 1)^2`에 놓이는 정수 좌표이며,
+`adj(M)`을 쓰는 정수 연산으로 부동소수점 오차 없이 계산한다.
 
 현재 `CommensurateStructure`는 대각 초격자 `(n1, n2)`만 표현하므로 √3×√3 셀을
 담지 못한다. 정수 행렬을 쓰면 NBCP의 기본 삼각격자
@@ -424,7 +439,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | `system/lattice/base.py` | basis position을 분율 좌표로 설명함 | 현재 NBCP Cartesian 위치와의 변환을 명시 |
 | `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
 | `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
-| `methods/optimization.py` | classical 외에 `quantum`, `MAGSWT` 최적화 경로 제공. `quantum`의 fallback·DE 배열 변경 결함은 `d43d8d4`에서 수정 | 상태 선택에 사용한 에너지를 결과에 기록; 영점 에너지 선택을 D16 궤도 탐색으로 교체; `angle_setting=None` 처리 |
+| `methods/optimization.py` | classical 외에 `quantum`, `MAGSWT` 최적화 경로 제공. `quantum`의 fallback·DE 배열 변경 결함은 `d43d8d4`에서 수정 | 상태 선택에 사용한 에너지를 결과에 기록; 영점 에너지 선택을 D17 궤도 탐색으로 교체; `angle_setting=None` 처리 |
 | `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | 모델 정의와 상태 생성의 반환 경계를 분리 |
 
 **NBCP 결합 변위의 해석(D13).** `SpinSystem.Coupling` 설명은 displacement를
@@ -476,11 +491,11 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - ED 결과 본문(3단계)과 TN 관련 상태·요청·결과(TN 도입 시)의 필드 규약.
 - 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. `S`에 따른 환원,
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
-- D16 구현 시: `quantum` 이름을 궤도 탐색으로 교체할지, 새 이름을 두고 기존 경로를
+- D17 구현 시: `quantum` 이름을 궤도 탐색으로 교체할지, 새 이름을 두고 기존 경로를
   deprecated로 남길지; MAGSWT 격자 탐색을 궤도 탐색에 통합할지; 개발 단계 0–5 중 배치.
-- D16 판정 기준: 영공간 판정(스펙트럼 간격 또는 고전 국소 정밀화 후 판정)과, E_qm
+- D17 판정 기준: 영공간 판정(스펙트럼 간격 또는 고전 국소 정밀화 후 판정)과, E_qm
   변동이 k-mesh 오차보다 작을 때의 처리(수렴 검사 또는 "선택 불확정" 기록).
-- D16 확장: 사이트별 회전축(숨은 U(1))과 여러 차원의 영공간.
+- D17 확장: 사이트별 회전축(숨은 U(1))과 여러 차원의 영공간.
 
 ## 변경 이력
 
@@ -489,13 +504,16 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   모델 정의, 외부 변수 분류, `terms[]` 형식, g-텐서와 외부 장, Zeeman 부호(D07–D11);
   선택적 Zeeman 항, `g` 인덱스, relative 단위, 상태 검증과 기준 상태 진단(D12);
   Fourier 규약과 NBCP 변위 해석, 상태·요청·결과 구조, 벤치마크 위치(D13–D15).
+- 2026-09-29 (claude): 1단계 구현을 반영했다. 구현 상태 표와 D16을 추가하고, 구현한
+  필드 이름(`Units.energy`·`length`, 생략 가능한 `metadata.parameters`·`sources`,
+  `fingerprint`를 쓰는 `model_ref`, dict 형태의 `directions`)을 규약에 맞췄다.
 - 2026-09-29 (claude): 문서를 정리했다. 1차 범위·패키지·벤치마크·구현 단계를
   [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-29-toolkit-first-development-plan|1차 개발 계획]]으로
   분리했다. 결정 목록을 추가하고 본문의 날짜 표기를 결정 ID로 바꿨다. 정상성 설명과
   방향 저장 규약의 중복을 합치고, 두 변위 재검사 표를 하나로 합쳤으며, 이미 해소된
   "Fourier 규약을 확정하지 않는다" 문장을 정리했다. 내용은 바꾸지 않았다.
 - 2026-09-29 (claude): 0단계 이름 변경에 맞춰 §6의 코드 경로를 갱신했다.
-- 2026-09-29 (claude): §1에 현재 상태 탐색 방법과 영점 에너지 상태 선택 규칙(D16)과
+- 2026-09-29 (claude): §1에 현재 상태 탐색 방법과 영점 에너지 상태 선택 규칙(D17)과
   그 수치 확인을 추가했다. §6과 Open Questions를 맞췄다.
 
 ## 관련 기록

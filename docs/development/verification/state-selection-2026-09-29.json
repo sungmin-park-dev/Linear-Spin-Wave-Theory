@@ -1,6 +1,6 @@
 {
   "date": "2026-09-29",
-  "scope": "State selection by zero-point energy: fix of the existing quantum path of SpinOptimizer.find_minimum (commit d43d8d4) and a numerical check of the orbit-axis rule adopted as D16. D16 itself is not implemented.",
+  "scope": "State selection by zero-point energy: fix of the existing quantum path of SpinOptimizer.find_minimum (commit d43d8d4) and a numerical check of the orbit-axis rule adopted as D17. D17 itself is not implemented.",
   "quantum_path_fix": {
     "commit": "d43d8d4",
     "baseline_commit": "6f90198",
@@ -13,7 +13,7 @@
       "Quantum branch starts from the DE angles with E_qm evaluated there (method 'DE', full angles, energy = E_cl + E_qm) and keeps BFGS ('DE+BFGS') only if it lowers E_cl + E_qm.",
       "find_optimum_w_BFGS perturbs a copy; every restart starts from the DE point."
     ],
-    "unchanged": "Global np.random perturbation (removed by D16); angle_setting=None still unsupported.",
+    "unchanged": "Global np.random perturbation (removed by D17); angle_setting=None still unsupported.",
     "tests": {
       "file": "code-space/tests/test_methods/test_optimization_quantum.py",
       "new_tests": 5,
@@ -326,5 +326,19 @@
         }
       ]
     }
+  },
+  "decision_id_note": "Recorded as D16 in commits d43d8d4/84a6126; renumbered D17 when merged after stage 1, whose API decision took D16.",
+  "after_merge_with_stage1": {
+    "main_commit": "675f01b",
+    "pytest": {
+      "passed": 278,
+      "failed": 5,
+      "note": "273 from stage 1 plus the 5 new quantum-path tests; the same 5 CommensurateStructure failures."
+    },
+    "numerical_snapshot": {
+      "leaves": 208,
+      "maximum_difference_vs_6f90198": 0.0
+    },
+    "orbit_axis_check": "Rerun on the merged code; JSON report identical."
   }
 }
