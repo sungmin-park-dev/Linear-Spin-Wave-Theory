@@ -151,6 +151,13 @@ code-space/spintoolkit/
 208개 수치 스냅샷의 차이는 0이었다. 기록은
 `docs/development/verification/stage1-common-types-2026-09-29.json`에 있다.
 
+2단계는 2026-09-29 완료했다(D21). `model/nbcp/model.py`에 NBCP 모델(`build_model`), 파라미터
+세트(문헌값 `woodland2025`: arXiv:2505.06398 Table 1; 원고값 `park2026_fig4`), 후보 상태
+(`candidate_state`)를 두고, `system/conversion.py`로 기존 `SpinSystem`과 양방향 변환한다.
+변환한 `H(k)`가 기존 네 셀 생성 함수와 원소 단위로 같아(최대 1.7e-16) D13이 확정되었고,
+고전 에너지와 E_qm도 일치했다. 테스트는 348 통과 / 같은 5 실패(새 테스트 72개), 208개
+스냅샷 차이 0이다. 기록은 `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`.
+
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
 
@@ -181,6 +188,7 @@ ED/TN 실행 가능성은 별도 검증이다.
   `spin-toolkit`과 `lswt` 호환 패키지의 위치를 반영했다.
 - 2026-09-29 (claude): 1단계 완료와 검증 결과를 기록했다.
 - 2026-09-29 (claude): D17을 2단계 뒤 2b 단계로 배치하고 삼각격자 벤치마크 범위(D18)를 적었다.
+- 2026-09-29 (claude): 2단계 완료와 검증 결과를 기록했다.
 
 ## 관련 기록
 

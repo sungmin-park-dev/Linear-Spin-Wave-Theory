@@ -7,6 +7,7 @@ remain in `code-space/spintoolkit/`; the model builders do not select a solver.
 | --- | --- |
 | `exchange.py` | Assemble the three NN and NNN exchange matrices from NBCP parameters. |
 | `unit_cells.py` | Build the one-, two-, three-, and four-sublattice `SpinSystem` candidates, including sites, spin directions, bonds, and lattice vectors. |
+| `model.py` | NBCP as a common `SpinModel` on the primitive triangular lattice (`build_model`), published parameter sets (`PARAMETER_SETS`: arXiv:2505.06398 Table 1 and the manuscript set), and candidate magnetic structures as `SpinState` (`candidate_state`, legacy angle order). |
 | `__init__.py` | Expose the model builders for repository calculations. |
 
 ## Using the model

@@ -40,6 +40,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 계산계 실현(열역학 극한·유한 토러스) | `system/geometry.py`의 `CalculationGeometry` |
 | §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
+| §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
+| NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
 결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
 않았다. LSWT는 아직 기존 `SpinSystem`을 입력으로 받는다(2단계에서 연결).
@@ -72,7 +74,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D10 | 최소 ED 검증 도구를 `methods/ed/`에 두고 ED 솔버로 확장 | 사용자 결정 2026-09-29 | 개발 계획 |
 | D11 | 패키지 `spintoolkit`, 별칭 `stk`; 키타에프는 후속 벤치마크 | 사용자 결정 2026-09-29 | 개발 계획 |
 | D12 | 선택적 Zeeman 항, `g_(alpha beta)` 인덱스, relative 단위 `mu_B = 1`(D20으로 대체), 상태 검증과 기준 상태 진단의 분리 | 사용자 결정 2026-09-29 | §2–§4 |
-| D13 | 표준 Fourier 부호와 전체 위치 게이지; NBCP 변위는 `r_target = r_source - d` | 사용자 결정 2026-09-29 | §3, §6 |
+| D13 | 표준 Fourier 부호와 전체 위치 게이지; NBCP 변위는 `r_target = r_source - d` | 사용자 결정 2026-09-29; 2단계에서 `H(k)` 원소 단위로 수치 확정 | §3, §6 |
 | D14 | 상태·계산 요청·결과를 공통·방법별 부분으로 분리; `SpinState`는 정수 초격자 `M` | 사용자 결정 2026-09-29 | §5 |
 | D15 | 표준 벤치마크 모델은 `spintoolkit/models/`, 연구 모델은 `model/<name>/` | 사용자 결정 2026-09-29 | 개발 계획 |
 | D16 | 1단계 API: `Term.bilinear`·`Term.zeeman` 생성 함수, (사이트, 셀)로 찾는 방향 dict, 위반 일괄 보고, `system/conditions.py`·`system/geometry.py`, 최상위 노출, JSON 직렬화는 4단계·`fingerprint`는 지금 | 사용자 결정 2026-09-29 | §2, §5 |
@@ -80,6 +82,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D18 | D17 구현 계획: `quantum`(E_cl + E_qm 제약 없는 최소화)은 과거의 실수로 보고 D17 구현과 함께 삭제, 그 전까지 호출 시 경고; MAGSWT 격자 탐색은 유지하고 궤도 탐색으로 재현되는지 검증 뒤 재결정; D17은 2단계 뒤 새 자료형 위에 구현; 3단계 삼각격자 벤치마크는 h = 0과 h > h_sat, 여러 차원 영공간 확장은 후속 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
 | D19 | D17 판정 기준: 물리 근거 모드(기본)와 고정 상수 모드를 선택; 물리 근거는 수치 정확도 추정·C_cl 대 C_qm·대칭 검사·공선성; 고정 상수의 기본값은 `definitions/defaults.py`, 실행별 값은 방법 설정으로 전달, 판정에 쓴 값은 결과에 기록 | 사용자 결정 2026-09-29 | §1 |
 | D20 | 수치 계산은 무차원: 모든 값은 계수의 에너지 단위 E0 기준(`field = mu_B B / E0`, `temperature = k_B T / E0`); 물리 단위는 테슬라·켈빈·meV로 통일해 문서에만 명시하고 변환은 사용자가 함; `Units` 제거, `metadata.energy_unit`은 기록용 라벨; g를 모르면 `g = I`와 Zeeman 에너지 h. 기존 LSWT 모듈은 4단계까지 켈빈·meV 유지 | 사용자 결정 2026-09-29 | §2, §3, §5 |
+| D21 | 2단계: NBCP 파라미터 세트는 문헌값(arXiv:2505.06398 Table 1)과 원고값을 두고 g는 세트별(모르면 `g = I`와 Zeeman 에너지); 변환 함수는 `system/conversion.py`; `from_spin_system`은 사이트 장이 모두 같을 때만 변환하고 `local_field` 항은 필요할 때 결정; `LSWTSolver.from_model` 같은 새 진입점은 4단계 | 사용자 결정 2026-09-29 | §6, 개발 계획 |
 
 ## Proposal
 
@@ -488,12 +491,12 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 
 | 현재 코드 | 관찰 | 이행 시 요구 |
 |---|---|---|
-| `system/spin_system.py` | 사이트에 각도가 필수이고 position의 좌표 단위가 타입에 없음 | 공통 모델에서 상태를 분리하고 기존 입력으로 변환 |
+| `system/spin_system.py` | 사이트에 각도가 필수이고 position은 Cartesian; `Coupling` 설명을 D13에 맞게 고침(2단계) | `system/conversion.py`로 공통 모델·상태와 양방향 변환 |
 | `system/lattice/base.py` | basis position을 분율 좌표로 설명함 | 현재 NBCP Cartesian 위치와의 변환을 명시 |
 | `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
 | `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
 | `methods/optimization.py` | classical 외에 `quantum`, `MAGSWT` 최적화 경로 제공. `quantum`의 fallback·DE 배열 변경 결함은 `d43d8d4`, `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`은 호출 시 경고(D18) | 상태 선택에 사용한 에너지를 결과에 기록; D17 궤도 탐색 구현과 함께 `quantum` 삭제, MAGSWT는 재현 검증 뒤 재결정 |
-| `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | 모델 정의와 상태 생성의 반환 경계를 분리 |
+| `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | `model/nbcp/model.py`가 모델(`build_model`)과 상태(`candidate_state`)를 분리해 제공; 기존 함수는 유지 |
 
 **NBCP 결합 변위의 해석(D13).** `SpinSystem.Coupling` 설명은 displacement를
 source→target이라고 적는다. 두 해석을 네 후보 셀에서 검사했다.
@@ -520,9 +523,13 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 
 변환 규칙은 `cell_offset = (r_source - d - r_target) @ inv(A)`를 정수로 확인한 뒤
 쓰고, J와 source·target은 그대로 두는 것이다. 단순한 필드 이름 변경이나 전역 부호
-반전으로 대신하지 않는다. 2단계에서 변환 전후의 `H(k)`가 원소 단위로 같은지 확인해
-이 해석을 수치로 확정한다. BdG 행렬의 행이 생성 연산자 쪽이라는 가정도 이 비교에서
-함께 확인된다.
+반전으로 대신하지 않는다.
+
+**2단계 수치 확정(2026-09-29).** 공통 모델과 후보 상태를 `to_spin_system`으로 바꾼 `H(k)`가
+기존 `one_msl`…`four_msl`과 원소 단위로 같았다(4셀 × 5파라미터군, 장·DM·NNN 포함, 최대 차이
+1.7e-16). `d`의 부호를 뒤집으면 Three MSL의 `H(k)`가 1e-3 넘게 달라졌다. 왕복 변환도
+최대 1.7e-17로 같았다. 따라서 이 해석과, BdG 행렬의 행이 생성 연산자 쪽이라는 가정이
+확정되었다. 기록은 `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`.
 
 ## Rationale
 
@@ -539,8 +546,6 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 ## Open Questions
 
 - 새 필드명과 정규화 단위의 구체안은 검토 전이다(D05, D06). 큰 구조의 합의와 구분한다.
-- NBCP 변위 해석(`r_target = r_source - d`)은 2단계의 `H(k)` 원소 단위 비교로
-  수치 확정한다.
 - ED 결과 본문(3단계)과 TN 관련 상태·요청·결과(TN 도입 시)의 필드 규약.
 - 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. `S`에 따른 환원,
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
@@ -573,6 +578,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   물리 근거, 기본값 위치)를 추가하고 검토안을 대체했다. `quantum` 호출에 경고를 추가했다.
 - 2026-09-29 (claude): D20(무차원 수치 계산)을 추가했다. `Units`와 단위 환산을 없애고 §2의
   필드 표, §3의 해밀토니안·Zeeman·단위 절, §5의 외부 조건을 무차원 규약으로 고쳤다.
+- 2026-09-29 (claude): 2단계 구현을 반영했다. D21을 추가하고, D13을 `H(k)` 원소 단위 비교로
+  확정했으며, 구현 상태 표와 §6의 코드 대응을 갱신했다.
 
 ## 관련 기록
 

@@ -9,6 +9,7 @@
 | `system/model.py` | 공통 모델 `SpinModel`(`Site`, `Term`)과 전달 규약 검증, `fingerprint`. 모든 값은 계수의 에너지 단위 E0 기준 무차원 |
 | `system/conditions.py` | 외부 조건 `ExternalConditions`: 무차원 장 `field = μ_B B/E0`와 온도 `temperature = k_B T/E0` |
 | `system/geometry.py` | 계산격자 조건 `CalculationGeometry`: 열역학 극한 또는 유한 토러스 |
+| `system/conversion.py` | 공통 모델·상태와 기존 `SpinSystem` 사이의 양방향 변환(결합 변위 `d = r_source − r_target`, D13) |
 | `states/` | 정합·비정합 자기구조의 표현. 비정합 구현은 기존 stub 상태 |
 | `states/spin_state.py` | 고전 스핀 배열 `SpinState`: 정수 초격자와 (사이트, 셀)별 단위 벡터, 상태 검증 |
 | `methods/base.py` | `AbstractSolver`와 `SolverResult` 공통 인터페이스 |

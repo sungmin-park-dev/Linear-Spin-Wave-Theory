@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 기능별 파일 배치, 이름 변경(0단계), 공통 자료형(1단계) & NBCP 연결 \\
-    \textbf{미구현} & 결과 머리부, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 2단계부터 진행 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2단계 구현 & 상태 선택(2b) \\
+    \textbf{미구현} & D17 궤도 탐색, 결과 머리부, 최소 ED 도구, ED·TN 솔버 & 2b단계부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -178,6 +178,27 @@ classical_energy(model, state, cond)  # -0.375
   \slidesource{1단계 검증 기록}{stage1}
 \end{frame}
 
+\begin{frame}[label=stage2-verification]{2단계: NBCP 연결과 D13 확정}
+  \framesubtitle{2026-09-29 · 새 모델·상태를 기존 \texttt{SpinSystem}으로 바꿔 기존 LSWT를 그대로 쓴다(D21).}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{3.4cm}p{3.3cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 확인 범위 \\
+    \midrule
+    $\mathsf H(\mathbf k)$ 원소 단위 & 최대 $1.7\times10^{-16}$ & 새 모델+후보 상태 대 기존 \texttt{one\_msl}…\texttt{four\_msl}; 4셀 $\times$ 5파라미터군, 장·DM·NNN \\
+    음성 대조 & 차이 $>10^{-3}$ & $d$ 부호를 뒤집으면 Three MSL의 $\mathsf H(\mathbf k)$가 달라짐 \\
+    왕복 변환 & 최대 $1.7\times10^{-17}$ & 기존 \texttt{SpinSystem} $\to$ 공통 형식 $\to$ \texttt{SpinSystem} \\
+    게이지 무관 양 & 일치 & 표준 범위 밖 각도에서 $E_{\mathrm{cl}}$($10^{-14}$), $E_{\mathrm{qm}}$($10^{-12}$) \\
+    테스트·스냅샷 & 348 통과 / 같은 5 실패; 차이 0 & 새 테스트 72개; 기존 225개 결과 불변 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{파일: \texttt{model/nbcp/model.py}(\texttt{build\_model}, 파라미터 세트, \texttt{candidate\_state}), \texttt{system/conversion.py}.
+  문헌 세트는 arXiv:2505.06398 Table 1($J_z=0.1225$, $J_{xy}=0.0779$ meV, $g_c=4.716$, $g_{ab}=4.200$).
+  사이트 장이 다른 \texttt{SpinSystem}은 변환하지 않는다.}
+  \slidesource{2단계 검증 기록}{stage2}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -237,7 +258,7 @@ classical_energy(model, state, cond)  # -0.375
   \end{columns}
   \par\smallskip
   \supportingtext{NBCP의 DM 항은 호출자가 설정하지 않아 0이므로 $J$는 대칭이다.
-  2단계에서 변환 전후 $\mathsf H(\mathbf k)$의 원소 단위 일치로 수치 확정한다.}
+  2단계에서 변환 전후 $\mathsf H(\mathbf k)$가 원소 단위로 같아(최대 $1.7\times10^{-16}$) 확정되었다.}
   \slidesource{현재 코드 재검사와 geometry\_audit; 2026-09-29 Fourier 규약 결정}{contract,geometry}
 \end{frame}
 
@@ -250,7 +271,7 @@ classical_energy(model, state, cond)  # -0.375
     \midrule
     0 & 이름 변경(완료) & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
     1 & 자료형·검증(완료) & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
-    2 & NBCP 연결 & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
+    2 & NBCP 연결(완료) & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     2b & 상태 선택 & NBCP Y 상태에서 축·선택 결과와 $\lambda_6$ 재현; D19 두 모드; MAGSWT 재현 비교 \\
     3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
     4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
@@ -285,6 +306,6 @@ classical_energy(model, state, cond)  # -0.375
   \end{tabularx}
   \par\medskip
   \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준(D18, D19)은 2026-09-29 결정했다.
-  변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
+  변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 원소 단위 비교로 확정했다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

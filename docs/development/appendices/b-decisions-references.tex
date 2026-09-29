@@ -51,7 +51,7 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=decisions-selection]{결정 기록 (D17--D20)}
+\begin{frame}[label=decisions-selection]{결정 기록 (D17--D21)}
   \framesubtitle{2026-09-29 사용자 결정. 근거와 수치 자료는 이 부록의 뒤쪽에 있다.}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
@@ -62,6 +62,7 @@
     D18 & D17 구현 계획: \texttt{quantum} 삭제(과거의 실수), MAGSWT 유지·재현 검증, 2b단계, 삼각격자 $h=0$·$h>h_{\mathrm{sat}}$ & \textbf{사용자 결정} \\
     D19 & D17 판정: 물리 근거 모드(기본)와 고정 상수 모드; 기본값은 \texttt{definitions/defaults.py}; 판정 값 기록 & \textbf{사용자 결정} \\
     D20 & 수치 계산은 무차원($E_0$ 기준: 장 $\mu_B\mathbf B/E_0$, 온도 $k_BT/E_0$); 물리 단위 T·K·meV는 문서 규약, 변환은 사용자 & \textbf{사용자 결정} \\
+    D21 & 2단계: NBCP 문헌·원고 파라미터 세트(g는 세트별), 변환은 \texttt{system/conversion.py}, 장이 같을 때만 역변환, 새 LSWT 진입점은 4단계 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -329,5 +330,8 @@
     \bibitem{criteria}
       D17 판정 기준 자료, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · 영공간 판정 규칙 비교와 선택의 mesh 의존성.
+    \bibitem{stage2}
+      2단계 NBCP 연결 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · $\mathsf H(\mathbf k)$ 원소 단위 대조, 왕복 변환, 에너지.
   \end{thebibliography}
 \end{frame}

@@ -126,7 +126,9 @@ class SpinSystem:
         exchange_matrix : array_like
             3x3 exchange matrix J_ij.
         displacement : array_like
-            Real-space displacement vector from site i to site j.
+            Real-space bond vector ``d = r_i - r_j`` from site j to site i:
+            site j of the bond sits at ``r_i - d``, and the Hamiltonian uses
+            the phase ``exp(-i k . d)`` (transfer contract, D13).
         """
         site_i: int
         site_j: int
@@ -216,7 +218,8 @@ class SpinSystem:
         exchange_matrix : array_like
             3x3 exchange matrix J_ij.
         displacement : array_like
-            Real-space displacement vector from site i to site j.
+            Real-space bond vector ``d = r_i - r_j``: site j of the bond sits
+            at ``r_i - d`` (transfer contract, D13).
 
         Returns
         -------

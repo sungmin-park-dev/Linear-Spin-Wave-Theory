@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-29",
+  "scope": "Stage 2 of the 1st development plan: connect NBCP to the common model. NBCP SpinModel on the primitive triangular lattice with published parameter sets, candidate magnetic structures as SpinState, and a SpinSystem bridge in both directions. Existing computational code unchanged.",
+  "status": "passed",
+  "baseline_commit": "fda4197",
+  "added": {
+    "model/nbcp/model.py": "LATTICE, SUPERCELLS, PARAMETER_SETS (woodland2025, park2026_fig4), build_model, build_published_model, legacy_cells, candidate_state",
+    "code-space/spintoolkit/system/conversion.py": "to_spin_system, from_spin_system (uniform field only), site_label"
+  },
+  "changed": {
+    "code-space/spintoolkit/system/spin_system.py": "Coupling/add_coupling docstrings: d = r_i - r_j, partner at r_i - d (D13); no code change",
+    "model/nbcp/__init__.py": "exports of the new functions",
+    "code-space/tests/test_models/test_nbcp.py": "test_old_example_imports_preserve_builder_interface now lists the six legacy builder names explicitly instead of iterating model.nbcp.__all__, which grew with the stage-2 API"
+  },
+  "d13_confirmation": {
+    "method": "bosonic H(k) at 4 k-points from the existing LSWTHamiltonian, converted model+state vs legacy one_msl..four_msl builders, sites matched by position modulo the magnetic lattice",
+    "cases": "4 cells x 5 parameter families (xxz, nn_soc, nn_nnn_soc, dm, zero_exchange) with field (0.03, -0.04, 0.2) meV, angles with theta in (0, pi)",
+    "elementwise_max_abs_difference": 1.6653345369377348e-16,
+    "negative_control": "storing d = r_target - r_source changes Three MSL H(k) by more than 1e-3",
+    "round_trip": "legacy SpinSystem -> from_spin_system -> to_spin_system: max |dH| 1.7e-17 over the same 20 cases",
+    "row_convention": "confirms that the BdG row index is the creation-operator side (a^dagger_source a_target -> exp(+i k.Delta))"
+  },
+  "gauge_invariant_checks": "for angles outside the canonical range (linspace(-1.1, 2.3)), classical energy (1e-14) and E_qm on N = 3 (1e-12) agree for all 20 cases; off-diagonal H(k) elements differ there only by the local-frame gauge",
+  "lattice": "M @ A equals the legacy lattice vectors for all four cells: Two [[1,1],[1,-1]], Three [[2,1],[1,2]], Four [[2,0],[0,2]] on A = [[1/2, sqrt3/2], [1/2, -sqrt3/2]]",
+  "parameter_sets": {
+    "woodland2025": "arXiv:2505.06398 Table 1: Jz 0.1225(10), Jxy 0.0779(7) meV, g_c 4.716(7), g_ab 4.200(7); g = diag(g_ab, g_ab, g_c); dB offset not a model parameter",
+    "park2026_fig4": "docs/nbcp chapter 2: J = Jxy = 0.075, Jz = 0.125 meV, g_z = 4.645 only; g = I and field given as Zeeman energy"
+  },
+  "pytest": {
+    "before": {
+      "passed": 276,
+      "failed": 5
+    },
+    "after": {
+      "passed": 348,
+      "failed": 5
+    },
+    "new_tests": 72,
+    "pre_existing_ids": "all keep their outcome"
+  },
+  "numerical_regression": {
+    "script": "examples/package_regression_snapshot.py",
+    "leaves": 208,
+    "maximum_difference": 0.0
+  },
+  "source_hashes": {
+    "code-space/spintoolkit/system/conversion.py": "eef0156579129837988ddec4f70ed2a72ad8e0f93b4423c4f23605f33ed35f62",
+    "model/nbcp/model.py": "02a65c55b667d278ef439fdd3d16c3119fef0ed4dbf44281945c7f058e55b50f",
+    "code-space/tests/test_system/test_conversion.py": "f09a4e8a944ad54f9b409a57323dcfca259f0c9dd23b4e1d9ed2067f746b775d",
+    "code-space/tests/test_models/test_nbcp_model.py": "f87e259c56bb257c231a0096849d6c6769fe52c2507f76d06359d425e1be39c8",
+    "code-space/spintoolkit/system/spin_system.py": "ba252f702382bc01e85cd588728d7397d3fa6008e79288780400c92b60b14724"
+  }
+}
