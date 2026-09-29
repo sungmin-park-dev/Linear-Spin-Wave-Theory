@@ -116,6 +116,33 @@
   \slidesource{패키지 이름 변경 검증 기록}{rename}
 \end{frame}
 
+\begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
+  \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YYp{3.3cm}@{}}
+    \toprule
+    결함 & 수정 & 확인 \\
+    \midrule
+    L-BFGS-B가 DE보다 낮지 않으면 결과 필드가 정의되지 않고 각도가 자유 변수 배열로 남음
+      & DE 각도와 그 점의 $E_{\mathrm{qm}}$로 먼저 채움(method \texttt{DE}, 전체 각도)
+      & 강제 fallback 2건 \\
+    비교 기준이 고전 에너지 $E_{\mathrm{cl}}$(DE)뿐임
+      & $E_{\mathrm{cl}}+E_{\mathrm{qm}}$(DE)보다 낮을 때만 \texttt{DE+BFGS} 채택
+      & 결과 $\le$ DE 총에너지 \\
+    교란이 DE 배열을 제자리에서 바꿔 보고된 고전 각도가 어긋남
+      (two\_msl: 0.06--0.10 rad, $E_{\mathrm{cl}}$ $+5.3\times10^{-4}$)
+      & 복사본을 교란; 재시작마다 DE 점에서 출발
+      & 2건 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  전체 테스트 225 통과 / 같은 5 실패(변경 전 220 / 5). 새 테스트 5건은 수정 전 모두 실패했다.
+  수치 snapshot 208개 값은 차이 0이다. snapshot은 \texttt{quantum} 경로를 쓰지 않으므로 이 경로는 새 테스트로 확인했다.
+  \par\medskip
+  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D16으로 바꾼다(부록 B).}
+  \slidesource{상태 선택 검증 기록}{selection}
+\end{frame}
+
 \begin{frame}[label=displacement-resolution]{결합 변위의 방향: 해석과 변환 규칙}
   \framesubtitle{D13 · 채택한 Fourier 규약에서 기존 코드는 $d=r_{\mathrm{source}}-r_{\mathrm{target}}$로 일관된다.}
   \begin{columns}[T,onlytextwidth]
@@ -177,6 +204,7 @@
 
 \begin{frame}[label=open-questions]{미결 사항}
   \framesubtitle{해당 단계에 도달하기 전에 결정한다.}
+  \small
   \begin{tabularx}{\textwidth}{@{}Yp{3.2cm}@{}}
     \toprule
     질문 & 결정 시점 \\
@@ -186,10 +214,13 @@
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
+    D16 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 단계 배치, \texttt{angle\_setting=None} & D16 구현 전 \\
+    D16 판정: 영공간 판정 기준, mesh 오차보다 작은 $E_{\mathrm{qm}}$ 변동의 처리 & D16 구현 시 \\
+    D16 확장: 사이트별 회전축(숨은 U(1)), 여러 차원의 영공간 & 필요 시 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15)는 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D16)은 2026-09-29 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

@@ -43,6 +43,7 @@
     D13 & 표준 Fourier 부호 $e^{+\mathrm i\mathbf k\cdot\mathbf r}$와 전체 위치 게이지; NBCP 변위는 $r_t=r_s-d$ & \textbf{사용자 결정} \\
     D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
     D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
+    D16 & 영점 에너지 상태 선택은 고전 manifold 위에서: $E_{\mathrm{cl}}$ Hessian 영공간으로 정한 축 $\hat n$의 궤도 $R_{\hat n}(\phi)$에서 $E_{\mathrm{qm}}$ 최소화(구현 전) & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -72,6 +73,87 @@
   \end{tabularx}
   \par\medskip
   \slidesource{2026-09-29 세부 규칙 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=state-search-current]{현재 상태 탐색: DE 뒤 세 경로}
+  \framesubtitle{세 경로 모두 differential evolution(DE)으로 고전 에너지를 최소화한 뒤 다음 단계만 다르다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{1.7cm}YP{2.2cm}Y@{}}
+    \toprule
+    경로 & DE 뒤 단계 & 결과 method & 한계 \\
+    \midrule
+    \texttt{classical} & DE 각도에서 $E_{\mathrm{qm}}$만 계산 & \texttt{DE}
+      & 고전 축퇴를 가르지 않음 \\
+    \texttt{MAGSWT} & 모든 azimuth에 $k\pi/6$ ($k=1,\dots,6$)을 더한 점과 DE 점에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$ 비교
+      & \texttt{DE(MAGSWT)}, \texttt{MAGSWT}
+      & $z$축 회전만 가정; \texttt{tl\_angle}의 $\theta$ 성분은 회전이 아님; 격자 간격이 분해능 \\
+    \texttt{quantum} & L-BFGS-B로 모든 자유 각도의 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$ 최소화, 무작위 교란 재시작 2회
+      & \texttt{DE+BFGS}, \texttt{DE}
+      & manifold 제약 없음; 교란은 전역 \texttt{np.random} \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{DE는 \texttt{seed=42}로 고정되어 결정론적이며, \texttt{angle\_setting}으로 일부 각도를 고정할 수 있다.
+  \texttt{quantum}의 fallback·배열 변경 결함은 \texttt{d43d8d4}에서 고쳤다(부록 A).}
+  \slidesource{현재 \texttt{methods/optimization.py}}{implementation,selection}
+\end{frame}
+
+\begin{frame}[label=state-selection-rule]{D16: 영점 에너지 선택은 고전 manifold 위에서 한다}
+  \framesubtitle{축은 해밀토니안의 대칭이 아니라 고전 에너지 $E_{\mathrm{cl}}$에서 정한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{manifold 위에서 비교하는 이유}
+        \small
+        \begin{itemize}
+          \item manifold 밖에서는 토크가 0이 아니어서 보손 선형항이 남는다.
+          \item $E_{\mathrm{cl}}=O(S^2)$, $E_{\mathrm{qm}}=O(S^0)$의 합을 자유롭게 최소화하면
+            $O(1/S)$만큼 벗어나 LSWT 차수를 넘는다.
+          \item 정확한 대칭 방향에서는 $E_{\mathrm{qm}}$도 일정하다.
+            선택은 $E_{\mathrm{cl}}$만 일정한 accidental 방향에서 일어난다.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{탐색 절차}
+        \small
+        \begin{enumerate}
+          \item DE 해에서 국소 접평면 좌표로 $E_{\mathrm{cl}}$ Hessian 계산
+          \item 회전 생성자 $\hat n\times\mathbf S_\alpha$를 영공간에 사영해 축 $\hat n$ 결정.
+            영공간 없음 $\to$ DE 반환; 회전 span 밖 $\to$ 경고;
+            여러 축 $\to$ 축 지정 요구
+          \item 궤도 $R_{\hat n}(\phi)\mathbf S(0)$: $\phi$ 격자 뒤 1차원 bounded 최소화
+          \item 궤도 전체의 $E_{\mathrm{cl}}$ 일정성 검사; 선택 에너지와 곡률 $C_\phi$ 기록
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{$\phi=0$이 후보에 들어가므로 결과는 항상 정의되고 난수가 필요 없다.
+  $C_\phi$는 pseudo-Goldstone gap $\Delta_{\mathrm{PG}}^2=C_\phi/\chi_z$로 이어진다.
+  $(\theta,\phi)$ 좌표는 극점 사이트에 가짜 영모드를 만들므로 쓰지 않는다.}
+  \slidesource{2026-09-29 결정; NBCP 노트 6장의 궤도 정의를 일반 축으로 확장}{contract,selection}
+\end{frame}
+
+\begin{frame}[label=state-selection-check]{D16 수치 확인: 축은 $E_{\mathrm{cl}}$ Hessian에서 정해진다}
+  \framesubtitle{NBCP Y 상태, $B=0.2$ T, $N=6$, 궤도 24점. 모든 경우 영공간은 1차원이고 회전 span 안에 있다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{2.6cm}P{2.3cm}P{4.2cm}@{}}
+    \toprule
+    경우 & 찾은 축 & 궤도 $E_{\mathrm{cl}}$ 변동 & 궤도 $E_{\mathrm{qm}}$ 변동 \\
+    \midrule
+    정확한 U(1) & $\hat z$, 오차 $9\times10^{-9}$ & $7\times10^{-18}$ & $3.8\times10^{-16}$: 선택 없음 \\
+    $J_{\mathrm{PD}}=0.010$ & $\hat z$, 오차 $2\times10^{-8}$ & $1\times10^{-17}$ & $2.83\times10^{-6}$: $\pi/3$ 간격 최소 6개 \\
+    $J_\Gamma=0.010$ & $\hat z$, 오차 $1\times10^{-8}$ & $1\times10^{-17}$ & $3.2\times10^{-12}$: 위치 판정 불가 수준 \\
+    $J_{\mathrm{PD}}$, 문제 전체를 $R$로 회전 & $R\hat z$, 오차 $8\times10^{-9}$ & $2\times10^{-17}$ & $2.83\times10^{-6}$: 회전 전과 같음 \\
+    같은 회전에서 azimuth 이동 $R_z$ & --- & $1.5\times10^{-2}$ & 의미 없음 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  DE 해(기울기 $2$--$3\times10^{-7}$)에서 출발해도 축 오차는 $1.3\times10^{-5}$ 이하였다.
+  다만 최소 고윳값 $3.6\times10^{-7}$(다음 $6.7\times10^{-3}$)이 고정 허용오차로는 영모드로 판정되지 않은 경우가 있었다.
+  \par\medskip
+  \supportingtext{영공간 판정 기준과 mesh 오차보다 작은 $E_{\mathrm{qm}}$ 변동의 처리는 미결 사항이다(부록 A).}
+  \slidesource{\texttt{examples/nbcp\_y\_orbit\_axis\_check.py}}{selection}
 \end{frame}
 
 \begin{frame}[label=record-management]{설계 문서와 부록을 갱신하는 방법}
@@ -108,7 +190,7 @@
 \begin{frame}[label=sources]{근거 문서와 템플릿}
   \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
   \small
-  \begin{thebibliography}{9}
+  \begin{thebibliography}{10}
     \bibitem{contract}
       모델 간 공통 SpinModel 전달 규약, 2026-09-23 작성 · 2026-09-29 갱신.
       \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review.
@@ -133,5 +215,8 @@
     \bibitem{rename}
       패키지 이름 변경 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · 테스트·수치·호환성·설치 대조.
+    \bibitem{selection}
+      상태 선택 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · \texttt{quantum} 경로 수정과 D16 궤도 축 수치 확인.
   \end{thebibliography}
 \end{frame}

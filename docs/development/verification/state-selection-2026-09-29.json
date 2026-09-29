@@ -1,0 +1,330 @@
+{
+  "date": "2026-09-29",
+  "scope": "State selection by zero-point energy: fix of the existing quantum path of SpinOptimizer.find_minimum (commit d43d8d4) and a numerical check of the orbit-axis rule adopted as D16. D16 itself is not implemented.",
+  "quantum_path_fix": {
+    "commit": "d43d8d4",
+    "baseline_commit": "6f90198",
+    "defects": [
+      "When L-BFGS-B did not beat the DE energy, best_method, E_cl and mu_magswt were unassigned (UnboundLocalError) and angles stayed the reduced free-variable array.",
+      "The comparison used the classical-only DE energy E_cl instead of E_cl + E_qm at the DE angles.",
+      "find_optimum_w_BFGS perturbed the caller's array in place: the reported classical DE angles drifted (two_msl XXZ h=0: 0.06-0.10 rad, E_cl rise 5.3e-4) and restarts accumulated kicks."
+    ],
+    "changes": [
+      "Quantum branch starts from the DE angles with E_qm evaluated there (method 'DE', full angles, energy = E_cl + E_qm) and keeps BFGS ('DE+BFGS') only if it lowers E_cl + E_qm.",
+      "find_optimum_w_BFGS perturbs a copy; every restart starts from the DE point."
+    ],
+    "unchanged": "Global np.random perturbation (removed by D16); angle_setting=None still unsupported.",
+    "tests": {
+      "file": "code-space/tests/test_methods/test_optimization_quantum.py",
+      "new_tests": 5,
+      "new_tests_before_fix": "5 failed (2 UnboundLocalError, 3 in-place mutation)",
+      "command": "PYTHONPATH=code-space:. python3 -m pytest -p no:cacheprovider code-space/tests",
+      "before": {
+        "passed": 220,
+        "failed": 5
+      },
+      "after": {
+        "passed": 225,
+        "failed": 5
+      },
+      "failures": "The same 5 known CommensurateStructure failures."
+    },
+    "numerical_snapshot": {
+      "script": "examples/package_regression_snapshot.py",
+      "leaves": 208,
+      "before_after_maximum_difference": 0.0,
+      "note": "The snapshot runs classical and MAGSWT searches only, so the quantum-path change is covered by the new tests, not by the snapshot."
+    }
+  },
+  "orbit_axis_check": {
+    "script": "examples/nbcp_y_orbit_axis_check.py",
+    "summary": [
+      "Every case has one Hessian null direction (Y start), lying in the span of global rotation generators (outside part below 1e-8).",
+      "Detected axis matches R z to 1e-8 from the Y state and to 1.3e-5 from the DE result.",
+      "Exact U(1): E_qm spread 3.8e-16 along the orbit (no selection). J_PD = 0.010: spread 2.83e-6 with six minima spaced pi/3.",
+      "J_Gamma = 0.010: spread 3.2e-12 at N=6, at the level where the minimum location is not reliable.",
+      "Whole problem rotated: the detected orbit reproduces the unrotated E_qm spread; the common azimuth shift R_z raises E_cl by up to 1.5e-2.",
+      "From DE (gradient 2-3e-7) the smallest Hessian eigenvalue is 3.6e-7 against 6.7e-3 for the next; the fixed tolerance 1e-6 x max eigenvalue did not count it as null in the unrotated case. The null test needs a spectral-gap criterion or a classical local polish first."
+    ],
+    "report": {
+      "field_T": 0.2,
+      "J_meV": 0.075,
+      "Jz_meV": 0.125,
+      "mesh_N": 6,
+      "orbit_points": 24,
+      "hessian_step": 0.0001,
+      "null_tolerance": 1e-06,
+      "rotation": {
+        "axis": [
+          1,
+          2,
+          0
+        ],
+        "angle_rad": 0.7
+      },
+      "cases": [
+        {
+          "case": "exact U(1)",
+          "JPD_meV": 0.0,
+          "JGamma_meV": 0.0,
+          "start": "Y",
+          "max_abs_gradient": 6.938893903907228e-14,
+          "hessian_eigenvalues": [
+            -5.6389779495547575e-11,
+            0.006698254286346722,
+            0.012816944463281429,
+            0.01765934635069183,
+            0.05444548205141155,
+            0.0659861393903492
+          ],
+          "null_dimension": 1,
+          "null_norm_outside_rotation_span": [
+            6.683413702001219e-09
+          ],
+          "detected_axis": [
+            -8.359582750077467e-09,
+            1.9555149160388293e-09,
+            1.0
+          ],
+          "expected_axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "axis_error": 8.585258431884453e-09,
+          "axis_residual": 1.347251177325754e-10,
+          "orbit_detected_axis": {
+            "E_cl_spread": 6.938893903907228e-18,
+            "E_qm_spread": 3.7816971776294395e-16,
+            "E_qm_minimum_offsets_rad": [
+              1.308996938995747
+            ]
+          },
+          "orbit_common_azimuth_shift": {
+            "E_cl_spread": 2.0816681711721685e-17,
+            "E_qm_spread": 2.3592239273284576e-16,
+            "E_qm_minimum_offsets_rad": [
+              3.926990816987241
+            ]
+          }
+        },
+        {
+          "case": "J_PD accidental",
+          "JPD_meV": 0.01,
+          "JGamma_meV": 0.0,
+          "start": "Y",
+          "max_abs_gradient": 6.938893903907228e-14,
+          "hessian_eigenvalues": [
+            -6.220987424684538e-11,
+            0.00669825464070761,
+            0.012816944165909446,
+            0.017659346616720414,
+            0.054445481963079245,
+            0.06598613968190116
+          ],
+          "null_dimension": 1,
+          "null_norm_outside_rotation_span": [
+            1.3947471884477402e-08
+          ],
+          "detected_axis": [
+            3.098214737144022e-09,
+            1.76668894456322e-08,
+            1.0
+          ],
+          "expected_axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "axis_error": 1.7936496794013226e-08,
+          "axis_residual": 3.659141629842101e-10,
+          "orbit_detected_axis": {
+            "E_cl_spread": 1.3877787807814457e-17,
+            "E_qm_spread": 2.8294947173757717e-06,
+            "E_qm_minimum_offsets_rad": [
+              0.7853981633974483,
+              1.832595714594046,
+              2.8797932657906435,
+              3.926990816987241,
+              4.974188368183839,
+              6.021385919380436
+            ]
+          },
+          "orbit_common_azimuth_shift": {
+            "E_cl_spread": 2.0816681711721685e-17,
+            "E_qm_spread": 2.829494717153727e-06,
+            "E_qm_minimum_offsets_rad": [
+              0.7853981633974483,
+              1.832595714594046,
+              2.8797932657906435,
+              3.926990816987241,
+              4.974188368183839,
+              6.021385919380436
+            ]
+          }
+        },
+        {
+          "case": "J_Gamma accidental",
+          "JPD_meV": 0.0,
+          "JGamma_meV": 0.01,
+          "start": "Y",
+          "max_abs_gradient": 6.938893903907228e-14,
+          "hessian_eigenvalues": [
+            -8.289695668637162e-10,
+            0.006698254845858218,
+            0.012816943784395506,
+            0.017659346429382175,
+            0.0544454821035205,
+            0.06598613980455935
+          ],
+          "null_dimension": 1,
+          "null_norm_outside_rotation_span": [
+            3.5276011787033265e-09
+          ],
+          "detected_axis": [
+            7.768047399292101e-09,
+            9.680488795241994e-09,
+            1.0
+          ],
+          "expected_axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "axis_error": 1.2411866246155514e-08,
+          "axis_residual": 8.456501739172077e-10,
+          "orbit_detected_axis": {
+            "E_cl_spread": 1.3877787807814457e-17,
+            "E_qm_spread": 3.2221707940705002e-12,
+            "E_qm_minimum_offsets_rad": [
+              2.8797932657906435
+            ]
+          },
+          "orbit_common_azimuth_shift": {
+            "E_cl_spread": 6.938893903907228e-18,
+            "E_qm_spread": 3.200275114356721e-12,
+            "E_qm_minimum_offsets_rad": [
+              0.7853981633974483,
+              1.832595714594046,
+              2.8797932657906435,
+              3.926990816987241,
+              4.974188368183839,
+              6.021385919380436
+            ]
+          }
+        },
+        {
+          "case": "J_PD, whole problem rotated",
+          "JPD_meV": 0.01,
+          "JGamma_meV": 0.0,
+          "start": "Y",
+          "max_abs_gradient": 0.0,
+          "hessian_eigenvalues": [
+            -1.2352448895392015e-10,
+            0.006698255844276832,
+            0.012816944273968034,
+            0.01765934681207432,
+            0.05444548229083632,
+            0.0659861403370897
+          ],
+          "null_dimension": 1,
+          "null_norm_outside_rotation_span": [
+            2.995432849183541e-09
+          ],
+          "detected_axis": [
+            0.5762058146593665,
+            -0.28810290131851574,
+            0.7648421911771013
+          ],
+          "expected_axis": [
+            0.5762058163884703,
+            -0.2881029081942352,
+            0.7648421872844885
+          ],
+          "axis_error": 8.088124150082362e-09,
+          "axis_residual": 1.77147850327889e-10,
+          "orbit_detected_axis": {
+            "E_cl_spread": 2.0816681711721685e-17,
+            "E_qm_spread": 2.8294947178493512e-06,
+            "E_qm_minimum_offsets_rad": [
+              0.7853981633974483,
+              1.832595714594046,
+              2.8797932657906435,
+              3.926990816987241,
+              4.974188368183839,
+              6.021385919380436
+            ]
+          },
+          "orbit_common_azimuth_shift": {
+            "E_cl_spread": 0.014772712135622115,
+            "E_qm_spread": 0.0017510522136301027,
+            "E_qm_minimum_offsets_rad": [
+              3.665191429188092,
+              3.926990816987241
+            ]
+          }
+        },
+        {
+          "case": "J_PD from DE",
+          "JPD_meV": 0.01,
+          "JGamma_meV": 0.0,
+          "start": "DE",
+          "max_abs_gradient": 2.258116610365235e-07,
+          "hessian_eigenvalues": [
+            3.578026223344973e-07,
+            0.006698052299149295,
+            0.012816877560751125,
+            0.01766042172013619,
+            0.054444767873423214,
+            0.06598600772483905
+          ],
+          "null_dimension": 0,
+          "null_norm_outside_rotation_span": [],
+          "detected_axis": [
+            -1.4607226145816174e-06,
+            -2.0273252370373724e-06,
+            0.9999999999968783
+          ],
+          "expected_axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "axis_error": 2.498751322858787e-06,
+          "axis_residual": 3.716538197939994e-07
+        },
+        {
+          "case": "J_PD rotated from DE",
+          "JPD_meV": 0.01,
+          "JGamma_meV": 0.0,
+          "start": "DE",
+          "max_abs_gradient": 3.0385222116180444e-07,
+          "hessian_eigenvalues": [
+            2.560586372425217e-08,
+            0.006698239644733063,
+            0.012816939047963036,
+            0.01765942672039365,
+            0.05444542812391473,
+            0.06598613058811731
+          ],
+          "null_dimension": 1,
+          "null_norm_outside_rotation_span": [
+            7.74066136478565e-06
+          ],
+          "detected_axis": [
+            0.5761982939999801,
+            -0.2881136769082542,
+            0.7648437978894245
+          ],
+          "expected_axis": [
+            0.5762058163884703,
+            -0.2881029081942352,
+            0.7648421872844885
+          ],
+          "axis_error": 1.3234257760854072e-05,
+          "axis_residual": 5.046511076556101e-07
+        }
+      ]
+    }
+  }
+}
