@@ -9,7 +9,7 @@
 \begin{frame}[label=decisions]{결정 기록: 합의와 제안을 구분한다}
   \framesubtitle{기록일 2026-09-23 · 갱신 2026-09-29 · 대화의 합의·결정은 세부 API 구현 완료와 다르다.}
   \small\renewcommand{\arraystretch}{1.12}
-  \begin{tabularx}{\textwidth}{@{}p{0.7cm}Yp{2.5cm}@{}}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
     \toprule
     ID & 내용 & 상태 \\
     \midrule
@@ -18,7 +18,7 @@
     D03 & 모델 작업 공간은 작은 구성으로 시작 & \textbf{방향 합의} \\
     D04 & 원시·중간 계산은 모델 작업 공간, 정돈된 결과는 data-space & \textbf{방향 합의} \\
     D05 & 분율 좌표·정수 셀 이동·단위 모드·결합 수 규칙 & \textbf{규약 검토} \\
-    D06 & 기존 변위와 새 규약의 대응, 실제 자료형 API & \textbf{규약 검토} \\
+    D06 & 기존 변위와 새 규약의 대응, 실제 자료형 API & \textbf{D13·D16으로 결정} \\
     D07 & 1차 범위: NBCP·두 하이젠버그 벤치마크, LSWT 물리량(위상량은 마지막 단계) & \textbf{사용자 결정} \\
     D08 & \texttt{terms[]} 형식: 형식은 열고 1차 검증은 이선형·Zeeman으로 닫음 & \textbf{사용자 결정} \\
 \bottomrule
@@ -32,7 +32,7 @@
 \begin{frame}[label=decisions-continued]{결정 기록 (계속)}
   \framesubtitle{2026-09-29 사용자 결정.}
   \small\renewcommand{\arraystretch}{1.12}
-  \begin{tabularx}{\textwidth}{@{}p{0.7cm}Yp{2.5cm}@{}}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
     \toprule
     ID & 내용 & 상태 \\
     \midrule
@@ -43,6 +43,7 @@
     D13 & 표준 Fourier 부호 $e^{+\mathrm i\mathbf k\cdot\mathbf r}$와 전체 위치 게이지; NBCP 변위는 $r_t=r_s-d$ & \textbf{사용자 결정} \\
     D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
     D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
+    D16 & 1단계 API: \texttt{Term} 생성 함수, (사이트, 셀) 방향 dict, 위반 일괄 보고, 최상위 노출; 직렬화는 4단계 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -133,5 +134,8 @@
     \bibitem{rename}
       패키지 이름 변경 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · 테스트·수치·호환성·설치 대조.
+    \bibitem{stage1}
+      1단계 공통 자료형 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · 정확값·교차 확인·규약 사례·회귀 대조.
   \end{thebibliography}
 \end{frame}

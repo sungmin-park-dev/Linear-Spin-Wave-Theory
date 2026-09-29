@@ -16,6 +16,11 @@ definitions : Physical constants, numerical defaults, and spin basis
 observables : Thermodynamics, topology (Berry/Chern), correlations
 visualization : Band structure, Berry curvature, spin configuration plots
 
+Model definitions: ``SpinModel`` is the common Hamiltonian definition shared by
+all methods and ``SpinState`` a classical configuration on a magnetic supercell.
+``SpinSystem`` is the current LSWT input, which stage 2 of the development plan
+connects to ``SpinModel``. Benchmark models live in ``spintoolkit.models``.
+
 The previous package name ``lswt`` remains importable as a deprecated alias.
 
 Quick Start
@@ -43,11 +48,20 @@ from spintoolkit.system.spin_system import SpinSite, Coupling
 from spintoolkit.system.exchange import heisenberg, xxz, xxz_with_soc, dzyaloshinskii_moriya, kitaev
 from spintoolkit.system.brillouin_zone import BrillouinZone
 
+# Common model definition (transfer contract)
+from spintoolkit.system.model import (
+    SpinModel, Site, Term, Units, SpinModelError, validate_spin_model,
+)
+from spintoolkit.system.conditions import ExternalConditions
+from spintoolkit.system.geometry import CalculationGeometry
+from spintoolkit.states.spin_state import SpinState, SpinStateError, validate_spin_state
+
 # Calculation methods
 from spintoolkit.methods.base import AbstractSolver, SolverResult
 from spintoolkit.methods.lswt.solver import LSWTSolver
 from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.methods.lswt.energy import EnergyFunction
+from spintoolkit import models
 
 __all__ = [
     '__version__', '__author__', '__email__',
@@ -55,6 +69,11 @@ __all__ = [
     'SpinSystem', 'SpinSite', 'Coupling',
     'heisenberg', 'xxz', 'xxz_with_soc', 'dzyaloshinskii_moriya', 'kitaev',
     'BrillouinZone',
+    # Common model definition
+    'SpinModel', 'Site', 'Term', 'Units', 'SpinModelError', 'validate_spin_model',
+    'ExternalConditions', 'CalculationGeometry',
+    'SpinState', 'SpinStateError', 'validate_spin_state',
+    'models',
     # Solvers
     'AbstractSolver', 'SolverResult',
     'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',

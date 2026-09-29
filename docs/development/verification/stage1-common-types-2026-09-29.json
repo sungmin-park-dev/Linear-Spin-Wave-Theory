@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-29",
+  "scope": "Stage 1 of the 1st development plan: common data types and validation (SpinModel, SpinState, ExternalConditions, CalculationGeometry), a minimal consumer (classical energy, local fields, torques) and the square/triangular Heisenberg benchmark builders. Existing computational code unchanged.",
+  "status": "passed",
+  "baseline_commit": "2614fad",
+  "added_modules": [
+    "code-space/spintoolkit/system/model.py",
+    "code-space/spintoolkit/system/conditions.py",
+    "code-space/spintoolkit/system/geometry.py",
+    "code-space/spintoolkit/states/spin_state.py",
+    "code-space/spintoolkit/methods/classical.py",
+    "code-space/spintoolkit/models/heisenberg.py",
+    "code-space/spintoolkit/models/__init__.py"
+  ],
+  "changed_modules": {
+    "code-space/spintoolkit/definitions/constants.py": "MU_B_MEV_PER_T = 5.7883818060e-2 meV/T added",
+    "code-space/spintoolkit/__init__.py": "top-level exports of the new types and the models subpackage",
+    "code-space/spintoolkit/system/__init__.py": "exports",
+    "code-space/spintoolkit/states/__init__.py": "exports",
+    "code-space/spintoolkit/definitions/__init__.py": "MU_B_MEV_PER_T export"
+  },
+  "api_decisions": {
+    "term_constructors": "Term.bilinear / Term.zeeman; general Term(kind=...) kept open, validation rejects kinds outside SUPPORTED_KINDS",
+    "directions": "dict keyed by (site_id, canonical cell); unit vectors, no angles",
+    "violations": "collected and reported together (SpinModelError / SpinStateError)",
+    "validation_timing": "SpinModel and SpinState validate at construction; model/geometry consistency of a state in validate_spin_state",
+    "module_names": "system/conditions.py (ExternalConditions), system/geometry.py (CalculationGeometry)",
+    "top_level": "exported now",
+    "serialization": "deferred to stage 4; fingerprint (SHA-256 of physical content, order/label/metadata independent) now"
+  },
+  "pytest": {
+    "command": "PYTHONPATH=code-space:. python3 -m pytest -p no:cacheprovider code-space/tests",
+    "before": {
+      "passed": 220,
+      "failed": 5
+    },
+    "after": {
+      "passed": 273,
+      "failed": 5
+    },
+    "pre_existing_ids": "all 225 pre-existing test IDs keep their outcome; the 5 failures are the known CommensurateStructure failures",
+    "new_tests": {
+      "code-space/tests/test_system/test_model.py": 18,
+      "code-space/tests/test_system/test_conditions_geometry.py": 8,
+      "code-space/tests/test_states/test_spin_state.py": 12,
+      "code-space/tests/test_methods/test_classical.py": 10,
+      "code-space/tests/test_models/test_heisenberg.py": 5
+    }
+  },
+  "exact_checks": {
+    "square_neel_energy": "-2 J S^2, torque 0 (J,S)=(1,1/2),(0.7,3/2)",
+    "triangular_120_energy": "-3/2 J S^2, torque 0",
+    "polarized_in_field": "z J S^2 - h S with z = 2 (square), 3 (triangular), torque 0",
+    "supercell_independence": "energy per site equal for M = I and M = [[2,1],[1,2]]",
+    "local_fields": "-dE/dS along tangent directions matches central finite differences (rel 1e-6) on a two-site model with DM, anisotropic g and a non-diagonal supercell",
+    "nbcp_cross_check": "one-site primitive NBCP fixture (NN+NNN SOC, Dz, field via mu_B) equals the existing EnergyFunction One-MSL classical energy to 1e-15 for three directions; offsets built with r_target = r_source - d (D13)"
+  },
+  "numerical_regression": {
+    "script": "examples/package_regression_snapshot.py",
+    "leaves": 208,
+    "maximum_difference_vs_pre_rename": 0.0
+  },
+  "not_in_scope": "LSWT still takes SpinSystem (stage 2); result header, JSON serialization (stage 4); finite-torus term expansion (stage 3)",
+  "source_hashes": {
+    "code-space/spintoolkit/system/model.py": "3981562e8cf751abdbf4cb6815ceca8c5382194187a790344159b4a5313cc41f",
+    "code-space/spintoolkit/system/conditions.py": "8a7dd979476fae73e77ab03c0e4344a13da0c3c1f4cc9a0a1489ddbd78ae2722",
+    "code-space/spintoolkit/system/geometry.py": "888ba6f812e6ff0bee734125c8b4e88c99ac1814116889f27508d6d573b8bb57",
+    "code-space/spintoolkit/states/spin_state.py": "972c65388b368873922bf4af3803d30ce312748380e0b5e5d993e291c913f9fe",
+    "code-space/spintoolkit/methods/classical.py": "ac84c2d3ecaa6494e8fb19d8378949263561ed962ceac131e6afdd9d199f7f95",
+    "code-space/spintoolkit/models/heisenberg.py": "f5547d931af4b5d31f9357145c9511386bc9e8035928e98a0b6851e8afcbd7a5",
+    "code-space/spintoolkit/models/__init__.py": "f1a6a1c27ddc00a66292eb44c0756ed3119ccc5143ba2630446bc4259259370f",
+    "code-space/tests/test_system/test_model.py": "73c2d5147f551e9a3ea7b45bb28a6690e0d7953fb94ff0c9524c32df17ecd5d0",
+    "code-space/tests/test_system/test_conditions_geometry.py": "b8bbf46354e2423bc3650793b159de41fbb44d01c06adc4d729c453f6dd778d2",
+    "code-space/tests/test_states/test_spin_state.py": "837e88f29f9a5b2c4142c657e7eec1eca0f402be45009305d4a40fcd33895de2",
+    "code-space/tests/test_methods/test_classical.py": "2d54db5c697851005bbab69ce82fc82705362a529b469a736f86b0b606a20664",
+    "code-space/tests/test_models/test_heisenberg.py": "546e6d01aa057d1ea5c6e40b4d4db4378756e20ba630e6a74156039c63f10133"
+  }
+}

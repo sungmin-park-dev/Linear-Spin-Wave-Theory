@@ -5,7 +5,7 @@
 \end{frame}
 
 \begin{frame}[label=common-interface]{모델마다 다른 입력, 공통 형식의 출력}
-  \framesubtitle{제안 API · 모델 이름에 따라 수신 코드가 달라지지 않게 한다.}
+  \framesubtitle{1단계 구현 · 모델 이름에 따라 수신 코드가 달라지지 않게 한다.}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.46\textwidth}
       \begin{block}{모델별 생성}
@@ -32,7 +32,7 @@
   \supportingtext{공통 출력에 모델별 config 객체나 미평가 수식을 넘기지 않는다.
   \texttt{metadata.parameters}는 기록용이며, 계산 계수의 두 번째 원본이 되지 않는다.
   키타에프는 후속 벤치마크로 같은 형식을 사용한다.}
-  \slidesource{필드와 생성·검증 책임; API 미구현}{contract}
+  \slidesource{필드와 생성·검증 책임; 1단계 구현은 부록 A}{contract,stage1}
 \end{frame}
 
 \begin{frame}[label=site-schema]{격자와 사이트를 읽는 형식}
@@ -193,7 +193,7 @@
 \end{frame}
 
 \begin{frame}[label=state-schema]{\texttt{SpinState}: 고전 계산과 LSWT의 상태}
-  \framesubtitle{규약 검토 · 정수 초격자 행렬 하나로 기본 격자 위의 모든 정합 상태를 표현한다.}
+  \framesubtitle{1단계 구현 · 정수 초격자 행렬 하나로 기본 격자 위의 모든 정합 상태를 표현한다.}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.56\textwidth}
       \small
@@ -203,7 +203,7 @@
         \midrule
         \texttt{model\_ref} & \texttt{model\_id}와 계수 해시 \\
         \texttt{supercell} & 정수 $(2,2)$ 행렬 $M$, $\det M\neq0$; 자기 격자벡터 행 $=MA$ \\
-        \texttt{directions} & (site, cell, 단위 벡터); 사이트마다 $|\det M|$개 \\
+        \texttt{directions} & (site, cell) $\to$ 단위 벡터; 사이트마다 $|\det M|$개 \\
         \texttt{provenance} & 초기값·최적화·직접 지정; 선택에 쓴 에너지 \\
         \bottomrule
       \end{tabularx}
@@ -225,7 +225,7 @@
 \end{frame}
 
 \begin{frame}[label=request-result]{계산 요청과 결과}
-  \framesubtitle{규약 검토 · 요청은 외부 변수 분류를 따르고, 결과는 공통 머리부와 방법별 본문으로 나눈다.}
+  \framesubtitle{외부 조건·계산격자 조건은 1단계 구현, 결과 머리부와 LSWT 본문은 후속이다.}
   \small
   \begin{tabularx}{\textwidth}{@{}p{2.3cm}Y@{}}
     \toprule
