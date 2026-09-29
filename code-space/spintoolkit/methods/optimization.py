@@ -1,38 +1,43 @@
 """Spin system optimizer for finding ground state spin configurations.
 
 This module provides optimization routines for finding the minimum energy
-spin configuration using differential evolution (DE) and L-BFGS-B methods,
-including support for MAGSWT (modified spin wave theory) optimization.
-"""
+spin configuration using differential evolution (DE), including support for
+MAGSWT (modified spin wave theory) optimization.
 
-import warnings
+Zero-point selection among degenerate classical states is done on the
+classical manifold by :func:`spintoolkit.methods.state_selection.select_on_manifold`
+(D17). The former ``quantum`` method, an unconstrained minimization of
+E_cl + E_qm, was removed (D18): its result is not a classical stationary
+point, so the linear boson terms do not vanish and the energy goes beyond
+LSWT order.
+"""
 
 import numpy as np
 from typing import List, Union
-from scipy.optimize import minimize, differential_evolution
+from scipy.optimize import differential_evolution
 
 
 # Optimization method name constants
 CLASSICAL_METHOD_NAME = ["classical", "Classical", "CLASSICAL"]
 MAGSWT_METHOD_NAME = ["MAGSWT", "magswt"]
-QUANTUM_METHOD_NAME = ["classical+quantum", "quantum"]
 
-OPT_METHOD_NAMES = CLASSICAL_METHOD_NAME + MAGSWT_METHOD_NAME + QUANTUM_METHOD_NAME
+OPT_METHOD_NAMES = CLASSICAL_METHOD_NAME + MAGSWT_METHOD_NAME
 
-QUANTUM_METHOD_WARNING = (
-    "opt_method 'quantum' minimizes E_cl + E_qm without the classical-manifold "
-    "constraint: the result is not a valid LSWT reference state (linear boson terms "
-    "do not vanish) and its energy goes beyond LSWT order. It will be removed when "
-    "the manifold-constrained state selection (D17) is implemented."
+#: Removed method names and the reason given when they are requested.
+REMOVED_METHOD_NAMES = ["classical+quantum", "quantum"]
+REMOVED_METHOD_MESSAGE = (
+    "opt_method 'quantum' was removed (D18): minimizing E_cl + E_qm without the "
+    "classical-manifold constraint does not give a valid LSWT reference state. "
+    "Use opt_method 'classical' and then "
+    "spintoolkit.methods.state_selection.select_on_manifold (D17)."
 )
 
 
 class SpinOptimizer:
     """Optimizer for finding ground state spin configurations.
 
-    Supports classical optimization via differential evolution,
-    MAGSWT grid search optimization, and quantum (classical+quantum)
-    optimization via L-BFGS-B refinement.
+    Supports classical optimization via differential evolution and the
+    MAGSWT grid search.
 
     Attributes
     ----------
@@ -174,72 +179,6 @@ class SpinOptimizer:
         )
         return result
 
-    @staticmethod
-    def find_optimum_w_BFGS(func, bounds, init_points, randomness=0.0):
-        """Find optimum using L-BFGS-B starting from initial points.
-
-        Parameters
-        ----------
-        func : callable
-            Objective function to minimize.
-        bounds : list of tuple
-            Bounds for each variable.
-        init_points : np.ndarray
-            Initial guess for the variables.
-        randomness : float, optional
-            Scale of random perturbation to initial points (default: 0.0).
-
-        Returns
-        -------
-        result : scipy.optimize.OptimizeResult
-            Optimization result.
-        """
-        # Copy so the caller's array (e.g. the DE optimum) is never modified.
-        init_points = np.array(init_points, dtype=float)
-        if randomness != 0.0:
-            init_points += 2 * np.pi * np.random.rand(len(bounds)) * randomness
-        result = minimize(
-            func,
-            init_points,
-            method='L-BFGS-B',
-            bounds=bounds,
-            options={'ftol': 1e-11, 'gtol': 1e-11},
-        )
-        return result
-
-    def find_optimum_w_BFGS_from_DE(self, func, bounds, init_points,
-                                     randomness=0.01, repeat=2):
-        """Refine DE result using multiple L-BFGS-B runs with perturbation.
-
-        Parameters
-        ----------
-        func : callable
-            Objective function to minimize.
-        bounds : list of tuple
-            Bounds for each variable.
-        init_points : np.ndarray
-            Initial guess (typically from DE result).
-        randomness : float, optional
-            Scale of random perturbation for repeated runs (default: 0.01).
-        repeat : int, optional
-            Number of L-BFGS-B runs with perturbation (default: 2).
-
-        Returns
-        -------
-        result : scipy.optimize.OptimizeResult
-            Best optimization result among all runs.
-        """
-        result = self.find_optimum_w_BFGS(func, bounds, init_points, randomness=0.0)
-
-        for i in range(repeat):
-            result_new = self.find_optimum_w_BFGS(
-                func, bounds, init_points, randomness=randomness
-            )
-            if result_new.fun < result.fun:
-                result = result_new
-
-        return result
-
     def find_minimum(self, cef_obj, opt_method, angle_setting=None,
                      verbose=False, full_range_search=False, num_search=6):
         """Find the minimum energy spin configuration.
@@ -264,13 +203,20 @@ class SpinOptimizer:
         opt_result : dict
             Optimization result with keys: 'energy', 'angles', 'method',
             'E_cl', 'E_qm', 'MAGSWT'. 'energy' is E_cl + E_qm and 'angles'
-            is the full angle list. For the quantum methods, the L-BFGS-B
-            result ('DE+BFGS') is kept only if it lowers E_cl + E_qm below
-            its value at the DE angles; otherwise the DE angles are returned
-            with method 'DE'.
+            is the full angle list.
         cl_result : dict
             Classical optimization result with keys: 'E_cl', 'angles'.
+
+        Raises
+        ------
+        ValueError
+            If ``opt_method`` is not one of OPT_METHOD_NAMES; the removed
+            ``quantum`` names get a message pointing to the D17 selection.
         """
+        if opt_method in REMOVED_METHOD_NAMES:
+            raise ValueError(REMOVED_METHOD_MESSAGE)
+        if opt_method not in OPT_METHOD_NAMES:
+            raise ValueError(f"unknown opt_method {opt_method!r}; use one of {OPT_METHOD_NAMES}")
         if verbose:
             print(f"[Optimizer] Starting optimization with {opt_method}")
 
@@ -323,33 +269,6 @@ class SpinOptimizer:
             E_cl = MAGSWT_result["E_cl"]
             E_qm = MAGSWT_result["E_qm"]
             mu_magswt = MAGSWT_result["mu_MAGSWT"]
-
-        elif opt_method in QUANTUM_METHOD_NAME:
-            warnings.warn(QUANTUM_METHOD_WARNING, FutureWarning, stacklevel=2)
-            # Fallback: the DE optimum with its quantum correction, as in
-            # the classical branch. BFGS must beat this total energy.
-            E_cl = best_energy
-            E_qm = cef_obj.quantum_energy_density_func(full_angles)
-            mu_magswt = cef_obj.mu_magswt
-            best_energy = E_cl + E_qm
-            best_method = 'DE'
-
-            LSWT_result = self.find_optimum_w_BFGS_from_DE(
-                E_tot_func, bounds, best_angles
-            )
-            best_angles = full_angles
-
-            if LSWT_result.fun < best_energy:
-                # Optimization results from classical + quantum energy function
-                best_energy = LSWT_result.fun
-                best_angles = LSWT_result.x
-                best_method = 'DE+BFGS'
-                E_cl = E_cl_func(best_angles)
-                E_qm = E_qm_func(best_angles)
-                mu_magswt = cef_obj.mu_magswt  # get chemical potential
-
-                # Recover full angle list
-                best_angles = self.recover_angles(best_angles, angle_setting)
 
         cef_obj.set_update_args(False)
 

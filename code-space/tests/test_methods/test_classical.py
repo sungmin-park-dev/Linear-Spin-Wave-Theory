@@ -10,8 +10,11 @@ import numpy as np
 import pytest
 
 from model import nbcp
+from model.nbcp.model import legacy_cells
 from model.nbcp.unit_cells import DISP_NN, DISP_NNN
-from spintoolkit.methods.classical import classical_energy, local_fields, torques
+from spintoolkit.methods.classical import (
+    classical_energy, local_fields, refine_classical, tangent_expansion, torques,
+)
 from spintoolkit.methods.lswt.energy import EnergyFunction
 from spintoolkit.models import (
     neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg,
@@ -141,3 +144,55 @@ def test_nbcp_primitive_fixture_matches_existing_classical_energy(angles):
     existing = EnergyFunction(system.to_legacy_dict("Hex_60"), N=3)
     assert classical_energy(model, state, field) == pytest.approx(
         float(existing.classical_energy_density_func(np.array(angles))), abs=1e-15)
+
+
+@pytest.mark.parametrize("cell", ["one_msl", "three_msl", "four_msl"])
+def test_tangent_expansion_matches_finite_differences(cell):
+    """Analytic gradient and Hessian against central differences at a generic state."""
+    model = nbcp.build_model(NBCP_CONFIG | {"Dz": 0.003}, g=np.diag([4.2, 4.2, 4.7]))
+    field = ExternalConditions(field=(0.003, -0.002, 0.01))
+    num = len(legacy_cells(cell))
+    state = nbcp.candidate_state(model, cell, np.random.default_rng(3).uniform(-3, 3, 2 * num))
+    expansion = tangent_expansion(model, state, field)
+    assert expansion.energy == pytest.approx(classical_energy(model, state, field), abs=1e-15)
+
+    def energy(x):
+        x = x.reshape(-1, 2)
+        moved = (expansion.directions * np.sqrt(1 - np.sum(x ** 2, axis=1))[:, None]
+                 + np.einsum("ia,iax->ix", x, expansion.frames))
+        return classical_energy(model, SpinState(state.model_ref, state.supercell,
+                                                 dict(zip(expansion.keys, moved))), field)
+
+    step, dim = 1e-4, 2 * len(expansion.keys)
+    e = np.eye(dim) * step
+    gradient = [(energy(e[i]) - energy(-e[i])) / (2 * step) for i in range(dim)]
+    hessian = [[(energy(e[i] + e[j]) - energy(e[i] - e[j]) - energy(-e[i] + e[j])
+                 + energy(-e[i] - e[j])) / (4 * step ** 2) for j in range(dim)] for i in range(dim)]
+    np.testing.assert_allclose(expansion.gradient, gradient, rtol=0, atol=1e-9)
+    np.testing.assert_allclose(expansion.hessian, hessian, rtol=0, atol=5e-9)
+
+
+def test_tangent_hessian_has_no_polar_zero_mode():
+    """A spin at a pole gets two ordinary tangent directions, unlike (theta, phi).
+
+    A uniform tilt of the polarized ferromagnet costs only Zeeman energy, so both
+    eigenvalues are S h (exchange cancels between the two Hessian terms).
+    """
+    model = square_heisenberg(J=1.0)
+    state = polarized_state(model)
+    expansion = tangent_expansion(model, state, ExternalConditions(field=(0, 0, 5.0)))
+    np.testing.assert_allclose(np.linalg.eigvalsh(expansion.hessian), [2.5, 2.5], atol=1e-14)
+
+
+def test_refine_classical_reaches_a_stationary_state():
+    model = nbcp.build_model({"Jxy": 0.075, "Jz": 0.125, "JGamma": 0.01})
+    field = ExternalConditions(field=(0, 0, 0.0537741))
+    c = np.arccos(0.3)
+    angles = np.array([c, 0.3, -c, 0.3, np.pi, 0.3])
+    start = nbcp.candidate_state(model, "three_msl",
+                                 angles + 1e-3 * np.random.default_rng(0).standard_normal(6))
+    refined = refine_classical(model, start, field)
+    record = refined.provenance["refinement"]
+    assert record["max_torque_after"] < 1e-15 < record["max_torque_before"]
+    assert record["energy_change"] < 0
+    assert max(np.linalg.norm(t) for t in torques(model, refined, field).values()) < 1e-15

@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2단계 구현 & 상태 선택(2b) \\
-    \textbf{미구현} & D17 궤도 탐색, 결과 머리부, 최소 ED 도구, ED·TN 솔버 & 2b단계부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b단계 구현 & 2b 검토 항목 확인 \\
+    \textbf{미구현} & 결과 머리부, 최소 ED 도구, ED·TN 솔버, 여러 차원 영공간 & 3단계부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -199,6 +199,106 @@ classical_energy(model, state, cond)  # -0.375
   \slidesource{2단계 검증 기록}{stage2}
 \end{frame}
 
+\begin{frame}[fragile,label=stage2b-api]{2b단계: 고전 manifold 위 영점 에너지 선택}
+  \framesubtitle{2026-09-29 · D17을 새 자료형 위에 구현하고 \texttt{quantum} 경로를 삭제했다(D18, D22).}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.55\textwidth}
+\begin{semiverbatim}\scriptsize
+from spintoolkit.methods import state_selection as sel
+
+result = sel.select_on_manifold(
+    model, state, conditions,
+    sel.lswt_zero_point_energy("Hex_30", N=6),
+    criteria=sel.SelectionCriteria(mode="physics"))
+
+result.verdict      # "selected"
+result.axis, result.phi, result.state
+result.diagnostics  # 판정에 쓴 값 전부
+\end{semiverbatim}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{enumerate}\setlength{\itemsep}{0.1em}
+        \item 고전 정밀화: 접평면 L-BFGS-B, 평평한 방향을 뺀 Newton
+        \item 해석적 Hessian, 회전 생성자 SVD로 축 $\hat n$
+        \item 궤도 36점, 12차 Fourier fit, fit 급수의 최소
+        \item $E_{\mathrm{cl}}$ 일정성, $C_{\mathrm{cl}}$ 대 $C_{\mathrm{qm}}$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \small 판정: \texttt{selected} · \texttt{no\_selection} · \texttt{unresolved} · \texttt{competition} · \texttt{no\_degeneracy} · \texttt{not\_flat} · \texttt{axis\_required} · \texttt{unsupported\_manifold}
+  \par\medskip
+  \supportingtext{Hessian: $\partial^2E/\partial x_{ia}\partial x_{jb}=S_iS_j\,\mathbf e_{ia}\!\cdot\!K_{ij}\mathbf e_{jb}+\delta_{ij}\delta_{ab}S_i\,\mathbf n_i\!\cdot\!\mathbf h_i$; 중앙 차분과 $7.8\times10^{-10}$(차분 오차 수준) 안에서 일치.
+  $E_{\mathrm{qm}}$은 호출 가능 객체로 받고, 기본 제공자는 변환을 거친 기존 \texttt{EnergyFunction}이다(native는 4단계).
+  \texttt{quantum}을 요청하면 \texttt{select\_on\_manifold}를 안내하는 \texttt{ValueError}.}
+  \slidesource{2b단계 검증 기록}{stage2b}
+\end{frame}
+
+\begin{frame}[label=stage2b-coefficients]{2b단계: 물리 근거 모드의 계수(검토 요청)}
+  \framesubtitle{D19가 구현 시 정하도록 남긴 값이다. 기본값은 \texttt{definitions/defaults.py}, 실행별 값은 \texttt{SelectionCriteria}.}
+  \small\renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}P{2.6cm}YP{1.6cm}@{}}
+    \toprule
+    항목 & 물리 근거 모드 & 기본값 \\
+    \midrule
+    상태 정확도 $\delta$ & 평평하지 않은 Hessian 방향에 남은 Newton 보정의 최대 성분 & --- \\
+    평평함의 곡률 하한 & $a\cdot\max|w|\cdot(\delta+r\epsilon)$ & $a=10$, $r=10^3$ \\
+    생성자 rank·대칭 허용오차 & $a\cdot(\delta+r\epsilon)$; 대칭은 $[K_{\hat n},J]=0$, $g^{\mathsf T}\mathbf b\parallel\hat n$ & 같음 \\
+    해상 기준 & 최대 조화 진폭 $>\max(10\times\text{fit 잔차},\,r\epsilon\max|E_{\mathrm{qm}}|)$ & 10, $10^3$ \\
+    고전·양자 비교 & Hessian이 평평하면 궤도 변동비 $\Delta E_{\mathrm{cl}}/\Delta E_{\mathrm{qm}}$, 아니면 $C_{\mathrm{cl}}/C_{\mathrm{qm}}$; $[0.1,10]$이면 경쟁 & $(0.1,10)$ \\
+    고전 고정 선별 & 평평하지 않은 방향: 궤도 한 칸의 고전 변화가 $E_{\mathrm{qm}}$ 변화의 10배를 넘으면 궤도 계산 없이 \texttt{no\_degeneracy} & 대역 상한 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{고정 상수 모드는 간격비 $10^{-3}$, rank $10^{-4}$, 진폭 $\max(10\times\text{잔차},10^3\epsilon|E_{\mathrm{qm}}|)$ 그대로다. 두 모드 모두 궤도 36점·12차 fit이며, 판정에 쓴 값을 \texttt{diagnostics}에 기록한다.}
+  \slidesource{2b단계 검증 기록}{stage2b}
+\end{frame}
+
+\begin{frame}[label=stage2b-verification]{2b단계: NBCP Y·V 상태에서 선택을 재현한다}
+  \framesubtitle{Y 0.2 T, V 1.4 T, $J_{\mathrm{PD}}$ 또는 $J_\Gamma=0.010$ meV, $10^{-3}$ rad 떨어진 출발. 기준: 독립 스캔 $N=48$.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{1.1cm}P{2.0cm}P{2.0cm}P{1.6cm}@{}}
+    \toprule
+    상태·결합 & 조화 & 진폭/기준 ($N=6$, 12) & $C_{\mathrm{qm}}$/기준 & 해상 여유 \\
+    \midrule
+    Y, $J_{\mathrm{PD}}$ & 6 & 1.011, 1.002 & 1.009, 1.002 & $>3\times10^{4}$ \\
+    Y, $J_\Gamma$ & 6 & 1.000, 1.000 & 1.000, 1.000 & $9.0\times10^{2}$ \\
+    V, $J_{\mathrm{PD}}$ & 6 & 1.006, 1.001 & 1.005, 1.000 & $>1.6\times10^{3}$ \\
+    V, $J_\Gamma$ & 3 & 1.000, 1.000 & 1.000, 1.000 & $>3.6\times10^{8}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  16회(두 모드) 모두 \texttt{selected}, 축 $\hat z$. 정밀화 뒤 토크 $10^{-17}$, 영 고윳값 $10^{-18}$(다음 $5\times10^{-3}$), 축 오차 $\le10^{-15}$(유한차분 시제품 $10^{-8}$).
+  \par\medskip
+  Y의 $J_\Gamma$: 진폭 $1.64\times10^{-12}$, fit 잔차 $1.1\times10^{-16}$, 해상 기준 $1.8\times10^{-15}$. 최소 위치는 기준과 $5.3\times10^{-6}$ rad 이내(fit 위치 분해능 $\approx10^{-5}$); 다른 경우는 $6\times10^{-7}$ 이내.
+  \par\medskip
+  \supportingtext{MAGSWT 정규화 값은 모든 궤도 점에서 하한 $10^{-9}$에 머물렀다. 테스트 373 통과 / 같은 5 실패(새 29개, 삭제한 \texttt{quantum} 테스트 8개), 208개 스냅샷 차이 0.}
+  \slidesource{\texttt{examples/nbcp\_state\_selection\_check.py}}{stage2b}
+\end{frame}
+
+\begin{frame}[label=stage2b-controls]{2b단계: 대조군·벤치마크·MAGSWT 재현}
+  \framesubtitle{DE 출발 세 seed $\times$ 두 모드. 판정이 다른 경우는 장을 기울인 대조군 하나다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{2.9cm}P{2.9cm}@{}}
+    \toprule
+    경우 & 물리 근거 모드 & 고정 상수 모드 \\
+    \midrule
+    정확한 U(1) & \texttt{no\_selection}(대칭) & \texttt{no\_selection} \\
+    $J_{\mathrm{PD}}$, $J_\Gamma$, 회전한 $J_{\mathrm{PD}}$ & \texttt{selected}, 축 오차 $\le10^{-15}$ & 같음 \\
+    장을 기울임 $(0.3h,0,h)$ & \texttt{competition}, $C_{\mathrm{cl}}/C_{\mathrm{qm}}=0.46$ & \texttt{no\_degeneracy}(간격비 $2\times10^{-2}$) \\
+    편극 $20h$; 정사각 편극 $h=5>h_{\mathrm{sat}}$ & \texttt{no\_degeneracy}, rank 2 & 같음 \\
+    삼각 120°, $h=0$(평평한 회전 3개) & \texttt{axis\_required}; $\hat z$를 주면 \texttt{no\_selection} & 같음 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \textbf{MAGSWT 재현(D18)}: 출발 azimuth가 $k\pi/6$ 격자 위이면 네 경우 모두 같은 총에너지(차이 $\le4.7\times10^{-16}$),
+  격자 밖(0.3 rad)이면 궤도 탐색이 $1.3\times10^{-12}$--$8.1\times10^{-6}$ meV 낮다.
+  \par\smallskip
+  \supportingtext{검토 요청: 기울인 장의 고전 최소는 유일하지만 고정 곡률이 영점 선택 곡률과 비슷하다. 이를 \texttt{competition}으로 볼지, MAGSWT를 유지할지 정해야 한다.}
+  \slidesource{2b단계 검증 기록}{stage2b}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -222,7 +322,7 @@ classical_energy(model, state, cond)  # -0.375
   전체 테스트 225 통과 / 같은 5 실패(변경 전 220 / 5). 새 테스트 5건은 수정 전 모두 실패했다.
   수치 snapshot 208개 값은 차이 0이다. snapshot은 \texttt{quantum} 경로를 쓰지 않으므로 이 경로는 새 테스트로 확인했다.
   \par\medskip
-  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식은 D17 구현과 함께 삭제하며, 그 전까지 호출하면 FutureWarning을 낸다(D18, 부록 B).
+  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 이 경로는 2b단계에서 삭제했다(D18, D22).
   \texttt{angle\_setting=None}이 TypeError를 내던 결함은 \texttt{8f4dd1e}에서 고쳤다(새 테스트 2건).}
   \slidesource{상태 선택 검증 기록}{selection}
 \end{frame}
@@ -272,7 +372,7 @@ classical_energy(model, state, cond)  # -0.375
     0 & 이름 변경(완료) & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
     1 & 자료형·검증(완료) & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
     2 & NBCP 연결(완료) & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
-    2b & 상태 선택 & NBCP Y 상태에서 축·선택 결과와 $\lambda_6$ 재현; D19 두 모드; MAGSWT 재현 비교 \\
+    2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
     4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
     5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
@@ -299,13 +399,14 @@ classical_energy(model, state, cond)  # -0.375
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
-    D17 궤도 탐색의 API와 이름, D19 물리 근거 모드의 세부 계수 & 2b단계 계획 시 \\
-    MAGSWT 격자 탐색의 처리(궤도 탐색 재현 검증 뒤) & 2b단계 \\
+    D19 물리 근거 모드의 계수(2b 구현값) & 사용자 검토 \\
+    기울인 장처럼 고전 고정과 영점 선택이 비슷한 경우를 \texttt{competition}으로 볼지 & 사용자 검토 \\
+    MAGSWT 격자 탐색의 유지·삭제(재현 확인 완료) & 사용자 결정 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준(D18, D19)은 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준·2b 구현 방식(D18, D19, D22)은 2026-09-29 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 원소 단위 비교로 확정했다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

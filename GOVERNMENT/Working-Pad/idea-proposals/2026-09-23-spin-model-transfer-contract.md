@@ -40,6 +40,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 계산계 실현(열역학 극한·유한 토러스) | `system/geometry.py`의 `CalculationGeometry` |
 | §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
+| §1 고전 Hessian(접평면 좌표)과 국소 정밀화(2b) | `methods/classical.py`의 `tangent_expansion`, `refine_classical` |
+| §1 영점 에너지 상태 선택(D17, D19; 2b) | `methods/state_selection.py`의 `select_on_manifold` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -83,6 +85,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D19 | D17 판정 기준: 물리 근거 모드(기본)와 고정 상수 모드를 선택; 물리 근거는 수치 정확도 추정·C_cl 대 C_qm·대칭 검사·공선성; 고정 상수의 기본값은 `definitions/defaults.py`, 실행별 값은 방법 설정으로 전달, 판정에 쓴 값은 결과에 기록 | 사용자 결정 2026-09-29 | §1 |
 | D20 | 수치 계산은 무차원: 모든 값은 계수의 에너지 단위 E0 기준(`field = mu_B B / E0`, `temperature = k_B T / E0`); 물리 단위는 테슬라·켈빈·meV로 통일해 문서에만 명시하고 변환은 사용자가 함; `Units` 제거, `metadata.energy_unit`은 기록용 라벨; g를 모르면 `g = I`와 Zeeman 에너지 h. 기존 LSWT 모듈은 4단계까지 켈빈·meV 유지 | 사용자 결정 2026-09-29 | §2, §3, §5 |
 | D21 | 2단계: NBCP 파라미터 세트는 문헌값(arXiv:2505.06398 Table 1)과 원고값을 두고 g는 세트별(모르면 `g = I`와 Zeeman 에너지); 변환 함수는 `system/conversion.py`; `from_spin_system`은 사이트 장이 모두 같을 때만 변환하고 `local_field` 항은 필요할 때 결정; `LSWTSolver.from_model` 같은 새 진입점은 4단계 | 사용자 결정 2026-09-29 | §6, 개발 계획 |
+| D22 | 2b단계(D17 구현): `methods/state_selection.py`의 `select_on_manifold`, `SelectionCriteria`, `SelectionResult`; C_cl과 C_qm이 비슷한 경쟁 영역은 "competition"으로 판정해 고전·양자 최소를 모두 기록하고 자동 선택하지 않음; E_qm은 호출 가능 객체로 받고 기본 제공자는 변환을 거친 기존 `EnergyFunction`(native는 4단계); 2b에서 새 자료형용 DE는 만들지 않고 기존 결과를 `candidate_state`로 변환; `quantum` 경로와 그 전용 BFGS 함수·테스트 삭제 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
 
 ## Proposal
 
@@ -127,7 +130,8 @@ LSWT의 국소 회전축은 각 방법의 변환 단계에서 정하며 모델�
 덮어쓰지 않는다. LSWT 기준 상태의 정상성과 안정성은 §4의 기준 상태 진단에서 다룬다.
 
 **상태 선택의 되먹임.** `methods/optimization.py`는 고전 에너지만 쓰는 최적화 외에
-고전 에너지와 영점 에너지를 함께 쓰는 `quantum`, `MAGSWT` 경로를 제공한다. 고전
+고전 에너지와 영점 에너지를 함께 쓰는 `MAGSWT` 경로를 제공한다(`quantum`은 2b에서 삭제,
+D18). 고전 manifold 위의 선택은 `methods/state_selection.py`가 맡는다(D17, D22). 고전
 축퇴를 영점 에너지로 가르는 경우 흐름은 "고전 최적화 → LSWT"의 한 방향이 아니다.
 결과에는 상태 선택에 사용한 에너지를 기록한다. ED·TN은 고전 기준 상태를 필수로
 요구하지 않는다.
@@ -140,7 +144,7 @@ LSWT의 국소 회전축은 각 방법의 변환 단계에서 정하며 모델�
 |---|---|---|
 | `classical` | DE 각도에서 E_qm만 계산 | 고전 축퇴를 가르지 않음 |
 | `MAGSWT` | 모든 azimuth에 `k pi/6`(`k = 1..6`)을 더한 점들에서 E_cl + E_qm 비교 | z축 회전만 가정; `tl_angle`의 theta 성분은 회전이 아님; 격자 간격이 분해능 |
-| `quantum` | DE 각도에서 L-BFGS-B로 모든 자유 각도의 E_cl + E_qm 최소화, 교란 재시작 2회 | manifold 제약 없음; 교란이 전역 `np.random` 사용 |
+| `quantum`(2b에서 삭제) | DE 각도에서 L-BFGS-B로 모든 자유 각도의 E_cl + E_qm 최소화, 교란 재시작 2회 | manifold 제약 없음; 교란이 전역 `np.random` 사용 |
 
 **영점 에너지 상태 선택(D17).** 영점 에너지는 고전 바닥상태 manifold 위에서만
 비교한다. manifold 밖의 상태는 토크가 0이 아니어서 보손 선형항이 남고, O(S^2)인
@@ -216,7 +220,67 @@ DE 해(기울기 2–3e-7)에서도 축 오차는 1.3e-5 이하였다. 다만 �
 차수이고, 조화 근사 에너지는 변분 상한도 아니다. 선택 에너지가 작은 NBCP(2.8e-6, 1.6e-12)에서는
 후보별 O(S^0) 이완 차이가 선택을 뒤집을 수 있다. 따라서 이 배열은 LSWT 기준 상태도, 바닥상태도
 아니다. 정당한 두 부분은 manifold 위의 선택(D17)과, 기준점을 옮기지 않고 계산하는 모멘트 방향의
-1/S 보정(필요 시 별도 관측량)이다. 2026-09-29부터 `quantum` 호출은 `FutureWarning`을 낸다.
+1/S 보정(필요 시 별도 관측량)이다. `quantum` 경로는 2b 구현과 함께 삭제했고, 이 이름을
+요청하면 `select_on_manifold`를 안내하는 `ValueError`를 낸다.
+
+**D17 구현(2b, D22).** `select_on_manifold(model, state, conditions, quantum_energy, axis=None,
+criteria=SelectionCriteria())`는 다음 순서로 판정하고 `SelectionResult`(판정, 상태, 축, phi,
+후보 상태, 진단, 기준)를 돌려준다. 수치 검증 기록은
+`docs/development/verification/state-selection-stage2b-2026-09-29.json`, 스크립트는
+`examples/nbcp_state_selection_check.py`다.
+
+1. 고전 정밀화(`refine_classical`): 접평면 좌표에서 해석적 기울기로 L-BFGS-B를 돌린 뒤,
+   평평한 방향을 뺀 Newton 단계로 마무리한다. 영방향의 위치는 건드리지 않는다.
+2. 해석적 Hessian(`tangent_expansion`): 스핀 i를 `n_i sqrt(1 - x_i . x_i) + x_i^a e_i^a`로 움직이면
+   `d2E/dx_ia dx_jb = S_i S_j e_ia . K_ij e_jb + delta_ij delta_ab S_i n_i . h_i`
+   (`K_ij`는 교환 행렬, `h_i = -dE/dS_i`)이다. 중앙 차분과 7.8e-10(차분 오차 수준) 안에서 일치했다.
+3. 회전 생성자 `e_k x n_i`의 SVD로 rank를 정하고, 생성자 span에 제한한 Hessian의 고유벡터에서
+   축을 얻는다. 평평한 방향이 회전 span보다 많으면 `unsupported_manifold`, 평평한 회전이
+   여럿이면 `axis_required`다.
+4. 궤도 36점에서 E_cl과 E_qm을 계산하고 12차까지 Fourier 최소제곱 fit을 한다. 최소 위치는
+   fit 급수의 조밀 격자와 1차원 bounded 최소화로 정한다. fit이 위치를 정하므로 1e-12 규모의
+   변동도 표본 간격보다 정밀하게 찾는다.
+
+판정 값은 `no_degeneracy`, `selected`, `no_selection`, `unresolved`, `competition`, `not_flat`,
+`unsupported_manifold`, `axis_required`다. 물리 근거 모드의 계수는 구현하면서 다음과 같이
+정했다(D19가 구현 시 정하도록 남긴 부분, 사용자 검토 대기).
+
+| 항목 | 물리 근거 모드 | 기본값 |
+|---|---|---|
+| 상태 정확도 `delta` | 평평하지 않은 Hessian 방향에 남은 Newton 보정의 최대 성분 | — |
+| 곡률 하한 | `accuracy_factor * max(abs(w)) * (delta + roundoff_factor * eps)` | 10, 1e3 |
+| 생성자 rank·대칭 허용오차 | `accuracy_factor * (delta + roundoff_factor * eps)` | 같음 |
+| 해상 기준 | 조화 성분 최대 진폭 > `max(residual_factor * fit 잔차, roundoff_factor * eps * max(abs(E_qm)))` | 10, 1e3 |
+| 고전·양자 비교 | Hessian이 평평하면 궤도 E_cl 변동 / E_qm 변동, 아니면 `C_cl / C_qm`; `[0.1, 10]`이면 경쟁 | (0.1, 10) |
+| 고전 고정 선별 | Hessian이 평평하지 않은 방향은 궤도 한 칸에서 고전 에너지 변화가 E_qm 변화의 10배를 넘으면 E_qm 궤도 계산 없이 `no_degeneracy` | 대역 상한 |
+
+NBCP 확인(Y 0.2 T, V 1.4 T, J_PD 또는 J_Gamma = 0.010 meV, 기준 상태에서 1e-3 rad 떨어진 출발,
+기준은 `data-space/verification/260912-pseudo-goldstone`의 N = 48 스캔):
+
+| 상태·결합 | 판정(두 모드, N = 6, 12) | 조화 | 진폭 / 기준 | C_qm / 기준 | 해상 여유 |
+|---|---|---|---|---|---|
+| Y, J_PD | selected | 6 | 1.011, 1.002 | 1.009, 1.002 | 3e4 이상 |
+| Y, J_Gamma | selected | 6 | 1.000 (1.643e-12) | 1.000 | 9.0e2 |
+| V, J_PD | selected | 6 | 1.006, 1.001 | 1.005, 1.000 | 1.6e3 이상 |
+| V, J_Gamma | selected | 3 | 1.000 | 1.000 | 3.6e8 이상 |
+
+- 정밀화 뒤 토크는 1e-17, 영 고윳값은 1e-18(다음 고윳값 4.8e-3–6.7e-3), 축 오차는 1e-15
+  이하였다. 유한차분 시제품의 축 오차는 1e-8이었다.
+- Y의 J_Gamma 변동(진폭 1.64e-12, fit 잔차 1.1e-16)은 해상 기준(1.8e-15)의 약 900배로 분해된다.
+  최소 위치는 기준과 5.3e-6 rad 이내다. 이 차이는 fit의 위치 분해능(잔차 / (m A) ≈ 1e-5)과 같은
+  규모이며, 기준 스캔의 최소도 정확한 대칭점에서 4.8e-7 떨어져 있다. 다른 경우는 6e-7 이내다.
+- MAGSWT 정규화 값은 모든 궤도 점에서 하한 1e-9에 머물렀다(보정할 음의 고윳값이 없음).
+- DE 출발(세 seed) 36회: 정확한 U(1)는 `no_selection`, J_PD·J_Gamma·회전한 J_PD는 `selected`,
+  편극 20 h는 `no_degeneracy`로 두 모드가 같았다. 장을 기울인 대조군 `(0.3h, 0, h)`는 고정
+  상수 모드에서 `no_degeneracy`(간격비 2e-2), 물리 근거 모드에서 `competition`
+  (`C_cl / C_qm = 0.46`)이다. 고전 최소는 유일하지만 고정 곡률이 영점 선택 곡률과 비슷하다는
+  뜻이며, 이 판정의 해석은 사용자 검토 항목이다.
+- 벤치마크: 삼각격자 120도(h = 0)는 `axis_required`(평평한 회전 3개), z축을 주면 `no_selection`
+  이다. 정사각격자 편극(h = 5 > h_sat = 4)은 생성자 rank 2로 `no_degeneracy`, 장 방향 축을 주면
+  "상태가 회전에 불변"인 `no_selection`이다.
+- MAGSWT 재현(D18): 출발 azimuth가 `k pi/6` 격자 위(0)이면 네 경우 모두 같은 총에너지
+  (차이 4.7e-16 이하)다. 격자 밖(0.3 rad)이면 궤도 탐색이 1.3e-12(Y, J_Gamma)–8.1e-6 meV
+  (V, J_PD) 낮다. MAGSWT의 유지 여부는 사용자 결정 대기다.
 
 ```mermaid
 flowchart TD
@@ -495,7 +559,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | `system/lattice/base.py` | basis position을 분율 좌표로 설명함 | 현재 NBCP Cartesian 위치와의 변환을 명시 |
 | `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
 | `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
-| `methods/optimization.py` | classical 외에 `quantum`, `MAGSWT` 최적화 경로 제공. `quantum`의 fallback·DE 배열 변경 결함은 `d43d8d4`, `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`은 호출 시 경고(D18) | 상태 선택에 사용한 에너지를 결과에 기록; D17 궤도 탐색 구현과 함께 `quantum` 삭제, MAGSWT는 재현 검증 뒤 재결정 |
+| `methods/optimization.py` | classical, `MAGSWT` 최적화 경로 제공. `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`과 전용 BFGS 함수는 2b에서 삭제(D18, D22), 알 수 없는 이름은 `ValueError` | 상태 선택에 사용한 에너지를 결과에 기록; MAGSWT 처리는 재현 확인(2b) 뒤 사용자 결정 |
 | `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | `model/nbcp/model.py`가 모델(`build_model`)과 상태(`candidate_state`)를 분리해 제공; 기존 함수는 유지 |
 
 **NBCP 결합 변위의 해석(D13).** `SpinSystem.Coupling` 설명은 displacement를
@@ -549,8 +613,10 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - ED 결과 본문(3단계)과 TN 관련 상태·요청·결과(TN 도입 시)의 필드 규약.
 - 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. `S`에 따른 환원,
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
-- D17 구현: 궤도 탐색의 API와 이름, D19 물리 근거 모드의 세부 계수. 2단계 뒤 구현 계획과 함께 정한다.
-- MAGSWT 격자 탐색의 처리: 궤도 탐색으로 재현되는지 검증한 뒤 정한다(D18).
+- D19 물리 근거 모드의 계수(2b 구현값, §1 D17 구현 표)와, 장을 기울인 대조군처럼 고전 고정과
+  영점 선택이 비슷한 경우를 `competition`으로 보고할지의 검토.
+- MAGSWT 격자 탐색의 처리: 2b에서 궤도 탐색이 격자 위의 결과를 재현하고 격자 밖에서는 더 낮은
+  에너지를 찾음을 확인했다. 유지·삭제를 정한다(D18).
 - D17 확장: 사이트별 회전축(숨은 U(1))과 여러 차원의 영공간. 삼각격자의 0 < h < h_sat 선택을
   벤치마크로 쓰기 전에 필요하다(D18).
 
@@ -580,6 +646,9 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   필드 표, §3의 해밀토니안·Zeeman·단위 절, §5의 외부 조건을 무차원 규약으로 고쳤다.
 - 2026-09-29 (claude): 2단계 구현을 반영했다. D21을 추가하고, D13을 `H(k)` 원소 단위 비교로
   확정했으며, 구현 상태 표와 §6의 코드 대응을 갱신했다.
+- 2026-09-29 (claude): 2b단계 구현을 반영했다. D22를 추가하고, §1에 D17 구현 절차, 물리 근거
+  모드 계수, NBCP Y·V와 벤치마크·MAGSWT 재현 결과를 기록했다. `quantum` 삭제에 맞춰 §1 표와
+  §6, Open Questions를 갱신했다.
 
 ## 관련 기록
 

@@ -33,3 +33,20 @@ TOLERANCE_DEFAULT = 1e-10
 EPSILON_DEFAULT = 1e-6
 THRESHOLD_DEFAULT = 1e-8
 
+
+# =============================================================================
+# Classical refinement and zero-point state selection (D17, D19)
+# =============================================================================
+
+CLASSICAL_REFINE_GTOL = 1e-14      # E0 per radian per site, L-BFGS-B gradient tolerance
+CLASSICAL_REFINE_NEWTON_STEPS = 5  # Newton steps after L-BFGS-B
+
+SELECTION_MODE = "physics"         # "physics" or "fixed"
+SELECTION_GAP_RATIO = 1e-3         # fixed mode: w_min / w_next below this is a null mode
+SELECTION_RANK_TOLERANCE = 1e-4    # fixed mode: relative generator singular value treated as zero
+SELECTION_RESIDUAL_FACTOR = 10.0   # harmonic amplitude must exceed this times the fit residual
+SELECTION_ROUNDOFF_FACTOR = 1e3    # multiples of machine epsilon times |E| treated as round-off
+SELECTION_ACCURACY_FACTOR = 10.0   # physics mode: multiples of the estimated state accuracy
+SELECTION_COMPETITION_BAND = (0.1, 10.0)  # physics mode: C_cl / C_qm range called competition
+SELECTION_ORBIT_POINTS = 36        # equally spaced orbit samples of E_qm
+SELECTION_MAX_HARMONIC = 12        # highest Fourier harmonic fitted along the orbit

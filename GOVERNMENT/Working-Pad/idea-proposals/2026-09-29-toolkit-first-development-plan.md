@@ -158,6 +158,16 @@ code-space/spintoolkit/
 고전 에너지와 E_qm도 일치했다. 테스트는 348 통과 / 같은 5 실패(새 테스트 72개), 208개
 스냅샷 차이 0이다. 기록은 `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`.
 
+2b단계를 2026-09-29 구현하고 검증했다(D22). `methods/classical.py`에 접평면 좌표의 해석적
+Hessian(`tangent_expansion`)과 국소 정밀화(`refine_classical`)를, `methods/state_selection.py`에
+`select_on_manifold`와 D19의 두 판정 모드를 추가하고, `quantum` 경로를 삭제했다. NBCP Y·V 상태의
+J_PD·J_Gamma 16회(N = 6, 12, 두 모드)가 모두 `selected`이고, 조화 진폭과 곡률이 독립 스캔(N = 48)과
+N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 1.64e-12는 해상 기준의 약
+900배로 분해되었다. DE 출발 36회, 삼각격자 120°·정사각 편극 벤치마크, MAGSWT 재현도 확인했다.
+테스트는 373 통과 / 같은 5 실패(새 테스트 29개, 삭제한 `quantum` 테스트 8개), 208개 스냅샷 차이
+0이다. 기록은 `docs/development/verification/state-selection-stage2b-2026-09-29.json`. 물리 근거
+모드의 계수, 장을 기울인 대조군의 `competition` 판정, MAGSWT 유지 여부는 사용자 검토 항목이다.
+
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
 
@@ -189,6 +199,7 @@ ED/TN 실행 가능성은 별도 검증이다.
 - 2026-09-29 (claude): 1단계 완료와 검증 결과를 기록했다.
 - 2026-09-29 (claude): D17을 2단계 뒤 2b 단계로 배치하고 삼각격자 벤치마크 범위(D18)를 적었다.
 - 2026-09-29 (claude): 2단계 완료와 검증 결과를 기록했다.
+- 2026-09-29 (claude): 2b단계 구현과 검증 결과를 기록했다.
 
 ## 관련 기록
 
