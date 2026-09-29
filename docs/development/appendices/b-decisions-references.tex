@@ -44,7 +44,23 @@
     D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
     D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
     D16 & 1단계 API: \texttt{Term} 생성 함수, (사이트, 셀) 방향 dict, 위반 일괄 보고, 최상위 노출; 직렬화는 4단계 & \textbf{사용자 결정} \\
-    D17 & 영점 에너지 상태 선택은 고전 manifold 위에서: $E_{\mathrm{cl}}$ Hessian 영공간으로 정한 축 $\hat n$의 궤도 $R_{\hat n}(\phi)$에서 $E_{\mathrm{qm}}$ 최소화(구현 전) & \textbf{사용자 결정} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{2026-09-29 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=decisions-selection]{결정 기록 (상태 선택)}
+  \framesubtitle{2026-09-29 사용자 결정. 근거와 수치 자료는 이 부록의 뒤쪽에 있다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D17 & 영점 에너지 상태 선택은 고전 manifold 위에서: $E_{\mathrm{cl}}$ Hessian 영공간으로 정한 축 $\hat n$의 궤도 $R_{\hat n}(\phi)$에서 $E_{\mathrm{qm}}$ 최소화(2b단계) & \textbf{사용자 결정} \\
+    D18 & D17 구현 계획: \texttt{quantum} 삭제(과거의 실수), MAGSWT 유지·재현 검증, 2b단계, 삼각격자 $h=0$·$h>h_{\mathrm{sat}}$ & \textbf{사용자 결정} \\
+    D19 & D17 판정: 물리 근거 모드(기본)와 고정 상수 모드; 기본값은 \texttt{definitions/defaults.py}; 판정 값 기록 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -135,6 +151,28 @@
   \slidesource{2026-09-29 결정; NBCP 노트 6장의 궤도 정의를 일반 축으로 확장}{contract,selection}
 \end{frame}
 
+\begin{frame}[label=quantum-removal]{D18: $E_{\mathrm{cl}}+E_{\mathrm{qm}}$의 제약 없는 최소화를 없앤다}
+  \framesubtitle{표준 스핀파 전개의 전제를 깨고, 그 에너지는 LSWT 차수를 넘는다.}
+  \[
+    H = S^2 e_{\mathrm{cl}}(\theta_0) + H_1 + H_2 + H_3 + H_4 + \cdots,
+    \qquad H_1 \propto S^{3/2},\ H_2 \propto S,\ H_3 \propto S^{1/2},\ H_4 \propto S^0
+  \]
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}Y@{}}
+    \toprule
+    문제 & 내용 \\
+    \midrule
+    전제가 깨짐 & 전개의 전제는 $\theta_0$가 고전 정상점이라 $H_1=0$인 것. 최소점은 $\delta\theta\sim O(1/S)$ 벗어나 $H_1=O(S^{1/2})$가 남는데, $E_{\mathrm{qm}}$은 $H_1$을 버린 영점 에너지다 \\
+    차수 불일치 & 에너지 이득 $S^2(1/S)^2=O(S^0)$는 버린 $H_3$·$H_4$ 보정과 같은 차수; 조화 근사 에너지는 변분 상한도 아니다 \\
+    선택 오염 & NBCP의 선택 에너지($2.8\times10^{-6}$, $1.6\times10^{-12}$)보다 후보별 $O(S^0)$ 이완 차이가 클 수 있다 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{정당한 부분은 manifold 위의 선택(D17)과, 기준점을 옮기지 않고 계산하는 모멘트 방향의 $1/S$ 보정(필요 시 별도 관측량)이다.
+  \texttt{quantum}은 D17 구현과 함께 삭제하고, 그 전까지 호출하면 FutureWarning을 낸다.}
+  \slidesource{2026-09-29 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=state-selection-check]{D17 수치 확인: 축은 $E_{\mathrm{cl}}$ Hessian에서 정해진다}
   \framesubtitle{NBCP Y 상태, $B=0.2$ T, $N=6$, 궤도 24점. 모든 경우 영공간은 1차원이고 회전 span 안에 있다.}
   \small
@@ -158,7 +196,7 @@
 \end{frame}
 
 \begin{frame}[label=state-selection-null-criteria]{D17 판정 자료 1: 영공간은 정밀화 뒤 간격비로 판정한다}
-  \framesubtitle{검토안 · DE 세 seed $\times$ 축퇴 4경우(12건)와 대조 2경우(6건). 대조: 장을 기울임, $20h$ 편극 상태.}
+  \framesubtitle{판정 자료 · DE 세 seed $\times$ 축퇴 4경우(12건)와 대조 2경우(6건). 대조: 장을 기울임, $20h$ 편극 상태.}
   \small
   \begin{tabularx}{\textwidth}{@{}YP{3.0cm}P{3.0cm}@{}}
     \toprule
@@ -173,8 +211,7 @@
   정밀화는 $E_{\mathrm{cl}}$을 $1.7\times10^{-11}$ 이하로 바꾸고 축 오차를 $1.4\times10^{-5}$에서 $1.1\times10^{-7}$로 줄였다.
   편극 상태에서 사라지는 $z$ 생성자의 상대 특이값은 DE 해에서 $3$--$8\times10^{-6}$, 정밀화 뒤 $2$--$4\times10^{-8}$이다.
   \par\medskip
-  \textbf{검토안}: DE 뒤 고전 국소 정밀화 $\to$ 간격비로 영공간 판정, 간격비를 결과에 기록.
-  생성자 rank 허용오차는 상태 정확도에 맞춘다(여기서 $10^{-4}$).
+  \textbf{D19}: 이 표의 간격비·rank 값은 고정 상수 모드의 기본값이 된다. 기본 모드는 물리 근거로 판정한다(다음 쪽들).
   \par\medskip
   \supportingtext{기울인 장 대조군(간격비 $2\times10^{-2}$)과 축퇴 DE 해($5\times10^{-5}$)의 여유는 약한 고전 pinning에서 줄어든다.
   그래서 판정만이 아니라 간격비를 기록한다.}
@@ -203,6 +240,24 @@
   \par\medskip
   \supportingtext{비교 기준은 \texttt{examples/nbcp\_y\_angular\_matching.py}의 기록이며, 이 쪽의 값은 \texttt{EnergyFunction} 경로다.}
   \slidesource{\texttt{examples/nbcp\_y\_orbit\_criteria\_check.py}}{criteria}
+\end{frame}
+
+\begin{frame}[label=state-selection-criteria]{D19: 판정 기준은 물리적 질문에 묶는다}
+  \framesubtitle{고정 임계값은 NBCP Y 상태 하나로 맞춘 값이라 모델마다 다를 수 있다. 두 모드 중 선택한다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{2.0cm}P{3.2cm}YP{2.9cm}@{}}
+    \toprule
+    판정 & 물리적 질문 & 물리 근거 모드(기본) & 고정 상수 모드 \\
+    \midrule
+    영공간 & 이 방향은 평평한가 & 정밀화 뒤 토크로 추정한 수치 정확도 이하면 평평; 분해되면 궤도 방향 $C_{\mathrm{cl}}$ 대 $C_{\mathrm{qm}}$로 고전 고정·양자 선택·경쟁 & 간격비 $<10^{-3}$ \\
+    선택 없음 & $E_{\mathrm{qm}}$이 변하지 않아야 하는가 & 궤도 회전이 모든 항의 대칭인지($R^{\mathsf T}JR=J$, zeeman) 모델에서 판정; 아니면서 진폭이 fit 잔차 수준이면 ``분해 불가'' & 진폭 $<\max(10\times$잔차$,\,10^3\epsilon|E_{\mathrm{qm}}|)$ \\
+    생성자 rank & 회전이 상태를 움직이는가 & 모든 스핀이 $\hat n$과 공선인지; 허용오차는 추정한 각도 정확도의 배수 & 상대 특이값 $10^{-4}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{물리 근거는 모두 가벼운 계산이다(토크, Hessian, 이미 계산한 $E_{\mathrm{qm}}$, 행렬 연산, 외적).
+  고정 상수의 기본값은 \texttt{definitions/defaults.py}에 두고 실행별 값은 방법 설정으로 넘긴다. 어느 모드든 판정에 쓴 값을 결과에 기록한다.}
+  \slidesource{2026-09-29 결정; 세부 계수는 2b단계 구현 시}{contract}
 \end{frame}
 
 \begin{frame}[label=record-management]{설계 문서와 부록을 갱신하는 방법}

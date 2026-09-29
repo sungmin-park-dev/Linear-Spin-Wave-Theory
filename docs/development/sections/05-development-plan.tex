@@ -14,6 +14,7 @@
     0 & 패키지 이름 변경 & \texttt{lswt} $\to$ \texttt{spintoolkit}; 기존 테스트·수치 결과 보존 \textbf{(완료)} \\
     1 & 공통 자료형·검증 & \texttt{SpinModel}·\texttt{terms}·상태 검증; 세 모델을 같은 소비자가 읽음 \textbf{(완료)} \\
     2 & NBCP 연결 & 1--4 MSL의 기존 수치 보존; 결합 변위 방향의 명시적 변환 \\
+    2b & 영점 에너지 상태 선택 & D17 궤도 탐색, D19 판정 기준; 구현과 함께 \texttt{quantum} 삭제(D18) \\
     3 & 벤치마크·최소 ED & 사각·삼각격자 하이젠버그; 완전 편극상에서 LSWT와 ED가 정확히 일치 \\
     4 & LSWT 물리량 & 스펙트럼·바닥상태 에너지·열역학량·상관함수 \\
     5 & 위상량 & Berry 곡률·Chern 수·thermal Hall \\
@@ -47,8 +48,7 @@
     1-마그논 섹터의 차원은 사이트 수 정도라 ED 비용이 작다. 같은 토러스에서 비교하므로
     유한 전개의 항 중복도와 \texttt{cell\_offset} 부호도 함께 검증된다.
   \end{mdcallout}
-  \supportingtext{삼각격자 $h=0$ 스펙트럼의 강한 재규격화는 물리적 불일치다.
-  하이젠버그의 마그논 Berry 곡률은 0이라 위상량은 null test가 된다.}
+  \supportingtext{삼각격자 1차 벤치마크는 $h=0$과 $h>h_{\mathrm{sat}}$로 한정한다(D18). 하이젠버그의 Berry 곡률은 0이라 위상량은 null test다.}
   \slidesource{벤치마크 검증 기준}{plan}
 \end{frame}
 

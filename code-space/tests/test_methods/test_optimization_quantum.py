@@ -14,6 +14,10 @@ from spintoolkit.methods.lswt.energy import EnergyFunction
 from spintoolkit.methods.optimization import SpinOptimizer
 from model import nbcp
 
+# The quantum branch warns on every call (scheduled for removal with D17);
+# these regression tests still check its behaviour until then.
+pytestmark = pytest.mark.filterwarnings("ignore:opt_method 'quantum':FutureWarning")
+
 
 CONFIG = {"Jxy": 0.076, "Jz": 0.125, "h": (0.03, -0.04, 0.2)}
 
@@ -105,3 +109,10 @@ def test_angle_setting_none_matches_all_free_list(method):
     assert_allclose(best_none["angles"], best_list["angles"])
     assert_allclose(best_none["energy"], best_list["energy"])
     assert_allclose(classical_none["angles"], classical_list["angles"])
+
+
+@pytest.mark.filterwarnings("default")
+def test_quantum_method_warns_that_it_is_not_a_valid_lswt_reference():
+    cef = _energy_function()
+    with pytest.warns(FutureWarning, match="not a valid LSWT reference state"):
+        SpinOptimizer().find_minimum(cef, "quantum", [None, None])

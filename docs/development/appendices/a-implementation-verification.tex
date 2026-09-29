@@ -201,7 +201,7 @@ classical_energy(model, state, cond)  # -0.375
   전체 테스트 225 통과 / 같은 5 실패(변경 전 220 / 5). 새 테스트 5건은 수정 전 모두 실패했다.
   수치 snapshot 208개 값은 차이 0이다. snapshot은 \texttt{quantum} 경로를 쓰지 않으므로 이 경로는 새 테스트로 확인했다.
   \par\medskip
-  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식 자체는 D17로 바꾼다(부록 B).
+  \supportingtext{기존 경로의 결함만 고쳤다. 전체 각도에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$을 최소화하는 방식은 D17 구현과 함께 삭제하며, 그 전까지 호출하면 FutureWarning을 낸다(D18, 부록 B).
   \texttt{angle\_setting=None}이 TypeError를 내던 결함은 \texttt{8f4dd1e}에서 고쳤다(새 테스트 2건).}
   \slidesource{상태 선택 검증 기록}{selection}
 \end{frame}
@@ -242,8 +242,8 @@ classical_energy(model, state, cond)  # -0.375
 \end{frame}
 
 \begin{frame}[label=next-steps]{이행 단계별 확인 조건}
-  \framesubtitle{순서: 이름 변경 $\to$ 공통 자료형 $\to$ NBCP 연결 $\to$ 벤치마크 $\to$ 물리량 $\to$ 위상량}
-  \small
+  \framesubtitle{순서: 이름 변경 $\to$ 공통 자료형 $\to$ NBCP 연결 $\to$ 상태 선택 $\to$ 벤치마크 $\to$ 물리량 $\to$ 위상량}
+  \small\renewcommand{\arraystretch}{1.1}
   \begin{tabularx}{\textwidth}{@{}p{0.6cm}p{2.6cm}Y@{}}
     \toprule
     단계 & 작업 & 통과 조건 \\
@@ -251,12 +251,13 @@ classical_energy(model, state, cond)  # -0.375
     0 & 이름 변경(완료) & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
     1 & 자료형·검증(완료) & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
     2 & NBCP 연결 & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
+    2b & 상태 선택 & NBCP Y 상태에서 축·선택 결과와 $\lambda_6$ 재현; D19 두 모드; MAGSWT 재현 비교 \\
     3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
     4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
     5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
     \bottomrule
   \end{tabularx}
-  \par\medskip
+  \par\smallskip
   \textbf{공통 검증에 반드시 포함할 사례}\\[0.3em]
   잘못된 단위 · 중복 Zeeman 항 · 허용 밖 kind · 없는 endpoint · 역방향 중복 · 같은 사이트 반복 · 분수 셀 이동\\
   비대칭 $J$ · 셀 간 같은 basis 결합 · 배열 변조 · 작은 주기계의 항 중복도 · 비정합·퇴화 초격자의 상태
@@ -277,13 +278,13 @@ classical_energy(model, state, cond)  # -0.375
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
-    D17 구현 방식: \texttt{quantum} 이름, MAGSWT 통합, 개발 단계 배치 & D17 구현 전 \\
-    D17 판정 검토안의 채택과 임계값: 정밀화·간격비, 조화 성분 fit, ``선택 없음'' 여유 & D17 구현 시 \\
-    D17 확장: 사이트별 회전축(숨은 U(1)), 여러 차원의 영공간 & 필요 시 \\
+    D17 궤도 탐색의 API와 이름, D19 물리 근거 모드의 세부 계수 & 2b단계 계획 시 \\
+    MAGSWT 격자 탐색의 처리(궤도 탐색 재현 검증 뒤) & 2b단계 \\
+    D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)은 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준(D18, D19)은 2026-09-29 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

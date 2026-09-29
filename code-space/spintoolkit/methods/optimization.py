@@ -5,6 +5,8 @@ spin configuration using differential evolution (DE) and L-BFGS-B methods,
 including support for MAGSWT (modified spin wave theory) optimization.
 """
 
+import warnings
+
 import numpy as np
 from typing import List, Union
 from scipy.optimize import minimize, differential_evolution
@@ -16,6 +18,13 @@ MAGSWT_METHOD_NAME = ["MAGSWT", "magswt"]
 QUANTUM_METHOD_NAME = ["classical+quantum", "quantum"]
 
 OPT_METHOD_NAMES = CLASSICAL_METHOD_NAME + MAGSWT_METHOD_NAME + QUANTUM_METHOD_NAME
+
+QUANTUM_METHOD_WARNING = (
+    "opt_method 'quantum' minimizes E_cl + E_qm without the classical-manifold "
+    "constraint: the result is not a valid LSWT reference state (linear boson terms "
+    "do not vanish) and its energy goes beyond LSWT order. It will be removed when "
+    "the manifold-constrained state selection (D17) is implemented."
+)
 
 
 class SpinOptimizer:
@@ -316,6 +325,7 @@ class SpinOptimizer:
             mu_magswt = MAGSWT_result["mu_MAGSWT"]
 
         elif opt_method in QUANTUM_METHOD_NAME:
+            warnings.warn(QUANTUM_METHOD_WARNING, FutureWarning, stacklevel=2)
             # Fallback: the DE optimum with its quantum correction, as in
             # the classical branch. BFGS must beat this total energy.
             E_cl = best_energy
