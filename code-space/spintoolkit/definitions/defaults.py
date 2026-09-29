@@ -50,3 +50,11 @@ SELECTION_ACCURACY_FACTOR = 10.0   # physics mode: multiples of the estimated st
 SELECTION_COMPETITION_BAND = (0.1, 10.0)  # physics mode: C_cl / C_qm range called competition
 SELECTION_ORBIT_POINTS = 36        # equally spaced orbit samples of E_qm
 SELECTION_MAX_HARMONIC = 12        # highest Fourier harmonic fitted along the orbit
+
+# =============================================================================
+# Exact diagonalization (stage 3)
+# =============================================================================
+
+ED_DENSE_LIMIT = 2000              # largest block diagonalized densely
+ED_LANCZOS_MIN_DIMENSION = 256     # smaller blocks are always diagonalized densely
+ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficients treated as round-off

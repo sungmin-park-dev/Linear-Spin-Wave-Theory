@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b단계 구현 & 2b 검토 항목 확인 \\
-    \textbf{미구현} & 결과 머리부, 최소 ED 도구, ED·TN 솔버, 여러 차원 영공간 & 3단계부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b·3단계 구현 & 검토 항목 확인 \\
+    \textbf{미구현} & 결과 머리부·JSON, ED 2-마그논·flux 섹터, TN, 여러 차원 영공간 & 4단계부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -299,6 +299,84 @@ result.diagnostics  # 판정에 쓴 값 전부
   \slidesource{2b단계 검증 기록}{stage2b}
 \end{frame}
 
+\begin{frame}[label=stage3-torus-rules]{3단계: 유한 토러스 전개는 모든 방법에 같은 규칙을 쓴다}
+  \framesubtitle{2026-09-30 · \texttt{system/cluster.py}의 \texttt{expand\_on\_torus}가 한 번 전개하고, 고전·ED·LSWT 비교가 그 결과를 쓴다(D23).}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{2.9cm}YP{2.6cm}@{}}
+    \toprule
+    경우 & 규칙 & 근거 \\
+    \midrule
+    겹친 결합(2$\times$2 정사각의 $\pm x$ 이웃) & 셀마다 항을 두고 모두 합산 & 주기 클러스터의 해밀토니안; 토러스 운동량의 $\mathsf H(\mathbf k)$와 같음 \\
+    한 사이트로 접히는 결합(1$\times$1, 1$\times$3 등) & 고전·ED·LSWT 모두 거부(\texttt{ClusterError}) & $S_i\!\cdot\!J\!\cdot\!S_i$는 온사이트 항; \texttt{bilinear}로 일관 처리 불가 \\
+    토러스 운동량 & $\mathbf k=2\pi A^{-1}\mathbf q$, $L\mathbf q\in\mathbb Z^2$ & 셀 수만큼의 운동량 \\
+    ED 운동량 부호 & $T_R|\psi\rangle=e^{-\mathrm i\mathbf k\cdot\mathbf R}|\psi\rangle$ & $a_{\mathbf k}^\dagger|0\rangle$가 $+\mathbf k$(D13) \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \texttt{classical\_energy(model, state, conditions, geometry)}: 토러스를 주면 같은 전개로 계산한다. 정합 상태에서는 열역학 극한 값과 같다(차이 0).
+  \par\medskip
+  \supportingtext{온사이트 이차항 kind를 도입하면 접히는 결합을 세 방법에서 그 kind로 처리할지 함께 정한다(미결 사항).}
+  \slidesource{3단계 검증 기록}{stage3}
+\end{frame}
+
+\begin{frame}[fragile,label=stage3-ed-design]{3단계: ED는 일반 해밀토니안이 기본이고 대칭은 선택이다}
+  \framesubtitle{키타에프·SOC NBCP처럼 U(1)이 없는 모델도 같은 경로로 푼다. 1-마그논 비교는 그 한 사용 예다(D10, D23).}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+\begin{semiverbatim}\scriptsize
+from spintoolkit.methods.ed import solve_ed, EDSector
+
+r = solve_ed(model, geometry, conditions,
+             EDSector(axis=(0, 0, 1),
+                      magnon_number=1,
+                      momenta="all"))
+r.blocks[0].energies     # 토러스 전체 에너지
+r.excitations(r.blocks[0])  # E - E_ref
+r.per_site()
+\end{semiverbatim}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \small
+      \begin{tabular}{@{}P{1.5cm}P{3.6cm}@{}}
+        \toprule
+        층 & 내용 \\
+        \midrule
+        기저 & 사이트당 $2S+1$, 임의 $S$ \\
+        해밀토니안 & $S^\pm,S^z$ 사다리 계수로 sparse 구성 \\
+        섹터(선택) & U(1) 자화(n-마그논), 병진 운동량 \\
+        풀이 & dense 또는 Lanczos \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \small n-마그논 섹터: 축 $\hat n$ 방향 총자화 $M=NS-n$인 블록. 축이 $\hat z$가 아니면 문제 전체를 전역 회전한다. 섹터를 바꾸는 항이 있으면 \texttt{SectorError}.
+  \par\medskip
+  \supportingtext{결과 본문 \texttt{EDResult}: 섹터, 블록별 운동량·차원·고유값·풀이 방법·잔차, 선택적 고유벡터, 편극 기준 에너지, 진단. 공통 머리부·JSON은 4단계.
+  2-마그논 섹터, 키타에프 flux 섹터·정확해 대조는 후속.}
+  \slidesource{3단계 검증 기록}{stage3}
+\end{frame}
+
+\begin{frame}[label=stage3-verification]{3단계: 검증 결과}
+  \framesubtitle{기존 계산 코드는 바꾸지 않았다. LSWT는 변환을 거친 기존 $\mathsf H(\mathbf k)$를 정규화 없이 대각화했다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}P{2.9cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 확인 범위 \\
+    \midrule
+    1-마그논 ED = LSWT & 최대 $1.6\times10^{-14}$ & 9경우 $\times$ 모든 토러스 운동량: 정사각·삼각 $S=\tfrac12,1,\tfrac32$, DM, 기울인 축, 벌집격자, NBCP XXZ \\
+    운동량 부호 & $-\mathbf k$와 짝지으면 1.20 & DM이 있는 경우 \\
+    편극 상태 & 고전 에너지와 $7\times10^{-15}$ & 갭 $h-h_{\mathrm{sat}}$ 재현 \\
+    대칭 없는 해밀토니안 & 독립 구현과 $4.6\times10^{-14}$ & 무작위 $J$, NBCP+$J_{\mathrm{PD}}$+$J_\Gamma$ \\
+    4$\times$4 정사각 $S=\tfrac12$ & $E_0/N=-0.7017802$ & 알려진 16-사이트 값 \\
+    테스트·스냅샷 & 404 통과 / 같은 5 실패 & 새 31개; 스냅샷 차이 0 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{U(1)이 깨진 NBCP($J_\Gamma$)에 1-마그논 섹터를 요청하면 \texttt{SectorError}. 실행 환경 메모(OpenBLAS 스레드)는 검증 기록에 있다.}
+  \slidesource{\texttt{examples/benchmark\_stage3\_check.py}}{stage3}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -373,8 +451,8 @@ result.diagnostics  # 판정에 쓴 값 전부
     1 & 자료형·검증(완료) & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
     2 & NBCP 연결(완료) & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
-    3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
-    4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
+    3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
+    4 & LSWT 물리량 & 스펙트럼·영점 보정 에너지·열역학량·상관함수; 문헌 비교는 허용오차·출처 명시 \\
     5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
     \bottomrule
   \end{tabularx}
@@ -394,11 +472,10 @@ result.diagnostics  # 판정에 쓴 값 전부
     \toprule
     질문 & 결정 시점 \\
     \midrule
-    ED 결과 본문의 필드 규약 & 3단계 \\
-    최소 ED 도구에 2-마그논 섹터를 포함할지 & 3단계 \\
+    키타에프 flux 섹터와 정확해 대조, ED 2-마그논 섹터 & 해당 벤치마크 시 \\
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
-    후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
+    후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
     D19 물리 근거 모드의 계수(2b 구현값) & 사용자 검토 \\
     기울인 장처럼 고전 고정과 영점 선택이 비슷한 경우를 \texttt{competition}으로 볼지 & 사용자 검토 \\
     MAGSWT 격자 탐색의 유지·삭제(재현 확인 완료) & 사용자 결정 \\
@@ -406,7 +483,7 @@ result.diagnostics  # 판정에 쓴 값 전부
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준·2b 구현 방식(D18, D19, D22)은 2026-09-29 결정했다.
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준·2b 구현 방식(D18, D19, D22)은 2026-09-29, ED 범위·토러스 규칙(D23)은 2026-09-30 결정했다.
   변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 원소 단위 비교로 확정했다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}

@@ -15,7 +15,7 @@
     1 & 공통 자료형·검증 & \texttt{SpinModel}·\texttt{terms}·상태 검증; 세 모델을 같은 소비자가 읽음 \textbf{(완료)} \\
     2 & NBCP 연결 & 1--4 MSL의 기존 수치 보존; 결합 변위 방향의 명시적 변환 \textbf{(완료)} \\
     2b & 영점 에너지 상태 선택 & D17 궤도 탐색, D19 판정 기준; \texttt{quantum} 삭제(D18) \textbf{(구현·검증, 검토 대기)} \\
-    3 & 벤치마크·최소 ED & 사각·삼각격자 하이젠버그; 완전 편극상에서 LSWT와 ED가 정확히 일치 \\
+    3 & 벤치마크·최소 ED & 일반 ED; 완전 편극상에서 LSWT와 ED가 정확히 일치 \textbf{(구현·검증, 검토 대기)} \\
     4 & LSWT 물리량 & 스펙트럼·바닥상태 에너지·열역학량·상관함수 \\
     5 & 위상량 & Berry 곡률·Chern 수·thermal Hall \\
     \bottomrule
@@ -33,7 +33,7 @@
   \small
   \begin{tabularx}{\textwidth}{@{}P{2.1cm}P{4.4cm}P{3.0cm}Y@{}}
     \toprule
-    모델 & 정확한 비교 & 근사 비교 & 주의 \\
+    모델 & 정확한 비교(3단계) & 근사 비교(4단계) & 주의 \\
     \midrule
     사각격자 하이젠버그 & 고전 Néel $-2JS^2$/사이트;\newline $h>8JS$ 편극상 1-마그논 = ED
       & $h=0$ 에너지·자화 vs 문헌 QMC & Goldstone 모드 처리 \\

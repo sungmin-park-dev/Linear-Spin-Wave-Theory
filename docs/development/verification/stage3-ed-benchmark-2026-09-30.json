@@ -1,0 +1,355 @@
+{
+ "date": "2026-09-30",
+ "scope": "Stage 3 of the 1st development plan: expansion of model terms on a finite torus with rules shared by all methods, and a minimal exact-diagonalization tool for general Hamiltonians with optional U(1) magnetization and momentum sectors (D23).",
+ "status": "passed",
+ "baseline_commit": "3222caf",
+ "script": "examples/benchmark_stage3_check.py",
+ "added": {
+  "code-space/spintoolkit/system/cluster.py": "TorusCluster, expand_on_torus (duplicated bonds kept and summed, bonds folding onto one site rejected), allowed_momenta, ClusterError",
+  "code-space/spintoolkit/methods/ed/": "basis.py (SectorBasis, TranslationOrbits), hamiltonian.py (ladder coefficients, frame rotation, matrix elements), solver.py (solve_ed, EDSector, EDBlock, EDResult, SectorError)",
+  "code-space/spintoolkit/definitions/defaults.py": "ED_DENSE_LIMIT, ED_LANCZOS_MIN_DIMENSION, ED_SYMMETRY_TOLERANCE",
+  "code-space/tests/test_system/test_cluster.py": "12 tests",
+  "code-space/tests/test_methods/test_ed.py": "19 tests"
+ },
+ "changed": {
+  "code-space/spintoolkit/methods/classical.py": "classical_energy(model, state, conditions, geometry=None): a finite torus evaluates the torus Hamiltonian from expand_on_torus (same D23 rules as ED); default behaviour unchanged"
+ },
+ "tests": {
+  "command": "PYTHONPATH=code-space:. python3 -m pytest -q -p no:cacheprovider code-space/tests",
+  "result": "404 passed, 5 failed (known CommensurateStructure failures, unchanged)",
+  "regression_snapshot": "208 leaves against the stage-1 baseline, maximum difference 0.0",
+  "note": "The machine had load average ~18 during the run; OpenBLAS with default threads made an 810 x 810 complex eigh take 21 s (1.1 s with OPENBLAS_NUM_THREADS=4). Tests and the script were run with OPENBLAS_NUM_THREADS=4; the library does not set thread counts."
+ },
+ "one_magnon_vs_lswt": {
+  "summary": "U(1) about the field axis, polarized reference: every one-magnon ED energy equals the LSWT band at the same torus momentum (no regularization; eigenvalues of sigma_3 H(k)). 9 cases: square and triangular S = 1/2, 1, 3/2, diagonal and non-diagonal tori, DM_z, axis -z, tilted axis, two-site honeycomb with site-dependent g, NBCP XXZ.",
+  "max_abs_difference": 1.5987211554602254e-14,
+  "momentum_sign_control": "pairing ED at k with LSWT at -k differs by 1.20 (square/triangular DM) and 0.27 (honeycomb): the toolkit convention T_R|psi> = exp(-i k.R)|psi> for a_k^dagger|0> is confirmed (D13)",
+  "polarized_state": "0-magnon eigenvalue equals the reference energy exactly and the classical torus energy within 7.1e-15",
+  "gap": "minimum one-magnon energy equals h - h_sat where the torus contains the ordering wave vector (square 4x4: 1.000; triangular 3x3: 0.500)",
+  "rows": [
+   {
+    "case": "square_S1/2",
+    "cluster": [
+     [
+      4,
+      0
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "num_sites": 16,
+    "h": 5.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 0.0,
+    "max_abs_ed_minus_lswt_at_minus_k": 0.0,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 1.0,
+    "hermiticity": 9.797174393178826e-16,
+    "seconds": 0.012
+   },
+   {
+    "case": "square_S1_2x3",
+    "cluster": [
+     [
+      2,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "num_sites": 6,
+    "h": 9.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 8.881784197001252e-16,
+    "max_abs_ed_minus_lswt_at_minus_k": 8.881784197001252e-16,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 2.0,
+    "hermiticity": 1.9984014443252818e-15,
+    "seconds": 0.003
+   },
+   {
+    "case": "triangular_S1/2",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "num_sites": 9,
+    "h": 5.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 1.7763568394002505e-15,
+    "max_abs_ed_minus_lswt_at_minus_k": 1.7763568394002505e-15,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 0.5,
+    "hermiticity": 2.4424906541753444e-15,
+    "seconds": 0.004
+   },
+   {
+    "case": "triangular_S3/2_nondiagonal",
+    "cluster": [
+     [
+      2,
+      1
+     ],
+     [
+      -1,
+      3
+     ]
+    ],
+    "num_sites": 7,
+    "h": 14.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 6.661338147750939e-15,
+    "max_abs_ed_minus_lswt_at_minus_k": 6.661338147750939e-15,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 3.5,
+    "hermiticity": 4.884981308350689e-15,
+    "seconds": 0.003
+   },
+   {
+    "case": "square_DM",
+    "cluster": [
+     [
+      4,
+      0
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "num_sites": 16,
+    "h": 6.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 3.552713678800501e-15,
+    "max_abs_ed_minus_lswt_at_minus_k": 1.200000000000002,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 2.0,
+    "hermiticity": 9.992007221626409e-16,
+    "seconds": 0.006
+   },
+   {
+    "case": "triangular_DM_minus_z",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "num_sites": 12,
+    "h": 6.0,
+    "axis": [
+     0.0,
+     0.0,
+     -1.0
+    ],
+    "max_abs_ed_minus_lswt": 3.552713678800501e-15,
+    "max_abs_ed_minus_lswt_at_minus_k": 1.200000000000002,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 1.480384757729336,
+    "hermiticity": 3.2751579226442118e-15,
+    "seconds": 0.005
+   },
+   {
+    "case": "square_tilted_axis",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "num_sites": 9,
+    "h": 5.0,
+    "axis": [
+     0.3333333333333333,
+     0.6666666666666666,
+     0.6666666666666666
+    ],
+    "max_abs_ed_minus_lswt": 2.220446049250313e-16,
+    "max_abs_ed_minus_lswt_at_minus_k": 2.220446049250313e-16,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 2.0,
+    "hermiticity": 1.5543122344752192e-15,
+    "seconds": 0.008
+   },
+   {
+    "case": "honeycomb_two_sites",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "num_sites": 18,
+    "h": 4.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 1.5987211554602254e-14,
+    "max_abs_ed_minus_lswt_at_minus_k": 0.2743828967514208,
+    "reference_minus_classical": 7.105427357601002e-15,
+    "min_one_magnon_gap": 3.9669967320293082,
+    "hermiticity": 1.191874962812805e-15,
+    "seconds": 0.008
+   },
+   {
+    "case": "nbcp_xxz",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "num_sites": 9,
+    "h": 1.0,
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "max_abs_ed_minus_lswt": 2.220446049250313e-16,
+    "max_abs_ed_minus_lswt_at_minus_k": 2.220446049250313e-16,
+    "reference_minus_classical": 0.0,
+    "min_one_magnon_gap": 0.5125000000000002,
+    "hermiticity": 2.220446049250313e-16,
+    "seconds": 0.009
+   }
+  ]
+ },
+ "general_hamiltonians": {
+  "summary": "No symmetry assumed: full, momentum-resolved and rotated-frame spectra equal an independent Kronecker-product construction.",
+  "rows": [
+   {
+    "case": "random, two cells",
+    "cluster": [
+     [
+      1,
+      1
+     ],
+     [
+      -1,
+      1
+     ]
+    ],
+    "dimension": 36,
+    "full": 9.769962616701378e-15,
+    "momenta": 6.661338147750939e-15,
+    "rotated_axis_frame": 9.769962616701378e-15
+   },
+   {
+    "case": "random, three cells",
+    "cluster": [
+     [
+      1,
+      1
+     ],
+     [
+      -1,
+      2
+     ]
+    ],
+    "dimension": 216,
+    "full": 4.618527782440651e-14,
+    "momenta": 3.108624468950438e-14,
+    "rotated_axis_frame": 3.108624468950438e-14
+   },
+   {
+    "case": "NBCP with J_PD, J_Gamma, D_z, 3 x 3",
+    "cluster": [
+     [
+      3,
+      0
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "dimension": 512,
+    "full": 3.0531133177191805e-15,
+    "momenta": 3.3306690738754696e-15,
+    "rotated_axis_frame": 3.3306690738754696e-15
+   }
+  ]
+ },
+ "other": {
+  "sector_union_vs_full": 3.552713678800501e-15,
+  "square_4x4": {
+   "E0_per_site": -0.7017802005268027,
+   "literature": -0.7017802,
+   "block_dimensions": [
+    822,
+    816
+   ],
+   "solver": [
+    "lanczos",
+    "lanczos"
+   ],
+   "residual": 3.085818902720785e-14,
+   "seconds": 0.107
+  },
+  "broken_u1_sector": "the Hamiltonian changes the magnetization along (0.0, 0.0, 1.0) (largest amplitude 0.0025); the magnon-number sector is not conserved",
+  "folded_bonds": {
+   "[[1, 0], [0, 1]]": [
+    "bonds fold onto a single site on this torus (self-interactio",
+    "bonds fold onto a single site on this torus (self-interactio"
+   ],
+   "[[1, 0], [0, 3]]": [
+    "bonds fold onto a single site on this torus (self-interactio",
+    "bonds fold onto a single site on this torus (self-interactio"
+   ]
+  },
+  "torus_minus_thermodynamic_classical_energy": {
+   "square Neel 2x2": 0.0,
+   "triangular 120 3x3": 0.0
+  }
+ },
+ "decisions": "D23 (2026-09-30): general ED with optional sectors; one-magnon comparison through the general ED; two-magnon sector deferred; literature approximate comparisons moved to stage 4; duplicated bonds summed and self-interaction tori rejected in every method until an on-site quadratic kind exists; ED stores total energies with per-site and excitation helpers; LSWT comparison through the conversion bridge without a new public entry point."
+}

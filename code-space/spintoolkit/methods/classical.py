@@ -36,6 +36,7 @@ from spintoolkit.definitions.defaults import (
 
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
+from spintoolkit.system.geometry import CalculationGeometry
 from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel
 
 #: Term kinds this consumer understands.
@@ -68,7 +69,8 @@ def _shift(cell, offset):
 
 
 def classical_energy(model: SpinModel, state: SpinState,
-                     conditions: Optional[ExternalConditions] = None) -> float:
+                     conditions: Optional[ExternalConditions] = None,
+                     geometry: Optional[CalculationGeometry] = None) -> float:
     """Classical energy per site in units of E0.
 
     Parameters
@@ -78,7 +80,16 @@ def classical_energy(model: SpinModel, state: SpinState,
         Must belong to ``model``.
     conditions : ExternalConditions, optional
         Dimensionless field (default zero). The temperature is not used.
+    geometry : CalculationGeometry, optional
+        A finite torus evaluates the energy of the torus Hamiltonian with the
+        expansion rules shared by all methods (D23): the state must tile the
+        torus, and a torus on which a bond folds onto a single site is
+        rejected. For a commensurate state the value per site equals the
+        thermodynamic-limit value. None or the thermodynamic limit evaluates
+        one magnetic supercell.
     """
+    if geometry is not None and geometry.kind == "finite_torus":
+        return _torus_energy(model, state, conditions, geometry)
     field, spins = _prepare(model, state, conditions)
     energy = 0.0
     for term in model.terms_of_kind(BILINEAR):
@@ -92,6 +103,20 @@ def classical_energy(model: SpinModel, state: SpinState,
         for cell in state.cells:
             energy -= field @ term.coefficient @ spins[(site, cell)]
     return float(energy / (model.num_sites * state.num_cells))
+
+
+def _torus_energy(model, state, conditions, geometry) -> float:
+    from spintoolkit.system.cluster import expand_on_torus
+
+    _prepare(model, state, conditions)
+    validate_spin_state(state, model, geometry)
+    cluster = expand_on_torus(model, geometry)
+    spins = np.array([cluster.spins[i] * state.direction(site, state.reduce_cell(cell))
+                      for i, (site, cell) in enumerate(cluster.keys)])
+    energy = np.einsum("ma,mab,mb->", spins[cluster.source], cluster.exchange,
+                       spins[cluster.target])
+    energy -= np.sum(cluster.fields(conditions) * spins)
+    return float(energy / cluster.num_sites)
 
 
 def local_fields(model: SpinModel, state: SpinState,

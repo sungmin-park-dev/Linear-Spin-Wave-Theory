@@ -51,9 +51,9 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=decisions-selection]{결정 기록 (D17--D22)}
-  \framesubtitle{2026-09-29 사용자 결정. 근거와 수치 자료는 이 부록의 뒤쪽에 있다.}
-  \small\renewcommand{\arraystretch}{1.12}
+\begin{frame}[label=decisions-selection]{결정 기록 (D17--D23)}
+  \framesubtitle{2026-09-29--30 사용자 결정. 근거와 수치 자료는 부록 A와 이 부록의 뒤쪽에 있다.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
   \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
     \toprule
     ID & 내용 & 상태 \\
@@ -64,6 +64,7 @@
     D20 & 수치 계산은 무차원($E_0$ 기준: 장 $\mu_B\mathbf B/E_0$, 온도 $k_BT/E_0$); 물리 단위 T·K·meV는 문서 규약, 변환은 사용자 & \textbf{사용자 결정} \\
     D21 & 2단계: NBCP 문헌·원고 파라미터 세트(g는 세트별), 변환은 \texttt{system/conversion.py}, 장이 같을 때만 역변환, 새 LSWT 진입점은 4단계 & \textbf{사용자 결정} \\
     D22 & 2b단계: \texttt{select\_on\_manifold}; 경쟁 영역은 두 최소를 기록하고 자동 선택 안 함; $E_{\mathrm{qm}}$은 호출 가능 객체(기존 \texttt{EnergyFunction} 경유); 새 DE 없음; \texttt{quantum} 삭제 & \textbf{사용자 결정} \\
+    D23 & 3단계: 일반 해밀토니안 ED(U(1)·운동량 섹터는 선택), 2-마그논·flux는 후속, 문헌 비교는 4단계; 토러스의 겹친 결합 합산, 접히는 결합은 모든 방법에서 거부; ED는 전체 에너지 저장 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -337,5 +338,8 @@
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
+    \bibitem{stage3}
+      3단계 토러스 전개·최소 ED 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 1-마그논 대 LSWT, 독립 구현 대조, 4$\times$4 바닥 에너지.
   \end{thebibliography}
 \end{frame}

@@ -6,7 +6,7 @@ status: in-review
 author: codex
 last-edited-by: claude
 created: 2026-09-23
-updated: 2026-09-29
+updated: 2026-09-30
 source_refs:
   - conversation: 2026-09-23 model workspace and common physical-system transfer contract
   - conversation: 2026-09-29 development Beamer review and 1st development scope
@@ -42,6 +42,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
 | §1 고전 Hessian(접평면 좌표)과 국소 정밀화(2b) | `methods/classical.py`의 `tangent_expansion`, `refine_classical` |
 | §1 영점 에너지 상태 선택(D17, D19; 2b) | `methods/state_selection.py`의 `select_on_manifold` |
+| §5 유한 토러스 항 전개(D23; 3단계) | `system/cluster.py`의 `expand_on_torus`, `allowed_momenta`; `classical_energy(..., geometry)` |
+| §5 ED 결과 본문, 최소 ED 도구(D10, D23; 3단계) | `methods/ed/`의 `solve_ed`, `EDSector`, `EDResult` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -86,6 +88,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D20 | 수치 계산은 무차원: 모든 값은 계수의 에너지 단위 E0 기준(`field = mu_B B / E0`, `temperature = k_B T / E0`); 물리 단위는 테슬라·켈빈·meV로 통일해 문서에만 명시하고 변환은 사용자가 함; `Units` 제거, `metadata.energy_unit`은 기록용 라벨; g를 모르면 `g = I`와 Zeeman 에너지 h. 기존 LSWT 모듈은 4단계까지 켈빈·meV 유지 | 사용자 결정 2026-09-29 | §2, §3, §5 |
 | D21 | 2단계: NBCP 파라미터 세트는 문헌값(arXiv:2505.06398 Table 1)과 원고값을 두고 g는 세트별(모르면 `g = I`와 Zeeman 에너지); 변환 함수는 `system/conversion.py`; `from_spin_system`은 사이트 장이 모두 같을 때만 변환하고 `local_field` 항은 필요할 때 결정; `LSWTSolver.from_model` 같은 새 진입점은 4단계 | 사용자 결정 2026-09-29 | §6, 개발 계획 |
 | D22 | 2b단계(D17 구현): `methods/state_selection.py`의 `select_on_manifold`, `SelectionCriteria`, `SelectionResult`; C_cl과 C_qm이 비슷한 경쟁 영역은 "competition"으로 판정해 고전·양자 최소를 모두 기록하고 자동 선택하지 않음; E_qm은 호출 가능 객체로 받고 기본 제공자는 변환을 거친 기존 `EnergyFunction`(native는 4단계); 2b에서 새 자료형용 DE는 만들지 않고 기존 결과를 `candidate_state`로 변환; `quantum` 경로와 그 전용 BFGS 함수·테스트 삭제 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
+| D23 | 3단계: ED는 대칭을 가정하지 않는 일반 해밀토니안이 기본이고 U(1) 자화(n-마그논) 섹터와 병진 운동량 섹터는 선택; 1-마그논 비교는 일반 ED로 하고 별도 도구를 두지 않음; 2-마그논 섹터와 키타에프 flux 섹터·정확해 대조는 후속; 문헌 근사 비교는 4단계; 유한 토러스 항 전개는 `system/cluster.py`에서 한 번 하며 겹친 결합은 합산하고 한 사이트로 접히는 결합은 모든 방법에서 거부(온사이트 이차항 kind 도입 시 재검토); ED 본문은 토러스 전체 에너지를 저장하고 사이트당 값·들뜸 에너지는 메서드로; LSWT 대조는 변환 경유 비공개 도우미로 정규화 없이 | 사용자 결정 2026-09-30 | §4, §5, 개발 계획 |
 
 ## Proposal
 
@@ -490,7 +493,8 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 세 객체를 모든 방법에 공통인 부분과 방법별 부분으로 나눈다(D14). 1차에서는 공통
 계산 요청, 공통 결과 머리부, 고전 계산·LSWT용 `SpinState`, LSWT 결과 본문을
 정한다. 최소 ED 검증 도구도 공통 요청과 공통 머리부를 사용한다. ED 결과 본문은
-3단계에서, TN 관련 부분은 TN 도입 시 정한다.
+3단계에서 정했고(D23), TN 관련 부분은 TN 도입 시 정한다. 공통 머리부와 JSON 직렬화의
+구현은 4단계다.
 
 | 객체 | 모든 방법 공통 | 방법별 |
 |---|---|---|
@@ -536,13 +540,26 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 유한 토러스에서는 클러스터가 허용 k점을 정하므로 별도 k점 격자를 받지 않는다.
 열역학 극한에서 k점 격자는 수렴을 조절하는 수치 설정이다.
 
+**유한 토러스 전개(D23).** `expand_on_torus(model, geometry)`가 모든 항을 모든 셀로
+옮겨 토러스에 접는다. 규칙은 모든 방법(고전 에너지, ED, 토러스 운동량의 LSWT 비교)에 같다.
+
+- 작은 토러스에서 서로 다른 셀의 항이 같은 사이트 쌍을 만들면(예: 2 x 2 정사각 토러스의
+  +x·-x 이웃) 모두 남겨 합산한다. 이것이 주기 클러스터의 해밀토니안이고, 열역학 극한의
+  `H(k)`를 토러스 운동량에서 계산하면 같은 합산이 들어간다.
+- 결합의 양 끝이 한 사이트로 접히면 `S_i . J . S_i`인 온사이트 항이 된다. 고전 스핀, 스핀
+  연산자, LSWT에서 `bilinear` kind로 일관되게 다룰 수 없으므로 모든 방법에서 거부한다.
+  같은 사이트 이차항 kind를 도입할 때 세 방법의 규칙을 함께 정해 다시 연다.
+- 토러스 운동량은 `L q`가 정수인 `k = 2 pi inv(A) q`다. ED의 운동량 블록은
+  `T_R |psi> = exp(-i k . R) |psi>`인 상태를 모으며, 이는 §3 규약의 `a_k^dagger |0>`가 운동량
+  `+k`를 갖는 부호다. DM 항이 있는 1-마그논 비교가 이 부호를 확인한다(3단계 기록).
+
 **결과.** 공통 머리부와 방법별 본문으로 나눈다.
 
 | 부분 | 내용 |
 |---|---|
-| 머리부 | `schema_version`, 방법, 입력 출처(모델·상태 해시, 계산계 실현, 외부 조건, 방법 설정, 코드·상수 버전), 에너지 단위, 정규화(에너지는 사이트당), 진단(정상성 토크, Colpa 안정성, Zeeman 누락 경고, 적용한 regularization, k점 격자의 의미) |
+| 머리부 | `schema_version`, 방법, 입력 출처(모델·상태 해시, 계산계 실현, 외부 조건, 방법 설정, 코드·상수 버전), 에너지 단위, 정규화(LSWT 에너지는 사이트당, ED 본문은 토러스 전체 에너지; D23), 진단(정상성 토크, Colpa 안정성, Zeeman 누락 경고, 적용한 regularization, k점 격자의 의미) |
 | LSWT 본문 | k점, 양의 밴드 에너지 `epsilon_n(k)`, `E_cl`, `Delta E_zp`, `E_GS`(사이트당), 필요 시 paraunitary 변환, 요청한 물리량 |
-| ED 본문 | 3단계에서 정함 |
+| ED 본문(D23) | 방법 `ed`, 섹터(양자화 축, 마그논 수, 운동량 사용 여부), 블록별 운동량(분율 `q`, Cartesian `k`)·차원·고유값(토러스 **전체** 에너지)·풀이 방법·잔차, 선택적 고유벡터, 축 방향 편극 상태의 기준 에너지, 진단(섹터를 바꾸는 계수, Hermite성). 사이트당 값과 들뜸 에너지(`E - E_ref`)는 메서드로 계산 |
 
 이 구조는 기존 `SolverResult`(`ground_state_energy`, `eigenvalues`, `spin_config`,
 `data`)를 확장한다. 구현 backlog의 "k-data dict를 dataclass로 전환" 항목은 LSWT
@@ -610,8 +627,9 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 ## Open Questions
 
 - 새 필드명과 정규화 단위의 구체안은 검토 전이다(D05, D06). 큰 구조의 합의와 구분한다.
-- ED 결과 본문(3단계)과 TN 관련 상태·요청·결과(TN 도입 시)의 필드 규약.
-- 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. `S`에 따른 환원,
+- TN 관련 상태·요청·결과(TN 도입 시)의 필드 규약.
+- 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. 같은 사이트 이차항을 도입하면
+  토러스에서 한 사이트로 접히는 결합(D23에서 거부)을 모든 방법에서 그 kind로 처리할지 함께 정한다. `S`에 따른 환원,
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
 - D19 물리 근거 모드의 계수(2b 구현값, §1 D17 구현 표)와, 장을 기울인 대조군처럼 고전 고정과
   영점 선택이 비슷한 경우를 `competition`으로 보고할지의 검토.
@@ -649,6 +667,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - 2026-09-29 (claude): 2b단계 구현을 반영했다. D22를 추가하고, §1에 D17 구현 절차, 물리 근거
   모드 계수, NBCP Y·V와 벤치마크·MAGSWT 재현 결과를 기록했다. `quantum` 삭제에 맞춰 §1 표와
   §6, Open Questions를 갱신했다.
+- 2026-09-30 (claude): 3단계 구현을 반영했다. D23을 추가하고, §5에 유한 토러스 전개 규칙과 ED
+  결과 본문을 정했으며, 구현 상태 표와 Open Questions를 갱신했다.
 
 ## 관련 기록
 
