@@ -1,0 +1,73 @@
+\section[개발 계획]{개발 계획}
+
+\begin{frame}[plain,label=section-plan]
+  \sectionpage
+\end{frame}
+
+\begin{frame}[label=development-roadmap]{공통 경계를 먼저 정립하고 적용 범위를 넓힌다}
+  \framesubtitle{1차 개발은 여섯 단계로 진행하며, 각 단계는 구현·수치 대조·사용자 확인 뒤 넘어간다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{0.8cm}p{3.3cm}Y@{}}
+    \toprule
+    단계 & 개발 대상 & 기대하는 결과 \\
+    \midrule
+    0 & 패키지 이름 변경 & \texttt{lswt} $\to$ \texttt{spintoolkit}; 기존 테스트·수치 결과 보존 \\
+    1 & 공통 자료형·검증 & \texttt{SpinModel}·\texttt{terms}·상태 검증; 세 모델을 같은 소비자가 읽음 \\
+    2 & NBCP 연결 & 1--4 MSL의 기존 수치 보존; 결합 변위 방향의 명시적 변환 \\
+    3 & 벤치마크·최소 ED & 사각·삼각격자 하이젠버그; 완전 편극상에서 LSWT와 ED가 정확히 일치 \\
+    4 & LSWT 물리량 & 스펙트럼·바닥상태 에너지·열역학량·상관함수 \\
+    5 & 위상량 & Berry 곡률·Chern 수·thermal Hall \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \textbf{1차 이후}\\[0.4em]
+  ED·TN 솔버, 키타에프 벤치마크, 유한 클러스터 계산, 고차 스핀 상호작용.\\[0.4em]
+  \supportingtext{물리상수·물리량의 단위와 출처 관리, 계산 결과의 저장·재사용 규칙은 함께 구체화한다.
+  단계별 통과 조건은 부록 A에 둔다.}
+  \slidesource{2026-09-29 범위 결정과 구현 단계}{contract}
+\end{frame}
+
+\begin{frame}[label=benchmarks]{벤치마크: 정확한 비교와 근사 비교를 구분한다}
+  \framesubtitle{LSWT는 근사이므로 정확히 일치해야 하는 비교를 따로 둔다. 장은 등방 $g$에서 $h=g\mu_B B$.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{2.1cm}P{4.4cm}P{3.0cm}Y@{}}
+    \toprule
+    모델 & 정확한 비교 & 근사 비교 & 주의 \\
+    \midrule
+    사각격자 하이젠버그 & 고전 Néel $-2JS^2$/사이트;\newline $h>8JS$ 편극상 1-마그논 = ED
+      & $h=0$ 에너지·자화 vs 문헌 QMC & Goldstone 모드 처리 \\
+    삼각격자 하이젠버그 & 고전 120° $-\tfrac32JS^2$/사이트;\newline $h>9JS$ 편극상 1-마그논 = ED
+      & $h=0$ 에너지·자화 vs 문헌 DMRG & $0<h<h_{\mathrm{sat}}$ 고전 우연 축퇴와 가짜 영에너지 모드 \\
+    NBCP & 기존 1--4 MSL 수치 보존 & — & $J_{\mathrm{PD}},\Gamma\neq0$이면 U(1)이 없어 편극상 정확 일치 불성립 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \begin{mdcallout}[result]{편극상 정확 일치의 근거}
+    장 방향의 U(1) 대칭이 있으면 편극 상태와 1-마그논 상태가 정확한 고유상태다.
+    1-마그논 섹터의 차원은 사이트 수 정도라 ED 비용이 작다. 같은 토러스에서 비교하므로
+    유한 전개의 항 중복도와 \texttt{cell\_offset} 부호도 함께 검증된다.
+  \end{mdcallout}
+  \supportingtext{삼각격자 $h=0$ 스펙트럼의 강한 재규격화는 물리적 불일치다.
+  하이젠버그의 마그논 Berry 곡률은 0이라 위상량은 null test가 된다.}
+  \slidesource{벤치마크 검증 기준}{contract}
+\end{frame}
+
+\begin{frame}[label=kitaev-benchmark]{후속 벤치마크: 키타에프 모델}
+  \framesubtitle{정확히 풀리는 대상은 LSWT가 아니라 스핀 액체 바닥상태다.}
+  \begin{tabularx}{\textwidth}{@{}p{2.8cm}Y@{}}
+    \toprule
+    용도 & 내용 \\
+    \midrule
+    \textbf{ED·TN 솔버 단계} & $S=1/2$ honeycomb 모델의 Majorana 정확해: 바닥상태 에너지, flux gap,
+      최근접 이웃에서 끊기는 정적 스핀 상관. U(1) 대칭이 없어 최소 ED 도구로는 검증할 수 없고,
+      flux 보존량을 쓰는 ED 솔버가 필요하다. \\
+    \textbf{LSWT 위상량 단계} & 고전 바닥상태가 거시적으로 축퇴되어 스핀 액체의 LSWT 기준 상태는 없다.
+      강한 장의 편극상은 Chern 수가 0이 아닌 마그논 밴드를 가져, 0이 아닌 thermal Hall의 기준 모델로 쓸 수 있다(선택). \\
+    \textbf{스키마 검증} & 비-Bravais honeycomb 격자, 결합 의존 이방성 항, Pauli 행렬 규약에서 $S$ 연산자 규약으로의 환산. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{편극상 비교는 ED와의 정확 일치가 아니라 해석적 밴드 공식과 정수 Chern 수의 확인이다.
+  5단계에 포함할지는 그 단계에서 정한다.}
+  \slidesource{후속 벤치마크 계획}{contract}
+\end{frame}

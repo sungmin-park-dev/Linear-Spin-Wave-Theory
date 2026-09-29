@@ -1,0 +1,134 @@
+{
+  "date": "2026-09-23T13:44:13.770012+09:00",
+  "source_worktree": "/Users/david/.codex/worktrees/9f25/Linear-Spin-Wave-Theory",
+  "target_checkout": "/Users/david/GitHub/Linear-Spin-Wave-Theory",
+  "state": "applied to local checkout; local tests and Beamer build verified; uncommitted",
+  "backup": "/private/tmp/lswt-local-integration-exi4hbd0/before",
+  "manifest": "/private/tmp/lswt-local-integration-exi4hbd0/plan.json",
+  "written_files": 94,
+  "retired_source_files": 31,
+  "retired_directories": [
+    "code-space/lswt/core",
+    "code-space/lswt/solvers",
+    "code-space/tests/test_core",
+    "code-space/tests/test_solvers"
+  ],
+  "unrelated_existing_files_preserved": 346,
+  "baseline_tests": {
+    "passed": 198,
+    "failed": 5,
+    "failures": [
+      {
+        "name": "test_120_degree_structure",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureCreation",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_spins_in_xy_plane",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_total_magnetization_zero",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_get_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_set_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (2, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      }
+    ]
+  },
+  "prepared_tests": {
+    "passed": 217,
+    "failed": 5,
+    "failures": [
+      {
+        "name": "test_120_degree_structure",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureCreation",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_spins_in_xy_plane",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_total_magnetization_zero",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_get_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_set_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (2, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      }
+    ]
+  },
+  "numerical_comparison": {
+    "model_hamiltonian_classical_energy_cases": 40,
+    "full_ground_state_searches": 4,
+    "comparison": "exact equality, with matching NaN locations",
+    "arrays": 828,
+    "values": 2460
+  },
+  "pdf_sha256": "194fc436d2c4bd8a9b18d435abd06343aeef83c93c8b0c61d9896b96797b5327",
+  "pdf_pages": 29,
+  "pdf_content": "Rebuilt from the integrated local TeX sources; all 29 rendered pages are byte-identical to the visually reviewed revision 03.",
+  "preserved_areas": [
+    "docs/lswt",
+    "docs/nbcp",
+    "legacy",
+    "data-space"
+  ],
+  "obsolete_worktree_content_not_restored": [
+    "doc-space"
+  ],
+  "git_operations": "No commit, checkout, reset, stash or index change.",
+  "local_tests": {
+    "passed": 217,
+    "failed": 5,
+    "failures": [
+      {
+        "name": "test_120_degree_structure",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureCreation",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_spins_in_xy_plane",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_120_degree_total_magnetization_zero",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureSpinDirections",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_get_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      },
+      {
+        "name": "test_set_optimization_parameters",
+        "class": "code-space.tests.test_states.test_commensurate.TestCommensurateStructureOptimization",
+        "message": "ValueError: angles shape mismatch: expected (1, 2), got (2, 2). num_basis=1, supercell=(1, 1) \u2192 1 magnetic sublattices"
+      }
+    ]
+  },
+  "local_pdf_build": "make qa passed; 29 pages, 9 embedded fonts, clean log and source hashes",
+  "pdf_internal_links_verified": 31,
+  "verified_at": "2026-09-23T13:47:07.910009+09:00",
+  "removed_generated_bytecode_directories": 3
+}

@@ -1,0 +1,63 @@
+\section[모듈과 폴더 구성]{모듈과 폴더 구성}
+
+\begin{frame}[plain,label=section-modules]
+  \sectionpage
+\end{frame}
+
+\begin{frame}[label=folder-plan]{공통 경계는 유지하고, 모델 폴더는 작게 시작한다}
+  \framesubtitle{목표 패키지 \texttt{spintoolkit} (\texttt{import spintoolkit as stk}) · 이름 변경은 0단계에서 수행한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{공통 패키지: \texttt{code-space/spintoolkit/}}
+        \small
+        \begin{tabular}{@{}ll@{}}
+          \texttt{system/} & 격자·공통 모델·항 \\
+          \texttt{states/} & 고전 스핀상태 표현 \\
+          \texttt{models/} & 표준 벤치마크 모델 \\
+          \texttt{methods/lswt/} & LSWT (현 \texttt{spin\_wave/}) \\
+          \texttt{methods/ed/} & 최소 ED 검증 $\to$ ED 솔버 \\
+          \texttt{methods/tn/} & 텐서 네트워크 (후속) \\
+          \texttt{observables/} & 물리량 계산 \\
+          \texttt{visualization/} & 모델·상태·결과 표시 \\
+          \texttt{definitions/} & 상수·기본값·기저 규약
+        \end{tabular}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{모델 작업 공간: \texttt{model/nbcp/}}
+        \texttt{model.py}\\
+        모델 정의와 고유 구성 함수\\[0.8em]
+        \texttt{calculate.py}\\
+        실행·간단한 비교·탐색
+      \end{block}
+      \smallskip
+      다른 모델에도 같은 역할을 적용한다.\\
+      보조 파일·하위 폴더는 실제 필요에 따라 추가한다.
+    \end{column}
+  \end{columns}
+  \smallskip
+  \supportingtext{현재 패키지는 \texttt{code-space/lswt/}이다. \texttt{code-space/methods/}처럼 두면
+  \texttt{methods}·\texttt{system}이 각각 최상위 import 이름이 되므로 하나의 우산 패키지 아래에 둔다.
+  옛 \texttt{lswt} 경로는 저장 객체 복원을 위해 \texttt{\_compat.py}에서 별칭으로 유지한다.}
+  \slidesource{2026-09-29 패키지 이름 결정; 현재 배치와 모델 작업 공간의 후속 목표}{contract,layout}
+\end{frame}
+
+\begin{frame}[label=model-workspace]{공통 기능과 모델별 계산의 소유 위치}
+  \framesubtitle{모델 작업 공간은 간결하게 시작하고, 결과는 정리 수준에 따라 보관한다.}
+  \begin{tabularx}{\textwidth}{@{}p{4.8cm}Y@{}}
+    \toprule
+    위치 & 책임 \\
+    \midrule
+    \texttt{code-space/spintoolkit/} & 여러 모델이 사용하는 자료구조·계산 방법·물리량·시각화 \\
+    \texttt{spintoolkit/models/} & 표준 벤치마크 모델: 사각·삼각격자 하이젠버그, 이후 키타에프 \\
+    \texttt{model/<name>/model.py} & 해당 모델의 물리 정의와 공통 형식으로의 생성 \\
+    \texttt{model/<name>/calculate.py} & 모델별 계산 실행·간단한 비교·탐색 \\
+    \texttt{model/<name>/} & 원시·중간 계산 결과와 추후 재사용할 계산의 관리 \\
+    \texttt{data-space/} & 검토하고 정돈한 결과 데이터 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{\texttt{model.py}·\texttt{calculate.py}는 목표 역할이다.
+  현재 NBCP는 추출된 기존 구성 파일을 사용한다. 보조 파일·하위 폴더는 필요할 때 추가한다.}
+  \slidesource{모델 작업 공간과 결과 저장의 책임; 2026-09-29 벤치마크 위치 결정}{contract}
+\end{frame}

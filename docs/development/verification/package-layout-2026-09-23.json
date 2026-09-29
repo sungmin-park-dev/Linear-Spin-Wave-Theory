@@ -1,0 +1,267 @@
+{
+  "date": "2026-09-23",
+  "scope": "File ownership and import-path migration; no new SpinModel API or physics conventions.",
+  "status": "applied to the task worktree; live suite matches isolated staging",
+  "relocations": {
+    "modules": {
+      "lswt.core.spin_system": "lswt.system.spin_system",
+      "lswt.core.exchange": "lswt.system.exchange",
+      "lswt.core.brillouin_zone": "lswt.system.brillouin_zone",
+      "lswt.core.diagonalization": "lswt.methods.spin_wave.diagonalization",
+      "lswt.solvers.base": "lswt.methods.base",
+      "lswt.solvers.energy": "lswt.methods.spin_wave.energy",
+      "lswt.solvers.hamiltonian": "lswt.methods.spin_wave.hamiltonian",
+      "lswt.solvers.solver": "lswt.methods.spin_wave.solver",
+      "lswt.solvers.optimizer": "lswt.methods.optimization",
+      "lswt.core.lattice.presets": "lswt.system.lattice.presets",
+      "lswt.core.lattice": "lswt.system.lattice",
+      "lswt.core.lattice.base": "lswt.system.lattice.base",
+      "lswt.core.magnetic_structure": "lswt.states",
+      "lswt.core.magnetic_structure.commensurate": "lswt.states.commensurate",
+      "lswt.core.magnetic_structure.base": "lswt.states.base",
+      "lswt.core.magnetic_structure.incommensurate": "lswt.states.incommensurate",
+      "lswt.config": "lswt.definitions"
+    },
+    "files": {
+      "code-space/lswt/core/spin_system.py": "code-space/lswt/system/spin_system.py",
+      "code-space/lswt/core/exchange.py": "code-space/lswt/system/exchange.py",
+      "code-space/lswt/core/brillouin_zone.py": "code-space/lswt/system/brillouin_zone.py",
+      "code-space/lswt/core/diagonalization.py": "code-space/lswt/methods/spin_wave/diagonalization.py",
+      "code-space/lswt/solvers/base.py": "code-space/lswt/methods/base.py",
+      "code-space/lswt/solvers/energy.py": "code-space/lswt/methods/spin_wave/energy.py",
+      "code-space/lswt/solvers/hamiltonian.py": "code-space/lswt/methods/spin_wave/hamiltonian.py",
+      "code-space/lswt/solvers/solver.py": "code-space/lswt/methods/spin_wave/solver.py",
+      "code-space/lswt/solvers/optimizer.py": "code-space/lswt/methods/optimization.py",
+      "code-space/lswt/core/lattice/presets.py": "code-space/lswt/system/lattice/presets.py",
+      "code-space/lswt/core/lattice/__init__.py": "code-space/lswt/system/lattice/__init__.py",
+      "code-space/lswt/core/lattice/base.py": "code-space/lswt/system/lattice/base.py",
+      "code-space/lswt/core/magnetic_structure/__init__.py": "code-space/lswt/states/__init__.py",
+      "code-space/lswt/core/magnetic_structure/commensurate.py": "code-space/lswt/states/commensurate.py",
+      "code-space/lswt/core/magnetic_structure/base.py": "code-space/lswt/states/base.py",
+      "code-space/lswt/core/magnetic_structure/incommensurate.py": "code-space/lswt/states/incommensurate.py"
+    },
+    "tests": {
+      "code-space/tests/test_solvers/test_thermodynamic_normalization.py": "code-space/tests/test_methods/test_thermodynamic_normalization.py",
+      "code-space/tests/test_solvers/test_zero_point_energy.py": "code-space/tests/test_methods/test_zero_point_energy.py",
+      "code-space/tests/test_solvers/test_finite_temperature.py": "code-space/tests/test_methods/test_finite_temperature.py",
+      "code-space/tests/test_solvers/test_thermal_hall_normalization.py": "code-space/tests/test_methods/test_thermal_hall_normalization.py",
+      "code-space/tests/test_solvers/test_brillouin_zone_integration.py": "code-space/tests/test_methods/test_brillouin_zone_integration.py",
+      "code-space/tests/test_solvers/test_band_isolation.py": "code-space/tests/test_methods/test_band_isolation.py",
+      "code-space/tests/test_solvers/test_hamiltonian_pairing.py": "code-space/tests/test_methods/test_hamiltonian_pairing.py",
+      "code-space/tests/test_core/__init__.py": "code-space/tests/test_system/__init__.py",
+      "code-space/tests/test_core/test_magnetic_structure/__init__.py": "code-space/tests/test_states/__init__.py",
+      "code-space/tests/test_core/test_magnetic_structure/test_commensurate.py": "code-space/tests/test_states/test_commensurate.py",
+      "code-space/tests/test_core/test_lattice/__init__.py": "code-space/tests/test_system/test_lattice/__init__.py",
+      "code-space/tests/test_core/test_lattice/test_triangular_lattice.py": "code-space/tests/test_system/test_lattice/test_triangular_lattice.py"
+    }
+  },
+  "computation": {
+    "unchanged_computational_modules": [
+      "code-space/lswt/system/spin_system.py",
+      "code-space/lswt/system/exchange.py",
+      "code-space/lswt/system/brillouin_zone.py",
+      "code-space/lswt/methods/spin_wave/diagonalization.py",
+      "code-space/lswt/methods/base.py",
+      "code-space/lswt/methods/spin_wave/energy.py",
+      "code-space/lswt/methods/spin_wave/hamiltonian.py",
+      "code-space/lswt/methods/spin_wave/solver.py",
+      "code-space/lswt/methods/optimization.py",
+      "code-space/lswt/system/lattice/presets.py",
+      "code-space/lswt/system/lattice/__init__.py",
+      "code-space/lswt/system/lattice/base.py",
+      "code-space/lswt/states/__init__.py",
+      "code-space/lswt/states/commensurate.py",
+      "code-space/lswt/states/base.py",
+      "code-space/lswt/states/incommensurate.py"
+    ],
+    "unchanged_config_assignments": [
+      "K_BOLTZMANN_MEV",
+      "H_BAR_MEV",
+      "DEFAULT_TEMPERATURE",
+      "DEFAULT_TIME",
+      "DEFAULT_OMEGA",
+      "DEFAULT_ETA",
+      "DEFAULT_TOLERANCE",
+      "DEFAULT_DELTA_PEAK",
+      "DEFAULT_LEVEL_SPACING",
+      "DEFAULT_BAND_GAP_CUTOFF",
+      "DEFAULT_INVALID_EXCLUDE",
+      "BETA_E_THRESHOLD",
+      "BETA_E_SMALL",
+      "HIGH_BE_THRESHOLD",
+      "LOW_BE_THRESHOLD",
+      "ZERO_ENERGY_THRESHOLD",
+      "TOLERANCE_DEFAULT",
+      "EPSILON_DEFAULT",
+      "THRESHOLD_DEFAULT",
+      "Mat_C"
+    ]
+  },
+  "numerical": {
+    "model_hamiltonian_and_classical_energy_cases": 40,
+    "full_candidate_searches": 4,
+    "random_seed": 7301,
+    "search_methods": [
+      "classical",
+      "MAGSWT"
+    ],
+    "mesh_N": 3,
+    "k_points": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.37,
+        -0.29
+      ],
+      [
+        -0.81,
+        0.46
+      ],
+      [
+        1.13,
+        0.67
+      ]
+    ],
+    "parameter_families": [
+      "xxz",
+      "nn_soc",
+      "nn_nnn_soc",
+      "dm",
+      "zero_exchange"
+    ],
+    "angle_cases": [
+      "fixed",
+      "seeded_random"
+    ],
+    "candidate_cells": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "comparison": "assert_array_equal over every model, matrix, energy and search result leaf",
+    "compared_leaves": 3368,
+    "maximum_difference": 0.0
+  },
+  "pytest_before": {
+    "total": 220,
+    "passed": 215,
+    "failures": {
+      "TestCommensurateStructureCreation::test_120_degree_structure": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureSpinDirections::test_120_degree_spins_in_xy_plane": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureSpinDirections::test_120_degree_total_magnetization_zero": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureOptimization::test_get_optimization_parameters": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureOptimization::test_set_optimization_parameters": "ValueError: angles shape mismatch: expected (1, 2), got (2, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices"
+    }
+  },
+  "pytest_after": {
+    "total": 222,
+    "passed": 217,
+    "failures": {
+      "TestCommensurateStructureCreation::test_120_degree_structure": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureSpinDirections::test_120_degree_spins_in_xy_plane": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureSpinDirections::test_120_degree_total_magnetization_zero": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureOptimization::test_get_optimization_parameters": "ValueError: angles shape mismatch: expected (1, 2), got (3, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices",
+      "TestCommensurateStructureOptimization::test_set_optimization_parameters": "ValueError: angles shape mismatch: expected (1, 2), got (2, 2). num_basis=1, supercell=(1, 1) → 1 magnetic sublattices"
+    }
+  },
+  "legacy_regression": "Included 12 zero-DM model comparisons and 36 classical-energy evaluations in the unchanged NBCP tests; archived DM/quantum differences remain excluded.",
+  "compatibility": "17 old module aliases and a SpinSystem pickle carrying the old module path tested.",
+  "source_hashes": {
+    "code-space/lswt/core/spin_system.py": {
+      "before": "d91f1a01e22a01c9f7dc09dee4eaaf06f8cacc582727a5d2bf611ec2fafd4d51",
+      "after_path": "code-space/lswt/system/spin_system.py",
+      "after": "6f0d0a2b85779bfe54bd2510d9b1225e9eadeb1c9e5facf2829107968dcd96ca"
+    },
+    "code-space/lswt/core/exchange.py": {
+      "before": "a02ee723e97a23dff3fb98075f7cf46b397dfe581d598e118b759ef0440ed7d3",
+      "after_path": "code-space/lswt/system/exchange.py",
+      "after": "a02ee723e97a23dff3fb98075f7cf46b397dfe581d598e118b759ef0440ed7d3"
+    },
+    "code-space/lswt/core/brillouin_zone.py": {
+      "before": "c9b61a30a1c70d42002b2505b42370ff9b7ef5c3ba85ebd18ea842c165d85ed0",
+      "after_path": "code-space/lswt/system/brillouin_zone.py",
+      "after": "c9b61a30a1c70d42002b2505b42370ff9b7ef5c3ba85ebd18ea842c165d85ed0"
+    },
+    "code-space/lswt/core/diagonalization.py": {
+      "before": "ff72efd4098431bc7003702ecf1f21a75240f77fad21693cce0e8c9ec8e75efb",
+      "after_path": "code-space/lswt/methods/spin_wave/diagonalization.py",
+      "after": "55c9357734c0ce80840683792be20d52af77ce1b07081ca835170575f95297ed"
+    },
+    "code-space/lswt/solvers/base.py": {
+      "before": "18f73e6c9873dfa78b06ca75c4833b1c81acc49964b52b3659923dad1d26ba67",
+      "after_path": "code-space/lswt/methods/base.py",
+      "after": "60267d2d30c0407be06f705a7e42bbb1be6f9d60824ba3283808bfd2448b2332"
+    },
+    "code-space/lswt/solvers/energy.py": {
+      "before": "9b7f5a70a75ddcbccc3bc0075c4e4262d5dfa7a0d0c21d2b5be145edb4f23c0d",
+      "after_path": "code-space/lswt/methods/spin_wave/energy.py",
+      "after": "9d87f8439b5bb9625da7eabb3cd395c9b5ebba06164729a84e3503a5d0f47ace"
+    },
+    "code-space/lswt/solvers/hamiltonian.py": {
+      "before": "97db8a081151d2501d6d19454629be50f88d5210e379c39811c5e978d3580c3d",
+      "after_path": "code-space/lswt/methods/spin_wave/hamiltonian.py",
+      "after": "462f60eb8191e9e22125231245977c6241f93084f4f945312e8c2fd92d20daec"
+    },
+    "code-space/lswt/solvers/solver.py": {
+      "before": "68999b01c7bb5bfbafa29ed7fe8db969dff1110a5f13c0f78d1f3f3f3f4f524b",
+      "after_path": "code-space/lswt/methods/spin_wave/solver.py",
+      "after": "75eacd5006aa071718cc8d7192e495696188affe606c2f1619a205b11d664617"
+    },
+    "code-space/lswt/solvers/optimizer.py": {
+      "before": "5992dfb7ade801e7b196171cdada9269da7effd180c91937832a64879ce10a8f",
+      "after_path": "code-space/lswt/methods/optimization.py",
+      "after": "5992dfb7ade801e7b196171cdada9269da7effd180c91937832a64879ce10a8f"
+    },
+    "code-space/lswt/core/lattice/presets.py": {
+      "before": "9206f39f6d3891cc5299cc34e3a8bd004d82d221d924e3efdd299521112f028b",
+      "after_path": "code-space/lswt/system/lattice/presets.py",
+      "after": "9206f39f6d3891cc5299cc34e3a8bd004d82d221d924e3efdd299521112f028b"
+    },
+    "code-space/lswt/core/lattice/__init__.py": {
+      "before": "2d052cb4f095b4393b5aa0ced79ec7c75a45abc6c3eb8cb848878e85d16ae896",
+      "after_path": "code-space/lswt/system/lattice/__init__.py",
+      "after": "2d052cb4f095b4393b5aa0ced79ec7c75a45abc6c3eb8cb848878e85d16ae896"
+    },
+    "code-space/lswt/core/lattice/base.py": {
+      "before": "a942e8bc174520d718679334a5f0e91431c7833a42340c362415fce0368e7ec9",
+      "after_path": "code-space/lswt/system/lattice/base.py",
+      "after": "a942e8bc174520d718679334a5f0e91431c7833a42340c362415fce0368e7ec9"
+    },
+    "code-space/lswt/core/magnetic_structure/__init__.py": {
+      "before": "666271ea05bff6ad17bb4ca6546f5df5d03ff7bb3cd45e9d063ce070d25e07c2",
+      "after_path": "code-space/lswt/states/__init__.py",
+      "after": "666271ea05bff6ad17bb4ca6546f5df5d03ff7bb3cd45e9d063ce070d25e07c2"
+    },
+    "code-space/lswt/core/magnetic_structure/commensurate.py": {
+      "before": "293dd59a25fa405f39c232de43acd6be234c2778cfe83fa1208042496a6d1207",
+      "after_path": "code-space/lswt/states/commensurate.py",
+      "after": "293dd59a25fa405f39c232de43acd6be234c2778cfe83fa1208042496a6d1207"
+    },
+    "code-space/lswt/core/magnetic_structure/base.py": {
+      "before": "9245d95dfc6deff28e240bc5465c4327d8ca6399f30a7d528c299baac1856e0d",
+      "after_path": "code-space/lswt/states/base.py",
+      "after": "9245d95dfc6deff28e240bc5465c4327d8ca6399f30a7d528c299baac1856e0d"
+    },
+    "code-space/lswt/core/magnetic_structure/incommensurate.py": {
+      "before": "a771a15c88597caa16a78218f7c33d1605ddf32cacc2f0e23ed4707766e9de1a",
+      "after_path": "code-space/lswt/states/incommensurate.py",
+      "after": "a771a15c88597caa16a78218f7c33d1605ddf32cacc2f0e23ed4707766e9de1a"
+    }
+  },
+  "wheel": {
+    "built_without_network_or_dependency_install": true,
+    "imported_modules": 31,
+    "historical_import_smoke_test": "passed"
+  },
+  "application": {
+    "worktree": "/Users/david/.codex/worktrees/9f25/Linear-Spin-Wave-Theory",
+    "related_files_updated": 25,
+    "backup": "/private/tmp/lswt-layout-transaction-z2qk10yj",
+    "pytest_passed": 217,
+    "pytest_failed": 5,
+    "failure_identities_and_messages_match_baseline": true
+  }
+}

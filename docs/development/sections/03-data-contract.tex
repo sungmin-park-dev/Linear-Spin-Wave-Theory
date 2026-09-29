@@ -1,0 +1,273 @@
+\section[공통 자료구조와 전달 규약]{공통 자료구조와 전달 규약}
+
+\begin{frame}[plain,label=section-contract]
+  \sectionpage
+\end{frame}
+
+\begin{frame}[label=common-interface]{모델마다 다른 입력, 공통 형식의 출력}
+  \framesubtitle{제안 API · 모델 이름에 따라 수신 코드가 달라지지 않게 한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{모델별 생성}
+        \textbf{NBCP}\\
+        $J_{xy},J_z,J_{\mathrm{PD}},\Gamma,g,\ldots$\\[0.7em]
+        \textbf{사각격자 하이젠버그}\\
+        $J,S,g,\ldots$\\[0.7em]
+        \textbf{삼각격자 하이젠버그}\\
+        $J,S,g,\ldots$
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{모든 생성 함수의 반환형}
+        \texttt{SpinModel}\\[0.6em]
+        \texttt{lattice / sites / terms}\\
+        \texttt{units / metadata / schema\_version}
+      \end{block}
+      \medskip
+      \textbf{모델 생성 단계}에서 수치 계수를 평가하고 규약을 맞춘다.\\[0.5em]
+      \textbf{수신 모듈}은 공통 검증과 지원 범위를 확인한다.
+    \end{column}
+  \end{columns}
+  \medskip
+  \supportingtext{공통 출력에 모델별 config 객체나 미평가 수식을 넘기지 않는다.
+  \texttt{metadata.parameters}는 기록용이며, 계산 계수의 두 번째 원본이 되지 않는다.
+  키타에프는 후속 벤치마크로 같은 형식을 사용한다.}
+  \slidesource{필드와 생성·검증 책임; API 미구현}{contract}
+\end{frame}
+
+\begin{frame}[label=site-schema]{격자와 사이트를 읽는 형식}
+  \framesubtitle{규약 검토 · 타입과 shape뿐 아니라 값의 의미도 고정한다.}
+  \begin{tabularx}{\textwidth}{@{}p{3.3cm}p{2.8cm}Y@{}}
+    \toprule
+    필드 & 형태 & 의미 \\
+    \midrule
+    \texttt{lattice.vectors} & 실수 $(2,2)$ & 각 행이 기본 격자벡터인 행렬 $A$ \\
+    \texttt{sites[].id} & 유일한 문자열 & 모델 안에서 안정된 사이트 식별자 \\
+    \texttt{sites[].position} & 실수 $(2,)$ & 기본 격자 기준 분율 좌표 $f_a$ \\
+    \texttt{sites[].spin} & 양의 정수·반정수 & 스핀 양자수 $S$; 국소 차원 $2S+1$ \\
+    \texttt{schema\_version} & 정수 & 공통 전달 규약 버전 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \textbf{물리 사이트의 주소와 위치}\\[0.4em]
+  셀 정수 좌표 $R$와 basis ID $a$로 식별한다: $r_{R,a}=(R+f_a)A$.\\[0.4em]
+  \supportingtext{사이트 번호, 자기 부격자 번호, 솔버 내부의 순서를 동일시하지 않는다.}
+  \slidesource{필드 표와 좌표 규약; 세부안 검토 중}{contract}
+\end{frame}
+
+\begin{frame}[label=term-schema]{항을 읽는 형식}
+  \framesubtitle{규약 검토 · 형식은 후속 항까지 열어 두고, 1차 검증은 두 종류의 항으로 닫는다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{4.1cm}Y@{}}
+    \toprule
+    필드 & 의미 \\
+    \midrule
+    \texttt{terms[].kind} & 항의 종류. 1차 허용값은 \texttt{bilinear}, \texttt{zeeman} \\
+    \texttt{terms[].participants} & 참여 사이트 ID와 정수 셀 좌표 $n$의 목록; 길이는 kind가 정함 \\
+    \texttt{terms[].coefficient} & kind별 실수 계수 배열 \\
+    \texttt{terms[].label} & NN·NNN·x·y·z 등 선택적 설명 라벨 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \begin{tabularx}{\textwidth}{@{}p{1.6cm}p{3.2cm}p{2.6cm}Y@{}}
+    \toprule
+    kind & 참여자 & 계수 & 해밀토니안 기여 \\
+    \midrule
+    \texttt{bilinear} & 서로 다른 두 물리 사이트 & $J$, 실수 $3\times3$ & $S_{R+n_1,a}^{\mathsf T}\,J\,S_{R+n_2,b}$ \\
+    \texttt{zeeman} & 한 사이트, 셀 $(0,0)$ & $g_a$, 실수 $3\times3$ & $-\mu_B\,B^{\mathsf T}g_a\,S_{R,a}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \begin{band}{형식은 열고, 검증은 닫는다}
+    허용 목록 밖의 kind는 공통 검증이 거부하고, 수신 모듈은 지원하는 kind를 선언한다.\\
+    같은 사이트가 반복되는 항은 $S$에 따라 의미가 달라지므로($S=\tfrac12$에서 $(S^z)^2=\tfrac14$) 허용하지 않는다.
+  \end{band}
+  \slidesource{2026-09-29 스키마 결정; 필드명은 검토안}{contract}
+\end{frame}
+
+\begin{frame}[label=hamiltonian-convention]{해밀토니안과 장의 규약}
+  \framesubtitle{규약 검토 · Zeeman 부호, $g$ 인덱스, relative 단위는 2026-09-29 결정이다.}
+  \[
+    H=\sum_{R}\sum_{\mathrm{bilinear}} S_{R+n_1,a}^{\mathsf T}J\,S_{R+n_2,b}
+      -\mu_B\sum_{R,a}B^{\mathsf T}g_a\,S_{R,a},
+    \qquad \delta=(n_2-n_1+f_b-f_a)A
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{장과 단위}
+        부호 $-\mu_B$: 스핀이 장 방향으로 정렬한다. 현재 코드의 $-h\cdot S$와 같다.\\[0.4em]
+        기존 장 계수와의 대응: $h_a=\mu_B\,g_a^{\mathsf T}B$\\[0.4em]
+        meV 모델: $B$는 테슬라, $\mu_B=5.788\times10^{-2}$ meV/T\\[0.4em]
+        relative 모델: $\mu_B=1$, $B$는 에너지 단위 값
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{항 수와 중복}
+        병진 궤도마다 한 번 기록하고 $1/2$을 곱하지 않는다.\\[0.4em]
+        전체 셀 이동, 참여자 순서 교환(계수 인덱스 교환)은 같은 항이다:
+        $(a,b,n,J)\equiv(b,a,-n,J^{\mathsf T})$.\\[0.4em]
+        유한 전개에서 접히는 항의 중복도를 보존한다.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \supportingtext{$H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
+  Zeeman 항은 선택 사항이며, 항이 없는 사이트는 장과 결합하지 않는다.}
+  \slidesource{제안된 항의 의미; 현재 고전 에너지의 부호와 대조}{contract,implementation}
+\end{frame}
+
+\begin{frame}[label=fourier-convention]{Fourier 부호와 위치 게이지}
+  \framesubtitle{2026-09-29 결정 · 고체물리의 표준 부호와 전체 위치 게이지를 툴킷 규약으로 쓴다.}
+  \[
+    a_{i\mu}=\frac{1}{\sqrt{N_{\mathrm{uc}}}}\sum_{\mathbf k}e^{+\mathrm i\mathbf k\cdot\mathbf r_{i\mu}}\,a_{\mathbf k\mu},
+    \qquad \mathbf r_{i\mu}=\mathbf R_i+\symbf\tau_\mu,
+    \qquad a^\dagger_{\mathrm{source}}a_{\mathrm{target}}\;\to\;e^{+\mathrm i\mathbf k\cdot\symbf\Delta},\quad
+    \symbf\Delta=\mathbf r_{\mathrm{target}}-\mathbf r_{\mathrm{source}}
+  \]
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{2.4cm}P{3.6cm}Y@{}}
+    \toprule
+    선택 & 위상에 쓰는 위치 & 결과에 미치는 영향 \\
+    \midrule
+    \textbf{전체 위치 게이지} & 셀 위치 $\mathbf R$ + basis 위치 $\symbf\tau$ & 채택. $\mathsf H(\mathbf k+\mathbf G)$는 unitary 변환만큼 달라진다. LSWT 코드에서 흔하다 \\
+    격자 게이지 & 셀 위치 $\mathbf R$만 & $\mathsf H(\mathbf k+\mathbf G)=\mathsf H(\mathbf k)$. 에너지·Chern 수는 같지만 국소 Berry 곡률이 다를 수 있다 \\
+    반대 부호 $e^{-\mathrm i\mathbf k\cdot\mathbf r}$ & — & $\mathbf k\leftrightarrow-\mathbf k$만 바뀐다. 스펙트럼 집합과 Chern 수는 같다 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{thermal Hall 전도도는 Berry 곡률에 밴드 에너지 가중치를 곱해 적분하므로 국소 값의 영향을 받는다.
+  이 결정은 툴킷 규약에 한정하며, 이론 정본 notation의 ``Not Yet Fixed'' 상태를 바꾸지 않는다.}
+  \slidesource{2026-09-29 Fourier 규약 결정; \texttt{docs/lswt} 운동량 공간 문서와 같은 식}{contract}
+\end{frame}
+
+\begin{frame}[label=validation]{단위와 검증도 공통 전달 규약에 포함한다}
+  \framesubtitle{규약 검토 · 상태 검증과, 모델·장이 필요한 기준 상태 진단을 구분한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{단위 선언}
+        에너지: \texttt{meV} 또는 \texttt{relative}\\
+        길이: \texttt{angstrom} 또는 \texttt{relative}\\
+        장 $B$: 계산 요청에서 단위와 함께 받는다.\\[0.4em]
+        $J=1$, $a=1$도 허용한다. 환산 근거가 있으면 scale을,
+        없으면 \texttt{None}을 기록하고 추정하지 않는다.
+      \end{block}
+      \begin{block}{상태 검증: 상태·계산계}
+        사이트 대응 · 단위 방향 벡터\\
+        초격자 유효성(정수, $\det\neq0$) · 계산계 정합\\
+        주기 최소성 알림
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{모델 공통 검증}
+        \begin{itemize}
+          \item shape·유한성, 격자 독립성
+          \item ID 유일성·endpoint 존재
+          \item 허용 kind·참여자 수·계수 shape
+          \item 병진·역방향 중복, 같은 사이트 반복 거부
+          \item Zeeman 항: 선택, 사이트당 최대 하나
+          \item 입력 배열 복사·변경 보호
+        \end{itemize}
+      \end{block}
+      \begin{block}{기준 상태 진단: 모델·$B$ 필요}
+        정상성(토크) 경고 · 안정성(Colpa 조건)
+      \end{block}
+      \supportingtext{비대칭 실수 $J$를 허용한다. 모델 생성은 난수·솔버·저장을 실행하지 않는다.}
+    \end{column}
+  \end{columns}
+  \slidesource{단위 모드·불변성·검증 조건}{contract}
+\end{frame}
+
+\begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
+  \framesubtitle{1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{0.4cm}YP{4.9cm}@{}}
+    \toprule
+    & 결정 & 근거 \\
+    \midrule
+    1 & \texttt{zeeman} 항은 선택 사항이다. 항이 없는 사이트는 장과 결합하지 않는다.
+      $B\neq0$인데 항이 없는 사이트가 있으면 경고하고 결과에 기록한다.
+      & 영행렬 항을 강제하면 모델 작성 부담만 늘고, 계산 비용 차이는 대각화에 비해 무시할 수 있다. \\
+    2 & $H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
+      & Einstein 합 규약에서 자연스럽고, 비대칭 $g$의 전치 모호성을 없앤다. \\
+    3 & 에너지 단위가 \texttt{relative}인 모델은 $\mu_B=1$로 두고 $B$를 에너지 단위 값으로 해석한다.
+      & 상대 단위 모델에서 환산 근거를 추정하지 않는다. \\
+    4 & 상태 검증(사이트 대응, 단위 벡터, 초격자 유효성, 계산계 정합, 주기 최소성)과
+      기준 상태 진단(정상성, 안정성)을 나눈다. 방향은 단위 벡터로 저장한다.
+      & 정상성·안정성은 모델과 $B$에 따라 달라진다. 접힌 밴드는 Chern 수를 모호하게 한다.
+      각도 표현은 극점에서 $\phi$가 정의되지 않는다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{상태·계산 요청·결과 객체의 필드 규약은 아직 작성하지 않았다.
+  나머지 미결 사항은 부록 A에 정리한다.}
+  \slidesource{2026-09-29 세부 규칙 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=object-scope]{상태·계산 요청·결과: 공통 부분과 방법별 부분}
+  \framesubtitle{2026-09-29 결정 · 1차에서는 공통 요청, 공통 결과 머리부, \texttt{SpinState}, LSWT 결과 본문을 정한다.}
+  \begin{tabularx}{\textwidth}{@{}p{2.0cm}P{5.0cm}Y@{}}
+    \toprule
+    객체 & 모든 방법 공통 & 방법별 \\
+    \midrule
+    \textbf{상태} & — & 고전 스핀 배열 \texttt{SpinState}는 고전 계산·LSWT 전용. ED·TN의 상태는 양자 상태로 별도 객체 \\
+    \textbf{계산 요청} & 외부 조건($B$, $T$), 계산계 실현, 목표 물리량 & 방법 설정: LSWT의 k점 격자·regularization, ED의 대칭 섹터, TN의 bond dimension \\
+    \textbf{결과} & 머리부: 입력 출처, 단위·정규화, 진단 & 본문: LSWT의 밴드·영점 에너지, ED의 섹터별 고유값, TN의 수렴 정보 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{최소 ED 검증 도구도 공통 요청과 공통 머리부를 쓴다. ED 결과 본문은 3단계에서, TN 관련 부분은 TN 도입 시 정한다.}
+  \slidesource{2026-09-29 객체 구분 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=state-schema]{\texttt{SpinState}: 고전 계산과 LSWT의 상태}
+  \framesubtitle{규약 검토 · 정수 초격자 행렬 하나로 기본 격자 위의 모든 정합 상태를 표현한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.56\textwidth}
+      \small
+      \begin{tabularx}{\linewidth}{@{}p{2.2cm}Y@{}}
+        \toprule
+        필드 & 의미 \\
+        \midrule
+        \texttt{model\_ref} & \texttt{model\_id}와 계수 해시 \\
+        \texttt{supercell} & 정수 $(2,2)$ 행렬 $M$, $\det M\neq0$; 자기 격자벡터 행 $=MA$ \\
+        \texttt{directions} & (site, cell, 단위 벡터); 사이트마다 $|\det M|$개 \\
+        \texttt{provenance} & 초기값·최적화·직접 지정; 선택에 쓴 에너지 \\
+        \bottomrule
+      \end{tabularx}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{block}{NBCP 후보 셀의 $M$}
+        기본 격자 $A$ 하나에서:\\[0.3em]
+        Two MSL: $\left(\begin{smallmatrix}1&1\\1&-1\end{smallmatrix}\right)$\quad
+        Three MSL: $\left(\begin{smallmatrix}2&1\\1&2\end{smallmatrix}\right)$\\[0.3em]
+        Four MSL: $\left(\begin{smallmatrix}2&0\\0&2\end{smallmatrix}\right)$
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{대표 셀은 $\mathrm{cell}\,M^{-1}\in[0,1)^2$인 정수 좌표로 두는 안이다.
+  현재 \texttt{CommensurateStructure}는 대각 초격자 $(n_1,n_2)$만 표현해 $\sqrt3\times\sqrt3$ 셀을 담지 못하고,
+  NBCP는 자기 셀 자체를 격자로 두는 우회를 쓴다.}
+  \slidesource{상태 필드 검토안}{contract,implementation}
+\end{frame}
+
+\begin{frame}[label=request-result]{계산 요청과 결과}
+  \framesubtitle{규약 검토 · 요청은 외부 변수 분류를 따르고, 결과는 공통 머리부와 방법별 본문으로 나눈다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{2.3cm}Y@{}}
+    \toprule
+    요청 & 내용 \\
+    \midrule
+    외부 조건 & $B$와 단위; $T$와 단위. meV 모델은 K와 $k_B=8.617\times10^{-2}$ meV/K, relative 모델은 $k_B=1$ \\
+    계산계 실현 & 열역학 극한, 또는 정수 클러스터 행렬 $L$의 유한 토러스($LM^{-1}$ 정수). 토러스에서는 $L$이 k점을 정한다 \\
+    방법 설정 & LSWT: 열역학 극한의 k점 격자 $(N_1,N_2)$, regularization(없음·MAGSWT), 밴드 경로, 허용오차 \\
+    \midrule
+    결과 & 내용 \\
+    \midrule
+    공통 머리부 & 입력 출처(모델·상태 해시, 실현, 조건, 설정, 코드·상수 버전), 에너지 단위, 사이트당 정규화, 진단 \\
+    LSWT 본문 & k점, 양의 밴드 에너지 $\varepsilon_n(\mathbf k)$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, $E_{\mathrm{GS}}$, 요청한 물리량 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{기존 \texttt{SolverResult}를 확장한다. backlog의 ``k-data dict를 dataclass로 전환''은 LSWT 본문 설계에 포함한다.}
+  \slidesource{계산 요청·결과 검토안}{contract,implementation}
+\end{frame}

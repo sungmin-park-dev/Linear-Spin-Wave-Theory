@@ -1,0 +1,107 @@
+\section[부록 B. 결정·관리·참고자료]{결정·관리·참고자료}
+
+\begin{frame}[plain,label=section-appendix-b]
+  \hypertarget{appendix-b}{}
+  \renewcommand{\insertsectionnumber}{B}
+  \sectionpage
+\end{frame}
+
+\begin{frame}[label=decisions]{결정 기록: 합의와 제안을 구분한다}
+  \framesubtitle{기록일 2026-09-23 · 갱신 2026-09-29 · 대화의 합의·결정은 세부 API 구현 완료와 다르다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}Yp{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D01 & 같은 물리 모델을 여러 계산 방법으로 전달하는 workflow & \textbf{방향 합의} \\
+    D02 & 모델 간 공통 필드와 동일한 의미의 전달 규약 & \textbf{방향 합의} \\
+    D03 & 모델 작업 공간은 작은 구성으로 시작 & \textbf{방향 합의} \\
+    D04 & 원시·중간 계산은 모델 작업 공간, 정돈된 결과는 data-space & \textbf{방향 합의} \\
+    D05 & 분율 좌표·정수 셀 이동·단위 모드·결합 수 규칙 & \textbf{규약 검토} \\
+    D06 & 기존 변위와 새 규약의 대응, 실제 자료형 API & \textbf{규약 검토} \\
+    D07 & 1차 범위: NBCP·두 하이젠버그 벤치마크, LSWT 물리량(위상량은 마지막 단계) & \textbf{사용자 결정} \\
+    D08 & \texttt{terms[]} 형식: 형식은 열고 1차 검증은 이선형·Zeeman으로 닫음 & \textbf{사용자 결정} \\
+\bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{후속 변경 시 각 항목의 결정 근거와 검증을 갱신한다.
+  구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{대화 합의와 검토안의 범위}{contract}
+\end{frame}
+
+\begin{frame}[label=decisions-continued]{결정 기록 (계속)}
+  \framesubtitle{2026-09-29 사용자 결정.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}Yp{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D09 & 모델은 g-텐서, 장 $B$는 외부 변수; Zeeman 부호 $-\mu_B$ & \textbf{사용자 결정} \\
+    D10 & 최소 ED 검증 도구를 \texttt{methods/ed/}에 두고 ED 솔버로 확장 & \textbf{사용자 결정} \\
+    D11 & 패키지 \texttt{spintoolkit}, 별칭 \texttt{stk}; 키타에프는 후속 벤치마크 & \textbf{사용자 결정} \\
+    D12 & 선택적 Zeeman 항, $g_{\alpha\beta}$ 인덱스, relative $\mu_B=1$, 상태 검증·기준 상태 진단 & \textbf{사용자 결정} \\
+    D13 & 표준 Fourier 부호 $e^{+\mathrm i\mathbf k\cdot\mathbf r}$와 전체 위치 게이지; NBCP 변위는 $r_t=r_s-d$ & \textbf{사용자 결정} \\
+    D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
+    D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{2026-09-29 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=record-management]{설계 문서와 부록을 갱신하는 방법}
+  \framesubtitle{변경 내용, 근거, 판정, 다음 작업을 함께 남긴다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{내용의 소유 위치}
+        \textbf{전달 규약 상세}\\
+        Working-Pad의 검토 문서\\[0.7em]
+        \textbf{개발 목표와 시스템 설계}\\
+        \texttt{main.tex}와 \texttt{sections/}\\[0.7em]
+        \textbf{수치 증거와 소스 식별}\\
+        검증 JSON · \texttt{source-manifest.json}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{문서의 갱신 순서}
+        \begin{enumerate}
+          \item 본문의 목표·구조·규약을 갱신한다.
+          \item 구현·시험 기록을 부록에 연결한다.
+          \item 계획·결정·열린 이슈를 갱신한다.
+          \item 기록일·소스 manifest를 갱신한다.
+          \item PDF를 빌드하고 전 페이지를 확인한다.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \medskip
+  \supportingtext{화면에 보이는 PDF는 편집 원본에서 생성한다.
+  과거 검증 수치를 새 코드의 결과로 자동 승계하지 않는다.}
+  \slidesource{설계 문서의 관리 방식; 템플릿은 Knowledge Factory에서 재사용}{contract,theme}
+\end{frame}
+
+\begin{frame}[label=sources]{근거 문서와 템플릿}
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{9}
+    \bibitem{contract}
+      모델 간 공통 SpinModel 전달 규약, 2026-09-23 작성 · 2026-09-29 갱신.
+      \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review.
+    \bibitem{extraction}
+      NBCP 모델 추출 검증 기록, 2026-09-23.
+      \newblock \texttt{model/nbcp/verification/} · 모델·해밀토니안·탐색·pytest 기록.
+    \bibitem{implementation}
+      현재 \texttt{SpinSystem}, 격자, 고전 에너지, LSWT 해밀토니안 구현.
+      \newblock \texttt{code-space/lswt/} · 작업 공간 소스 대조.
+    \bibitem{geometry}
+      NBCP Y SOC 조건 검사: \texttt{geometry\_audit}.
+      \newblock \texttt{examples/nbcp\_y\_soc\_conditions.py} · 코드 관찰 근거.
+    \bibitem{theme}
+      Knowledge Factory Beamer, 로컬 템플릿 스냅샷.
+      \newblock 선언 버전 v0.2.3 · note mode · 복사한 theme 내용은 수정하지 않음.
+    \bibitem{layout}
+      기능별 패키지 이행 검증 기록, 2026-09-23.
+      \newblock \texttt{docs/development/verification/} · 본문·수치·호환성·pytest 대조.
+  \end{thebibliography}
+\end{frame}

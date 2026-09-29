@@ -1,0 +1,81 @@
+% !TEX program = xelatex
+% Development design; implementation and verification records live in appendices.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage{iftex}
+\ifXeTeX\else
+  \PackageError{main}{XeLaTeX is required}{Choose XeLaTeX for this document.}
+\fi
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{unicode-math}
+\usepackage[note]{knowledge-factory-beamer}
+\usepackage{booktabs,array,tabularx}
+\usetikzlibrary{arrows.meta,positioning,fit}
+
+\title{2D Spin-System Toolkit}
+\subtitle{개발 목표와 시스템 설계}
+\author{Linear-Spin-Wave-Theory 프로젝트}
+\institute{공통 모델 정의에서 여러 계산 방법으로}
+\date{2026년 9월 29일 · 검토본 11}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=KFBNavy,
+  citecolor=KFBNavy,urlcolor=KFBBlue,
+  pdftitle={2D Spin-System Toolkit - 개발 목표와 시스템 설계},
+  pdfauthor={Linear-Spin-Wave-Theory 프로젝트}}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.28}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+% Marks detailed rules that the user has not decided yet.
+\newcommand{\proposal}{\textcolor{KFBWarning}{\textbf{[제안]}}}
+\tikzset{
+  box/.style={draw=KFBLine,fill=white,rounded corners=1.2mm,
+    text=KFBInk,align=center,font=\small,inner sep=6pt,minimum height=0.8cm},
+  focus/.style={box,draw=KFBNavy,fill=KFBNavy!5,line width=0.8pt},
+  flow/.style={-{Latex[length=2mm]},draw=KFBBlue,line width=0.85pt},
+  auxflow/.style={flow,dashed,draw=KFBMuted}
+}
+
+% Keep the imported theme unchanged; opt in to its section pages here.
+\KFBSetCoverLabel{DEVELOPMENT DESIGN}
+\KFBSetFooterLabel{\secname}
+\KFBSetFooterCenter{2D Spin-System Toolkit}
+\renewcommand{\appendixname}{부록}
+
+\begin{document}
+
+\begin{frame}[plain,noframenumbering,label=cover]
+  \titlepage
+\end{frame}
+
+\begin{frame}[label=contents]{문서 구성}
+  \framesubtitle{본문은 개발 목표와 시스템 설계, 부록은 구현·검증 근거를 다룬다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.62\textwidth}
+      \textbf{본문}\par\medskip
+      \tableofcontents[hideallsubsections]
+    \end{column}
+    \begin{column}{0.34\textwidth}
+      \begin{block}{부록}
+        \hyperlink{appendix-a}{A. 구현·검증 기록}\\[0.8em]
+        \hyperlink{appendix-b}{B. 결정·관리·참고자료}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{목차와 섹션 구성은 개발 과정에서 조정한다.
+  구현·검증 이력은 관련 설계를 확인할 때 부록에서 참조한다.}
+\end{frame}
+
+\input{sections/01-overview}
+\input{sections/02-system-workflow}
+\input{sections/03-data-contract}
+\input{sections/04-module-layout}
+\input{sections/05-development-plan}
+
+\appendix
+
+\input{appendices/a-implementation-verification}
+\input{appendices/b-decisions-references}
+
+\end{document}

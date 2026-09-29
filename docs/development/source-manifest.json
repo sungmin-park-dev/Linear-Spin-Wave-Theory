@@ -1,0 +1,37 @@
+{
+  "document": "2D Spin-System Toolkit development design",
+  "snapshot_date": "2026-09-23",
+  "status": "development review; detailed API contract not implemented",
+  "repository_head": "0f1e10782fa36e548113646c5bf97fcd6b1ab61a",
+  "includes_uncommitted_work": true,
+  "theme": {
+    "project": "knowledge-factory",
+    "source_path": "templates/knowledge-factory-beamer/knowledge-factory-beamer.sty",
+    "declared_version": "0.2.3",
+    "repository_head": "0817b48ab1e29c08b429449fcb792b503c3b74cc",
+    "source_is_modified": true,
+    "sha256": "c359cb5cce5e01e49aff207468eb99fe1767ef7242b0eeaf51874d8f3775676e",
+    "local_theme_edits": false
+  },
+  "sources": {
+    "GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md": "70811050949b3d57e436dc5361b3176c399158e6259a6f9ed0edea7d6a221afe",
+    "GOVERNMENT/Working-Pad/idea-proposals/2026-06-04-general-spin-model-ir.md": "404115f2fcb63c492af1d0e4445af51a1a2d1f3c8c3c1d3ed665d7ca92791c6f",
+    "model/nbcp/verification/model-extraction-2026-09-23.json": "4d5624e37f437f044cfde33b4d1df4fe449327883f28769aa002bafdeba0958b",
+    "model/nbcp/README.md": "3414a190c775e5edb721dae27149129e47fdeeb32d9d43ab0ff85668d29c000f",
+    "code-space/lswt/system/spin_system.py": "6f0d0a2b85779bfe54bd2510d9b1225e9eadeb1c9e5facf2829107968dcd96ca",
+    "code-space/lswt/system/lattice/base.py": "a942e8bc174520d718679334a5f0e91431c7833a42340c362415fce0368e7ec9",
+    "code-space/lswt/methods/spin_wave/energy.py": "9d87f8439b5bb9625da7eabb3cd395c9b5ebba06164729a84e3503a5d0f47ace",
+    "code-space/lswt/methods/spin_wave/hamiltonian.py": "462f60eb8191e9e22125231245977c6241f93084f4f945312e8c2fd92d20daec",
+    "examples/nbcp_y_soc_conditions.py": "0ac7e46af41bede4a4e2f68d8933276731b0e88f2b6d93acff93602532cbc5c8",
+    "docs/development/verification/package-layout-2026-09-23.json": "f6d71e5137f28247f8acf36fe973c7b5c366aaef3632d11fc2454e6232ce710f",
+    "code-space/lswt/README.md": "811c1df46333b37b2c021158e4f2cf0d7b4e9cb0ddd2ff6a35f3787b6bf848cd",
+    "code-space/lswt/_compat.py": "92ac509b0fbc630d8c11fccf70cd35cbeba240646faff958ab5a57f4bed12f46",
+    "code-space/lswt/definitions/constants.py": "055ca9116f488d12a172a0759b550740fc4e7eea0c18f02ef67523d8c4113630",
+    "code-space/lswt/definitions/defaults.py": "41bea0c66fb64e88549add985a988a4fbe7b1c50545edff77dcaf193c94cf7f3",
+    "code-space/lswt/definitions/spin_basis.py": "f8ec7fd29854193e3a032fdbad9775be4d66c8272163eb50b287c72bbdcbaf3b"
+  },
+  "status_basis": "Conversation decisions; source comparison; historical model-extraction evidence; package-layout numeric/AST checks, wheel import verification, and full suite rerun in both staging and the applied worktree. Revision 03 reorganizes the document only; it does not rerun or supersede the recorded numerical checks. Revision 04 separates document scope from tool development goals and initial support scope; it changes documentation only. Revision 05 extends the system workflow through results, observables, visualization and storage, and describes block responsibilities. The diagram is a target architecture; existing implementation foundations and future extensions are distinguished. No code or detailed API contract changes. Revision 06 splits the workflow diagram into input preparation and calculation/result use, followed by the existing responsibility table. It changes slide layout and explanatory wording only. Revision 07 aligns the geometry block directly below system construction and clarifies the classical spin configuration as a separate initial configuration for optimization or reference configuration for LSWT. No API or implementation changes. Revision 08 clarifies the computational spin system as the model instantiated with calculation geometry and names the classical state inputs as spin directions and magnetic-structure periodicity. Documentation terminology only. Revision 09 records the 1st development scope and contract decisions made with the user on 2026-09-29: model as Hamiltonian, external-variable classes, state-geometry commensurability, terms[] schema with bilinear and zeeman kinds, g-tensor with external B and -mu_B sign, square/triangular Heisenberg benchmarks with a minimal ED verification tool, spintoolkit package target, and Kitaev as a later benchmark. The detailed contract Markdown was updated first; details not decided by the user are marked as proposals. No code or numerical evidence changes. Revision 10 records the user's decisions on the four detail proposals: optional zeeman terms with a warning when B is nonzero and a site has none, the g_(alpha beta) index convention, mu_B = 1 for relative energy units, and a split between state validation and reference-state diagnostics (stationarity, Colpa stability). No code or numerical evidence changes. Revision 11 records the user's decisions on open items: the standard Fourier sign with the full-position gauge as a toolkit convention (theory canon status unchanged), the resulting NBCP displacement reading r_target = r_source - d with a conversion rule to be confirmed numerically in stage 2 by elementwise H(k) comparison, the split of state/request/result into common and method-specific parts with SpinState, common request, result header and LSWT body drafts, and spintoolkit/models/ for standard benchmarks. The displacement coverage check was rerun on the current code; no code or numerical evidence changes.",
+  "document_revision": "11",
+  "document_purpose": "Development document for implementing a 2D spin-system solver: physical information representation, required functionality and implementation methods. Document scope is distinguished from tool development goals and initial support scope; implementation and verification evidence stays in appendices.",
+  "document_updated": "2026-09-29"
+}

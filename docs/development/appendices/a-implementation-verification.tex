@@ -1,0 +1,214 @@
+\section[부록 A. 구현·검증 기록]{구현·검증 기록}
+
+\begin{frame}[plain,label=section-appendix-a]
+  \hypertarget{appendix-a}{}
+  \renewcommand{\insertsectionnumber}{A}
+  \sectionpage
+\end{frame}
+
+\begin{frame}[label=current-status]{같은 물리 정보를 같은 의미로 전달한다}
+  \framesubtitle{모델별 내부 구성은 달라도, 수신 모듈이 읽는 형식과 규약은 하나로 맞춘다.}
+  \begin{block}{개발의 중심}
+    \textbf{NBCP · 사각격자·삼각격자 하이젠버그}
+    $\;\longrightarrow\;$ 공통 모델 정의
+    $\;\longrightarrow\;$ 계산 방법과 물리량
+  \end{block}
+  \medskip
+  \begin{tabularx}{\textwidth}{@{}p{2.1cm}Yp{2.55cm}@{}}
+    \toprule
+    상태 & 현재 내용 & 다음 단계 \\
+    \midrule
+    \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
+    \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
+    \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 공통 패키지의 기능별 파일 배치 & 공통 형식에 연결 \\
+    \textbf{미구현} & 이름 변경, 공통 \texttt{SpinModel}·\texttt{terms} API, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 0단계부터 진행 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
+\end{frame}
+
+\begin{frame}[label=implemented]{첫 구현 단계: NBCP 모델 구성 추출}
+  \framesubtitle{2026-09-23 기록 · 원본 예제의 계산 동작을 유지하며 소유 위치를 분리했다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{적용된 변경}
+        \begin{itemize}
+          \item \texttt{exchange.py}: NN·NNN 행렬 구성
+          \item \texttt{unit\_cells.py}: 1--4 MSL 생성
+          \item 기존 예제 import 호환 유지
+          \item 모델 전용 호출자 3곳의 import 정리
+          \item 연구 기록의 소스 해시 목록 갱신
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{이 단계의 범위}
+        기존 7개 함수의 본문·시그니처를 보존했다.\\[0.8em]
+        공통 \texttt{SpinModel} 자료형, 후보 상태 분리,
+        결과 재사용은 후속 단계다.
+      \end{block}
+      \smallskip
+      \supportingtext{작업 전 최신 원본의 코드 7개와 테스트 파일 7개를 기준선으로
+      가져왔다. 이 기존 솔버 수정들은 이번 모델 추출의 신규 변경과 구분한다.}
+    \end{column}
+  \end{columns}
+  \slidesource{기준선·호환성·함수 비교 기록}{extraction}
+\end{frame}
+
+\begin{frame}[label=verification]{검증 결과와 그 적용 범위}
+  \framesubtitle{2026-09-23 첫 모델 추출 단계의 기록 · 현행 폴더 이행 검증은 다음 쪽에 기록한다.}
+  \begin{tabularx}{\textwidth}{@{}p{4.0cm}p{2.7cm}Y@{}}
+    \toprule
+    확인 항목 & 기록된 결과 & 범위 \\
+    \midrule
+    모델·해밀토니안 전후 비교 & 40건, 차이 0 & 4 후보, 5 파라미터군, 고정·난수 각도 \\
+    후보 전체 탐색 전후 비교 & 4회, 차이 0 & $N=3$, 명시한 각도 제약, classical·MAGSWT \\
+    Legacy 대조 & 통과 & 모델 12 조합, 고전 에너지 36 평가 \\
+    신규 모델 테스트 & 17 통과 & 데이터·에너지·선택 결합·import 호환 \\
+    전체 테스트 & 215 통과 / 5 실패 & 변경 전 198 통과 / 동일한 5 실패 \\
+    \bottomrule
+  \end{tabularx}
+  \medskip
+  \begin{mdcallout}[warning]{판정의 경계}
+    기존 5개 실패는 \texttt{CommensurateStructure}의 각도 수와 셀 크기 불일치다.
+    Legacy 대조는 알려진 DM 회전·양자 해밀토니안 차이를 제외한다.\\
+    이 결과는 동작 보존의 근거이며, 상도 수렴이나 물리 모델 승인을 뜻하지 않는다.
+  \end{mdcallout}
+  \slidesource{이전 모델 추출 단계의 시험 조건과 실패 목록}{extraction}
+\end{frame}
+
+\begin{frame}[label=layout-verification]{두 번째 구현 단계: 기능별 패키지 정리}
+  \framesubtitle{2026-09-23 · 기존 함수·수치·공개 호출을 보존하며 파일 소유 위치를 옮겼다.}
+  \begin{tabularx}{\textwidth}{@{}p{3.4cm}p{3.1cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 확인 범위 \\
+    \midrule
+    구현 본문 비교 & 16개 모듈 보존 & import·문서 문자열을 제외한 구문 비교 \\
+    상수·기본값 분리 & 20개 정의 보존 & 물리상수·수치 설정·기저 행렬 \\
+    수치 결과 전후 대조 & 40건·4회, 차이 0 & 모델·행렬·에너지·최적화 결과 \\
+    전체 테스트 & 217 통과 / 5 실패 & 변경 전 215 통과 / 동일한 5 실패 \\
+    기존 호출 호환 & 2개 테스트 통과 & 옛 모듈 17개 경로·저장 객체 복원 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \textbf{현재 남은 경계}\\[0.4em]
+  \texttt{SpinSystem}은 여전히 각도를 포함하고, 에너지 평가는 고전 항과
+  스핀파 보정을 함께 다룬다. 새 \texttt{SpinModel} 전달 규약은 후속 구현이다.
+  \slidesource{격리한 준비 공간에서 검증한 폴더 이행 기록}{layout}
+\end{frame}
+
+\begin{frame}[label=displacement-issue]{결합 변위의 방향: 2026-09-23 기하 검사}
+  \framesubtitle{NBCP Three MSL에서 설명과 기하 해석의 차이가 드러난다. 해석은 다음 쪽에서 정한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{확인한 사실}
+        \texttt{SpinSystem} 설명: source $\to$ target\\[0.6em]
+        Three MSL의 실제 NN 배치:
+        \[
+          r_{\mathrm{target}}=r_{\mathrm{source}}-d_{\mathrm{stored}}
+        \]
+        일 때 정수 셀 위치에 연결된다.
+      \end{block}
+      \smallskip
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        해석 & 최대 정수 셀 잔차 \\
+        \midrule
+        $r_i+d-r_j$ & $0.3333333$ \\
+        $r_i-d-r_j$ & $1.49\times10^{-16}$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{공통 형식으로 연결할 때}
+        \begin{enumerate}
+          \item 셀 이동과 endpoint를 명시한다.
+          \item $J$의 방향·전치 여부를 함께 확인한다.
+          \item 기존 Fourier 위상과 대응시킨다.
+          \item 에너지·행렬 계수·$k,-k$를 검증한다.
+        \end{enumerate}
+      \end{block}
+      \smallskip
+      \supportingtext{다른 후보 셀에서는 양쪽 해석이 모두 정수 셀에 놓일 수 있다.
+      기하 검사만으로 부호를 자동 결정하지 않는다.}
+    \end{column}
+  \end{columns}
+  \slidesource{현재 코드 재검사와 geometry\_audit; 해석은 다음 쪽}{contract,geometry}
+\end{frame}
+
+\begin{frame}[label=displacement-resolution]{결합 변위의 방향: 해석과 변환 규칙}
+  \framesubtitle{2026-09-29 재검사 · 채택한 Fourier 규약에서 기존 코드는 $d=r_{\mathrm{source}}-r_{\mathrm{target}}$로 일관된다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \small
+      \begin{tabular}{@{}lcc@{}}
+        \toprule
+        후보 셀 & $r_t=r_s-d$ & $r_t=r_s+d$ \\
+        \midrule
+        One MSL & 6/6 & 6/6 \\
+        Two MSL & 12/12 & 12/12 \\
+        Three MSL & 18/18 & 9/18, 격자 밖 9 \\
+        Four MSL & 24/24 & 24/24 \\
+        \bottomrule
+      \end{tabular}\\[0.4em]
+      \supportingtext{NN·NNN 물리 결합을 중복 없이 한 번씩 덮는 수. One·Two·Four MSL은 두 해석의 결합 집합이 같다.}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{판단}
+        코드 위상 $e^{-\mathrm i\mathbf k\cdot d}$가 규약의 $e^{+\mathrm i\mathbf k\cdot\symbf\Delta}$와
+        같으려면 $\symbf\Delta=-d$이다. 틀린 것은 \texttt{Coupling}의 ``source$\to$target'' 설명이다.
+      \end{block}
+      \begin{block}{변환 규칙}
+        $n=(r_s-d-r_t)A^{-1}$을 정수로 확인해 \texttt{cell\_offset}에 쓰고, $J$와 source·target은 유지한다.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\smallskip
+  \supportingtext{NBCP의 DM 항은 호출자가 설정하지 않아 0이므로 $J$는 대칭이다.
+  2단계에서 변환 전후 $\mathsf H(\mathbf k)$의 원소 단위 일치로 수치 확정한다.}
+  \slidesource{현재 코드 재검사; 2026-09-29 Fourier 규약 결정}{contract,geometry}
+\end{frame}
+
+\begin{frame}[label=next-steps]{이행 단계별 확인 조건}
+  \framesubtitle{순서: 이름 변경 $\to$ 공통 자료형 $\to$ NBCP 연결 $\to$ 벤치마크 $\to$ 물리량 $\to$ 위상량}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{0.6cm}p{2.6cm}Y@{}}
+    \toprule
+    단계 & 작업 & 통과 조건 \\
+    \midrule
+    0 & 이름 변경 & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
+    1 & 자료형·검증 & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
+    2 & NBCP 연결 & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
+    3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\
+    4 & LSWT 물리량 & 벤치마크와 NBCP에서 스펙트럼·영점 보정 에너지·열역학량·상관함수 확인 \\
+    5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \textbf{공통 검증에 반드시 포함할 사례}\\[0.3em]
+  잘못된 단위 · 중복 Zeeman 항 · 허용 밖 kind · 없는 endpoint · 역방향 중복 · 같은 사이트 반복 · 분수 셀 이동\\
+  비대칭 $J$ · 셀 간 같은 basis 결합 · 배열 변조 · 작은 주기계의 항 중복도 · 비정합·퇴화 초격자의 상태
+  \par\medskip
+  \supportingtext{스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다.}
+  \slidesource{구현 단계와 통과 조건}{contract}
+\end{frame}
+
+\begin{frame}[label=open-questions]{미결 사항}
+  \framesubtitle{해당 단계에 도달하기 전에 결정한다.}
+  \begin{tabularx}{\textwidth}{@{}Yp{3.2cm}@{}}
+    \toprule
+    질문 & 결정 시점 \\
+    \midrule
+    ED 결과 본문의 필드 규약 & 3단계 \\
+    최소 ED 도구에 2-마그논 섹터를 포함할지 & 3단계 \\
+    키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
+    TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
+    후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리 & 고차 항 도입 시 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{결합 변위 해석, 상태·요청·결과의 공통 구조, 벤치마크 위치는 2026-09-29 결정했다.
+  변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 비교로 수치 확정한다.}
+  \slidesource{규약 문서의 Open Questions}{contract}
+\end{frame}
