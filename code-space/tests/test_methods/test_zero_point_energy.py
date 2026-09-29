@@ -10,9 +10,9 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pytest
 
-from lswt import LSWTSolver, SpinSystem
-from lswt.methods.spin_wave.energy import EnergyFunction
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit import LSWTSolver, SpinSystem
+from spintoolkit.methods.lswt.energy import EnergyFunction
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 
 def _energy_function(system, n=3):

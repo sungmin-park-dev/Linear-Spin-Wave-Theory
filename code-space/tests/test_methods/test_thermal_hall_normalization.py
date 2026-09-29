@@ -14,8 +14,8 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pytest
 
-from lswt.observables.thermodynamics import Thermodynamics
-from lswt.observables.topology import Topology
+from spintoolkit.observables.thermodynamics import Thermodynamics
+from spintoolkit.observables.topology import Topology
 
 EXAMPLE = Path(__file__).resolve().parents[3] / "examples/thermal_hall_reference_check.py"
 SPEC = importlib.util.spec_from_file_location("thermal_hall_reference", EXAMPLE)
@@ -197,7 +197,7 @@ def test_empty_topology_integrals_are_unavailable(benchmark):
 
 def test_adding_a_zero_curvature_band_does_not_dilute_hall(benchmark):
     """A decoupled flat third band contributes zero, not an extra 1/Ns."""
-    from lswt.methods.spin_wave.diagonalization import Diagonalizer
+    from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 
     parent, data, _, _ = benchmark
     # Retain the two dispersive bands and append an isolated 2 meV oscillator.

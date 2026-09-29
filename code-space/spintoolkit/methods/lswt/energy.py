@@ -8,8 +8,8 @@ to provide callable energy functions of spin angles.
 
 import numpy as np
 
-from lswt.system.brillouin_zone import BrillouinZone
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.system.brillouin_zone import BrillouinZone
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 
 class EnergyFunction:

@@ -14,7 +14,7 @@ from numpy.testing import assert_allclose
 import pytest
 from scipy.spatial.transform import Rotation
 
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 
 KPOINTS = np.array([[0.0, 0.0], [0.37, -0.29], [-0.81, 0.46], [1.13, 0.67]])

@@ -16,9 +16,9 @@ from pathlib import Path
 # Add lswt to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from lswt.system import SpinSystem
-from lswt.system.lattice import TriangularLattice
-from lswt.states import CommensurateStructure
+from spintoolkit.system import SpinSystem
+from spintoolkit.system.lattice import TriangularLattice
+from spintoolkit.states import CommensurateStructure
 
 
 def example_ferromagnet():

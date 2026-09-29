@@ -11,8 +11,8 @@ from pathlib import Path
 
 import numpy as np
 
-from lswt.system.brillouin_zone import BrillouinZone
-from lswt.observables.topology import Topology
+from spintoolkit.system.brillouin_zone import BrillouinZone
+from spintoolkit.observables.topology import Topology
 from thermal_hall_reference_check import model, reference
 
 CASES = {

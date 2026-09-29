@@ -45,14 +45,14 @@ related:
 
 공통 패키지의 이름을 계산 방법 하나(LSWT)가 아닌 도구 전체로 바꾼다. import 이름은
 `spintoolkit`, 관례 별칭은 `stk`(`import spintoolkit as stk`)이다. 배포 이름은
-`spin-toolkit`을 잠정안으로 둔다. 계산 방법은 그 아래 `methods/`의 하위 패키지로 둔다.
+`spin-toolkit`이다. 계산 방법은 그 아래 `methods/`의 하위 패키지로 둔다.
 
 ```text
 code-space/spintoolkit/
 ├── system/  states/  definitions/  observables/  visualization/
 ├── models/              # 표준 벤치마크 모델(사각·삼각 하이젠버그, 이후 키타에프)
 └── methods/
-    ├── lswt/            # 현재 methods/spin_wave/
+    ├── lswt/            # 이전 methods/spin_wave/
     ├── ed/              # 최소 ED 검증 도구 → 향후 ED 솔버
     ├── tn/              # 후속
     └── optimization.py
@@ -61,8 +61,9 @@ code-space/spintoolkit/
 `code-space/`는 Python 패키지가 아니므로 `code-space/methods/lswt/`처럼 두면
 `methods`, `system` 등이 각각 최상위 import 이름이 된다. 이를 피하기 위해 하나의
 우산 패키지 아래에 둔다. 이름 변경은 새 코드를 작성하기 전의 별도 단계(§4의 0단계)로
-수행한다. 기존 저장 객체에는 `lswt.` 모듈 경로가 기록되어 있으므로 `_compat.py`에서 옛
-이름을 새 패키지의 별칭으로 유지한다.
+2026-09-29에 수행했다. 기존 저장 객체에는 `lswt.` 모듈 경로가 기록되어 있으므로
+`code-space/lswt/` 호환 패키지가 옛 이름을 DeprecationWarning과 함께 새 패키지의
+별칭으로 유지한다.
 
 공통 자료형·검증은 `code-space/spintoolkit/system/model.py`에 둔다. 공개 사용자와
 테스트가 함께 쓰는 작은 표준 벤치마크 모델은 `spintoolkit/models/`에, NBCP 같은 연구
@@ -135,6 +136,11 @@ code-space/spintoolkit/
 | 4 | LSWT 물리량 | 스펙트럼, 영점 보정을 포함한 바닥상태 에너지, 열역학량, 상관함수를 벤치마크와 NBCP에서 확인 |
 | 5 | 위상량 | Berry 곡률·Chern 수·thermal Hall; 하이젠버그 null test; 0이 아닌 기준 모델 비교(키타에프 편극상은 선택); 기존 real-space volume 이슈 해소 |
 
+**진행 상황.** 0단계는 2026-09-29 완료했다. 테스트는 이전과 같은 결과(호환 테스트 1개를
+4개로 교체해 220 통과 / 같은 5 실패)였고, `examples/package_regression_snapshot.py`로
+비교한 208개 값(40건의 `H(k)`·고전 에너지와 16개 탐색 결과)의 최대 차이는 0이었다.
+기록은 `docs/development/verification/package-rename-2026-09-29.json`에 있다.
+
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
 
@@ -155,6 +161,8 @@ ED/TN 실행 가능성은 별도 검증이다.
 
 - 2026-09-29 (claude): SpinModel 전달 규약에서 1차 범위·패키지·벤치마크·구현 단계를
   분리해 작성했다. 내용은 분리 전 규약 문서와 같다.
+- 2026-09-29 (claude): 0단계(패키지 이름 변경) 완료와 검증 결과를 기록하고, 배포 이름
+  `spin-toolkit`과 `lswt` 호환 패키지의 위치를 반영했다.
 
 ## 관련 기록
 

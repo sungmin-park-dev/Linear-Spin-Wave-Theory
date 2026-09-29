@@ -12,7 +12,7 @@ import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
 import pytest
 
-from lswt.methods.spin_wave.energy import EnergyFunction
+from spintoolkit.methods.lswt.energy import EnergyFunction
 from model import nbcp
 
 

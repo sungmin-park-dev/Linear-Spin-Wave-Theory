@@ -8,7 +8,7 @@ from config. The field config["h"] is the Zeeman energy vector, not tesla.
 
 import numpy as np
 
-from lswt.system.spin_system import SpinSystem
+from spintoolkit.system.spin_system import SpinSystem
 
 
 DEFAULT_SPIN = 1 / 2

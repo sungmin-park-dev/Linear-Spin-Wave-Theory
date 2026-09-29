@@ -12,9 +12,9 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pytest
 
-from lswt.methods.spin_wave.diagonalization import Diagonalizer
-from lswt.observables.thermodynamics import Thermodynamics
-from lswt.observables.topology import Topology, compute_berry_curvature
+from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+from spintoolkit.observables.thermodynamics import Thermodynamics
+from spintoolkit.observables.topology import Topology, compute_berry_curvature
 
 
 def local_two_level(delta, scale=1.0):

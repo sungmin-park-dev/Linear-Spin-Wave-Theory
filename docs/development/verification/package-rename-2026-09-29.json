@@ -1,0 +1,85 @@
+{
+  "date": "2026-09-29",
+  "scope": "Stage 0 of the 1st development plan: rename package lswt -> spintoolkit and methods/spin_wave -> methods/lswt. No computational code changes.",
+  "status": "passed",
+  "baseline_commit": "49f047a",
+  "relocations": {
+    "code-space/lswt/": "code-space/spintoolkit/",
+    "code-space/lswt/methods/spin_wave/": "code-space/spintoolkit/methods/lswt/",
+    "code-space/lswt/_compat.py": "removed; legacy aliases moved to the code-space/lswt/ compatibility package"
+  },
+  "import_rewrites": {
+    "files_rewritten": 36,
+    "hard_coded_source_paths_updated": 9,
+    "rules": [
+      "lswt.methods.spin_wave -> spintoolkit.methods.lswt",
+      "from/import lswt -> spintoolkit",
+      "code-space/lswt/methods/spin_wave/ -> code-space/spintoolkit/methods/lswt/ in provenance path strings"
+    ]
+  },
+  "pytest": {
+    "command": "PYTHONPATH=code-space:. python3 -m pytest -p no:cacheprovider code-space/tests",
+    "before": {
+      "passed": 217,
+      "failed": 5
+    },
+    "after": {
+      "passed": 220,
+      "failed": 5
+    },
+    "identical_test_ids": "All 221 other test IDs have the same outcome; the 5 failures are the known CommensurateStructure angle-shape failures.",
+    "changed_ids": {
+      "removed": [
+        "test_import_compatibility.py::test_pickle_with_historical_system_path_loads_current_classes"
+      ],
+      "added": [
+        "test_import_compatibility.py::test_pickle_with_previous_system_path_loads_current_classes[lswt.system.spin_system]",
+        "test_import_compatibility.py::test_pickle_with_previous_system_path_loads_current_classes[lswt.core.spin_system]",
+        "test_import_compatibility.py::test_previous_package_name_resolves_to_current_modules",
+        "test_import_compatibility.py::test_previous_package_name_warns_on_first_import"
+      ]
+    }
+  },
+  "numerical": {
+    "script": "examples/package_regression_snapshot.py",
+    "seed": 7301,
+    "mesh_N": 3,
+    "cases": "5 parameter families x 4 candidate cells x 2 angle cases = 40 (H(k) at 4 k-points and classical energy each)",
+    "searches": "4 (xxz, nn_soc) x (classical, MAGSWT), each over the 4 candidate cells",
+    "leaves": 208,
+    "determinism_check": "two pre-rename snapshots: maximum difference 0.0",
+    "before_after_maximum_difference": 0.0,
+    "note": "The 2026-09-23 comparison script was not kept; this script reproduces its scope and is kept for later refactors."
+  },
+  "compatibility": "import lswt warns DeprecationWarning; every lswt.<path> and pre-2026-09-23 lswt.core/solvers/config path resolves to the same spintoolkit module object; pickles with lswt.system.* and lswt.core.* paths load current classes; spintoolkit.methods has no spin_wave attribute.",
+  "packaging": {
+    "pyproject": {
+      "name": "lswt -> spin-toolkit",
+      "include": "lswt* -> spintoolkit*, lswt",
+      "build_requires": "removed unused setuptools-scm (version is static)"
+    },
+    "wheel": "built with --no-deps --no-build-isolation, no network; contains 31 spintoolkit files and lswt/__init__.py",
+    "editable_install": "uninstalled stale lswt 0.2.dev0 editable (mapped to nonexistent /lswt); installed spin-toolkit editable; import spintoolkit and import lswt work outside the repository"
+  },
+  "examples": "all examples/*.py and model/nbcp/*.py compile; 30 spintoolkit modules import",
+  "not_updated": {
+    "reason": "files carry other uncommitted edits; update after the user decides",
+    "files": [
+      "README.md",
+      "CLAUDE.md",
+      "AGENTS.md",
+      "GOVERNMENT/Agents-Bylaws/policies/directory-structure-guide.md",
+      "GOVERNMENT/Agents-Bylaws/procedures/theory_code_verification_plan.md",
+      "open issue notes that cite code-space/lswt paths"
+    ],
+    "historical_records_left_as_is": "closed issue notes, handoffs, and verification JSON keep the paths they recorded"
+  },
+  "found_issue": "SpinOptimizer.find_minimum documents angle_setting=None as all-free, but recover_angles iterates it and raises TypeError; examples/nbcp_ground_state.py uses None by default. Not fixed in stage 0 (no computational changes).",
+  "source_hashes": {
+    "code-space/lswt/__init__.py": "68ea3f11c25ee2cb4bfe6f94ce85e374fac7adbf3f988a776b3e44ebfdf8464e",
+    "code-space/spintoolkit/__init__.py": "1cd77be482ad02802609d249edb5bddd50e3657d6f8ac9e9f0b1dc3a2d122029",
+    "code-space/tests/test_import_compatibility.py": "3f3f87d87020c67f38b71ea9934c6d0045c3ed1e5dee4f3a1f77c13971e07b18",
+    "examples/package_regression_snapshot.py": "4a7c81711cd3009c7819357dfeb4b17e7b9988f2cff787ae2a1df640bc2b4218",
+    "pyproject.toml": "6d45746f1758a8212392d5730138c45505610d520e67855667d97ddea33e8493"
+  }
+}

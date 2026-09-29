@@ -1,4 +1,7 @@
-# LSWT 패키지의 기능별 구성
+# spintoolkit 패키지의 기능별 구성
+
+2D 스핀계 계산 도구의 공통 패키지다. 관례 별칭은 `import spintoolkit as stk`이다.
+2026-09-29에 패키지 이름을 `lswt`에서 `spintoolkit`으로 바꿨다.
 
 | 위치 | 담당 기능 |
 | --- | --- |
@@ -6,7 +9,7 @@
 | `states/` | 정합·비정합 자기구조의 표현. 비정합 구현은 기존 stub 상태 |
 | `methods/base.py` | `AbstractSolver`와 `SolverResult` 공통 인터페이스 |
 | `methods/optimization.py` | 고전·양자 에너지 함수를 사용하는 스핀상태 최적화 |
-| `methods/spin_wave/` | LSWT 솔버, 보손 해밀토니안, Colpa 대각화, 에너지 평가 |
+| `methods/lswt/` | LSWT 솔버, 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`) |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
 | `observables/` | 보스 통계, 열역학, 위상, 상관함수 |
 | `visualization/` | 스핀 배열과 계산 결과 표시 |
@@ -29,15 +32,18 @@
 새 코드는 기능별 경로를 사용한다.
 
 ```python
-from lswt.system import SpinSystem, exchange
-from lswt.states import CommensurateStructure
-from lswt.methods.spin_wave import LSWTSolver
+from spintoolkit.system import SpinSystem, exchange
+from spintoolkit.states import CommensurateStructure
+from spintoolkit.methods.lswt import LSWTSolver
 ```
 
-최상위 `from lswt import SpinSystem, LSWTSolver` API는 유지한다.
-옛 `lswt.core`, `lswt.solvers`, `lswt.config` import는 `_compat.py`에서
-같은 구현 객체로 연결한다. 이 파일은 호환 경로만 소유하며 계산 코드를 복제하지
-않는다. 모듈의 실제 `__module__`과 `__file__`은 새 위치를 가리킨다.
+최상위 `from spintoolkit import SpinSystem, LSWTSolver` API를 제공한다.
+옛 이름은 `code-space/lswt/` 호환 패키지가 소유한다. `import lswt`는
+DeprecationWarning을 내고, `lswt.<경로>`를 같은 `spintoolkit` 모듈 객체로
+연결한다(`methods.spin_wave`는 `methods.lswt`). 2026-09-23 이전의 `lswt.core`,
+`lswt.solvers`, `lswt.config`도 같은 곳에서 연결한다. 호환 패키지는 계산 코드를
+복제하지 않으며, 모듈의 실제 `__module__`과 `__file__`은 새 위치를 가리킨다.
+옛 경로로 저장한 pickle도 이 연결로 복원된다.
 
 개발 현황과 이행 검증은
 [개발 기록](../../docs/development/README.md)에서 관리한다.

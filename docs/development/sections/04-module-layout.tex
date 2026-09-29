@@ -5,7 +5,7 @@
 \end{frame}
 
 \begin{frame}[label=folder-plan]{공통 경계는 유지하고, 모델 폴더는 작게 시작한다}
-  \framesubtitle{목표 패키지 \texttt{spintoolkit} (\texttt{import spintoolkit as stk}) · 이름 변경은 0단계에서 수행한다.}
+  \framesubtitle{패키지 \texttt{spintoolkit} (\texttt{import spintoolkit as stk}) · 0단계에서 이름을 바꿨다(2026-09-29).}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.52\textwidth}
       \begin{block}{공통 패키지: \texttt{code-space/spintoolkit/}}
@@ -14,7 +14,7 @@
           \texttt{system/} & 격자·공통 모델·항 \\
           \texttt{states/} & 고전 스핀상태 표현 \\
           \texttt{models/} & 표준 벤치마크 모델 \\
-          \texttt{methods/lswt/} & LSWT (현 \texttt{spin\_wave/}) \\
+          \texttt{methods/lswt/} & LSWT (이전 \texttt{spin\_wave/}) \\
           \texttt{methods/ed/} & 최소 ED 검증 $\to$ ED 솔버 \\
           \texttt{methods/tn/} & 텐서 네트워크 (후속) \\
           \texttt{observables/} & 물리량 계산 \\
@@ -36,9 +36,8 @@
     \end{column}
   \end{columns}
   \smallskip
-  \supportingtext{현재 패키지는 \texttt{code-space/lswt/}이다. \texttt{code-space/methods/}처럼 두면
-  \texttt{methods}·\texttt{system}이 각각 최상위 import 이름이 되므로 하나의 우산 패키지 아래에 둔다.
-  옛 \texttt{lswt} 경로는 저장 객체 복원을 위해 \texttt{\_compat.py}에서 별칭으로 유지한다.}
+  \supportingtext{하나의 우산 패키지 아래에 두어 \texttt{methods}·\texttt{system}이 최상위 import 이름이 되지 않게 한다.
+  옛 이름 \texttt{lswt}는 \texttt{code-space/lswt/} 호환 패키지가 DeprecationWarning과 함께 연결한다.}
   \slidesource{2026-09-29 패키지 이름 결정; 현재 배치와 모델 작업 공간의 후속 목표}{plan,layout}
 \end{frame}
 

@@ -11,8 +11,8 @@ import warnings
 import numpy as np
 from scipy.special import spence
 
-from lswt.observables.bose_statistics import compute_bose_einstein_distribution
-from lswt.definitions import (
+from spintoolkit.observables.bose_statistics import compute_bose_einstein_distribution
+from spintoolkit.definitions import (
     K_BOLTZMANN_MEV, H_BAR_MEV, DEFAULT_LEVEL_SPACING, DEFAULT_BAND_GAP_CUTOFF,
 )
 

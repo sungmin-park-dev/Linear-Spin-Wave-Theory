@@ -6,7 +6,7 @@ selects NBCP bond angles; the general exchange formulas live in lswt.system.
 
 import numpy as np
 
-from lswt.system.exchange import bond_angle_exchange, nnn_exchange
+from spintoolkit.system.exchange import bond_angle_exchange, nnn_exchange
 
 
 def make_nn_exchange_matrices(config):

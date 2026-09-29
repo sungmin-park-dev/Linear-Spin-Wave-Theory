@@ -28,7 +28,7 @@ from scipy.optimize import minimize
 
 from examples.nbcp_y_soc_conditions import background, kernel, reduction
 from examples.nbcp_y_stiffness import AREA, DELTAS, J, JZ, METRIC, PAIRS, POISSON, S
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 from modules.LinearSpinWaveTheory.lswt_Hamiltonian import LSWT_HAMILTONIAN
 
 OUT = ROOT / 'data-space/verification/260917-y-stability'
@@ -324,8 +324,8 @@ def main():
               ROOT/'examples/nbcp_ground_state.py',
               ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
               ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
-              ROOT/'code-space/lswt/methods/spin_wave/hamiltonian.py',
-              ROOT/'code-space/lswt/system/exchange.py', ROOT/'legacy/modules/LinearSpinWaveTheory/lswt_Hamiltonian.py',
+              ROOT/'code-space/spintoolkit/methods/lswt/hamiltonian.py',
+              ROOT/'code-space/spintoolkit/system/exchange.py', ROOT/'legacy/modules/LinearSpinWaveTheory/lswt_Hamiltonian.py',
               ROOT/'data-space/verification/260912-pseudo-goldstone/scan-N48-P72.json']
     report = {'created_utc': datetime.now(timezone.utc).isoformat(),
               'scope': 'Full-zone numerical stability screen of the classical Y orbit at B=0.2 T; not a global phase or thermal calculation.',

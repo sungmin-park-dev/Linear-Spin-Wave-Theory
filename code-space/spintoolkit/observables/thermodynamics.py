@@ -11,16 +11,16 @@ import numpy as np
 from typing import Union, Tuple
 from tqdm import tqdm
 
-from lswt.observables.bose_statistics import (
+from spintoolkit.observables.bose_statistics import (
     compute_bose_einstein_distribution,
     compute_static_magnon_kernel,
 )
-from lswt.observables.topology import (
+from spintoolkit.observables.topology import (
     compute_berry_curvature, c_two_function,
     _magnetic_cell_area, _thermal_hall_conductivity, _validate_thermal_hall_inputs,
     _matches_integration_grid, _validate_band_gap_cutoff,
 )
-from lswt.definitions import (
+from spintoolkit.definitions import (
     K_BOLTZMANN_MEV,
     DEFAULT_INVALID_EXCLUDE, DEFAULT_TEMPERATURE, DEFAULT_BAND_GAP_CUTOFF,
 )

@@ -17,7 +17,7 @@ import numpy as np
 
 from examples.nbcp_y_stiffness import S, J, JZ, AREA, DELTAS, PAIRS, GAUGE, POISSON, METRIC, frame, rz
 from model.nbcp import make_nn_exchange_matrices, three_msl
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 OUT = ROOT/'data-space/verification/260917-y-soc-conditions'
 OMEGA = np.linalg.inv(POISSON)
@@ -210,8 +210,8 @@ def main():
             ROOT/'examples/nbcp_ground_state.py',
             ROOT/'model/__init__.py', ROOT/'model/nbcp/__init__.py',
             ROOT/'model/nbcp/exchange.py', ROOT/'model/nbcp/unit_cells.py',
-            ROOT/'code-space/lswt/system/spin_system.py',
-            ROOT/'code-space/lswt/methods/spin_wave/hamiltonian.py']
+            ROOT/'code-space/spintoolkit/system/spin_system.py',
+            ROOT/'code-space/spintoolkit/methods/lswt/hamiltonian.py']
     report={'scope':'Conditions and local classical harmonic benchmark for Y with SOC; not a quantum-corrected or thermal stiffness',
             'B_T':FIELD,'parameters':{'J_meV':J,'Jz_meV':JZ,'S':S,'a':1.,'area_per_spin':AREA},
             'symbolic_checks':symbolic['checks'],'cases':cases,

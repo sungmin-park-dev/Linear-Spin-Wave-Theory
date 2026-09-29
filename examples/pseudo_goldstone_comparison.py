@@ -29,7 +29,7 @@ import numpy as np
 from scipy.optimize import minimize_scalar, root
 
 from model.nbcp import make_nn_exchange_matrices, three_msl
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 from modules.LinearSpinWaveTheory.lswt_Hamiltonian import LSWT_HAMILTONIAN
 
 S, J, JZ = 0.5, 0.075, 0.125
@@ -361,7 +361,7 @@ def main():
     sources = [str(Path(__file__).relative_to(ROOT)), 'examples/nbcp_ground_state.py',
                'model/__init__.py', 'model/nbcp/__init__.py',
                'model/nbcp/exchange.py', 'model/nbcp/unit_cells.py',
-               'code-space/lswt/methods/spin_wave/hamiltonian.py', 'code-space/lswt/system/exchange.py',
+               'code-space/spintoolkit/methods/lswt/hamiltonian.py', 'code-space/spintoolkit/system/exchange.py',
                'legacy/modules/LinearSpinWaveTheory/lswt_Hamiltonian.py',
                'legacy/scripts/4_Pseudo_Gap.py', 'legacy/scripts/2_U_symmetry_YV.py']
     report['source_sha256'] = {p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in sources}

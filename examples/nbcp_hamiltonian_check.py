@@ -17,8 +17,8 @@ from examples.nbcp_ground_state import (
     make_nn_exchange_matrices, make_nnn_exchange_matrices,
     four_msl, find_ground_state,
 )
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
-from lswt.system.brillouin_zone import BrillouinZone
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+from spintoolkit.system.brillouin_zone import BrillouinZone
 
 
 # ======================================================================

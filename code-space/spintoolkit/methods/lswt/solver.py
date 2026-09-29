@@ -11,16 +11,16 @@ Ported from: modules/LinearSpinWaveTheory/linear_spin_wave_theory.py
 import numpy as np
 from typing import Tuple, List, Dict, Optional, Union
 
-from lswt.system.spin_system import SpinSystem
-from lswt.system.brillouin_zone import BrillouinZone
-from lswt.observables.bose_statistics import compute_static_magnon_kernel
-from lswt.methods.base import AbstractSolver, SolverResult
-from lswt.methods.spin_wave.hamiltonian import LSWTHamiltonian
+from spintoolkit.system.spin_system import SpinSystem
+from spintoolkit.system.brillouin_zone import BrillouinZone
+from spintoolkit.observables.bose_statistics import compute_static_magnon_kernel
+from spintoolkit.methods.base import AbstractSolver, SolverResult
+from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 # TODO: Uncomment once observables modules are connected
-# from lswt.observables.thermodynamics import Thermodynamics
-# from lswt.observables.topology import Topology
-# from lswt.observables.correlations import Correlations
+# from spintoolkit.observables.thermodynamics import Thermodynamics
+# from spintoolkit.observables.topology import Topology
+# from spintoolkit.observables.correlations import Correlations
 
 
 class LSWTSolver(AbstractSolver):
@@ -35,8 +35,8 @@ class LSWTSolver(AbstractSolver):
 
     Examples
     --------
-    >>> from lswt import SpinSystem, LSWTSolver
-    >>> from lswt.system import exchange
+    >>> from spintoolkit import SpinSystem, LSWTSolver
+    >>> from spintoolkit.system import exchange
     >>> import numpy as np
     >>>
     >>> sites = [SpinSystem.Site("A", [0, 0], spin=0.5,
@@ -141,7 +141,7 @@ class LSWTSolver(AbstractSolver):
 
     def _classical_energy(self) -> float:
         """Compute classical energy per site from current spin configuration."""
-        from lswt.methods.spin_wave.energy import EnergyFunction
+        from spintoolkit.methods.lswt.energy import EnergyFunction
         ef = EnergyFunction(self.spin_system_data, N=1, update_args=False)
         return ef.classical_energy_density_func(self.system.get_angles_flat())
 

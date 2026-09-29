@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=64", "setuptools-scm>=8"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lswt"
+name = "spin-toolkit"
 version = "0.2.dev0"
-description = "Linear Spin Wave Theory for 2D quantum magnets"
+description = "Calculation toolkit for 2D spin systems: classical optimization and linear spin-wave theory"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.9"
@@ -43,5 +43,5 @@ Repository = "https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory"
 
 [tool.setuptools.packages.find]
 where = ["code-space"]
-include = ["lswt*"]
+include = ["spintoolkit*", "lswt"]
 exclude = ["modules*", "tests*", "examples*", "docs*"]

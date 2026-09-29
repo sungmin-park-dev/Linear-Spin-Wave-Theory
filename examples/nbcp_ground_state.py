@@ -23,8 +23,8 @@ from model.nbcp.unit_cells import (
     DEFAULT_SPIN, DISP_NN, DISP_NNN,
     one_msl, two_msl, three_msl, four_msl,
 )
-from lswt.methods.spin_wave.energy import EnergyFunction
-from lswt.methods.optimization import SpinOptimizer
+from spintoolkit.methods.lswt.energy import EnergyFunction
+from spintoolkit.methods.optimization import SpinOptimizer
 
 
 # ======================================================================
@@ -184,7 +184,7 @@ def find_ground_state(config, opt_method="MAGSWT", N=20,
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    from lswt.visualization.spin_plotter import plot_spin_configuration
+    from spintoolkit.visualization.spin_plotter import plot_spin_configuration
 
     angles_setting = {
         "One MSL":   (None, 0),

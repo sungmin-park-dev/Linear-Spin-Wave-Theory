@@ -11,9 +11,9 @@ Ported from: modules/LinearSpinWaveTheory/lswt_Hamiltonian.py
 import numpy as np
 from typing import Tuple, List, Dict
 
-from lswt.observables.bose_statistics import compute_bose_einstein_distribution
-from lswt.methods.spin_wave.diagonalization import Diagonalizer
-from lswt.definitions import K_BOLTZMANN_MEV
+from spintoolkit.observables.bose_statistics import compute_bose_einstein_distribution
+from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+from spintoolkit.definitions import K_BOLTZMANN_MEV
 
 
 # ---------------------------------------------------------------------------

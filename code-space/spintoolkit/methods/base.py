@@ -15,7 +15,7 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 
-from lswt.system.spin_system import SpinSystem
+from spintoolkit.system.spin_system import SpinSystem
 
 
 @dataclass

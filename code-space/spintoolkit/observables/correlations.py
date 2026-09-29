@@ -10,14 +10,14 @@ import numpy as np
 from typing import Union, Optional, Dict, Tuple, List
 from tqdm import tqdm
 
-from lswt.observables.bose_statistics import (
+from spintoolkit.observables.bose_statistics import (
     compute_static_magnon_kernel,
     compute_real_time_kernel,
     compute_lorentzian_kernel,
     compute_spectral_kernel,
 )
-from lswt.system.brillouin_zone import get_nearest_lattices
-from lswt.definitions import (
+from spintoolkit.system.brillouin_zone import get_nearest_lattices
+from spintoolkit.definitions import (
     DEFAULT_TOLERANCE, DEFAULT_TEMPERATURE, DEFAULT_TIME,
     DEFAULT_OMEGA, DEFAULT_ETA, DEFAULT_DELTA_PEAK, Mat_C,
 )

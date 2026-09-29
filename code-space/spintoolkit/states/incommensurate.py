@@ -149,7 +149,7 @@ class IncommensurateStructure(AbstractMagneticStructure):
     ... )
 
     # Optimize to find lowest energy q-vector
-    >>> from lswt.solvers import optimize_incommensurate
+    >>> from spintoolkit.solvers import optimize_incommensurate
     >>> q_opt = optimize_incommensurate(system, q_initial=[0.5, 0.5])
     """
 

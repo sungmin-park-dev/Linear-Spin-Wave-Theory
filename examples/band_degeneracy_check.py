@@ -16,9 +16,9 @@ from pathlib import Path
 
 import numpy as np
 
-from lswt.methods.spin_wave.diagonalization import Diagonalizer
-from lswt.definitions import DEFAULT_BAND_GAP_CUTOFF
-from lswt.observables.topology import compute_berry_curvature
+from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+from spintoolkit.definitions import DEFAULT_BAND_GAP_CUTOFF
+from spintoolkit.observables.topology import compute_berry_curvature
 
 
 def probe(delta, *, band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
@@ -74,9 +74,9 @@ def main():
     root = Path(__file__).resolve().parents[1]
     sources = [
         "examples/band_degeneracy_check.py",
-        "code-space/lswt/methods/spin_wave/diagonalization.py",
-        "code-space/lswt/observables/topology.py",
-        "code-space/lswt/definitions/constants.py", "code-space/lswt/definitions/defaults.py", "code-space/lswt/definitions/spin_basis.py",
+        "code-space/spintoolkit/methods/lswt/diagonalization.py",
+        "code-space/spintoolkit/observables/topology.py",
+        "code-space/spintoolkit/definitions/constants.py", "code-space/spintoolkit/definitions/defaults.py", "code-space/spintoolkit/definitions/spin_basis.py",
     ]
     report = {
         "created_utc": datetime.now(timezone.utc).isoformat(),

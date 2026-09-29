@@ -1,7 +1,7 @@
 # NBCP model workspace
 
 This directory owns NBCP-specific model definitions. Reusable numerical methods
-remain in `code-space/lswt/`; the model builders do not select a solver.
+remain in `code-space/spintoolkit/`; the model builders do not select a solver.
 
 | File | Responsibility |
 | --- | --- |
@@ -11,7 +11,7 @@ remain in `code-space/lswt/`; the model builders do not select a solver.
 
 ## Using the model
 
-Run from the repository root with `lswt` installed, or set `PYTHONPATH=code-space:.`:
+Run from the repository root with `spintoolkit` installed, or set `PYTHONPATH=code-space:.`:
 
 ```python
 import numpy as np

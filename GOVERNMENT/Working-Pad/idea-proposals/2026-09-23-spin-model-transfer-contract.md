@@ -373,14 +373,15 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 
 ### 6. 기존 코드와의 연결
 
-아래는 현재 구현의 관찰 결과이며 새 규약으로의 변환 완료를 뜻하지 않는다.
+아래는 현재 구현의 관찰 결과이며 새 규약으로의 변환 완료를 뜻하지 않는다. 경로는
+`code-space/spintoolkit/` 기준이다(0단계 이름 변경 후).
 
 | 현재 코드 | 관찰 | 이행 시 요구 |
 |---|---|---|
 | `system/spin_system.py` | 사이트에 각도가 필수이고 position의 좌표 단위가 타입에 없음 | 공통 모델에서 상태를 분리하고 기존 입력으로 변환 |
 | `system/lattice/base.py` | basis position을 분율 좌표로 설명함 | 현재 NBCP Cartesian 위치와의 변환을 명시 |
-| `methods/spin_wave/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
-| `methods/spin_wave/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
+| `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
+| `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
 | `methods/optimization.py` | classical 외에 `quantum`, `MAGSWT` 최적화 경로 제공 | 상태 선택에 사용한 에너지를 결과에 기록 |
 | `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | 모델 정의와 상태 생성의 반환 경계를 분리 |
 
@@ -446,6 +447,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   분리했다. 결정 목록을 추가하고 본문의 날짜 표기를 결정 ID로 바꿨다. 정상성 설명과
   방향 저장 규약의 중복을 합치고, 두 변위 재검사 표를 하나로 합쳤으며, 이미 해소된
   "Fourier 규약을 확정하지 않는다" 문장을 정리했다. 내용은 바꾸지 않았다.
+- 2026-09-29 (claude): 0단계 이름 변경에 맞춰 §6의 코드 경로를 갱신했다.
 
 ## 관련 기록
 

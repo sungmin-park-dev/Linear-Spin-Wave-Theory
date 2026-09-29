@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 공통 패키지의 기능별 파일 배치 & 공통 형식에 연결 \\
-    \textbf{미구현} & 이름 변경, 공통 \texttt{SpinModel}·\texttt{terms} API, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 0단계부터 진행 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 기능별 파일 배치, 패키지 이름 변경(0단계) & 공통 형식에 연결 \\
+    \textbf{미구현} & 공통 \texttt{SpinModel}·\texttt{terms} API, 최소 ED 도구, ED·TN 솔버, 결과 재사용 & 1단계부터 진행 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -98,6 +98,24 @@
   \slidesource{격리한 준비 공간에서 검증한 폴더 이행 기록}{layout}
 \end{frame}
 
+\begin{frame}[label=rename-verification]{0단계: 패키지 이름 변경}
+  \framesubtitle{2026-09-29 · \texttt{lswt}$\to$\texttt{spintoolkit}, \texttt{methods/spin\_wave}$\to$\texttt{methods/lswt}. 계산 코드는 바꾸지 않았다.}
+  \begin{tabularx}{\textwidth}{@{}p{3.4cm}p{3.4cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 확인 범위 \\
+    \midrule
+    전체 테스트 & 220 통과 / 5 실패 & 변경 전 217 / 같은 5 실패. 차이는 교체한 호환 테스트(1개$\to$4개)뿐 \\
+    수치 결과 전후 대조 & 208개 값, 차이 0 & 40건의 $\mathsf H(\mathbf k)$·고전 에너지, 16개 탐색 결과. 스크립트를 저장소에 보존 \\
+    옛 이름 호환 & 4개 테스트 통과 & \texttt{lswt.*}·옛 \texttt{core}·\texttt{solvers} 경로, 옛 pickle, DeprecationWarning \\
+    배포·설치 & wheel, editable 설치 & 네트워크 없이 빌드; 저장소 밖에서 두 이름 import \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{기준 커밋 \texttt{49f047a}에서 비교했다. 다른 미커밋 수정이 있는 README·CLAUDE.md·AGENTS.md·정책 문서의 경로는 아직 갱신하지 않았다.
+  탐색 중 \texttt{find\_minimum}이 \texttt{angle\_setting=None}을 처리하지 못하는 기존 결함을 발견했다.}
+  \slidesource{패키지 이름 변경 검증 기록}{rename}
+\end{frame}
+
 \begin{frame}[label=displacement-resolution]{결합 변위의 방향: 해석과 변환 규칙}
   \framesubtitle{D13 · 채택한 Fourier 규약에서 기존 코드는 $d=r_{\mathrm{source}}-r_{\mathrm{target}}$로 일관된다.}
   \begin{columns}[T,onlytextwidth]
@@ -140,7 +158,7 @@
     \toprule
     단계 & 작업 & 통과 조건 \\
     \midrule
-    0 & 이름 변경 & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
+    0 & 이름 변경(완료) & 이행 전후 테스트 결과 동일(현재 217 통과 / 5 실패), 40건·4회 수치 차이 0, 옛 import·저장 객체 복원 \\
     1 & 자료형·검증 & 세 모델의 작은 fixture를 모델명 분기 없이 같은 소비자가 읽음; 공통 검증 사례 통과 \\
     2 & NBCP 연결 & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     3 & 벤치마크·최소 ED & 고전 에너지 정확 일치; 편극상 1-마그논 에너지가 같은 토러스의 LSWT와 일치; 문헌 비교는 허용오차·출처 명시 \\

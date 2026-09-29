@@ -12,7 +12,7 @@ Ported from modules/Tools/magnon_kernel.py.
 
 import numpy as np
 from typing import Union, Optional
-from lswt.definitions import (
+from spintoolkit.definitions import (
     K_BOLTZMANN_MEV, H_BAR_MEV,
     DEFAULT_TEMPERATURE, DEFAULT_TIME, DEFAULT_OMEGA, DEFAULT_ETA,
     BETA_E_THRESHOLD, BETA_E_SMALL,

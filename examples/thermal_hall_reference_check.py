@@ -13,9 +13,9 @@ from types import SimpleNamespace
 import numpy as np
 from scipy.integrate import quad
 
-from lswt.methods.spin_wave.diagonalization import Diagonalizer
-from lswt.observables.thermodynamics import Thermodynamics
-from lswt.observables.topology import Topology
+from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+from spintoolkit.observables.thermodynamics import Thermodynamics
+from spintoolkit.observables.topology import Topology
 
 KB_SI = 1.380649e-23
 HBAR_SI = 1.0545718176461565e-34

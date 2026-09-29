@@ -7,10 +7,10 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pytest
 
-from lswt import LSWTSolver, SpinSystem
-from lswt.system.brillouin_zone import BrillouinZone
-from lswt.observables.thermodynamics import Thermodynamics
-from lswt.observables.topology import Topology
+from spintoolkit import LSWTSolver, SpinSystem
+from spintoolkit.system.brillouin_zone import BrillouinZone
+from spintoolkit.observables.thermodynamics import Thermodynamics
+from spintoolkit.observables.topology import Topology
 
 EXAMPLE = Path(__file__).resolve().parents[3] / "examples/thermal_hall_reference_check.py"
 SPEC = importlib.util.spec_from_file_location("bz_reference", EXAMPLE)

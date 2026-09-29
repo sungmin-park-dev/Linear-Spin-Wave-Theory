@@ -9,9 +9,9 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pytest
 
-from lswt import LSWTSolver, SpinSystem
-from lswt.definitions import K_BOLTZMANN_MEV as KB
-from lswt.observables.thermodynamics import Thermodynamics
+from spintoolkit import LSWTSolver, SpinSystem
+from spintoolkit.definitions import K_BOLTZMANN_MEV as KB
+from spintoolkit.observables.thermodynamics import Thermodynamics
 
 
 SCALARS = ("Internal Energy Density", "Entropy Density", "Specific Heat Density",

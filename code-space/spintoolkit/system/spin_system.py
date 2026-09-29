@@ -52,8 +52,8 @@ class SpinSystem:
     Examples
     --------
     >>> import numpy as np
-    >>> from lswt import SpinSystem
-    >>> from lswt.system import exchange
+    >>> from spintoolkit import SpinSystem
+    >>> from spintoolkit.system import exchange
     >>>
     >>> # Builder pattern
     >>> system = SpinSystem(lattice_vectors=[[1.0, 0.0], [0.5, np.sqrt(3)/2]])
