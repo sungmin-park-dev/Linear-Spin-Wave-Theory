@@ -1,0 +1,148 @@
+---
+frontmatter-version: 1
+title: Bilinear Spin Hamiltonian
+doc-path: docs/lswt/00-foundations
+status: draft
+last-edited-by: codex
+created: 2026-06-04
+updated: 2026-09-06
+source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
+source-section: Introduction to Spin Wave Theory, Eq. (1)-Eq. (3)
+---
+
+# Bilinear Spin Hamiltonian
+
+Localized spins coupled by bilinear interactions and a static magnetic field provide the starting point for the linear spin-wave expansion considered here. The interaction matrices specify both exchange between distinct sites and anisotropy at a single site; the Zeeman term couples the field to the magnetic moment associated with each spin.
+
+## Hamiltonian
+
+We write the spin Hamiltonian as
+
+$$
+\hat H
+=\hat H_{\mathrm{ex}}+\hat H_{\mathrm Z}.
+$$ {#eq-lswt-bilinear-spin-hamiltonian}
+
+Here, $I$ and $J$ label physical spin sites, and $\alpha,\beta\in\{x,y,z\}$ denote laboratory-frame Cartesian components. The spin operators $\hat{\mathbf S}_I$ are dimensionless, with angular momentum measured in units of $\hbar$; $S_I$ denotes the spin quantum number at site $I$. Accordingly, the exchange and anisotropy matrices and the Zeeman coefficient $\mathbf h_I$ have units of energy. Site and matrix notation follows [Notation and Conventions](notation-and-conventions.md).
+
+## Exchange Interactions and Single-Ion Anisotropy
+
+The bilinear part of the Hamiltonian separates interactions between distinct sites from on-site anisotropy:
+
+$$
+\hat H_{\mathrm{ex}}
+=
+\sum_{\ell=(I,J)\in\mathcal L}
+\sum_{\alpha,\beta}
+\hat S_I^{\alpha}J_{\ell}^{\alpha\beta}\hat S_J^{\beta}
++
+\sum_I
+\sum_{\alpha,\beta}
+\hat S_I^\alpha D_I^{\alpha\beta}\hat S_I^\beta.
+$$ {#eq-lswt-bilinear-exchange-support}
+
+The link set $\mathcal L$ contains one representative orientation of each physical inter-site coupling, with $I\ne J$. The matrix $\mathsf J_\ell$ describes the coupling on link $\ell$, whereas $\mathsf D_I$ describes anisotropy at site $I$. On-site terms are counted by the separate site sum and are not included in $\mathcal L$.
+
+We restrict the interaction matrices to
+
+$$
+\mathsf J_\ell\in\mathbb R^{3\times3},
+\qquad
+\mathsf D_I\in\mathbb R^{3\times3},
+\qquad
+\mathsf D_I^{\mathsf T}=\mathsf D_I.
+$$
+
+Spin components at different sites commute, so a real $\mathsf J_\ell$ gives a Hermitian bond interaction even when the matrix is not symmetric. At the same site, the operator order matters. Symmetry of $\mathsf D_I$ makes the on-site term equal to its explicitly symmetrized form,
+
+$$
+\sum_{\alpha,\beta}
+\hat S_I^\alpha D_I^{\alpha\beta}\hat S_I^\beta
+=\frac12\sum_{\alpha,\beta}D_I^{\alpha\beta}
+\left(\hat S_I^\alpha\hat S_I^\beta+\hat S_I^\beta\hat S_I^\alpha\right),
+$$
+
+which is Hermitian for real $D_I^{\alpha\beta}$.
+
+### Link Counting
+
+An equivalent sum over independent site indices contains both orientations of every coupled pair. For a representative link $\ell=(I,J)$, define $\mathsf J_{IJ}=\mathsf J_\ell$ and $\mathsf J_{JI}=\mathsf J_{IJ}^{\mathsf T}$, and set $\mathsf J_{IJ}=0$ for uncoupled pairs. Then
+
+$$
+\sum_{\ell=(I,J)\in\mathcal{L}}
+\sum_{\alpha,\beta}
+\hat{S}^{\alpha}_{I}J_{\ell}^{\alpha\beta}\hat{S}^{\beta}_{J}
+=
+\frac{1}{2}
+\sum_{I\ne J}
+\sum_{\alpha,\beta}
+\hat{S}^{\alpha}_{I}J_{IJ}^{\alpha\beta}\hat{S}^{\beta}_{J}.
+$$ {#eq-lswt-link-sum-equivalence}
+
+The reverse-pair contribution is the same operator as the forward-pair contribution: substituting $J_{JI}^{\alpha\beta}=J_{IJ}^{\beta\alpha}$, interchanging the component indices, and commuting operators at distinct sites recovers the forward term. Thus, the factor $1/2$ removes the duplication in the ordered-pair sum. It is absent from the sum over $\mathcal L$ and does not apply to the separately defined on-site term.
+
+### Interaction Forms and Their Scope
+
+An exchange matrix proportional to the identity describes isotropic exchange. Its antisymmetric part represents Dzyaloshinskii–Moriya exchange, while symmetric anisotropic components describe interactions such as Kitaev-type couplings. These possibilities concern the components of the same bond matrix and do not change the link-counting convention.
+
+The on-site matrix represents quadratic single-ion anisotropy. For example, choosing $D_I^{xx}=-A$ and all other components zero gives $-A\sum_I(\hat S_I^x)^2$. For $A>0$, the local eigenvalue $-A m_x^2$ is lowest at the largest allowed $|m_x|$, where $m_x$ is an eigenvalue of $\hat S_I^x$. For $S_I\ge1$, this term distinguishes different $|m_x|$ sectors and favors the $x$ axis. For a quantum spin $S_I=1/2$, however, $(\hat S_I^x)^2=\hat{\mathbb 1}_I/4$, so this term only adds a constant and does not split the local doublet.
+
+More generally, the spin-$1/2$ identity $\hat S_I^\alpha\hat S_I^\beta+\hat S_I^\beta\hat S_I^\alpha=\delta_{\alpha\beta}\hat{\mathbb 1}_I/2$ gives
+
+$$
+\sum_{\alpha,\beta}
+\hat S_I^\alpha D_I^{\alpha\beta}\hat S_I^\beta
+=\frac14\operatorname{Tr}(\mathsf D_I)\hat{\mathbb 1}_I,
+\qquad S_I=\frac12,
+$$
+
+where $\hat{\mathbb 1}_I$ is the identity on the local spin space. Within this spin-$1/2$ model, exchange anisotropy and an anisotropic magnetic coupling can remain nontrivial even though real symmetric quadratic on-site anisotropy contributes only a constant.
+
+Independent higher-order spin interactions, such as scalar spin chirality or ring exchange, are outside the bilinear starting Hamiltonian defined here. This restriction specifies the model used in the following derivation, rather than the scope of spin-wave theory as a whole.
+
+## Zeeman Term and g-Tensor
+
+The scalar $g$-factor and the Bohr magneton $\mu_B$ are taken to be positive, and the electron sign is written explicitly in the magnetic moment. With spin operators expressed in units of $\hbar$, the moment at site $I$ is
+
+$$
+\hat{\boldsymbol\mu}_I=-\mu_B\mathsf g_I\hat{\mathbf S}_I.
+$$
+
+Here, $\mathsf g_I$ is the dimensionless $g$-tensor. In the isotropic case, $\mathsf g_I=g_I\mathsf I_3$ with $g_I>0$, where $\mathsf I_3$ is the $3\times3$ identity matrix. For an anisotropic coupling, positive $g$ values refer to the principal-axis coupling magnitudes; positivity is not an entrywise condition on the tensor in an arbitrary Cartesian basis.
+
+The Zeeman energy is $-\sum_I\mathbf B_I\mathbin{\cdot}\hat{\boldsymbol\mu}_I$. Retaining the definition of $\mathbf h_I$ as the coefficient in $-\mathbf h_I\mathbin{\cdot}\hat{\mathbf S}_I$ gives
+
+$$
+\hat H_{\mathrm Z}
+=-\sum_I\mathbf h_I\mathbin{\cdot}\hat{\mathbf S}_I
+=+\mu_B
+\sum_I
+\sum_{\alpha,\beta}
+B_I^\alpha g_I^{\alpha\beta}\hat{S}_I^\beta.
+$$ {#eq-lswt-zeeman-g-tensor}
+
+The first index of $g_I^{\alpha\beta}$ labels the field component, and the second labels the spin component. Collecting the coefficient of each spin operator therefore yields
+
+$$
+h_I^\beta=-\mu_B\sum_\alpha B_I^\alpha g_I^{\alpha\beta},
+\qquad
+\mathbf h_I=-\mu_B\mathsf g_I^{\mathsf T}\mathbf B_I.
+$$
+
+The transpose follows from the column-vector convention. The vector $\mathbf h_I$ has units of energy and is real for a Hermitian Zeeman term; it is distinct from the applied field $\mathbf B_I$, measured in tesla. In meV and tesla, $\mu_B\simeq0.0578838\,\mathrm{meV/T}$. In particular, an isotropic positive $g_I$ gives $\mathbf h_I=-g_I\mu_B\mathbf B_I$ with the stated definition of $\mathbf h_I$.
+
+Spin–orbit coupling and crystal-field effects can make $\mathsf g_I$ anisotropic. For a free electron, the positive spin $g$-factor is approximately $2.0023$ in this convention; the electron sign remains explicit in the magnetic-moment relation above.
+
+## References
+
+### Internal Documents
+
+- [Notation and Conventions](notation-and-conventions.md): defines the site, link, component, and matrix notation used here.
+- [Classical Order and Local Frame](classical-order-and-local-frame.md): defines the local-frame rotation of exchange matrices and fields.
+- [Real-Space Boson Hamiltonian](../01-derivation/real-space-boson-hamiltonian.md): develops the quadratic boson Hamiltonian generated from this spin model.
+
+### External Sources
+
+- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its positive Zeeman contraction agrees with the explicit electron-sign convention used here.
+- NIST, [Atomic Spectroscopy: Zeeman Effect](https://www.nist.gov/pml/atomic-spectroscopy-compendium-basic-ideas-notation-data-and-formulas/atomic-spectroscopy-zeeman): positive electron spin $g$-factor and the sign of the Zeeman energy shift.
+- NIST, [2022 CODATA recommended values of the fundamental physical constants](https://physics.nist.gov/cuu/Constants/Table/allascii.txt): values of the Bohr magneton and the free-electron $g$ factor.
