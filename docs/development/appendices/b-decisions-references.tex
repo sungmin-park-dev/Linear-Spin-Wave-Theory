@@ -83,7 +83,7 @@
     D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
     D26 & 4c: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 연속체는 후속); 모드별 무게가 주 출력, 넓힌 스펙트럼은 보조; 새 구현, 기존 \texttt{correlations.py}는 비교 대상만; 결합 상관과 에너지 교차 확인 & \textbf{사용자 결정} \\
     D27 & 기존 코드 정리: \texttt{correlations.py} 삭제, 동시간 실공간 상관·사다리 성분은 새 모듈로; MAGSWT 격자 탐색 삭제, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}; MAGSWT 정규화는 유지 & \textbf{사용자 결정} \\
-    D28 & 고전·양자 비교: 완화 경로 위 1-loop 유효 퍼텐셜 $\Gamma(\phi)=E_{\mathrm{cl}}+E_{\mathrm{zp}}$의 최소(부드러운 방향의 1-loop 정상성); 곡률 비 대역을 대체; 평평하면 D17 & \textbf{사용자 결정}(원리; 세부·구현 대기) \\
+    D28 & 고전·양자 비교: 완화 경로 위 1-loop 유효 퍼텐셜 $\Gamma(\phi)=E_{\mathrm{cl}}+E_{\mathrm{zp}}$의 최소(부드러운 방향의 1-loop 정상성); 곡률 비 대역을 대체; 평평하면 D17 & \textbf{사용자 결정}(구현은 재개 시) \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
@@ -282,7 +282,7 @@
 \end{frame}
 
 \begin{frame}[label=d28-principle]{D28: 비교 규칙을 1-loop 유효 퍼텐셜로 바꾼다}
-  \framesubtitle{2026-09-30 원리 채택 · 세부와 구현 대기. 이전 규칙(곡률 비, 대역 0.1--10)은 근거가 없고 조화 차수가 다르면 $m^2$만큼 치우친다.}
+  \framesubtitle{2026-09-30 채택 · 구현은 LSWT 작업 재개 시. 이전 규칙(곡률 비, 대역 0.1--10)은 근거가 없고 조화 차수가 다르면 $m^2$만큼 치우친다.}
   \small
   \[
     \Gamma(\phi)=\min_{\text{다른 좌표}}E_{\mathrm{cl}}\big|_{\phi}+E_{\mathrm{zp}}(\phi)+O(S^0)
@@ -298,7 +298,7 @@
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{$d\Gamma/d\phi=0$은 부드러운 방향의 선형항이 1-loop까지 상쇄되는 조건. 한계: $O(S^0)$ 보정, $T=0$. 남은 결정: $\Gamma$ 최소 반환 여부, 판정 이름, 단열 비 경고값, 구현 시점.}
+  \supportingtext{$d\Gamma/d\phi=0$: 부드러운 방향의 1-loop 선형항 상쇄. 한계 $O(S^0)$, $T=0$. 세부(확정): $\Gamma$ 최소 반환; \texttt{competition}·\texttt{not\_flat} 폐지, \texttt{selected}(이동량 보고)·\texttt{not\_soft} 추가; 단열 비 $>0.1$ 경고.}
   \slidesource{D28 검토 자료}{potential}
 \end{frame}
 
