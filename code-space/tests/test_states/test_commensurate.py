@@ -12,6 +12,63 @@ import numpy as np
 import pytest
 from spintoolkit.states import CommensurateStructure
 
+# Three coplanar directions 120 degrees apart (theta, phi).
+ANGLES_120 = np.array([
+    [np.pi/2, 0.0],
+    [np.pi/2, 2*np.pi/3],
+    [np.pi/2, 4*np.pi/3]
+])
+
+# Nearest-neighbour cell offsets of the triangular lattice with
+# a1 = (1, 0), a2 = (1/2, sqrt(3)/2).
+TRIANGULAR_NN_OFFSETS = [(1, 0), (0, 1), (-1, 1)]
+
+
+def structure_120_basis():
+    """120-degree order with the sqrt3 x sqrt3 cell taken as the crystal cell.
+
+    Three basis sites, one magnetic sublattice each; the class does not see
+    the geometry, so the three sites carry the three directions directly.
+    """
+    return CommensurateStructure(
+        num_basis_sites=3,
+        magnetic_supercell=(1, 1),
+        angles=ANGLES_120
+    )
+
+
+def structure_120_supercell():
+    """120-degree order on a one-site triangular lattice in a 3x3 diagonal cell.
+
+    The diagonal (n1, n2) supercell cannot hold the sqrt3 x sqrt3 cell, so the
+    3x3 cell repeats it three times: nine sublattices, phi = 2 pi (n1 - n2) / 3.
+    Sublattice order follows the class: index = n1 + 3 * n2.
+    """
+    angles = np.array([ANGLES_120[(n1 - n2) % 3]
+                       for n2 in range(3) for n1 in range(3)])
+    return CommensurateStructure(
+        num_basis_sites=1,
+        magnetic_supercell=(3, 3),
+        angles=angles
+    )
+
+
+STRUCTURES_120 = pytest.mark.parametrize(
+    "make_structure", [structure_120_basis, structure_120_supercell],
+    ids=["3-site-basis", "3x3-supercell"])
+
+
+def triangular_nn_dot_products(structure):
+    """Set of s_i . s_j over nearest-neighbour bonds of a one-site triangular lattice."""
+    dots = set()
+    for n1 in range(6):
+        for n2 in range(6):
+            s = structure.get_spin_direction(0, (n1, n2))
+            for d1, d2 in TRIANGULAR_NN_OFFSETS:
+                t = structure.get_spin_direction(0, (n1 + d1, n2 + d2))
+                dots.add(round(float(s @ t), 12))
+    return dots
+
 
 class TestCommensurateStructureCreation:
     """Test creation and initialization."""
@@ -27,21 +84,17 @@ class TestCommensurateStructureCreation:
         assert structure.num_magnetic_sublattices == 1
         assert structure.is_commensurate()
 
-    def test_120_degree_structure(self):
-        """Test 120° structure on triangular lattice."""
-        angles = np.array([
-            [np.pi/2, 0.0],
-            [np.pi/2, 2*np.pi/3],
-            [np.pi/2, 4*np.pi/3]
-        ])
-
-        structure = CommensurateStructure(
-            num_basis_sites=1,
-            magnetic_supercell=(1, 1),
-            angles=angles
-        )
+    def test_120_degree_structure_basis(self):
+        """Test 120° structure with a 3-site basis (sqrt3 x sqrt3 crystal cell)."""
+        structure = structure_120_basis()
 
         assert structure.num_magnetic_sublattices == 3
+
+    def test_120_degree_structure_supercell(self):
+        """Test 120° structure on a one-site lattice in a 3x3 supercell."""
+        structure = structure_120_supercell()
+
+        assert structure.num_magnetic_sublattices == 9
 
     def test_two_sublattice_afm(self):
         """Test 2-sublattice antiferromagnet."""
@@ -80,21 +133,11 @@ class TestCommensurateStructureSpinDirections:
         assert np.allclose(spin2, expected)
         assert np.allclose(spin3, expected)
 
-    def test_120_degree_spins_in_xy_plane(self):
+    @STRUCTURES_120
+    def test_120_degree_spins_in_xy_plane(self, make_structure):
         """Test 120° structure spins are in xy-plane."""
-        angles = np.array([
-            [np.pi/2, 0.0],
-            [np.pi/2, 2*np.pi/3],
-            [np.pi/2, 4*np.pi/3]
-        ])
+        structure = make_structure()
 
-        structure = CommensurateStructure(
-            num_basis_sites=1,
-            magnetic_supercell=(1, 1),
-            angles=angles
-        )
-
-        # Get all three spin directions
         spins = structure.get_all_spin_directions()
 
         # All should have z-component = 0 (in xy-plane)
@@ -104,22 +147,34 @@ class TestCommensurateStructureSpinDirections:
         for spin in spins:
             assert np.isclose(np.linalg.norm(spin), 1.0)
 
-    def test_120_degree_total_magnetization_zero(self):
+    @STRUCTURES_120
+    def test_120_degree_total_magnetization_zero(self, make_structure):
         """Test that 120° structure has zero total magnetization."""
-        angles = np.array([
-            [np.pi/2, 0.0],
-            [np.pi/2, 2*np.pi/3],
-            [np.pi/2, 4*np.pi/3]
-        ])
-
-        structure = CommensurateStructure(
-            num_basis_sites=1,
-            magnetic_supercell=(1, 1),
-            angles=angles
-        )
+        structure = make_structure()
 
         M = structure.get_total_magnetization()
         assert np.allclose(M, [0, 0, 0], atol=1e-10)
+
+    def test_120_degree_supercell_nearest_neighbours(self):
+        """Test every nearest-neighbour pair of the 3x3 cell is at 120°."""
+        dots = triangular_nn_dot_products(structure_120_supercell())
+
+        assert dots == {-0.5}
+
+    def test_3x1_supercell_is_not_120_degree(self):
+        """Test a 3x1 cell cannot hold 120° order on the triangular lattice.
+
+        The cell index wraps n2 mod 1, so spins along a2 are parallel.
+        """
+        structure = CommensurateStructure(
+            num_basis_sites=1,
+            magnetic_supercell=(3, 1),
+            angles=ANGLES_120
+        )
+
+        dots = triangular_nn_dot_products(structure)
+
+        assert 1.0 in dots
 
     def test_spin_directions_are_unit_vectors(self):
         """Test that all spin directions are normalized."""
@@ -153,7 +208,7 @@ class TestCommensurateStructureOptimization:
 
         structure = CommensurateStructure(
             num_basis_sites=1,
-            magnetic_supercell=(1, 1),
+            magnetic_supercell=(3, 1),
             angles=angles
         )
 
@@ -167,7 +222,7 @@ class TestCommensurateStructureOptimization:
         """Test setting angles from optimization."""
         structure = CommensurateStructure(
             num_basis_sites=1,
-            magnetic_supercell=(1, 1),
+            magnetic_supercell=(2, 1),
             angles=np.array([[0.0, 0.0], [0.0, 0.0]])
         )
 

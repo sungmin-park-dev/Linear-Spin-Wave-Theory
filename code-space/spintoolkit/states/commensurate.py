@@ -53,17 +53,21 @@ class CommensurateStructure(AbstractMagneticStructure):
     ...     angles=np.array([[0.0, 0.0]])  # θ=0 → z-direction
     ... )
 
-    120° structure on triangular lattice (3-sublattice, spins in xy-plane):
+    120° structure on triangular lattice (spins in xy-plane), with the
+    √3 × √3 cell taken as the crystallographic cell (3 basis sites):
     >>> angles_120 = np.array([
     ...     [np.pi/2, 0.0],           # θ=π/2, φ=0
     ...     [np.pi/2, 2*np.pi/3],     # θ=π/2, φ=2π/3
     ...     [np.pi/2, 4*np.pi/3]      # θ=π/2, φ=4π/3
     ... ])
     >>> structure = CommensurateStructure(
-    ...     num_basis_sites=1,
-    ...     magnetic_supercell=(1, 1),  # Actually 3-sublattice in magnetic cell
+    ...     num_basis_sites=3,
+    ...     magnetic_supercell=(1, 1),
     ...     angles=angles_120
     ... )
+
+    On a one-site triangular lattice the same order needs a 3 × 3 cell with
+    nine sublattices, φ = 2π(n1 - n2)/3 for a1 = (1, 0), a2 = (1/2, √3/2).
 
     Notes
     -----
@@ -71,6 +75,11 @@ class CommensurateStructure(AbstractMagneticStructure):
         sublattice_idx = site_index + num_basis * (n1 + n2 * supercell[0])
 
     This assumes a standard ordering of sublattices.
+
+    Only diagonal supercells (n1, n2) are representable, so the √3 × √3 cell
+    of a one-site triangular lattice is not; a 3 × 1 cell gives parallel
+    spins along a2. :class:`spintoolkit.states.SpinState` takes an integer
+    supercell matrix and holds that cell directly.
     """
 
     def __init__(self,
