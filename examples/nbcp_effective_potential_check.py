@@ -8,7 +8,8 @@ field tilted by an in-plane component ``tilt * h``:
    tangent (Newton steps with the analytic Hessian). Only the torque along
    the orbit remains; a torque transverse to the spins does not change H2, so
    dropping the linear term is the constrained one-loop calculation.
-2. Gamma(phi) = E_cl + E_zp on that path, against the rigid orbit R_n(phi)
+2. Gamma(phi) = E_cl + E_zp on that path (constrained provider: only the
+   orbit mode is removed at the zone centre), against the rigid orbit R_n(phi)
    used now, and against the D17 selection in the limit tilt -> 0.
 3. Adiabatic ratio: curvature of Gamma at its minimum (per unit tangent
    displacement) over the smallest hard-mode stiffness of the classical Hessian.
@@ -116,11 +117,11 @@ def case(phase, field_T, extra, tilt):
     for phi in PHIS:
         rigid = sel.rotate_state(ref, AXIS, phi)
         rigid_cl.append(classical_energy(model, rigid, conditions))
-        rigid_qm.append(quantum(model, rigid, conditions))
+        rigid_qm.append(quantum(model, rigid, conditions, axis=AXIS))
         relaxed, d = relax_on_path(model, rigid, conditions, AXIS)
         path_phi.append(rotation_angle(ref, relaxed, AXIS))
         path_cl.append(classical_energy(model, relaxed, conditions))
-        path_qm.append(quantum(model, relaxed, conditions))
+        path_qm.append(quantum(model, relaxed, conditions, axis=AXIS))
         info.append(d)
     path_phi = np.unwrap(np.array(path_phi))
     order = np.argsort(np.mod(path_phi, 2 * np.pi))

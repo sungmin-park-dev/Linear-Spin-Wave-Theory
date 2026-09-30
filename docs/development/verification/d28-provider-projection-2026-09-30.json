@@ -1,0 +1,524 @@
+{
+  "date": "2026-09-30",
+  "status": "passed",
+  "baseline_commit": "6a77af2",
+  "decision": "User decision 2026-09-30: default zero-point provider constrained (symmetric get_full(N) mesh, no regularization); at the zone centre only the constrained soft pair is removed; the orbit axis reaches the provider through an optional keyword axis.",
+  "scope": "Replace the removal of the whole zone centre in LSWTZeroPointEnergy(method=\"constrained\") by the removal of the orbit-rotation mode only.",
+  "principle": "The constrained coordinate is the uniform rotation about the orbit axis, one boson mode at k = 0. Its curvature is the classical one along the orbit (already in E_cl, negative on part of a tilted path), the linear term dropped on the soft path couples only to it, and its zero-point energy belongs to the quantization of phi in Gamma, not to Gamma. The other zone-centre bands are gapped fluctuations and stay. With the rotation angle read by least squares, the removed phase-space pair is span{t, J t}, the boson line u_i = sqrt(S_i)(t_theta,i + i t_phi,i) in the local frame (e_theta, e_phi, s_i); H(k = 0) is restricted to its orthogonal complement by a block unitary diag(Q, conj(Q)), which keeps the paraunitary structure.",
+  "changed": {
+    "code-space/spintoolkit/methods/state_selection.py": "LSWTZeroPointEnergy.__call__(..., axis=None) with accepts_axis = True; _soft_boson_line, _harmonic_zero_point; select_on_manifold and orbit_energy_landscape pass axis= to providers with accepts_axis (3-argument providers unchanged); without axis the whole zone centre is dropped and describe() records it; the provider description is recorded after the E_qm evaluation",
+    "code-space/tests/test_methods/test_state_selection.py": "3 tests: u (not its conjugate) is the D17 null vector of H(0) with the problem rotated off z; projection with the axis and whole-zone-centre removal without it; a 3-argument provider still works",
+    "examples/nbcp_effective_potential_check.py": "the prototype passes axis = z to the provider"
+  },
+  "convention_check": "Y (J_PD) with the whole problem rotated off z: |H(0)(u, conj u)| / |H| = 2.2e-16, and 0.13 for the conjugate line (V: 3.5e-16 and 0.11).",
+  "mesh_convergence": {
+    "note": "shift of the Gamma minimum from the nearest E_qm minimum (rad; sign depends on which equivalent minimum is nearest); select_on_manifold, 36 points, noise 1e-3 start",
+    "rows": [
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 6,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 4.04121180963557e-14,
+        "adiabatic_ratio": 0.011241212515275505,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 6,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -2.6645352591003757e-15,
+        "adiabatic_ratio": 0.011163148539486713,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 12,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 2.1049828546892968e-13,
+        "adiabatic_ratio": 0.011095273002350161,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 12,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 1.8118839761882555e-13,
+        "adiabatic_ratio": 0.011076010375661602,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 18,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -2.4913404672588513e-13,
+        "adiabatic_ratio": 0.011072515993946097,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.0,
+        "N": 18,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 2.34035013590983e-13,
+        "adiabatic_ratio": 0.011063972386003254,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 6,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -0.0009487650231960743,
+        "adiabatic_ratio": 0.011254274855758311,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 6,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 0.0009553300162705725,
+        "adiabatic_ratio": 0.011176578295040098,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 12,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 0.0009607135041038717,
+        "adiabatic_ratio": 0.011111038377575815,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 12,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 0.0009623618122081012,
+        "adiabatic_ratio": 0.011091862128437869,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 18,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -0.0009624552192208924,
+        "adiabatic_ratio": 0.011089422738384728,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.01,
+        "N": 18,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.0009631884334622143,
+        "adiabatic_ratio": 0.011080916519465038,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 6,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 0.008316910821681844,
+        "adiabatic_ratio": 0.011343174683473562,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 6,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.008369234173768447,
+        "adiabatic_ratio": 0.011267559399613903,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 12,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 0.008389424775206322,
+        "adiabatic_ratio": 0.011214855494484088,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 12,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.008402589883638623,
+        "adiabatic_ratio": 0.011196115399837952,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 18,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 0.008394753368258456,
+        "adiabatic_ratio": 0.011197537887871648,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.03,
+        "N": 18,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 0.00840058196640392,
+        "adiabatic_ratio": 0.0111892130107416,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 6,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -0.08543297387768867,
+        "adiabatic_ratio": 0.010755686561232146,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 6,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.08619133910142018,
+        "adiabatic_ratio": 0.010625612463005099,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 12,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -0.08964955248219386,
+        "adiabatic_ratio": 0.009964984871080943,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 12,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.08983363432977454,
+        "adiabatic_ratio": 0.009941445071861819,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 18,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": -0.09241219148160873,
+        "adiabatic_ratio": 0.009559344540091158,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "Y",
+        "tilt": 0.1,
+        "N": 18,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": -0.09253465838356867,
+        "adiabatic_ratio": 0.009542800572571989,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 6,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 3.0342655756209442,
+        "adiabatic_ratio": 0.008302376497869666,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 6,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 3.0350179232807317,
+        "adiabatic_ratio": 0.008318957701229309,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 12,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 3.0407626560932224,
+        "adiabatic_ratio": 0.007878805400758242,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 12,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 3.040937450377779,
+        "adiabatic_ratio": 0.007883662745506554,
+        "max_unstable_pairs": 0
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 18,
+        "zone_centre": "whole_zone_centre_dropped",
+        "verdict": "selected",
+        "quantum_shift": 3.0451120601676447,
+        "adiabatic_ratio": 0.00840454929035057,
+        "max_unstable_pairs": 6
+      },
+      {
+        "phase": "V",
+        "tilt": 0.01,
+        "N": 18,
+        "zone_centre": "soft_pair_projected",
+        "verdict": "selected",
+        "quantum_shift": 3.04518387815612,
+        "adiabatic_ratio": 0.008406459027621894,
+        "max_unstable_pairs": 6
+      }
+    ]
+  },
+  "findings": [
+    "The discretization error of the Brillouin-zone sum dominates the mesh dependence; the zone-centre treatment is a smaller correction. Y 1.7 degrees: |shift| N = 6/12/18 = 8.317e-3/8.389e-3/8.395e-3 (zone centre dropped) and 8.369e-3/8.403e-3/8.401e-3 (soft pair projected). Y 5.7 degrees moves by 7e-3 rad between N = 6 and 18 with either treatment, so larger tilts need N >= 12.",
+    "Zero tilt against the independent N = 48 scans: amplitude and curvature ratios at N = 6 improve from 1.007 to 1.0000 (J_Gamma) and from 1.018 to 1.011 (Y J_PD); all 16 NBCP verdicts, the 36 criteria verdicts and the 8 benchmark verdicts are unchanged.",
+    "Implementation against the independent 72-point prototype (both with the projection): within 2.2e-3 rad in every selected case (largest: Y 5.7 degrees).",
+    "Y 16.7 degrees: adiabatic ratio 0.023, below the warning threshold 0.1.",
+    "V 0.57 degrees at N = 18: 6 unstable mode pairs on part of the path with either treatment (long-wavelength soft branch where the classical curvature along the orbit is negative); the real part of the frequencies is used and the count is logged. It grows with the mesh density."
+  ],
+  "effective_potential_cases_N6": [
+    {
+      "phase": "Y",
+      "tilt": 0.0,
+      "tilt_degrees": 0.0,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 5.60440582830779e-13,
+      "adiabatic_ratio": 0.011163149598009634,
+      "prototype_adiabatic_ratio": 0.011163148718026488,
+      "shift_from_quantum_minimum": 7.540634783254063e-13
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.001,
+      "tilt_degrees": 0.057,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 1.1893295951637128e-05,
+      "adiabatic_ratio": 0.011163416702498347,
+      "prototype_adiabatic_ratio": 0.011163290326369021,
+      "shift_from_quantum_minimum": 9.58821353158612e-06,
+      "shift_from_classical_minimum": -1.0472106947975117
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.003,
+      "tilt_degrees": 0.172,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.00010868682977793753,
+      "adiabatic_ratio": 0.011164482434286986,
+      "prototype_adiabatic_ratio": 0.011164421440409892,
+      "shift_from_quantum_minimum": -8.626827617153054e-05,
+      "shift_from_classical_minimum": 1.0473034888853823
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.01,
+      "tilt_degrees": 0.573,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.0012062951619649098,
+      "adiabatic_ratio": 0.011176578295129982,
+      "prototype_adiabatic_ratio": 0.011177069334044642,
+      "shift_from_quantum_minimum": 0.000955330015218081,
+      "shift_from_classical_minimum": -1.0483631626911283
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.03,
+      "tilt_degrees": 1.718,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.00015129718032191874,
+      "adiabatic_ratio": 0.011267559399382983,
+      "prototype_adiabatic_ratio": 0.011271382768163552,
+      "shift_from_quantum_minimum": -0.008369234120179758,
+      "shift_from_classical_minimum": 1.0575916300487105
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.1,
+      "tilt_degrees": 5.711,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.0022188873581248103,
+      "adiabatic_ratio": 0.010625612471718027,
+      "prototype_adiabatic_ratio": 0.010609748106176334,
+      "shift_from_quantum_minimum": 0.08619133933891998,
+      "shift_from_classical_minimum": -1.1563709971387457
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.3,
+      "tilt_degrees": 16.699,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.0012802413063326412,
+      "adiabatic_ratio": 0.023230787416173043,
+      "prototype_adiabatic_ratio": 0.025266929121525502,
+      "shift_from_quantum_minimum": 1.5036235452292601e-05,
+      "shift_from_classical_minimum": 1.5640931646151852
+    },
+    {
+      "phase": "V",
+      "tilt": 0.0,
+      "tilt_degrees": 0.0,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 1.6067147612375265e-12,
+      "adiabatic_ratio": 0.0011146689433581616,
+      "prototype_adiabatic_ratio": 0.0011146689432757811,
+      "shift_from_quantum_minimum": 5.253575352526241e-12
+    },
+    {
+      "phase": "V",
+      "tilt": 0.01,
+      "tilt_degrees": 0.573,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 8.808186805620011e-05,
+      "adiabatic_ratio": 0.008319531859482325,
+      "prototype_adiabatic_ratio": 0.00813453271949223,
+      "shift_from_quantum_minimum": 3.0350217904227623,
+      "shift_from_classical_minimum": -0.0374190422263343
+    },
+    {
+      "phase": "V",
+      "tilt": 0.03,
+      "tilt_degrees": 1.718,
+      "verdict": "selected",
+      "distance_to_prototype_minimum": 0.00011479974785100211,
+      "adiabatic_ratio": 0.02081361203125788,
+      "prototype_adiabatic_ratio": 0.019994626273793087,
+      "shift_from_quantum_minimum": 3.0915264476694215,
+      "shift_from_classical_minimum": -0.010619330196812715
+    },
+    {
+      "phase": "V",
+      "tilt": 0.1,
+      "tilt_degrees": 5.711,
+      "verdict": "not_soft",
+      "distance_to_prototype_minimum": null,
+      "adiabatic_ratio": null,
+      "prototype_adiabatic_ratio": 5626.816170696979
+    }
+  ],
+  "zero_tilt_against_N48": [
+    {
+      "phase": "Y",
+      "coupling": "PD",
+      "N": 6,
+      "amplitude_over_N48_reference": 1.0111082356382057,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0181789226006792,
+      "curvature_over_N48_reference": 1.0094902333026963,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.0165496055625085
+    },
+    {
+      "phase": "Y",
+      "coupling": "PD",
+      "N": 12,
+      "amplitude_over_N48_reference": 1.0019529022411495,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0036954290279472,
+      "curvature_over_N48_reference": 1.0016102767639579,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.00335220767995
+    },
+    {
+      "phase": "Y",
+      "coupling": "Gamma",
+      "N": 6,
+      "amplitude_over_N48_reference": 1.0000323233785517,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0070254213480483,
+      "curvature_over_N48_reference": 1.0000273983402699,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.007021874880451
+    },
+    {
+      "phase": "Y",
+      "coupling": "Gamma",
+      "N": 12,
+      "amplitude_over_N48_reference": 0.9999990933238069,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0017381858844727,
+      "curvature_over_N48_reference": 0.9999994794827657,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.001741088446693
+    },
+    {
+      "phase": "V",
+      "coupling": "PD",
+      "N": 6,
+      "amplitude_over_N48_reference": 1.0059290774469172,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0129635465200177,
+      "curvature_over_N48_reference": 1.004713768171257,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.0117397385789944
+    },
+    {
+      "phase": "V",
+      "coupling": "PD",
+      "N": 12,
+      "amplitude_over_N48_reference": 1.0010739119939311,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0028149101017665,
+      "curvature_over_N48_reference": 1.0000323758539709,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.0017715625945307
+    },
+    {
+      "phase": "V",
+      "coupling": "Gamma",
+      "N": 6,
+      "amplitude_over_N48_reference": 1.0000955987321904,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0070892742473307,
+      "curvature_over_N48_reference": 1.0000814316697773,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.0070750080983544
+    },
+    {
+      "phase": "V",
+      "coupling": "Gamma",
+      "N": 12,
+      "amplitude_over_N48_reference": 1.0000017819611107,
+      "amplitude_over_N48_reference_zone_centre_dropped": 1.0017409154952945,
+      "curvature_over_N48_reference": 0.9999980404283093,
+      "curvature_over_N48_reference_zone_centre_dropped": 1.0017371674628743
+    }
+  ],
+  "tests": {
+    "result": "476 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0; 64 baseline leaves of the removed MAGSWT searches not compared",
+    "note": "OPENBLAS_NUM_THREADS=4"
+  }
+}

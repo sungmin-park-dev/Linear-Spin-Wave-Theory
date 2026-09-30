@@ -97,6 +97,13 @@ EPS = np.finfo(float).eps
 QuantumEnergy = Callable[[SpinModel, SpinState, ExternalConditions], float]
 
 
+def _zero_point(quantum_energy, model, state, conditions, axis) -> float:
+    """Call a provider, passing the orbit axis to those that accept it (``accepts_axis``)."""
+    if getattr(quantum_energy, "accepts_axis", False):
+        return float(quantum_energy(model, state, conditions, axis=axis))
+    return float(quantum_energy(model, state, conditions))
+
+
 @dataclass(frozen=True)
 class SelectionCriteria:
     """Thresholds of the zero-point selection (D19).
@@ -328,8 +335,10 @@ def select_on_manifold(model: SpinModel, state: SpinState,
     conditions : ExternalConditions or None
     quantum_energy : callable
         ``quantum_energy(model, state, conditions) -> float``, the zero-point
-        energy per site in E0; see :class:`LSWTZeroPointEnergy`. An optional
-        ``describe()`` method is recorded in the diagnostics.
+        energy per site in E0; see :class:`LSWTZeroPointEnergy`. A provider
+        with ``accepts_axis = True`` is called with the keyword ``axis`` (the
+        orbit axis, whose uniform rotation is the constrained coordinate). An
+        optional ``describe()`` method is recorded in the diagnostics.
     axis : array_like, optional
         Rotation axis of the orbit. Required when several rotation directions
         are flat (e.g. an SO(3) degenerate state); otherwise found from the
@@ -453,7 +462,6 @@ def select_on_manifold(model: SpinModel, state: SpinState,
     # Relaxed soft path and the one-loop effective potential Gamma = E_cl + E_zp (D28).
     path = [soft_path_point(model, state, conditions, axis, p, criteria.path_tolerance * scale)
             for p in np.arange(criteria.orbit_points) * step]
-    diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
     path_info = {"max_transverse_gradient": max(x.transverse_gradient for x in path),
                  "min_hard_stiffness": min(x.hard_stiffness for x in path),
                  "tolerance": criteria.path_tolerance * scale}
@@ -463,7 +471,8 @@ def select_on_manifold(model: SpinModel, state: SpinState,
                       "does not converge or a hard mode is unstable)", axis_=axis)
     phis = np.array([x.phi for x in path])
     e_cl = np.array([classical_energy(model, x.state, conditions) for x in path])
-    e_qm = np.array([quantum_energy(model, x.state, conditions) for x in path])
+    e_qm = np.array([_zero_point(quantum_energy, model, x.state, conditions, axis) for x in path])
+    diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
     gamma = e_cl + e_qm
     rigid_cl = np.array([classical_energy(model, rotate_state(state, axis, p), conditions)
                          for p in np.arange(criteria.orbit_points) * step])
@@ -528,7 +537,7 @@ def select_on_manifold(model: SpinModel, state: SpinState,
         "minima": shifts, "equivalent_minima": equivalent.tolist(),
         "phi_qm": shifts.get("quantum", {}).get("phi"),
         "C_qm": (float(_series(fit_qm, shifts["quantum"]["phi"], 2)) if "quantum" in shifts else None),
-        "E_qm_selected": float(quantum_energy(model, selected, conditions)),
+        "E_qm_selected": _zero_point(quantum_energy, model, selected, conditions, axis),
         "E_cl_selected": classical_energy(model, selected, conditions)})
     if adiabatic > criteria.adiabatic_warning:
         warnings.warn(f"adiabatic ratio {adiabatic:.3g} > {criteria.adiabatic_warning}: the soft "
@@ -758,7 +767,8 @@ def orbit_energy_landscape(model: SpinModel, state: SpinState,
     classical = np.array([classical_energy(model, x, conditions) for x in states])
     quantum = None
     if quantum_energy is not None:
-        quantum = np.array([quantum_energy(model, x, conditions) for x in states])
+        quantum = np.array([_zero_point(quantum_energy, model, x, conditions, probe.axis)
+                            for x in states])
         diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
     diagnostics["E_cl_span"] = float(np.ptp(classical))
     diagnostics["relaxed"] = bool(relax)
@@ -773,16 +783,25 @@ class LSWTZeroPointEnergy:
     """Zero-point energy per site for :func:`select_on_manifold` (D28).
 
     ``method="constrained"`` (default): the one-loop zero-point energy about
-    a constrained classical configuration. The Brillouin-zone mesh of the
+    a constrained classical configuration on the Brillouin-zone mesh of the
     magnetic cell (``BrillouinZone.get_full(N)``, which keeps the point-group
-    symmetry) is used without the zone centre: the uniform rotation there is
-    the constrained soft coordinate itself, not a fluctuation, and dropping one
-    momentum changes nothing in the thermodynamic limit. No regularization is
-    added; where ``H(k)`` is not positive definite (long-wavelength modes of a
-    constrained state away from the classical minimum) the real part of the
-    harmonic frequencies is used and the number of such mode pairs is logged.
-    A uniform MAGSWT shift must not be used here: it is of the same order as
-    the zero-point energy differences and makes E_zp(phi) non-smooth.
+    symmetry). The constrained coordinate is the uniform rotation about the
+    orbit axis, one boson mode at the zone centre: with ``axis`` given, only
+    that mode is removed there and every other mode is kept. Its curvature is
+    the classical one along the orbit (already in E_cl, and negative on part
+    of a tilted path), and the linear term dropped on the soft path couples
+    only to it. With the rotation angle read by least squares, the removed
+    phase-space pair is ``span{t, J t}`` of the orbit tangent ``t``, i.e. the
+    boson line ``u_i = sqrt(S_i) (t_theta,i + i t_phi,i)`` in the local frame
+    ``(e_theta, e_phi, s_i)``; the zone-centre Hamiltonian is restricted to
+    its orthogonal complement (a unitary, hence paraunitary, reduction).
+    Without ``axis`` the whole zone centre is dropped (recorded by
+    :meth:`describe`). No regularization is added; where ``H(k)`` is not
+    positive definite (long-wavelength modes of a constrained state away
+    from the classical minimum) the real part of the harmonic frequencies is
+    used and the number of such mode pairs is logged. A uniform MAGSWT shift
+    must not be used here: it is of the same order as the zero-point energy
+    differences and makes E_zp(phi) non-smooth.
 
     ``method="legacy"``: the existing ``EnergyFunction`` (zone centre
     included, regularization ``reg_type``, MAGSWT by default).
@@ -798,6 +817,8 @@ class LSWTZeroPointEnergy:
         Regularization of the legacy method.
     """
 
+    accepts_axis = True
+
     def __init__(self, bz_type: str, N: int, method: str = "constrained",
                  reg_type: Any = "MAGSWT"):
         if method not in ("constrained", "legacy"):
@@ -806,9 +827,11 @@ class LSWTZeroPointEnergy:
         self._cache: Dict[Any, Any] = {}
         self.regularization: list = []
         self.unstable_pairs: list = []
+        self.zone_centre: list = []
 
     def __call__(self, model: SpinModel, state: SpinState,
-                 conditions: Optional[ExternalConditions] = None) -> float:
+                 conditions: Optional[ExternalConditions] = None, axis=None) -> float:
+        """Zero-point energy per site; ``axis`` (constrained method) is the orbit axis."""
         from spintoolkit.system.conversion import to_spin_system
 
         conditions = conditions or ExternalConditions()
@@ -823,32 +846,39 @@ class LSWTZeroPointEnergy:
                 system.get_angles_flat(), reg_type=self.reg_type))
             self.regularization.append(energy_function.mu_magswt)
             return value
-        from spintoolkit.methods.lswt.diagonalization import Diagonalizer
         from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
         from spintoolkit.system.brillouin_zone import BrillouinZone
 
         data = system.to_legacy_dict(self.bz_type)
         if key not in self._cache:
             _, k, _ = BrillouinZone(data["Lattice/BZ setting"], bz_type=self.bz_type).get_full(self.N)
-            k = np.asarray(k, dtype=float)
-            self._cache[key] = k[np.linalg.norm(k, axis=1) > 1e-12]
+            self._cache[key] = np.asarray(k, dtype=float)
         k = self._cache[key]
+        centre = np.linalg.norm(k, axis=1) <= 1e-12
+        if axis is None:
+            k = k[~centre]
+            centre = centre[~centre]
+        angles = system.get_angles_flat()
         H, _ = LSWTHamiltonian(data["Spin info"], data["Couplings"]).Quadratic_Bose_Hamiltonian(
-            k, angles=system.get_angles_flat())
+            k, angles=angles)
         H = np.asarray(H)
         ns = H.shape[1] // 2
-        eta = np.diag(np.r_[np.ones(ns), -np.ones(ns)])
+        reduce = None
+        if axis is not None and centre.any():
+            u = _soft_boson_line(data["Spin info"], angles, axis)
+            q, _ = np.linalg.qr(np.column_stack([u, np.eye(ns)]))
+            Q = q[:, 1:ns]                                      # orthonormal complement of u
+            zero = np.zeros_like(Q)
+            reduce = np.block([[Q, zero], [zero, Q.conj()]])
         total, unstable = 0.0, 0
-        for Hk in H:
-            try:
-                energies = Diagonalizer.Colpa(np.linalg.cholesky(Hk), eta, paraunitary=False)[:ns]
-            except np.linalg.LinAlgError:
-                w = np.linalg.eigvals(eta @ Hk)
-                stable = np.abs(w.imag) <= 1e-10 * np.max(np.abs(w))
-                unstable += int(np.sum(~stable)) // 2
-                energies = w.real[stable & (w.real > 0)]
-            total += np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4
+        for Hk, at_centre in zip(H, centre):
+            if at_centre:
+                Hk = reduce.conj().T @ Hk @ reduce
+            energy, bad = _harmonic_zero_point(Hk)
+            total += energy
+            unstable += bad
         self.unstable_pairs.append(unstable)
+        self.zone_centre.append("excluded (no axis)" if axis is None else "soft pair projected")
         return float(total / len(H) / ns)
 
     def describe(self) -> Dict[str, Any]:
@@ -860,11 +890,46 @@ class LSWTZeroPointEnergy:
                         "regularization_min": min(values) if values else None,
                         "regularization_max": max(values) if values else None})
         else:
-            out.update({"zone_centre": "excluded (constrained soft coordinate)",
+            out.update({"zone_centre": sorted(set(self.zone_centre)),
                         "regularization": "none; real part where H(k) is not positive definite",
                         "calls": len(self.unstable_pairs),
                         "max_unstable_pairs": max(self.unstable_pairs, default=0)})
         return out
+
+
+def _soft_boson_line(spin_info, angles, axis) -> np.ndarray:
+    """Normalized boson amplitudes of the uniform rotation about ``axis`` (zone centre).
+
+    ``u_i = sqrt(S_i) ((n x s_i).e_theta + i (n x s_i).e_phi)`` in the local
+    frame of :class:`~spintoolkit.methods.lswt.hamiltonian.LSWTHamiltonian`.
+    """
+    axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
+    u = []
+    for info, (theta, phi) in zip(spin_info.values(), np.asarray(angles).reshape(-1, 2)):
+        s = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.sin(phi), np.cos(theta)])
+        e_theta = np.array([np.cos(theta) * np.cos(phi), np.cos(theta) * np.sin(phi), -np.sin(theta)])
+        e_phi = np.array([-np.sin(phi), np.cos(phi), 0.0])
+        d = np.cross(axis, s)
+        u.append(np.sqrt(info["Spin"]) * (d @ e_theta + 1j * (d @ e_phi)))
+    u = np.array(u)
+    return u / np.linalg.norm(u)
+
+
+def _harmonic_zero_point(Hk: np.ndarray) -> Tuple[float, int]:
+    """``sum(omega) / 2 - Tr H / 4`` of one BdG block and the number of unstable mode pairs."""
+    from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+
+    n = Hk.shape[0] // 2
+    eta = np.diag(np.r_[np.ones(n), -np.ones(n)])
+    try:
+        energies = Diagonalizer.Colpa(np.linalg.cholesky(Hk), eta, paraunitary=False)[:n]
+        unstable = 0
+    except np.linalg.LinAlgError:
+        w = np.linalg.eigvals(eta @ Hk)
+        stable = np.abs(w.imag) <= 1e-10 * np.max(np.abs(w))
+        unstable = int(np.sum(~stable)) // 2
+        energies = w.real[stable & (w.real > 0)]
+    return float(np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4), unstable
 
 
 def lswt_zero_point_energy(bz_type: str, N: int, method: str = "constrained",

@@ -273,3 +273,47 @@ def test_criteria_validation():
         sel.SelectionCriteria(mode="auto")
     with pytest.raises(ValueError, match="orbit_points"):
         sel.SelectionCriteria(orbit_points=20, max_harmonic=12)
+
+
+def test_soft_boson_line_is_the_zone_centre_goldstone_mode_for_a_general_axis():
+    """D28 provider: u_i = sqrt(S_i)(t_theta + i t_phi) is the D17 null vector of H(k = 0)
+    (its complex conjugate is not) with the whole problem rotated off z."""
+    from spintoolkit.methods.classical import refine_classical
+    from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+    from spintoolkit.system.conversion import to_spin_system
+
+    c, s = np.cos(0.7), np.sin(0.7)
+    rotation = np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]]) @ np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+    model, state, conditions = setup("Y", {"JPD": 0.01}, rotation=rotation)
+    state = refine_classical(model, state, conditions)
+    system = to_spin_system(model, state, conditions)
+    data, angles = system.to_legacy_dict("Hex_30"), system.get_angles_flat()
+    H = np.asarray(LSWTHamiltonian(data["Spin info"], data["Couplings"]).Quadratic_Bose_Hamiltonian(
+        np.zeros((1, 2)), angles=angles)[0])[0]
+    u = sel._soft_boson_line(data["Spin info"], angles, rotation @ [0, 0, 1])
+    scale = np.linalg.norm(H, 2)
+    assert np.linalg.norm(H @ np.r_[u, u.conj()]) < 1e-12 * scale
+    assert np.linalg.norm(H @ np.r_[u.conj(), u]) > 1e-2 * scale
+
+
+def test_constrained_provider_projects_only_the_soft_pair():
+    """With the axis only the orbit mode leaves the zone centre; without it the whole zone centre
+    is dropped. Both give the D17 selection, and the difference is a zone-centre correction."""
+    model, state, conditions = setup("Y", {"JPD": 0.01})
+    quantum = sel.lswt_zero_point_energy("Hex_30", MESH_N)
+    projected = quantum(model, state, conditions, axis=[0, 0, 1])
+    dropped = quantum(model, state, conditions)
+    assert quantum.describe()["zone_centre"] == ["excluded (no axis)", "soft pair projected"]
+    assert projected != dropped and abs(projected - dropped) < 1e-2 * abs(dropped)
+    result = select(model, state, conditions)
+    assert result.diagnostics["quantum_energy_provider"]["zone_centre"] == ["soft pair projected"]
+    assert abs(result.diagnostics["minima"]["quantum"]["shift"]) < 1e-6
+
+
+def test_a_provider_without_the_axis_keyword_still_works():
+    inner = sel.lswt_zero_point_energy("Hex_30", MESH_N)
+    model, state, conditions = setup("Y", {"JPD": 0.01})
+    result = sel.select_on_manifold(model, state, conditions,
+                                    lambda m, s, c: inner(m, s, c))
+    assert result.verdict == sel.SELECTED
+    assert inner.describe()["zone_centre"] == ["excluded (no axis)"]

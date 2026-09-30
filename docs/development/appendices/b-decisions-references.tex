@@ -83,7 +83,7 @@
     D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
     D26 & 4c: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 연속체는 후속); 모드별 무게가 주 출력, 넓힌 스펙트럼은 보조; 새 구현, 기존 \texttt{correlations.py}는 비교 대상만; 결합 상관과 에너지 교차 확인 & \textbf{사용자 결정} \\
     D27 & 기존 코드 정리: \texttt{correlations.py} 삭제, 동시간 실공간 상관·사다리 성분은 새 모듈로; MAGSWT 격자 탐색 삭제, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}; MAGSWT 정규화는 유지 & \textbf{사용자 결정} \\
-    D28 & 고전·양자 비교: 완화 경로 위 1-loop 유효 퍼텐셜 $\Gamma(\phi)=E_{\mathrm{cl}}+E_{\mathrm{zp}}$의 최소(부드러운 방향의 1-loop 정상성); 곡률 비 대역을 대체; 평평하면 D17 & \textbf{사용자 결정}, 구현(기본 영점 제공자는 확인 대기) \\
+    D28 & 고전·양자 비교: 완화 경로 위 1-loop 유효 퍼텐셜 $\Gamma(\phi)=E_{\mathrm{cl}}+E_{\mathrm{zp}}$의 최소(부드러운 방향의 1-loop 정상성); 곡률 비 대역을 대체; 평평하면 D17 & \textbf{사용자 결정}, 구현·제공자 결정 \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
@@ -420,7 +420,7 @@
       \newblock \texttt{docs/development/verification/} · 완화 경로, D17 극한, 기울인 장.
     \bibitem{d28impl}
       D28 구현 검증 기록, 2026-09-30.
-      \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행.
+      \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행; \texttt{d28-provider-projection-2026-09-30.json} · $k=0$ 구속 모드 투영.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
