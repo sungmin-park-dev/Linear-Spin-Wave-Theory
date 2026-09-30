@@ -3,30 +3,152 @@ frontmatter-version: 1
 title: Spin Correlations
 doc-path: docs/lswt/02-observables
 status: draft
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-06
+updated: 2026-09-30
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
-source-section: "Correlations in Linear Spin Wave Theory"
+source-section: "Correlations in Linear Spin Wave Theory: introduction, Real-Time (Dynamical) Spin-Spin Correlation Function, Sublattice Spin-Spin Correlation Function (source pp. 15–19)"
 ---
 
 # Spin Correlations
 
-Spin correlations describe the relation between spin components at different sites and times. The scope includes real-time spin–spin correlation functions and their sublattice-resolved representation.
+Neutron scattering and other probes of magnetic excitations measure correlations between spin components at different sites and times. This document defines the momentum- and time-resolved spin correlation function and evaluates it in LSWT. The spin operator is expanded in the local frame of the classical reference configuration, the transverse part is expressed through the magnon spinor and the paraunitary transformation, and the longitudinal part supplies an elastic contribution at magnetic reciprocal-lattice vectors. The static and dynamic structure factors and the spectral function built from this correlation function are treated in [Structure Factor and Spectral Function](structure-factor-and-spectral-function.md).
 
-## Topics
+## Correlation Function and Its Symmetries
 
-- Real-time spin–spin correlations.
-- Sublattice-resolved correlations.
-- Sublattice phase factors and the Fourier convention shared with the momentum-space Hamiltonian.
+We set $\hbar=1$ in the time evolution, so that frequencies and magnon energies share energy units. Spin operators evolve in the Heisenberg picture, $\hat S_I^\alpha(t)=\exp(\mathrm i\hat H t)\hat S_I^\alpha\exp(-\mathrm i\hat Ht)$, and $\langle\cdots\rangle$ is the thermal average in the Gibbs state. The external momentum $\mathbf q$ is not restricted to the magnetic Brillouin zone (MBZ). The spin Fourier components use the full site positions $\mathbf r_I$ and are normalized per site,
+
+$$
+\hat S_{\mathbf q}^\alpha
+=\frac{1}{\sqrt{N_{\mathrm{site}}}}\sum_I\exp(-\mathrm i\mathbf q\cdot\mathbf r_I)\,\hat S_I^\alpha,
+$$ {#eq-lswt-spin-fourier-component}
+
+where $\alpha$ labels a laboratory Cartesian component. The real-time spin correlation function is the $3\times3$ matrix
+
+$$
+\mathcal C^{\alpha\beta}(\mathbf q,t)
+=\big\langle\hat S_{\mathbf q}^\alpha(t)\,\hat S_{-\mathbf q}^\beta(0)\big\rangle
+=\frac{1}{N_{\mathrm{site}}}\sum_{I,J}\exp\!\big(-\mathrm i\mathbf q\cdot(\mathbf r_I-\mathbf r_J)\big)\big\langle\hat S_I^\alpha(t)\hat S_J^\beta(0)\big\rangle.
+$$ {#eq-lswt-spin-correlation-function}
+
+The correlation function is unchanged under $\mathbf q\to\mathbf q+\mathbf G$ only for reciprocal vectors with $\mathbf G\cdot\mathbf r_I\in2\pi\mathbb Z$ at every site. A magnetic reciprocal-lattice vector alone does not satisfy this condition when the magnetic unit cell contains several sites.
+
+Two relations follow from the definition. Because the Cartesian components are Hermitian, $(\hat S_{\mathbf q}^\alpha)^\dagger=\hat S_{-\mathbf q}^\alpha$. Because the Gibbs state commutes with the time evolution, $\langle\hat A(0)\hat B(t)\rangle=\langle\hat A(-t)\hat B(0)\rangle$. Together they give
+
+$$
+\big[\mathcal C^{\alpha\beta}(\mathbf q,t)\big]^*=\mathcal C^{\beta\alpha}(-\mathbf q,-t).
+$$ {#eq-lswt-correlation-conjugation}
+
+For a complex combination $\hat S^{c}=\sum_\alpha c_\alpha\hat S^\alpha$, such as a laboratory ladder component, the Hermitian conjugate is $(\hat S_{\mathbf q}^{c})^\dagger=\hat S_{-\mathbf q}^{c^*}$. The correlation of such components follows from the Cartesian matrix by linearity, $\langle\hat S_{\mathbf q}^{c}(t)\hat S_{-\mathbf q}^{d}(0)\rangle=\sum_{\alpha\beta}c_\alpha d_\beta\,\mathcal C^{\alpha\beta}(\mathbf q,t)$, and the conjugation relation then exchanges $c$ and $d$ with their complex conjugates.
+
+## Linear Spin-Wave Expansion of the Spin Operator
+
+The local frame of site $I$ has the circular vectors $\mathbf e_I^\pm=\mathsf R_I(\mathbf e_x\pm\mathrm i\mathbf e_y)/\sqrt2$ and the longitudinal vector $\mathbf e_I^0=\mathbf n_I$, defined in [Classical Order and Local Frame](../00-foundations/classical-order-and-local-frame.md). With the local ladder operators $\hat{\widetilde S}_I^\pm=\hat{\widetilde S}_I^x\pm\mathrm i\hat{\widetilde S}_I^y$, the spin operator reads $\hat{\mathbf S}_I=(\hat{\widetilde S}_I^+\mathbf e_I^-+\hat{\widetilde S}_I^-\mathbf e_I^+)/\sqrt2+\hat{\widetilde S}_I^0\mathbf e_I^0$. Its laboratory component $\alpha$ is therefore
+
+$$
+\hat S_I^\alpha
+=\frac{1}{\sqrt2}\left(\bar u_I^\alpha\hat{\widetilde S}_I^++u_I^\alpha\hat{\widetilde S}_I^-\right)+v_I^\alpha\hat{\widetilde S}_I^0,
+\qquad
+u_I^\alpha=\mathbf e_\alpha\cdot\mathbf e_I^+,
+\quad
+\bar u_I^\alpha=(u_I^\alpha)^*=\mathbf e_\alpha\cdot\mathbf e_I^-,
+\quad
+v_I^\alpha=\mathbf e_\alpha\cdot\mathbf n_I.
+$$
+
+The coefficients $u_I^\alpha$ and $v_I^\alpha$ are the laboratory components of the local basis vectors. Inserting the leading Holstein–Primakoff forms $\hat{\widetilde S}_I^+\simeq\sqrt{2S_I}\,\hat a_I$, $\hat{\widetilde S}_I^-\simeq\sqrt{2S_I}\,\hat a_I^\dagger$, and $\hat{\widetilde S}_I^0=S_I-\hat n_I$ of [Holstein–Primakoff Expansion](../01-derivation/holstein-primakoff-expansion.md) gives
+
+$$
+\hat S_I^\alpha
+\simeq v_I^\alpha\left(S_I-\hat n_I\right)
++\sqrt{S_I}\left(\bar u_I^\alpha\hat a_I+u_I^\alpha\hat a_I^\dagger\right).
+$$ {#eq-lswt-spin-operator-expansion}
+
+The longitudinal part contains the classical moment, of order $S$, and the boson number. The transverse part is linear in the bosons and of order $S^{1/2}$. The correlation function is kept to order $S$. At this order it contains two pieces: the product of the ordered moments, of order $S^2$, together with its reduction by $\langle\hat n_I\rangle$, of order $S$; and the transverse correlation, of order $S$. Cross terms between the transverse part and the constant $S_I$ vanish because $\langle\hat a_I\rangle=0$ in the Gibbs state of a quadratic Hamiltonian without linear terms. Cross terms between the transverse part and $\hat n_I$ contain an odd number of boson operators and vanish by Wick's theorem. The connected longitudinal correlation $\langle\hat n_I(t)\hat n_J(0)\rangle-\langle\hat n_I\rangle\langle\hat n_J\rangle$ is of order $S^0$; it describes two-magnon scattering and is omitted, as are the $O(S^0)$ corrections to the transverse part from the next Holstein–Primakoff terms.
+
+## Transverse Correlations in Momentum Space
+
+We write sites as $I=(i,\mu)$ with $\mathbf r_{i\mu}=\mathbf R_i+\boldsymbol\delta_\mu$, and use the full-position Fourier convention of [Momentum-Space BdG Hamiltonian](../01-derivation/momentum-space-bdg-hamiltonian.md). The inverse transform $\hat a_{\mathbf q\mu}=N_{\mathrm{uc}}^{-1/2}\sum_i\exp(-\mathrm i\mathbf q\cdot\mathbf r_{i\mu})\hat a_{i\mu}$ defines the boson at any momentum. Momenta that differ by a magnetic reciprocal-lattice vector $\mathbf G$ are related by $\hat a_{\mathbf q+\mathbf G,\mu}=\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\hat a_{\mathbf q\mu}$. The Nambu spinor $\hat\Psi_{\mathbf q}$, the BdG matrix $\mathsf H_{\mathbf q}$, and the paraunitary matrix $\mathsf T_{\mathbf q}$ are evaluated at the unfolded momentum $\mathbf q$. The energies $\varepsilon_{n\mathbf q}$ are periodic over the MBZ, while $\hat\Psi_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\hat\Psi_{\mathbf q}$ and $\mathsf T_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\mathsf T_{\mathbf q}$ with $\Lambda_{\mathbf G}=\mathsf I_2\otimes\operatorname{diag}\big(\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\big)$, the same phase in both Nambu blocks.
+
+For a periodic reference configuration the coefficients depend only on the sublattice, $u_I^\alpha=u_\mu^\alpha$ and $v_I^\alpha=v_\mu^\alpha$. Summing @eq-lswt-spin-operator-expansion with the Fourier phases gives the transverse part of the spin component,
+
+$$
+\hat S_{\mathbf q,\perp}^\alpha=\mathsf V^\alpha\hat\Psi_{\mathbf q},
+\qquad
+\mathsf V^\alpha=\frac{1}{\sqrt{N_{\mathrm{sub}}}}
+\left(\sqrt{S_1}\,\bar u_1^\alpha,\ldots,\sqrt{S_{N_{\mathrm{sub}}}}\,\bar u_{N_{\mathrm{sub}}}^\alpha,\;
+\sqrt{S_1}\,u_1^\alpha,\ldots,\sqrt{S_{N_{\mathrm{sub}}}}\,u_{N_{\mathrm{sub}}}^\alpha\right),
+$$ {#eq-lswt-spin-vertex}
+
+where the spin vertex $\mathsf V^\alpha$ is a row vector with $2N_{\mathrm{sub}}$ entries. The vertex does not depend on the momentum; all momentum dependence, including the sublattice phases, resides in $\hat\Psi_{\mathbf q}$. Because $\hat S_{-\mathbf q}^\beta=(\hat S_{\mathbf q}^\beta)^\dagger$, the second operator of the correlation function is $\hat S_{-\mathbf q,\perp}^\beta=\hat\Psi_{\mathbf q}^\dagger(\mathsf V^\beta)^\dagger$.
+
+The magnon spinor $\hat\Phi_{\mathbf q}=\mathsf T_{\mathbf q}^{-1}\hat\Psi_{\mathbf q}$ evolves as $\hat b_{\mathbf qn}(t)=\exp(-\mathrm i\varepsilon_{n\mathbf q}t)\hat b_{\mathbf qn}$ and $\hat b_{-\mathbf qn}^\dagger(t)=\exp(\mathrm i\varepsilon_{n,-\mathbf q}t)\hat b_{-\mathbf qn}^\dagger$. In the Gibbs state its two-time correlation matrix is diagonal:
+
+$$
+\mathsf N_{\mathbf q}(t)
+=\big\langle\hat\Phi_{\mathbf q}(t)\hat\Phi_{\mathbf q}^\dagger(0)\big\rangle
+=\operatorname{diag}\!\Big(\big(1+n_{1\mathbf q}\big)\exp(-\mathrm i\varepsilon_{1\mathbf q}t),\ldots,\;
+n_{1,-\mathbf q}\exp(\mathrm i\varepsilon_{1,-\mathbf q}t),\ldots\Big),
+$$ {#eq-lswt-magnon-correlation-matrix}
+
+with $n_{n\mathbf q}=n_{\mathrm B}(\varepsilon_{n\mathbf q})$ from [Thermodynamics](thermodynamics.md). The particle entries carry $1+n$ because $\langle\hat b\hat b^\dagger\rangle=1+\langle\hat b^\dagger\hat b\rangle$; the hole entries carry $n$. The anomalous averages $\langle\hat b\hat b\rangle$ vanish. The transverse correlation function is then
+
+$$
+\mathcal C_\perp^{\alpha\beta}(\mathbf q,t)
+=\mathsf V^\alpha\,\mathsf T_{\mathbf q}\mathsf N_{\mathbf q}(t)\mathsf T_{\mathbf q}^\dagger\,(\mathsf V^\beta)^\dagger
+=\sum_{p=1}^{2N_{\mathrm{sub}}}\big(\mathsf V^\alpha\mathsf T_{\mathbf q}\big)_p\big(\mathsf V^\beta\mathsf T_{\mathbf q}\big)_p^*\,\big[\mathsf N_{\mathbf q}(t)\big]_{pp}.
+$$ {#eq-lswt-transverse-correlation}
+
+Each column $p$ of $\mathsf T_{\mathbf q}$ contributes one term with the amplitude $(\mathsf V^\alpha\mathsf T_{\mathbf q})_p$. A particle column describes the creation of a magnon $(\mathbf q,n)$ by $\hat S_{-\mathbf q}^\beta$, and a hole column the absorption of a thermally excited magnon $(-\mathbf q,n)$.
+
+The sublattice-resolved correlation $\mathcal C_{\mu\nu}^{\alpha\beta}$, whose sum over $\mu$ and $\nu$ gives $\mathcal C^{\alpha\beta}$, collects the terms of @eq-lswt-transverse-correlation in which the entries of $\mathsf V^\alpha$ and $\mathsf V^\beta$ belong to sublattices $\mu$ and $\nu$. It is the sum of the four entries $(\mu,\nu)$, $(\mu,N_{\mathrm{sub}}+\nu)$, $(N_{\mathrm{sub}}+\mu,\nu)$, and $(N_{\mathrm{sub}}+\mu,N_{\mathrm{sub}}+\nu)$ of the matrix $\operatorname{diag}(\mathsf V^\alpha)\,\mathsf T_{\mathbf q}\mathsf N_{\mathbf q}(t)\mathsf T_{\mathbf q}^\dagger\operatorname{diag}(\mathsf V^\beta)^\dagger$, where $\operatorname{diag}(\mathsf V^\alpha)$ places the entries of $\mathsf V^\alpha$ on the diagonal. In the full-position convention no additional sublattice phase $\exp(-\mathrm i\mathbf q\cdot(\boldsymbol\delta_\mu-\boldsymbol\delta_\nu))$ appears, since those phases are already contained in $\hat\Psi_{\mathbf q}$.
+
+## Elastic Correlations at Magnetic Bragg Vectors
+
+The longitudinal part of @eq-lswt-spin-operator-expansion has the thermal average $\langle\hat S_I^\alpha\rangle=v_\mu^\alpha(S_\mu-\langle\hat n_\mu\rangle)=m_\mu^\alpha$, the ordered moment of sublattice $\mu$ reduced by the boson number $\langle\hat n_\mu\rangle$ of [Magnon Observables](magnon-observables.md). Its Fourier sum over the $N_{\mathrm{uc}}$ cells is $N_{\mathrm{uc}}\,\delta_{\mathbf q,\mathbf G}$, a Kronecker delta that selects the magnetic reciprocal-lattice vectors $\mathbf G$. The product of the averages gives the elastic correlation
+
+$$
+\mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)
+=\big\langle\hat S_{\mathbf q}^\alpha\big\rangle\big\langle\hat S_{-\mathbf q}^\beta\big\rangle
+=N_{\mathrm{site}}\sum_{\mathbf G}\delta_{\mathbf q,\mathbf G}\,
+\frac{F^\alpha(\mathbf G)\,F^\beta(\mathbf G)^*}{N_{\mathrm{sub}}^2},
+\qquad
+F^\alpha(\mathbf G)=\sum_{\mu=1}^{N_{\mathrm{sub}}}\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\,m_\mu^\alpha,
+$$ {#eq-lswt-elastic-correlation}
+
+where $F^\alpha(\mathbf G)$ is the magnetic structure factor of the magnetic unit cell. The elastic correlation does not depend on time. It is proportional to $N_{\mathrm{site}}$, reflecting long-range order, while the transverse correlation is of order one per site. To order $S$, the product of the reduced moments contains the classical term $S_\mu S_\nu v_\mu^\alpha v_\nu^\beta$ and the reductions $-v_\mu^\alpha v_\nu^\beta(S_\mu\langle\hat n_\nu\rangle+S_\nu\langle\hat n_\mu\rangle)$; the remaining product $\langle\hat n_\mu\rangle\langle\hat n_\nu\rangle$ is of order $S^0$ and is retained only because the moments appear in factorized form.
+
+To the order kept, the correlation function is
+
+$$
+\mathcal C^{\alpha\beta}(\mathbf q,t)=\mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)+\mathcal C_\perp^{\alpha\beta}(\mathbf q,t).
+$$ {#eq-lswt-correlation-lswt-form}
+
+## Equal-Time Correlations in Real Space
+
+The equal-time correlation between two sites follows from the same expansion without the momentum transform. For $I=(i,\mu)$ and $J=(j,\nu)$,
+
+$$
+\big\langle\hat S_I^\alpha\hat S_J^\beta\big\rangle
+\simeq m_\mu^\alpha m_\nu^\beta
++\sqrt{S_\mu S_\nu}\;\frac{1}{N_{\mathrm{uc}}}\sum_{\mathbf k\in\mathrm{MBZ}}\exp\!\big(\mathrm i\mathbf k\cdot(\mathbf r_I-\mathbf r_J)\big)
+\,\mathsf w_\mu^\alpha\big[\mathsf T_{\mathbf k}\mathsf N_{\mathbf k}(0)\mathsf T_{\mathbf k}^\dagger\big]_{\{\mu\},\{\nu\}}(\mathsf w_\nu^\beta)^\dagger,
+$$
+
+where $\mathsf w_\mu^\alpha=(\bar u_\mu^\alpha,u_\mu^\alpha)$ and $[\cdots]_{\{\mu\},\{\nu\}}$ is the $2\times2$ submatrix with rows $\mu,N_{\mathrm{sub}}+\mu$ and columns $\nu,N_{\mathrm{sub}}+\nu$. The connected longitudinal part $\langle\hat n_I\hat n_J\rangle-\langle\hat n_I\rangle\langle\hat n_J\rangle$, of order $S^0$, is omitted for every pair of sites, including $I=J$. Correlations of local-frame components follow by replacing the laboratory vector $\mathbf e_\alpha$ with a local basis vector of the respective site in the definitions of $u_I^\alpha$ and $v_I^\alpha$.
 
 ## References
 
 ### Internal Documents
 
-- [Magnon Observables](magnon-observables.md): supplies the diagonalized modes and correlation-matrix scope.
-- [Structure Factor and Spectral Function](structure-factor-and-spectral-function.md): uses spin correlations to construct scattering observables.
-- [Momentum-Space BdG Hamiltonian](../01-derivation/momentum-space-bdg-hamiltonian.md): defines the Fourier convention whose phase factors enter the correlations.
+- [Classical Order and Local Frame](../00-foundations/classical-order-and-local-frame.md): defines $\mathsf R_I$, $\mathbf n_I$, and the local circular vectors $\mathbf e_I^\pm$.
+- [Holstein–Primakoff Expansion](../01-derivation/holstein-primakoff-expansion.md): supplies the leading boson forms of the local spin operators.
+- [Momentum-Space BdG Hamiltonian](../01-derivation/momentum-space-bdg-hamiltonian.md): defines the full-position Fourier convention and the Nambu spinor.
+- [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md): supplies $\mathsf T_{\mathbf q}$ and the magnon energies.
+- [Thermodynamics](thermodynamics.md): defines the Bose–Einstein occupations.
+- [Magnon Observables](magnon-observables.md): owns the boson numbers and the reduced moments $m_\mu^\alpha$.
+- [Structure Factor and Spectral Function](structure-factor-and-spectral-function.md): builds the scattering observables from $\mathcal C^{\alpha\beta}(\mathbf q,t)$.
+- [Notation and Conventions](../00-foundations/notation-and-conventions.md): distinguishes the external momentum $\mathbf q$ from the magnon momentum $\mathbf k$ and reserves the spin-vertex symbol.
 
 ### External Sources
 
