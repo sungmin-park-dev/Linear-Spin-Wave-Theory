@@ -117,6 +117,30 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 검증 결과: 자기모멘트의 명시적 minus, 양의 field contraction과 $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$가 서로 일치함을 대수적으로 확인했다. 기존 semantic equation ID, draft 상태 및 내부 링크를 유지했다. Zeeman section·외부 근거·수정일 외 본문은 변경 전과 동일하며, 다른 이론 문서·원자료·코드·예제도 변경 전과 동일함을 확인했다. Quarto로 MathML HTML preview를 생성하고 출력에 Zeeman 수식 anchor와 갱신한 부호 정의가 들어 있음을 확인했다. 출력과 resource는 임시 디렉토리에 두었으며, source 옆의 생성 resource는 정리했다. 브라우저에서의 시각 검토, 문서 전체 Human Physics and Mathematics Review 및 legacy 코드 검증은 별도 대기다.
 
+## Thermodynamics Draft — 2026-09-30
+
+사용자의 "열역학 문서 진행" 지시에 따라 `docs/lswt/02-observables/thermodynamics.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF pp. 13–15와 reviewed TeX(lines 1109–1258)의 Partition Function, Internal Energy, Free Energy, Entropy Expression, Specific Heat를 대조했다. 이 구간의 annotation은 B19 하나다. "Number and Spin moment from Correlation Matrix"는 ownership 표에 따라 magnon-observables 소유로 남겼다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
+
+### 검토 묶음
+
+| 항목 | Draft의 처리 | 사용자 확인 사항 |
+|---|---|---|
+| Source 첫 식(Hamiltonian) | 원문의 \(-\frac12\operatorname{Tr}\mathsf H_{\mathbf k}\)(k 합 누락, 계수 불일치) 대신 diagonalization 문서의 \(E_{\mathrm{GS}}+\sum\varepsilon\hat n\)에서 출발한다. | 수정 확인 |
+| 적용 범위(추가) | 기준 배치와 \(\varepsilon_{n\mathbf k}\)를 온도에 따라 고정하고 magnon 상호작용을 뺀 저온 근사라는 점, 부격자 moment 감소가 S에 가까워지면 깨진다는 점, 2D 해석 조건은 Overview를 따른다는 점을 적었다. | 추가 내용 확인 |
+| Z, U, F | 원문 식과 같다. \(E_0\)→\(E_{\mathrm{GS}}\), \(\tilde Z_\beta\) 기호는 쓰지 않고 \(\exp(-\beta E_{\mathrm{GS}})\) 인자로 적었다. 각 mode의 기하급수 수렴에 \(\varepsilon>0\)가 필요함을 적었다. | 없음 |
+| Entropy (B19) | \(\mathcal S=-k_B\operatorname{Tr}\hat\rho\ln\hat\rho=(U-F)/T=-\partial F/\partial T\). 원문의 "adjusting units appropriately" 문구는 뺐다. 기호는 notation 문서의 \(\mathcal S\)를 쓴다. | 없음 |
+| Specific heat | 원문 C=∂U/∂T는 extensive라서 "heat capacity" C로 부르고, 사이트당 값은 \(N_{\mathrm{site}}\)로 나눈다. \(C=T\partial\mathcal S/\partial T\)도 적었다. Chern 수 \(C_n\)과는 첨자 유무로 구별한다. | 명칭(heat capacity vs specific heat)과 기호 C |
+| 정규화(추가) | extensive 합, 사이트당 값, \(N_{\mathrm{uc}}^{-1}\sum_{\mathbf k}\to A_{\mathrm{MBZ}}^{-1}\int\). | 없음 |
+| 영모드(추가) | \(\varepsilon\propto|\mathbf k-\mathbf k_0|^a\)에서 U, C는 유한(k_BT, k_B)하고 F, S 항은 로그 발산하지만, 2D에서 적분 가능하므로 연속 극한은 유한하다. 유한 mesh의 영점 한 점 처리는 이산화 선택이다. 보손 수·moment는 magnon-observables로 넘겼다. | 추가 내용과 범위 |
+
+새 equation ID 6개(`eq-lswt-partition-function`, `eq-lswt-bose-einstein-distribution`, `eq-lswt-internal-energy`, `eq-lswt-free-energy`, `eq-lswt-magnon-entropy`, `eq-lswt-magnon-heat-capacity`)를 부여했으며 corpus 안에서 중복이 없다.
+
+### 검증
+
+- 수치 검산(scratchpad, 무작위 200 mode): \(\mathcal S-(U-F)/T\) = 3e-14. \(\mathcal S=-\partial F/\partial T\), \(C=\partial U/\partial T\), \(C=T\partial\mathcal S/\partial T\)는 유한 차분 ~1e-9 안에서 성립한다. ε=1e-5, T=1에서 S 항 = 1+ln(T/ε), F 항 = T ln(βε), U 항 → T를 확인했다.
+- 코드 대응(본문에 넣지 않음): `thermal_quantities`의 F·U·S·C 식은 draft와 같다(사이트당, D20/D25). mesh에 정확한 영에너지 점이 있으면 기존 루틴의 처리가 서로 다르다. `log_1_m_exp`는 −inf, `entropy_function_at_k`는 n>1e300을 0으로 버리고, `specific_heat_function_at_k`는 k_B(=1)를 준다. 영점 한 점의 처리를 통일할지는 별도 코드 확인 항목이다. 실제 mesh가 영점을 포함하는지는 D25 scan 기록과 대조가 필요하다.
+- Quarto preview는 경고가 없었다. 식 ID 6개가 출력됐고 참조가 모두 해석됐다. 이는 출력 구조 검증이며 acceptance가 아니다.
+
 ## Paraunitary Diagonalization Draft — 2026-09-30
 
 사용자의 "대각화 문서 진행" 지시에 따라 `docs/lswt/01-derivation/paraunitary-diagonalization.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF pp. 9–11 Source Eqs. (48)–(60)과 reviewed TeX(lines 783–1006)를 대조했으며 두 source의 식은 일치한다. 작성 전 writing style(`in-review`)을 다시 읽었다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
@@ -191,6 +215,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | Quadratic \(H_2\) | `draft` | odd terms와 \(H_4\)의 문서 범위 결정 |
 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | General Nambu/BdG form | `draft` | A1, A2, A5, A10 해결 전 explicit block 보류 |
 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | Bogoliubov transformation, paraunitary condition, particle–hole spectrum, diagonal Hamiltonian과 zero-point correction, Colpa construction, semidefinite·indefinite 경계 | `draft` (2026-09-30 본문 작성) | 아래 Paraunitary Diagonalization Draft 검토 묶음의 사용자 물리·수학 검토 |
+| `docs/lswt/02-observables/thermodynamics.md` | Magnon-gas validity, partition function, U, F, entropy, heat capacity, normalization, zero-mode limits | `draft` (2026-09-30 본문 작성) | 아래 Thermodynamics Draft 검토 묶음의 사용자 물리·수학 검토 |
 | `docs/lswt/02-observables/topological-magnon-quantities.md` | Lattice skyrmion number, BdG Berry curvature, Chern number (Kubo, FHS), per-layer magnon thermal Hall | `draft` (2026-09-30 본문 작성) | 아래 Topology Draft 검토 묶음의 사용자 물리·수학 검토 |
 
 ### Draft Skeletons
@@ -198,7 +223,6 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | File | Intended coverage | Lifecycle |
 |---|---|---|
 | `docs/lswt/02-observables/magnon-observables.md` | Spectrum, energy correction, occupation, correlation matrix | `draft` skeleton |
-| `docs/lswt/02-observables/thermodynamics.md` | Partition function, energy, entropy, specific heat | `draft` skeleton |
 | `docs/lswt/02-observables/spin-correlations.md` | Real-time and sublattice correlations | `draft` skeleton |
 | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | Static/dynamic structure factor and spectral function | `draft` skeleton |
 | `docs/lswt/03-examples/worked-example.md` | Single-mode quadratic-boson example | `draft` skeleton |
@@ -206,7 +230,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
 | `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
 
-현재 합계는 일부 본문이 작성된 draft 9개, skeleton 8개, accepted 0개다.
+현재 합계는 일부 본문이 작성된 draft 10개, skeleton 7개, accepted 0개다.
 
 ## Source and Legacy Retention
 
@@ -269,8 +293,8 @@ Concept ownership은 다음 원칙을 따른다.
 | `01_spin_wave_theory_intro.md` | Paraunitarity and diagonalization proofs | `docs/lswt/04-appendices/paraunitarity-proofs.md` | `skeleton` | Main document의 결과를 다시 정의하지 않고 증명만 보충한다. |
 | `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands, ground-state energy와 zero-point correction | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | Diagonalization 문서는 spectrum 생성까지만 다루고 energy observable은 여기서 정의한다. |
 | `02_physical_quantities.md` | Post-diagonalization quantity index | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | 수식 복제 표가 아니라 각 observable owner로 가는 index로 다시 작성한다. |
-| `03_thermodynamics.md` | Partition function, internal energy, free energy, entropy와 specific heat | `docs/lswt/02-observables/thermodynamics.md` | `skeleton` | 정의와 최종 LSWT 식은 main observable 문서가 소유한다. |
-| `03_thermodynamics.md` | Long thermodynamic derivations | `docs/lswt/04-appendices/thermodynamic-derivations.md` | `skeleton` | Main document에 필요한 가정과 최종 결과를 남기고 중간 전개를 appendix로 보낸다. |
+| `03_thermodynamics.md` | Partition function, internal energy, free energy, entropy와 specific heat | `docs/lswt/02-observables/thermodynamics.md` | `source-reviewed` (2026-09-30) | 정의와 최종 LSWT 식은 main observable 문서가 소유한다. |
+| `03_thermodynamics.md` | Long thermodynamic derivations | `docs/lswt/04-appendices/thermodynamic-derivations.md` | `skeleton` | Main document에 필요한 가정과 최종 결과를 남기고 중간 전개를 appendix로 보낸다. 2026-09-30 thermodynamics draft는 U·F·S·C 유도가 한두 줄이라 본문에 두었다. appendix로 옮길지는 사용자 확인 대기. |
 | `03_thermodynamics.md` | Boson occupation, sublattice moment와 correlation matrix | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | 온도 의존 분포는 thermodynamics를 참조하되 spin reduction 정의는 여기서 소유한다. |
 | `04_correlations.md` | Real-time/equal-time correlator, symmetry와 local-to-lab response | `docs/lswt/02-observables/spin-correlations.md` | `skeleton` | Structure factor와 spectral transform은 다음 owner로 분리한다. |
 | `04_correlations.md` | Static and dynamic structure factors | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | `skeleton` | Correlator 정의를 반복하지 않고 normalization contract를 참조한다. |
@@ -330,7 +354,7 @@ source-only evidence로 보존한다.
 | C15 | `docs/lswt/03-examples/worked-example.md` | `source-cleanup` | TOC subsection 처리 |
 | B21 | `docs/lswt/03-examples/worked-example.md` | `source-cleanup` | Number-expectation heading |
 | C13 | `docs/lswt/00-foundations/notation-and-conventions.md` | `open` | Source \(R_k^\alpha\)를 canonical spin vertex \(\mathsf V_{\mathbf k}^{\alpha}\)로 분리했으며 정확한 definition, dagger convention과 energy symbol coverage는 open |
-| B19 | `docs/lswt/02-observables/thermodynamics.md` | `source-cleanup` | Entropy 설명 |
+| B19 | `docs/lswt/02-observables/thermodynamics.md` | `source-cleanup` | Entropy 설명. 2026-09-30 draft는 annotation 제안대로 von Neumann entropy와 \(\mathcal S=(U-F)/T=-\partial F/\partial T\)의 관계로 다시 썼다. |
 | B9 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-cleanup` | Primary PDF에는 orphan text가 남고 restructured draft에서만 제거됨. 2026-09-30 draft는 orphan text를 옮기지 않았다. |
 | A6 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | Physical bands와 \(2N\) BdG sum. 2026-09-30 draft는 curvature의 중간 합을 2N column 전체(Σ3 부호)로, Chern·κ를 physical band로 명시했다. 코드(D29)와 같고 사용자 검토 대기다. |
 | A7 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | 2026-09-11 참고 논문 식 (8)의 physical-band 합·hbar·온도·area/volume 정의를 대조했다. 사용자가 층당 κ 기본 및 층간격을 통한 3D 환산을 승인했고 코드 32개 회귀를 통과했다. 원본 c2 상수항과 이론 acceptance는 별도 검토다. 2026-09-30 draft는 상수항 없는 c2를 쓰고, 원본 형태와의 차이가 (πk_B²T/6ħ)ΣC_n임을 적었다. 코드도 상수항 없는 c2를 쓴다. 2026-09-30 사용자 요청으로 문헌을 대조해, H가 MBZ 전체에서 양정치이면 particle band Chern 합이 0(Shindou et al. 2013 식 (29))이라 두 형태가 같음을 본문에 반영했다. 양반정치(Goldstone) 경우만 open이다. |
