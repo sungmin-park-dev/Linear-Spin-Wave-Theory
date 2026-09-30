@@ -8,11 +8,11 @@ last-edited-by: claude
 created: 2026-09-30
 updated: 2026-09-30
 related:
-  - GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures.md
+  - GOVERNMENT/Working-Pad/issue-notes/closed/260602-commensurate-structure-test-failures.md
   - GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md
   - code-space/spintoolkit/states/commensurate.py
   - code-space/spintoolkit/states/spin_state.py
-  - research-space/theory/lswt/appendices/luttinger-tisza-method.md
+  - docs/lswt/04-appendices/luttinger-tisza-method.md
 ---
 
 # LT 단계 구현과 CommensurateStructure 정리 여부 판단
@@ -44,7 +44,7 @@ related:
 
 ### 현재 상태 (2026-09-30, `0e9247f` 기준)
 
-- **LT 단계**: 코드에 없다. 이론 부록 `research-space/theory/lswt/appendices/luttinger-tisza-method.md`는
+- **LT 단계**: 코드에 없다. 이론 부록 `docs/lswt/04-appendices/luttinger-tisza-method.md`는
   본문 이식 전 뼈대(draft)다.
 - **셀 결정**: 사용자나 모델이 후보 셀을 준다. NBCP는 One–Four MSL을 정수 행렬 $M$으로
   정의하고(전달 규약 D16), 셀마다 고전 탐색을 한 뒤 `select_on_manifold`로 고른다.
@@ -81,15 +81,17 @@ related:
 
 ## 결론 / 미결 사항
 
-미결. LSWT 작업 전체 멈춤(2026-09-30 결정)에 따라 재개 시 판단한다. 두 질문은 독립적이다.
-질문 2는 코드 정리이고, 질문 1은 기능 범위 결정이다.
+**2026-09-30 결정(D30, 사용자 결정):** 질문 1 — LT는 진단 도구로 구현한다(J(q) 최소 q*, 강한 제약 만족 여부,
+후보 셀 제안; 선택 단계는 바꾸지 않는다). 질문 2 — `CommensurateStructure`는 삭제한다(참조·호환 매핑·예시·테스트를
+함께 정리하고 옛 저장 객체 복원 여부를 먼저 확인한다). 구현은 LSWT 작업 재개 뒤에 하며, 구현·검증을 마치면 이 노트를
+닫는다.
 
 설계 검토면은 `docs/development` Beamer의 "미결 사항" 쪽이다(검토본 29).
 
 ## 참조
 
-- `GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures.md` — 계기가 된 테스트 실패와 해결
+- `GOVERNMENT/Working-Pad/issue-notes/closed/260602-commensurate-structure-test-failures.md` — 계기가 된 테스트 실패와 해결
 - `GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md` — D16 정수 행렬 초격자
 - `code-space/spintoolkit/states/commensurate.py`, `code-space/spintoolkit/states/spin_state.py`
 - `code-space/spintoolkit/models/heisenberg.py` — `state_120`
-- `research-space/theory/lswt/appendices/luttinger-tisza-method.md` — LT 이론 부록(draft)
+- `docs/lswt/04-appendices/luttinger-tisza-method.md` — LT 이론 부록(draft)

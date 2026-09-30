@@ -786,23 +786,20 @@ save_json(r, "lswt.json")  # 머리부 + 요약
 \end{frame}
 
 \begin{frame}[label=open-questions]{미결 사항}
-  \framesubtitle{해당 단계에 도달하기 전에 결정한다.}
+  \framesubtitle{설계 미결 사항은 D30(2026-09-30)으로 결정했다. 남은 것과 재개 뒤 할 일.}
   \footnotesize\renewcommand{\arraystretch}{1.05}
-  \begin{tabularx}{\textwidth}{@{}Yp{3.2cm}@{}}
+  \begin{tabularx}{\textwidth}{@{}Yp{3.4cm}@{}}
     \toprule
-    질문 & 결정 시점 \\
+    항목 & 시점 \\
     \midrule
-    키타에프 flux 섹터와 정확해 대조, ED 2-마그논 섹터 & 해당 벤치마크 시 \\
-    TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
-    후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
-    D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
-    적응형 적분의 오차 추정을 덜 보수적으로(예산 절약, 별도 검증) & 필요 시 \\
-    기존 경로의 정리 시점: \texttt{LSWTSolver}, \texttt{EnergyFunction}/\texttt{SpinOptimizer}, SI Hall API(k\_data, W/K) & 사용자 결정 \\
-    자기 셀 결정: LT 단계(구현 안 함·진단 도구·파이프라인 1단계)와 대각 셀 전용 \texttt{CommensurateStructure}의 유지·\texttt{SpinState} 흡수·삭제 & LSWT 작업 재개 시 \\
+    TN 관련 상태·계산 요청·결과의 필드 규약 & 솔버 경계 검증 실험 뒤 \\
+    LT 진단 도구 구현, \texttt{CommensurateStructure} 삭제 & LSWT 작업 재개 뒤(D30) \\
+    \texttt{LSWTSolver}·SI Hall API 사용 중단 경고, 전역 고전 탐색 이식 뒤 \texttt{EnergyFunction}/\texttt{SpinOptimizer} 정리 & LSWT 작업 재개 뒤(D30) \\
+    적응형 적분의 오차 추정 개선 & 보류 \\
+    1차 범위 밖: D17 확장, 후속 항 종류와 $S\ge1$, 키타에프 flux·ED 2-마그논 & 필요한 벤치마크·모델이 생길 때 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준·2b 구현 방식(D18, D19, D22)은 2026-09-29, ED 범위·토러스 규칙(D23)은 2026-09-30 결정했다.
-  변위 해석은 2단계의 $\mathsf H(\mathbf k)$ 원소 단위 비교로 확정했다.}
+  \supportingtext{결합 변위 해석(D13), 상태·요청·결과의 공통 구조(D14), 벤치마크 위치(D15), 영점 에너지 상태 선택(D17)과 그 구현 계획·판정 기준·2b 구현 방식(D18, D19, D22)은 2026-09-29, ED 범위·토러스 규칙(D23)부터 D30까지는 2026-09-30 결정했다.}
   \slidesource{규약 문서의 Open Questions}{contract}
 \end{frame}
