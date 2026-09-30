@@ -99,7 +99,8 @@ project-root/
 │   ├── modules/
 │   ├── scripts/
 │   └── research-notes/
-└── data-space/                  # 검토하고 정돈한 결과 데이터
+├── data-space/                  # 검토하고 정돈한 결과 데이터
+└── workbench/                   # research-workspace 앱의 유도 블록·일지 (NBCP 내용 원본은 docs/nbcp/main.tex)
 ```
 
 ---
