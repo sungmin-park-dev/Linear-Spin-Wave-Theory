@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "dde3048",
+  "scope": "Stage 5c (D29): one thermal Hall kernel for the new and the existing paths; the existing SI API (k_data input, W/K per layer, layer spacing) is kept.",
+  "decision": "User decision 2026-09-30 (option 1): unify the pair-form kernel and keep the existing Topology/Thermodynamics Hall API; decide its removal together with the existing LSWTSolver (kept by D24). Adaptive k integration for NBCP is a separate step (5d or the NBCP research phase, undecided).",
+  "changed": {
+    "code-space/spintoolkit/observables/topology.py": "curvature_pair_terms, weighted_curvature_sum (pair-form kernel), c2_weight, c2_weight_derivative; Topology.compute_thermal_Hall sums the kernel",
+    "code-space/spintoolkit/observables/thermodynamics.py": "compute_thermodynamic_quantities_at_T sums the same kernel for 'Thermal Hall Conductance'",
+    "code-space/spintoolkit/observables/berry.py": "thermal_hall uses the shared kernel (its private copy removed)",
+    "code-space/tests/test_methods/test_band_isolation.py": "Hall expectations for degenerate flat bands NaN -> 0 (defined); the cutoff still reaches the Hall path through the zero-mode case (particle-hole separation within the cutoff -> NaN); new test for that case in both paths"
+  },
+  "behaviour_change": "The existing Hall path returned NaN whenever a band was not separated by more than band_gap_cutoff at some k; it now returns the pair-form value (degenerate pairs contribute zero, a degenerate group c2 Tr F) and NaN only for a particle-hole pair within the cutoff. Per-band curvature and Chern numbers keep the NaN policy.",
+  "verification": {
+    "examples_before_after": {
+      "thermal_hall_reference_check": "55 leaves, max relative difference 4.2e-16",
+      "bz_chern_reference_check": "180 leaves, 1.1e-15",
+      "band_degeneracy_check": "83 leaves, 0 (timestamps excluded)",
+      "band_gap_cutoff_check": "530 leaves, 0 (timings and timestamps excluded)"
+    },
+    "stage5b_check_rerun": "338 physical values, max relative change 6.7e-14 (round-off)",
+    "tests": "497 passed, 0 failed (6 expectations updated, 1 test added)",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0",
+    "note": "OPENBLAS_NUM_THREADS=4; before = git archive of dde3048"
+  },
+  "issue_260802": "Implementation items resolved by 5a-5c: SI contract and full-BZ normalization (earlier), band isolation for per-band quantities (5a policy), Hall for degenerate groups (pair form), one kernel for both paths. Remaining: NBCP application (mesh convergence, adaptive integration), user review of the theory documents A6/A7/A16, pseudo-Goldstone (issue 260810). The note itself carries uncommitted edits of the restructuring work in the main checkout, so its update and move to closed/ wait until that work is committed."
+}

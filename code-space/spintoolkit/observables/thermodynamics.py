@@ -16,7 +16,7 @@ from spintoolkit.observables.bose_statistics import (
     compute_static_magnon_kernel,
 )
 from spintoolkit.observables.topology import (
-    compute_berry_curvature, c_two_function,
+    curvature_pair_terms, weighted_curvature_sum,
     _magnetic_cell_area, _thermal_hall_conductivity, _validate_thermal_hall_inputs,
     _matches_integration_grid, _validate_band_gap_cutoff,
 )
@@ -454,7 +454,7 @@ class Thermodynamics:
             and Cartesian derivatives in the reciprocal units of the magnetic
             lattice vectors. Uniform repeated coverage is allowed. Band paths,
             partial and nonuniform grids are unsupported; the caller must
-            verify coverage and nondegenerate band curvature. With a solver
+            verify coverage. With a solver
             parent, keys differing from its last full grid make Hall NaN.
         Temperature : float, optional
             Temperature in Kelvin (default: 0).
@@ -467,7 +467,7 @@ class Thermodynamics:
             Divide the layer response by this spacing to obtain 3D kappa_xy.
         band_gap_cutoff : float, optional
             Numerical minimum signed band separation in meV (default: 1e-8).
-            Passed to compute_berry_curvature; finite and non-negative.
+            Passed to the pair-form Hall kernel; finite and non-negative.
             This calculation policy affects only the Hall result.
 
         Returns
@@ -482,9 +482,10 @@ class Thermodynamics:
             - 'Entropy Density': Entropy in meV/(K spin)
             - 'Specific Heat Density': Specific heat in meV/(K spin)
             - 'Thermal Hall Conductance': Kappa_xy per layer in W/K, or
-              W/(m K) with layer_spacing_m. NaN if the parent has no magnetic
-              lattice vectors or any sample/derivative is unavailable, or any
-              band is excluded by band_gap_cutoff. This method reports NaN
+              W/(m K) with layer_spacing_m, in pair form (D29; defined for
+              degenerate and crossing bands). NaN if the parent has no magnetic
+              lattice vectors, any sample/derivative is unavailable, or a
+              particle-hole pair lies within band_gap_cutoff (a zero mode),
               also at T=0 in that case.
               The key is retained for compatibility; the value is kappa,
               not kappa/T, and has no micro prefix.
@@ -502,7 +503,6 @@ class Thermodynamics:
         entropy = 0
         specific_heat = 0
         thermal_hall = 0 if _matches_integration_grid(self.lswt_obj, k_data) else np.nan
-        J_mat = np.diag(np.hstack([np.ones(num_sl), -np.ones(num_sl)]))
 
         beta = 1 / (K_BOLTZMANN_MEV * Temperature) if Temperature > 0 else 0
 
@@ -539,19 +539,14 @@ class Thermodynamics:
                     # 4. Specific heat
                     specific_heat += self.specific_heat_function_at_k(Epk=Epk, beta=beta)
 
-                # 5. Apply the same band-isolation contract at every T,
-                # including T=0, as the dedicated topology path.
+                # 5. Thermal Hall in pair form, the same kernel as the dedicated
+                # topology path (defined for degenerate and crossing bands; a
+                # zero mode within band_gap_cutoff gives NaN, also at T=0).
                 if np.isfinite(cell_area) and np.isfinite(thermal_hall):
-                    Omega_nk, _ = compute_berry_curvature(
-                        eval=eval,
-                        evec=evec,
-                        pDiffHk=pDHk,
-                        num_sl=num_sl,
-                        J_mat=J_mat,
-                        band_gap_cutoff=band_gap_cutoff,
-                    )
-                    weights = c_two_function(nk) if Temperature > 0 else np.zeros(num_sl)
-                    thermal_hall += np.sum(Omega_nk * weights)
+                    thermal_hall += weighted_curvature_sum(
+                        curvature_pair_terms(eval, evec, pDHk, num_sl,
+                                             band_gap_cutoff=band_gap_cutoff),
+                        K_BOLTZMANN_MEV * Temperature)
 
                 # 6. Boson numbers
                 sl_boson_nums, total_boson_num = compute_bosonic_number_at_k(

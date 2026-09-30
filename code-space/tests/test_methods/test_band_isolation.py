@@ -2,6 +2,10 @@
 
 The two-level reference is analytic. Flat-band grids are periodic positive
 bosonic models; they exercise validity reporting, not a material Chern number.
+Per-band curvature and Chern numbers are NaN for bands that are not separated;
+the thermal Hall conductivity is evaluated in pair form (D29, stage 5c) and is
+defined for degenerate bands, NaN only for a particle-hole pair within the
+cutoff (a zero mode).
 """
 
 from importlib import import_module
@@ -105,26 +109,33 @@ def test_phase_choice_does_not_change_resolved_curvature():
 
 
 @pytest.mark.parametrize("temperature", [0.0, 2.0])
-def test_isolated_band_chern_survives_but_hall_is_unavailable(temperature):
+def test_isolated_band_chern_survives_and_hall_is_defined_for_degenerate_bands(temperature):
     parent, data = flat_grid([1.5, 0.8, 0.8])
     curvature, chern, hall = Topology(parent).compute_thermal_Hall(data, temperature)
     assert_allclose(curvature[:, 0], 0)
     assert np.isnan(curvature[:, 1:]).all()
     assert chern[0] == 0
     assert np.isnan(chern[1:]).all()
-    assert np.isnan(hall)
+    assert hall == 0
     combined = Thermodynamics(parent).compute_thermodynamic_quantities_at_T(data, temperature)
-    assert np.isnan(combined["Thermal Hall Conductance"])
+    assert combined["Thermal Hall Conductance"] == 0
     for key in combined.keys() - {"Thermal Hall Conductance"}:
         assert np.isfinite(combined[key]).all(), key
 
 
-def test_unresolved_hall_propagates_through_temperature_sweep_and_3d_conversion():
+def test_degenerate_hall_is_defined_through_temperature_sweep_and_3d_conversion():
     parent, data = flat_grid([0.8, 0.8])
     _, values = Thermodynamics(parent).get_thermodynamic_quantities(
         data, Temperature_range=(0, 2, 1), layer_spacing_m=7e-10
     )
-    assert np.isnan(values["Thermal Hall Conductance"]).all()
+    assert (values["Thermal Hall Conductance"] == 0).all()
+
+
+def test_zero_mode_within_cutoff_makes_hall_unavailable_in_both_paths():
+    parent, data = flat_grid([4e-9])            # particle-hole separation 8e-9 <= 1e-8
+    assert np.isnan(Topology(parent).compute_thermal_Hall(data, 2.0)[2])
+    combined = Thermodynamics(parent).compute_thermodynamic_quantities_at_T(data, 2.0)
+    assert np.isnan(combined["Thermal Hall Conductance"])
 
 
 def test_verbose_small_gap_warning_keeps_resolved_results():
@@ -173,7 +184,11 @@ def test_custom_cutoff_reaches_both_hall_paths_only(temperature):
     )
     assert chern[0] == 0
     assert np.isnan(chern[1:]).all()
-    assert np.isnan(hall)
+    assert hall == 0                              # degenerate within the cutoff: defined
+    assert topology.compute_thermal_Hall(data, temperature, band_gap_cutoff=1e-7)[2] == 0
+    parent, data = flat_grid([1.5, 5e-6])         # zero-mode separation 1e-5
+    topology = Topology(parent)
+    assert np.isnan(topology.compute_thermal_Hall(data, temperature, band_gap_cutoff=1e-5)[2])
     assert topology.compute_thermal_Hall(data, temperature, band_gap_cutoff=1e-7)[2] == 0
     thermodynamics = Thermodynamics(parent)
     strict = thermodynamics.compute_thermodynamic_quantities_at_T(
@@ -189,7 +204,7 @@ def test_custom_cutoff_reaches_both_hall_paths_only(temperature):
 
 
 def test_custom_cutoff_is_preserved_in_temperature_sweep():
-    parent, data = flat_grid([0.8000005, 0.7999995])
+    parent, data = flat_grid([5e-6])
     thermodynamics = Thermodynamics(parent)
     for cutoff, excluded in [(1e-5, True), (1e-7, False)]:
         _, result = thermodynamics.get_thermodynamic_quantities(

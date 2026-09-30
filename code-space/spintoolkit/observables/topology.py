@@ -139,6 +139,96 @@ def c_two_function(x):
     return f
 
 
+def c2_weight(energies, kT):
+    """``c2(rho)`` with ``rho = 1 / (exp(E / kT) - 1)``; zero at ``kT = 0``.
+
+    ``energies`` and ``kT`` in the same unit (E0 with the dimensionless
+    temperature ``t``, or meV with ``K_BOLTZMANN_MEV * T``).
+    """
+    return c_two_function(_bose(np.asarray(energies, dtype=float), kT))
+
+
+def c2_weight_derivative(energies, kT):
+    """``d c2 / dE = -ln(1 + 1/rho)^2 rho (1 + rho) / kT``; zero where ``rho`` underflows."""
+    energies = np.asarray(energies, dtype=float)
+    if kT <= 0:
+        return np.zeros_like(energies)
+    rho = _bose(energies, kT)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        value = -np.log1p(1.0 / rho) ** 2 * rho * (1.0 + rho) / kT
+    return np.where(rho > 0, value, 0.0)
+
+
+def _bose(energies, kT):
+    if kT <= 0:
+        return np.zeros_like(energies)
+    x = energies / kT
+    with np.errstate(over="ignore"):
+        return np.where(x < 700, 1.0 / np.expm1(np.minimum(x, 700)), 0.0)
+
+
+def curvature_pair_terms(eval, evec, pDiffHk, num_sl=None, *,
+                         band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
+    """Pieces of ``sum_n w(E_n) Omega_n`` over particle bands at one k, in pair form.
+
+    With ``A = T^+ dH_x T``, ``B = T^+ dH_y T`` and ``P_nm = -2 Im(A_nm B_mn)``,
+
+        sum_n w_n Omega_n = sum_{n<m particle} (w_n - w_m) P_nm / (E_n - E_m)^2
+                            + sum_n w_n S_n,
+
+    where ``S_n`` holds the particle-hole terms of ``Omega_n``. Particle pairs
+    whose separation is at most ``band_gap_cutoff`` are degenerate within the
+    policy and contribute zero (equal weights; a degenerate group gives
+    ``w Tr F``); the sum is then defined for degenerate and crossing bands,
+    unlike the per-band curvature. A particle-hole pair within the cutoff (a
+    zero mode) leaves it undefined.
+
+    Returns
+    -------
+    dict
+        ``first``, ``second`` (energies of each particle pair), ``pair``
+        (``P_nm / (E_n - E_m)``), ``energies`` (particle bands), ``particle_hole``
+        (``S_n``) and ``defined``.
+    """
+    _validate_band_gap_cutoff(band_gap_cutoff)
+    num_sl = num_sl if num_sl is not None else int(len(eval) // 2)
+    eta = np.r_[np.ones(num_sl), -np.ones(num_sl)]
+    A = evec.conj().T @ pDiffHk[0] @ evec
+    B = evec.conj().T @ pDiffHk[1] @ evec
+    signed = eta * eval
+    numerator = -2 * np.imag(A * B.T)                      # [n, m] = -2 Im(A_nm B_mn)
+    first, second = np.triu_indices(num_sl, 1)
+    gap = signed[first] - signed[second]
+    resolved = np.abs(gap) > band_gap_cutoff
+    pair = np.where(resolved, numerator[first, second] / np.where(resolved, gap, 1.0), 0.0)
+    denominator = signed[:num_sl, None] - signed[None, num_sl:]
+    defined = bool(np.all(np.abs(denominator) > band_gap_cutoff))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        particle_hole = -np.sum(numerator[:num_sl, num_sl:] / denominator ** 2, axis=1)
+    return {"first": eval[first], "second": eval[second], "pair": pair,
+            "energies": eval[:num_sl], "particle_hole": particle_hole, "defined": defined}
+
+
+def weighted_curvature_sum(terms, kT, relative=1e-6):
+    """``sum_n c2(rho_n) Omega_n`` at one k from :func:`curvature_pair_terms` (NaN if undefined).
+
+    The weight difference enters as the divided difference
+    ``(c2_n - c2_m) / (E_n - E_m)``, taken as the midpoint derivative when the
+    relative separation is below ``relative``.
+    """
+    if not terms["defined"]:
+        return np.nan
+    if kT <= 0:
+        return 0.0
+    e1, e2 = terms["first"], terms["second"]
+    close = np.abs(e1 - e2) <= relative * np.maximum(np.abs(e1), np.abs(e2))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        direct = (c2_weight(e1, kT) - c2_weight(e2, kT)) / (e1 - e2)
+    divided = np.where(close, c2_weight_derivative(0.5 * (e1 + e2), kT), direct)
+    return float(np.sum(divided * terms["pair"])
+                 + np.sum(c2_weight(terms["energies"], kT) * terms["particle_hole"]))
+
+
 def compute_berry_curvature(eval, evec, pDiffHk, num_sl=None, J_mat=None,
                            *, band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
     """Compute Berry curvature for magnon bands using the Kubo formula.
@@ -328,9 +418,11 @@ class Topology:
             Kappa_xy per layer in W/K, or W/(m K) with layer_spacing_m.
             Returns NaN for missing geometry, empty data, failed samples or
             unavailable derivatives. This is kappa, not kappa/T, and has no
-            micro prefix. Requires well-defined, nondegenerate band curvature.
-            Any excluded band makes this band-sum implementation unavailable
-            (NaN, including T=0); this is not a verdict on a grouped response.
+            micro prefix. Evaluated in pair form (:func:`curvature_pair_terms`,
+            D29), the same kernel as
+            :func:`spintoolkit.observables.berry.thermal_hall`: degenerate and
+            crossing bands are defined; a particle-hole pair within
+            ``band_gap_cutoff`` (a zero mode) gives NaN.
         """
         _validate_thermal_hall_inputs(Temperature, layer_spacing_m)
         _validate_band_gap_cutoff(band_gap_cutoff)
@@ -364,9 +456,11 @@ class Topology:
                 Berry_curvature[j] = Omega_nk
                 min_level_spacing = np.minimum(min_level_spacing, level_spacing)
 
-                thermal_hall += np.sum(
-                    Omega_nk * self.thermal_weight_function(eval, Temperature=Temperature)
-                )
+                # Pair form: defined for degenerate and crossing bands (D29).
+                thermal_hall += weighted_curvature_sum(
+                    curvature_pair_terms(eval, evec, pDHk, self.Ns,
+                                         band_gap_cutoff=band_gap_cutoff),
+                    K_BOLTZMANN_MEV * Temperature)
             else:
                 Berry_curvature[j] = np.full(self.Ns, np.nan)
                 valid_count -= _handle_colpa_failure()
