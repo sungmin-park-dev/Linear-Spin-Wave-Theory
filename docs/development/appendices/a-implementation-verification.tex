@@ -751,6 +751,24 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{6c 검증 기록}{stage6c}
 \end{frame}
 
+\begin{frame}[label=stage4d]{4d: 밴드 구조는 해석적 분산과 맞고 Goldstone 꼭짓점을 영모드로 표시한다}
+  \framesubtitle{2026-09-30 · D33 · \texttt{band\_structure(result, path)}, \texttt{high\_symmetry\_points(lattice)}; 그림은 7단계(시각화).}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    고대칭점 & 역격자 Wigner--Seitz 셀: 삼각 $K=(4\pi/3,0)$, $|M|=2\pi/\sqrt3$; 정사각 $X,Y,M$; 직사각 $X=b_1/2$; 자기 셀($\sqrt3\times\sqrt3$) \\
+    해석적 분산(301점) & 정사각 Néel $4JS\sqrt{1-\gamma^2}$ $3.7\times10^{-14}$, 장 속 강자성 $1.8\times10^{-15}$, 삼각 120°(접힌 $\omega(k),\omega(k\pm Q)$) $2.8\times10^{-14}$; Goldstone 꼭짓점은 영모드 표시(Jordan 블록의 $\sqrt\epsilon$ 크기 $5\times10^{-8}$) \\
+    처음 구현에서 고친 것 & Cholesky만으로 안정성 판정(반올림으로 양수가 된 Goldstone을 갭으로 봄), 영모드 에너지를 $|\mathrm{eig}(\eta H)|$의 위쪽 절반으로 읽음(밴드 여럿이면 틀림) $\to$ $H$의 스펙트럼으로 판정, $\pm E$ 쌍에서 $|E|$ \\
+    NBCP & Y·V: 자기 영역에서 K가 Γ로 접힘, Γ·K에 우연 영모드(4b 분류와 일치); Four MSL(예제 설정): 갭 0.0746 meV \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{불안정 상태는 NaN과 경고. 테스트 495 통과, 스냅샷 144개 차이 0.}
+  \slidesource{4d 검증 기록}{stage4d}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small

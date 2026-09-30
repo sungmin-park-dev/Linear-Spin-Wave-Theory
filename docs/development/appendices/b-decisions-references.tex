@@ -137,7 +137,7 @@
   \slidesource{2026-09-30 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=decisions-d32]{결정 기록 (D32): 6단계 인터페이스}
+\begin{frame}[label=decisions-d32]{결정 기록 (D32--D33): 6단계와 4d 인터페이스}
   \framesubtitle{2026-09-30 사용자 결정(추천안 채택). D30의 구현 방법.}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
@@ -150,6 +150,14 @@
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
+  \par\medskip
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    D33 & 결정 \\
+    \midrule
+    밴드 구조(4d) & \texttt{high\_symmetry\_points(lattice)}, \texttt{band\_structure(result, path, points, lattice="primitive")}: 결정 격자 경로 기본, 자기 셀 밴드는 접힌 채, 영모드 표시, 불안정은 NaN; 그림은 7단계(시각화)에서 설계·검토 \\
+    \bottomrule
+  \end{tabularx}
 \end{frame}
 
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
@@ -490,6 +498,9 @@
     \bibitem{stage6c}
       6c 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/stage6c-classical-search-2026-09-30.json} · \texttt{examples/classical\_search\_check.py}.
+    \bibitem{stage4d}
+      4d 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage4d-band-structure-2026-09-30.json} · \texttt{examples/lswt\_stage4d\_check.py}.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

@@ -1,0 +1,198 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "c3deaef",
+  "scope": "Stage 4d (D33): high-symmetry points and magnon band structure as an LSWT observable; plotting belongs to the visualization stage.",
+  "api": "spintoolkit.system.high_symmetry.high_symmetry_points(lattice) -> dict; spintoolkit.observables.bands.band_structure(result, path=(\"\u0393\",\"K\",\"M\",\"\u0393\"), points=200, lattice=\"primitive\", tolerance=1e-9) -> BandStructure(k_points, distance, energies, labels, label_distances, zero_modes, lattice).",
+  "method": "Wigner-Seitz cell of the reciprocal lattice (corners and edge midpoints; hexagonal \u0393, M, K, K'; square/rectangular \u0393, X = b1/2, Y = b2/2, M; oblique E_i, C_i). Along the path, H(k) from result.hamiltonian_at (unregularized); stability from the spectrum of H: positive definite -> Colpa; semidefinite within the tolerance (zero modes, including those made slightly positive by round-off) -> moduli of the eigenvalues of eta H in +-E pairs, marked; indefinite -> NaN with a warning.",
+  "added": {
+    "code-space/spintoolkit/system/high_symmetry.py": "high_symmetry_points, reciprocal_lattice",
+    "code-space/spintoolkit/observables/bands.py": "band_structure, BandStructure",
+    "code-space/tests/test_methods/test_bands.py": "4 tests",
+    "examples/lswt_stage4d_check.py": "this record"
+  },
+  "findings": [
+    "Analytic dispersions (301 points): square Neel 4JS sqrt(1 - gamma^2) within 3.7e-14, square ferromagnet in a field within 1.8e-15, triangular 120 degrees (folded omega(k), omega(k +- Q)) within 2.8e-14, away from the zero modes; at the Goldstone vertices (Neel \u0393, M; 120 degrees \u0393, K) the deviation is 5e-8, the sqrt(eps) scale of a Jordan block, and the points are marked as zero modes.",
+    "A first version decided stability from Cholesky alone (a round-off-positive Goldstone mode passed as gapped) and read the zero-mode energies as the upper half of |eig(eta H)| (wrong for several bands); both were fixed before the record (stability from the spectrum of H, |E| taken from the +-E pairs).",
+    "NBCP Y and V (three sublattices): K folds onto \u0393 of the magnetic zone (equal energies); accidental zero modes at \u0393 and K as classified in stage 4b; Four MSL of the example configuration is gapped, lowest 0.0746 meV at \u0393 and M."
+  ],
+  "report": {
+    "analytic": {
+      "square_neel": {
+        "max_away_from_zero_modes": 3.7213288006654466e-14,
+        "max_at_zero_modes": 5.012133249663076e-08,
+        "zero_mode_points": 3,
+        "points": 301
+      },
+      "square_ferromagnet_h0.3": {
+        "max_away_from_zero_modes": 1.7763568394002505e-15,
+        "max_at_zero_modes": 0.0,
+        "zero_mode_points": 0,
+        "points": 301
+      },
+      "triangular_120": {
+        "max_away_from_zero_modes": 2.7831903448571893e-14,
+        "max_at_zero_modes": 5.0927657830142e-08,
+        "zero_mode_points": 3,
+        "points": 301
+      }
+    },
+    "nbcp": [
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "vertices": {
+          "\u0393": [
+            1.4929855108823313e-09,
+            0.1045830455474771,
+            0.19117083085532868
+          ],
+          "K": [
+            1.0870144616108672e-09,
+            0.1045830455474771,
+            0.19117083085532843
+          ],
+          "M": [
+            0.08089382428783842,
+            0.1294869769719155,
+            0.2454920908562635
+          ]
+        },
+        "lowest_on_path": 1.0870144616108672e-09,
+        "zero_mode_points": [
+          "\u0393",
+          "K",
+          "\u0393"
+        ]
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "vertices": {
+          "\u0393": [
+            6.647246055483852e-10,
+            0.10458304554747709,
+            0.1911708308553286
+          ],
+          "K": [
+            9.566273556156763e-10,
+            0.10458304554747708,
+            0.1911708308553289
+          ],
+          "M": [
+            0.08285922902766267,
+            0.13117117272985582,
+            0.24147951754105765
+          ]
+        },
+        "lowest_on_path": 6.647246055483852e-10,
+        "zero_mode_points": [
+          "\u0393",
+          "K",
+          "\u0393"
+        ]
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "vertices": {
+          "\u0393": [
+            1.433179790446383e-09,
+            0.03433065331514232,
+            0.2590164841609082
+          ],
+          "K": [
+            1.6340148326082984e-09,
+            0.034330653315142304,
+            0.25901648416090817
+          ],
+          "M": [
+            0.08008346836108486,
+            0.11871843662572476,
+            0.1909838979418036
+          ]
+        },
+        "lowest_on_path": 1.433179790446383e-09,
+        "zero_mode_points": [
+          "\u0393",
+          "K",
+          "\u0393"
+        ]
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "vertices": {
+          "\u0393": [
+            1.6842694065461635e-09,
+            0.03433065331514225,
+            0.2590164841609077
+          ],
+          "K": [
+            1.7233764853814031e-09,
+            0.034330653315142255,
+            0.25901648416090794
+          ],
+          "M": [
+            0.07454976476064362,
+            0.12812755736165446,
+            0.18958584098087705
+          ]
+        },
+        "lowest_on_path": 1.6842694065461635e-09,
+        "zero_mode_points": [
+          "\u0393",
+          "K",
+          "\u0393"
+        ]
+      },
+      {
+        "phase": "Four MSL (example configuration)",
+        "field_meV": 0.376418,
+        "couplings": {
+          "Jxy": 0.076,
+          "Jz": 0.125,
+          "JGamma": 0.1
+        },
+        "vertices": {
+          "\u0393": [
+            0.07463374756179603,
+            0.24343851487267792,
+            0.4209283824070551,
+            0.5712601007787234
+          ],
+          "K": [
+            0.09596067397459652,
+            0.32503147495460133,
+            0.40134350701799104,
+            0.5079255716535922
+          ],
+          "M": [
+            0.07463374756179603,
+            0.24343851487267792,
+            0.4209283824070551,
+            0.5712601007787234
+          ]
+        },
+        "lowest_on_path": 0.07463374756179603,
+        "zero_mode_points": []
+      }
+    ]
+  },
+  "tests": {
+    "result": "495 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0"
+  }
+}

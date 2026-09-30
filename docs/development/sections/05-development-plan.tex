@@ -5,8 +5,8 @@
 \end{frame}
 
 \begin{frame}[label=development-roadmap]{공통 경계를 먼저 정립하고 적용 범위를 넓힌다}
-  \framesubtitle{1차 개발은 여섯 단계로 진행하며, 각 단계는 구현·수치 대조·사용자 확인 뒤 넘어간다.}
-  \small
+  \framesubtitle{1차 개발은 단계별로 진행하며, 각 단계는 구현·수치 대조·사용자 확인 뒤 넘어간다.}
+  \footnotesize
   \begin{tabularx}{\textwidth}{@{}p{0.8cm}p{3.3cm}Y@{}}
     \toprule
     단계 & 개발 대상 & 기대하는 결과 \\
@@ -16,8 +16,10 @@
     2 & NBCP 연결 & 1--4 MSL의 기존 수치 보존; 결합 변위 방향의 명시적 변환 \textbf{(완료)} \\
     2b & 영점 에너지 상태 선택 & D17 궤도 탐색, D19 판정 기준; \texttt{quantum} 삭제(D18) \textbf{(구현·검증, 검토 대기)} \\
     3 & 벤치마크·최소 ED & 일반 ED; 완전 편극상에서 LSWT와 ED가 정확히 일치 \textbf{(구현·검증, 검토 대기)} \\
-    4 & LSWT 물리량 & 바닥상태, 열역학·영모드, 구조인자 \textbf{(구현·검증, 검토 대기)} \\
-    5 & 위상량 & Berry 곡률·Chern 수·thermal Hall \\
+    4 & LSWT 물리량 & 바닥상태, 열역학·영모드, 구조인자, 밴드 구조(4d) \textbf{(구현·검증, 검토 대기)} \\
+    5 & 위상량 & Berry 곡률·Chern 수·thermal Hall, 적응형 적분 \textbf{(구현·검증, 검토 대기)} \\
+    6 & D30 구현 & 정리, LT 진단, 전역 고전 탐색 \textbf{(구현·검증, 검토 대기)} \\
+    7 & 시각화 & 마그논 밴드·스핀 배치 그림(LSWT 구현 뒤) \\
     \bottomrule
   \end{tabularx}
   \par\medskip

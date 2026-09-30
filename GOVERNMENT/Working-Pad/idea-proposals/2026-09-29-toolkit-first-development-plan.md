@@ -283,6 +283,16 @@ ED/TN 실행 가능성은 별도 검증이다.
 그대로다. `SpinOptimizer`와 `EnergyFunction`은 사용 중단 경고를 내며, NBCP 예제는 새 탐색을 쓴다(491 통과, 스냅샷 차이 0).
 기록은 `docs/development/verification/stage6c-classical-search-2026-09-30.json`.
 
+4d를 2026-09-30 구현하고 검증했다(D33). `band_structure`가 결정 격자의 고대칭 경로에서 자기 셀의 마그논 밴드를 낸다
+(`high_symmetry_points`가 Γ·K·M 등을 정한다). 해석적 분산(정사각 Néel·강자성, 삼각 120°의 접힌 단일 q 분산)과 영모드 밖에서
+4e-14 안에서 일치하고, Goldstone 꼭짓점은 영모드로 표시된다(Jordan 블록의 sqrt(eps) 크기 5e-8). NBCP Y·V는 Γ·K에 우연
+영모드, Four MSL은 갭 0.0746 meV. 그림은 아래 시각화 단계에서 다룬다(495 통과). 기록은
+`docs/development/verification/stage4d-band-structure-2026-09-30.json`.
+
+**7단계(계획): 시각화.** LSWT 구현이 끝난 뒤 마그논 밴드 그림, 스핀 배치 그림(기존 `spin_plotter.py`는 옛 `SpinSystem`을 받음)
+등 시각화를 새 자료형 위에서 설계하고 Beamer로 검토한다(인터페이스, 그림에 담을 정보, 양식). NBCP 밴드 그림은 이 단계 뒤에
+만든다(D33).
+
 **D30의 남은 일.** 사용 중단한 공개 진입점(`LSWTSolver`, SI Hall API, `SpinOptimizer`, `EnergyFunction`)의 삭제는 공개 배포
 정리 때 한다. 이전 단계의 검증 스크립트(2b, D17 궤도 확인, 회귀 스냅샷)는 기록 재현을 위해 기존 클래스를 계속 쓴다.
 
@@ -322,6 +332,7 @@ ED/TN 실행 가능성은 별도 검증이다.
 - 2026-09-30 (claude): D31로 위상량 수치 기준과 적응형 적분 기본값을 확정했다.
 - 2026-09-30 (claude): D32와 6a·6b 구현·검증 결과를 기록했다.
 - 2026-09-30 (claude): 6c 구현·검증 결과를 기록했다.
+- 2026-09-30 (claude): D33과 4d 구현·검증 결과, 7단계(시각화) 계획을 기록했다.
 
 ## 관련 기록
 

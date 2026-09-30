@@ -47,6 +47,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 공통 결과 머리부·JSON(D14, D24; 4a) | `methods/result.py`의 `ResultHeader`, `save_json`, `load_json` |
 | §5 LSWT 결과 본문, 새 모델의 LSWT 진입점(D21, D24; 4a) | `methods/lswt/run.py`의 `solve_lswt`, `LSWTSettings`, `LSWTResult` |
 | 영모드 탐색, 무차원 유한 온도 물리량(D25; 4b) | `observables/zero_modes.py`의 `scan_zero_modes`, `observables/thermal.py`의 `thermal_quantities` |
+| 밴드 구조와 고대칭점(D33; 4d) | `observables/bands.py`의 `band_structure`, `system/high_symmetry.py`의 `high_symmetry_points` |
 | 구조인자·결합 상관(D26; 4c), 임의 사이트 동시간 상관·사다리 성분(D27) | `observables/structure_factor.py`의 `structure_factor`, `bond_correlations`, `spin_correlation`, `to_ladder` |
 | 고전 궤도 위 에너지 지형(D27) | `methods/state_selection.py`의 `orbit_energy_landscape` |
 | Luttinger–Tisza 진단(D30, D32; 6b) | `methods/luttinger_tisza.py`의 `luttinger_tisza`, `lt_matrix` |
@@ -105,6 +106,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D30 | 설계 미결 사항 정리: (1) 자기 셀 — LT는 진단 도구로 구현(J(q) 최소 q*, 강한 제약 만족 여부, 후보 셀 제안; 선택 단계는 바꾸지 않음), 계산 흐름의 자동 셀 결정 단계로는 두지 않음; 대각 셀 전용 `CommensurateStructure`는 삭제(참조·호환 매핑·예시·테스트 함께 정리, 옛 저장 객체 복원 여부 먼저 확인). (2) 기존 경로 — 검증된 대체가 있는 공개 진입점(`LSWTSolver` → `solve_lswt`, SI Hall API → `thermal_hall`)에는 사용 중단 경고를 붙이고 삭제는 공개 배포 정리 때; `EnergyFunction`/`SpinOptimizer`는 전역 고전 탐색을 새 자료형 위에 옮긴 뒤 같은 방식으로 정리; `SpinSystem`과 기존 해밀토니안 구성기는 내부 계산 도구로 유지. (3) 1차 범위에서 제외: D17 확장(사이트별 회전축·여러 차원 영공간), 후속 항 종류(같은 사이트 이차항, 3·4-스핀 항, `S >= 1`), 키타에프 flux 섹터 대조와 ED 2-마그논 섹터 — 필요한 벤치마크나 모델이 생길 때 다시 연다. (4) TN 필드 규약은 솔버 경계 검증 실험(인수인계 260607) 결과를 보고 정한다. (5) 적응형 적분의 오차 추정 개선은 보류. (1)·(2)의 구현은 LSWT 작업 재개 뒤 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D31 | 위상량 수치 기준 확정: 밴드 간격 `TOPOLOGY_BAND_GAP_CUTOFF = 1e-8` E0(이하이면 그 점의 곡률 판정 불가), FHS 링크 겹침 `TOPOLOGY_MIN_LINK_OVERLAP = 1e-3`(이하이면 격자점 사이 밴드 교차로 판정 불가; 정상 경우 최소 겹침 0.55–0.95, 대칭 보호 교차 1e-15), Kubo–FHS 일치 `TOPOLOGY_CHERN_AGREEMENT = 0.1`(FHS는 갭이 있으면 거친 격자에서도 정확하지만 갭 닫힘을 알아채지 못하고, Kubo는 느리지만 갭 닫힘·격자 부족을 정수에서 벗어남으로 드러내므로 둘이 일치할 때만 채택; 시험한 모델에서 거짓 채택 없음, 거부되면 격자를 키움); 적응형 적분 기본값 상대 1e-3, 절대 1e-7, 2e5점, 깊이 12 | 사용자 결정 2026-09-30 | §5 |
 | D32 | 6단계 인터페이스: LT 진단 `luttinger_tisza(model, mesh=(N, N)) -> LTReport`(`methods/luttinger_tisza.py`; J(q) 최소 q*, 분수와 후보 초격자, 고유공간 차원, 단일 q 강한 제약 판정과 그 상태, 퇴화 표시; 영장, 선택하지 않음); 전역 고전 탐색 `classical_search(model, supercell, conditions, seed=42, ...) -> ClassicalSearchResult`(`methods/classical.py`; (theta, phi) 차분 진화를 기존 설정대로 한 뒤 `refine_classical`; 각도 고정 없음); 진행 순서 6a(정리) → 6b → 6c, 6b·6c는 검증 뒤 사용자 확인 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
+| D33 | 4d 밴드 구조: `high_symmetry_points(lattice)`(`system/high_symmetry.py`; 역격자 Wigner–Seitz 셀의 꼭짓점·변 중점, 육각 Γ·M·K·K′, 정사각·직사각 Γ·X·Y·M, 그 밖은 일반 이름)와 `band_structure(result, path, points, lattice="primitive")`(`observables/bands.py`; 결정 격자 경로 기본, 자기 셀의 밴드는 접힌 채, 영모드는 표시, 불안정은 NaN과 경고)을 LSWT 물리량으로 추가; 밴드·스핀 배치 그림은 LSWT 구현이 끝난 뒤 별도 시각화 단계에서 설계·검토 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 
 ## Proposal
 
@@ -801,6 +803,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - 2026-09-30 (claude): D31(위상량 수치 기준과 적응형 적분 기본값 확정, Kubo·FHS의 역할)을 결정 목록과 §5에 반영했다.
 - 2026-09-30 (claude): D32(6단계 인터페이스)와 6a·6b 구현을 결정 목록과 구현 상태 표에 반영했다.
 - 2026-09-30 (claude): 6c(전역 고전 탐색, 기존 탐색 클래스 사용 중단)를 구현 상태 표에 반영했다.
+- 2026-09-30 (claude): D33과 4d(밴드 구조)를 결정 목록과 구현 상태 표에 반영했다.
 
 ## 관련 기록
 
