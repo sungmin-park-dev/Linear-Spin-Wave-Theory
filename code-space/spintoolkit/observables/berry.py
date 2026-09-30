@@ -281,6 +281,17 @@ def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
                   curvature: Optional[BerryCurvature] = None) -> np.ndarray:
     """Chern numbers accepted when the Kubo integral and the FHS integer agree.
 
+    The two calculations fail in opposite ways (D31). With a gap, the FHS sum
+    of plaquette phases gives the correct integer already on coarse meshes,
+    but it always returns an integer: where the gap closes (e.g. Dirac points)
+    it returns an arbitrary one. The Kubo integral samples the curvature, so
+    it converges slowly where the curvature is concentrated near a small gap,
+    and it departs from an integer where the gap closes or the mesh is too
+    coarse. Agreement accepts the integer; otherwise the result is NaN, never
+    a wrong integer in the tested models (a rejection means: refine the mesh,
+    or the gap closes). Both use the same mesh, so this is not a proof; a
+    second mesh (N and 2N) gives the same result when the answer is settled.
+
     Parameters
     ----------
     result : LSWTResult

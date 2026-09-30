@@ -119,6 +119,24 @@
   \slidesource{2026-09-30 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d31]{결정 기록 (D31): 위상량 수치 기준 확정}
+  \framesubtitle{2026-09-30 사용자 결정. 두 계산은 반대 방향으로 실패하므로, 일치할 때만 받으면 틀린 정수 대신 NaN이 나온다.}
+  \footnotesize\renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}P{3.2cm}P{1.6cm}Y@{}}
+    \toprule
+    기준 & 값 & 의미와 근거 \\
+    \midrule
+    밴드 간격 & $10^{-8}E_0$ & 이하이면 그 격자점의 곡률 판정 불가(Kubo 분모가 0에 가까움). 기존 경로의 승인값을 무차원으로 \\
+    FHS 링크 겹침 & $10^{-3}$ & 이하이면 격자점 사이의 밴드 교차. 정상 경우 최소 겹침 0.55--0.95, 대칭 보호 교차 $10^{-15}$ \\
+    Kubo--FHS 일치 & 0.1 & FHS: 갭이 있으면 거친 격자에서도 정확, 갭 닫힘은 모름(임의의 정수). Kubo: 작은 갭에서 느리게 수렴, 갭 닫힘·격자 부족이 정수 이탈로 드러남. 시험한 모델에서 거짓 채택 없음; 거부되면 격자를 키운다 \\
+    적응형 적분 & 1e-3 / 1e-7 / 2e5 / 12 & 상대·절대 허용오차, 계산점 예산, 최대 깊이 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{Haldane 예: $D=10^{-2}$--$10^{-4}$에서 FHS는 $6\times6$부터 정답 $(+1,-1)$, Kubo는 0.002--0.99로 수렴 중이라 대부분 거부; $D=0$(갭 없음)에서 FHS는 격자에 따라 $-1$ 또는 0, Kubo 0 $\to$ 거부.}
+  \slidesource{2026-09-30 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small

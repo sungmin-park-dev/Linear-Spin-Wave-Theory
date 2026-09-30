@@ -69,6 +69,7 @@ ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficien
 LSWT_DEFAULT_MESH = (24, 24)       # thermodynamic-limit mesh of the magnetic reciprocal cell
 LSWT_STATIONARITY_TOLERANCE = 1e-8 # E0, largest torque accepted without a warning
 LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below this is a zero mode
+# Topology (D29, confirmed as D31 on 2026-09-30)
 TOPOLOGY_BAND_GAP_CUTOFF = 1e-8    # E0; signed BdG separation at or below this leaves a band's curvature undefined
 TOPOLOGY_MIN_LINK_OVERLAP = 1e-3   # FHS: |u^+ eta u'| at or below this marks a band crossing or an unresolved mesh
 TOPOLOGY_CHERN_AGREEMENT = 0.1     # Kubo integral within this of the FHS integer accepts the Chern number
