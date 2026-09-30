@@ -2,12 +2,12 @@
 frontmatter-version: 1
 title: LSWT Section Migration Record
 section: issue-notes/closed
-issue-type: migration-record
+issue-type: review
 status: closed
-resolution: implemented
+resolution: resolved
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-04
+updated: 2026-08-10
 closed: 2026-06-04
 source-path: research-space/theory/lswt/section-migration-plan.md
 ---

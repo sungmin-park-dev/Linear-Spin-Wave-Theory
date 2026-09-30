@@ -58,19 +58,25 @@ solver 계층에 두고, 관측량과 시각화는 별도 모듈로 분리합니
 
 현재 저장소에는 다음 개발용 검증 스크립트가 있습니다.
 
-- `doc-space/examples/nbcp_ground_state.py`
-- `doc-space/examples/nbcp_hamiltonian_check.py`
+- `examples/nbcp_ground_state.py`
+- `examples/nbcp_hamiltonian_check.py`
 
 NBCP의 LSWT 해밀토니안, Colpa 대각화, 밴드 구조, 열역학·위상 관측량을
 포함한 end-to-end 재현은 아직 완료되지 않았습니다.
 
 ## 문서 안내
 
-- `research-space/theory/README.md` — 이론 문서 진입점
-- `research-space/theory/lswt/README.md` — LSWT Markdown 단일 정본 작성 규칙과 출처
-- `research-space/theory/lswt/current-sections-audit.md` — 문서 coverage와 열린 검토 항목
-- `doc-space/examples/` — 실행 예제와 검증 스크립트
-- `code-space/lswt/` — Python 패키지 구현
+- [개발 설계와 Beamer](docs/development/README.md) — 2D Spin-System Toolkit의 목표·계산 흐름·공통 규약·폴더 구성
+- [개발 설계 PDF](docs/development/output/pdf/development-log.pdf) — 로컬 검토용 생성 문서
+- [패키지 폴더 안내](code-space/spintoolkit/README.md) — 기능별 모듈의 책임과 옛 이름 `lswt` 호환
+- [NBCP 모델 작업 공간](model/nbcp/README.md) — 모델 고유 정의와 계산 구성
+
+- [문서 안내](docs/README.md) — LSWT·NBCP와 본문·참고자료·아카이브·출력물 구분
+- [LSWT 일반 이론](docs/lswt/README.md) — 개념별 이론 문서와 읽는 순서
+- [NBCP 연구 노트](docs/nbcp/README.md) — 모델별 유도·계산·비교 기록
+- `GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md` — 문서 coverage와 열린 검토 항목
+- `examples/` — 실행 예제와 검증 스크립트
+- `code-space/spintoolkit/` — Python 패키지 구현(옛 이름 `lswt`는 `code-space/lswt/` 호환 패키지)
 - `legacy/` — 과거 코드와 연구 노트 보존 영역
 
 ## 테스트
@@ -79,9 +85,9 @@ NBCP의 LSWT 해밀토니안, Colpa 대각화, 밴드 구조, 열역학·위상 
 python -m pytest code-space/tests -q
 ```
 
-현재 자동 테스트는 lattice와 commensurate magnetic structure 일부에 한정되어
-있으며, 전체 테스트 suite가 통과하는 상태는 아닙니다. LSWT Hamiltonian과
-observables에 대한 회귀 테스트도 보강이 필요합니다.
+자동 테스트는 격자·자기구조, LSWT·열역학, 모델 구성과 옛 import 호환성을
+포함합니다. 기존 `CommensurateStructure` 테스트 5개의 실패는 남아 있으며,
+폴더 통합 전후의 결과는 `docs/development/verification/`에서 관리합니다.
 
 ## 알려진 제한사항
 

@@ -6,12 +6,19 @@ status: draft
 author: codex
 last-edited-by: codex
 created: 2026-06-04
+updated: 2026-09-23
 confidence: medium
 source_refs:
   - conversation: 2026-06-04 common SpinModel representation discussion for SWT, MC, TN, and NQS
 ---
 
 # General SpinModel IR
+
+The narrower 2026-09-23 transfer-contract proposal is tracked in
+[[GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract|모델 간 공통 SpinModel 전달 규약]].
+It specifies a first bilinear periodic-model profile, with geometry, reference
+states, and solver views passed separately. The broader term-IR exploration
+below remains a draft and does not define an implemented interface.
 
 ## Summary
 

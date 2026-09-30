@@ -6,7 +6,7 @@ section: handoff
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-30
+updated: 2026-09-18
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -31,7 +31,7 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 | 파일 | 목적 | 결과 |
 |---|---|---|
-| _없음_ | - | - |
+| [[GOVERNMENT/Working-Pad/handoff/closed/260917-codex-to-codex-nbcp-angular-matching\|260917-codex-to-codex-nbcp-angular-matching]] | Y 전체 BZ 안정성 검사 이후 각도별 강성·potential matching 재개 | done; 계산·독립 수치 대조 완료, 사용자 물리 검토 및 후속 결함·thermal 계산은 별도 |
 
 ## 에이전트 지침
 

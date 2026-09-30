@@ -6,7 +6,7 @@ section: vault-staging
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-30
+updated: 2026-09-05
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -20,9 +20,7 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 ## 목차
 
-| 항목 | 대상 후보 | 상태 |
-|---|---|---|
-| _없음_ | - | - |
+현재 검토 대기 항목이 없다. 확정한 결정은 [Decisions Map](../../Court-Precedents/map-decisions.md)에서 찾는다.
 
 ## 에이전트 지침
 

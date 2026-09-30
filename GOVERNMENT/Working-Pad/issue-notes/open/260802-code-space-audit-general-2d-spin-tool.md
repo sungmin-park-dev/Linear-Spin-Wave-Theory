@@ -2,11 +2,11 @@
 frontmatter-version: 1
 title: code-space audit against general 2D spin-system tool target
 section: issue-notes/open
-issue-type: audit
+issue-type: review
 status: draft
-last-edited-by: claude
+last-edited-by: codex
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-09-10
 related: handoff/open/260603-next-chat-general-2d-spin-tool.md
 ---
 
@@ -14,13 +14,17 @@ related: handoff/open/260603-next-chat-general-2d-spin-tool.md
 
 `handoff/open/260603-next-chat-general-2d-spin-tool.md`가 요청한 2단계
 ("Audit Current Code Against Target")의 결과다. 아직 리팩터는 하지 않았다 —
-분류와 사실관계 확인만 했다. `code-space/lswt/`, `doc-space/examples/`,
+분류와 사실관계 확인만 했다. `code-space/lswt/`, `examples/`,
 `legacy/`를 대상으로 했다.
 
 ## 분류 기준
 
 핸드오프가 지정한 5개 범주: Keep as general core / Keep as LSWT-specific /
 Move-rename / Deprecate / Needs physics review.
+
+> 경로 안내(2026-09-29): 아래 절 제목은 2026-08-02 감사 당시의 구조다. 현재 대응 위치는
+> `core/` → `spintoolkit/system/`·`states/`·`methods/lswt/diagonalization.py`,
+> `solvers/` → `spintoolkit/methods/`(`optimization.py`, `lswt/`), `config.py` → `spintoolkit/definitions/`이다.
 
 ## `code-space/lswt/core/`
 
@@ -39,7 +43,7 @@ Move-rename / Deprecate / Needs physics review.
 | 파일 | 분류 | 근거 |
 |---|---|---|
 | `base.py` (`AbstractSolver`, `SolverResult`) | **General core** | 공통 솔버 인터페이스, 이미 이 목적으로 설계됨 |
-| `hamiltonian.py` (`LSWTHamiltonian`) | **LSWT-specific, needs physics review** | LSWT 전용. CLAUDE.md 기록된 알려진 버그(B/B† 블록 치환 오류, 278–282줄) 미해결 상태로 남아 있음 |
+| `hamiltonian.py` (`LSWTHamiltonian`) | **LSWT-specific, broader physics review pending** | 2026-09-10 B/B† 기존 수정과 운동량 미분을 독립 회귀 테스트로 확인했다. [종결 이슈](../closed/260802-hamiltonian-b-block-substitution-bug.md) 참조. 이론 A1과 다른 물리 범위는 별도 검토다. |
 | `solver.py` (`LSWTSolver`) | **LSWT-specific** | 위 solver들을 orchestrate하는 진입점 |
 | `energy.py` (`EnergyFunction`) | **Move/refactor 후보** | 분류 확인: `__init__(self, spin_sys_data, N, ...)`가 `SpinSystem`이 아니라 legacy dict를 받음. 고전 에너지 평가 자체는 모델에 상관없이 범용이지만, 현재 API가 legacy dict에 묶여 있음. CLAUDE.md 미완료 목록에 이미 있는 항목("`EnergyFunction` → `SpinSystem` 직접 수용") — 여기서는 재확인만 |
 | `optimizer.py` (`SpinOptimizer`) | **Move/refactor 후보** | `EnergyFunction`과 같은 legacy dict 경로에 묶여 있어 같은 리팩터가 필요. 알고리즘(`scipy.optimize`) 자체는 범용 |
@@ -62,7 +66,7 @@ Move-rename / Deprecate / Needs physics review.
 
 **General core.** 물리 상수와 기본값. 모델·솔버에 안 묶임.
 
-## `doc-space/examples/`
+## `examples/`
 
 | 파일 | 분류 | 근거 |
 |---|---|---|
@@ -71,7 +75,7 @@ Move-rename / Deprecate / Needs physics review.
 
 ## `legacy/`
 
-**Keep as-is, 재확인만.** `modules/`, `scripts/`, `research-notes/`는 `code-space`/`doc-space`
+**Keep as-is, 재확인만.** `modules/`, `scripts/`, `research-notes/`는 `code-space`/`examples`
 어디서도 import되지 않음 (이전 대화에서 확인된 사실 재확인, 이번에 추가 조사 안 함). 이름에
 `-space` 접미사가 없는 것은 이미 알려진 사소한 불일치이며 우선순위 낮음.
 
@@ -88,9 +92,10 @@ Move-rename / Deprecate / Needs physics review.
    자동으로 얻을 수 있는 경로가 없다.
 3. **`EnergyFunction`/`SpinOptimizer`가 `SpinSystem`이 아니라 legacy dict를
    받는다.** 범용화하려면 이 경계부터 정리해야 한다.
-4. 이번 audit에서 물리식이나 API를 수정하지 않았다. `commensurate.py`
-   테스트 실패와 `hamiltonian.py`/`topology.py`의 알려진 버그는 여전히 성민
-   확인 대기 상태다.
+4. 이 audit의 범용화 분류는 물리식이나 API 수정이 아니다. 2026-09-10
+   `hamiltonian.py`의 B/B† 구현 이슈는 기존 수정 검증과 회귀 테스트 추가로
+   종결했다. `commensurate.py` 테스트 실패, `topology.py` 이슈와 이론 A1은
+   각자의 검토 범위에 남는다.
 
 ## 다음 단계 제안 (결정 아님)
 

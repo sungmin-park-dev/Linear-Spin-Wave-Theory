@@ -6,7 +6,7 @@ section: issue-notes
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-06-30
+updated: 2026-09-18
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -27,12 +27,24 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 | 파일 | 유형 | 역할 | 상태 |
 |---|---|---|---|
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures\|260602-commensurate-structure-test-failures]] | problem | `CommensurateStructure` pytest 실패 기록 | draft |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260802-code-space-audit-general-2d-spin-tool\|260802-code-space-audit-general-2d-spin-tool]] | review | 범용 2D spin-tool 기준 code-space 분류와 gap 기록 | draft |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug\|260802-topology-thermal-hall-real-space-volume-bug]] | problem | 층당/3D SI κ·full BZ·Chern, 재계산 범위·고정 cutoff·비용 검증 | in-review |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit\|260809-lswt-documentation-audit]] | review | `docs/lswt/` coverage, legacy consolidation과 열린 이론 검토 추적 | in-review |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260810-pseudo-goldstone-gap\|260810-pseudo-goldstone-gap]] | problem | SOC Y/V gap 및 PD-only V의 6회 이방성; 위상 강성·열적 주장 검토와 패키지 설계 대기 | in-review |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog\|260810-lswt-implementation-backlog]] | review | NBCP band plot와 LSWT 구현 backlog | draft |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260918-nbcp-physics-code-review\|260918-nbcp-physics-code-review]] | review | NBCP 9장 구조, claim-to-code 대응과 독립 물리 구현 검토 | in-review |
 
 ### `closed/` — 종결 이슈
 
 | 파일 | 유형 | 역할 | 결과 |
 |---|---|---|---|
-| [[GOVERNMENT/Working-Pad/issue-notes/closed/260604-lswt-section-migration-record\|260604-lswt-section-migration-record]] | migration-record | 기존 Markdown/LaTeX source에서 새 LSWT 정본 파일로 가는 mapping 기록 | implemented |
+| [260916-docs-topic-consolidation](closed/260916-docs-topic-consolidation.md) | structure | docs와 research-space 통합, LSWT·NBCP 분리와 경로·출력 검증 | resolved; 물리 검토 상태 유지 |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260604-lswt-section-migration-record\|260604-lswt-section-migration-record]] | review | 기존 Markdown/LaTeX source에서 새 LSWT 정본 파일로 가는 mapping 기록 | resolved |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260802-hamiltonian-b-block-substitution-bug\|260802-hamiltonian-b-block-substitution-bug]] | problem | Legacy B/B† 교환 원인, 기존 수정 이력과 독립 회귀 검증 | resolved; theory A1 별도 |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260810-agents-progress-history\|260810-agents-progress-history]] | review | `AGENTS.md`에서 제거한 완료 이력과 활성 항목 이동 기록 | superseded by Working-Pad |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260910-zero-point-energy-normalization\|260910-zero-point-energy-normalization]] | problem | 영점에너지 trace 계수 검증과 공개 솔버의 스핀당 에너지 수정 | resolved; theory A2/A5/A10/A11/A12 별도 |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation\|260911-finite-temperature-energy-and-occupation]] | problem | 유한온도 전달, thermal energy 합산과 free-energy 계산 수정 | resolved; observables 정규화 별도 |
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization\|260911-thermodynamic-observable-normalization]] | problem | 스핀당 U/S/C, sublattice 점유수와 통합·스캔 함수의 정규화 | resolved; Thermal Hall·Goldstone 별도 |
 
 ## 에이전트 지침
 

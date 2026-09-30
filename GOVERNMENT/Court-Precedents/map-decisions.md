@@ -6,7 +6,7 @@ section: decisions
 status: in-review
 last-edited-by: codex
 created: 2026-06-03
-updated: 2026-08-01
+updated: 2026-09-05
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -22,6 +22,9 @@ LSWT 프로젝트의 결정 기록과 판례 레이어.
 | 파일 | 역할 | 상태 |
 |---|---|---|
 | [[GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority\|2026-08-01-lswt-markdown-source-authority]] | LSWT 이론의 Markdown 단일 정본과 PDF·TeX·HTML 역할 결정 | accepted |
+| [[GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface\|2026-08-09-lswt-docs-authoring-surface]] | `docs/` 작성 위치와 source 보관 경로를 반영하는 후속 결정 | accepted |
+
+| [2026-09-18-nbcp-latex-source-authority](2026-09-18-nbcp-latex-source-authority.md) | NBCP 한정 LaTeX 편집 원본과 PDF 생성 경계 | accepted; 작성 형식 결정 |
 
 ## 에이전트 지침
 

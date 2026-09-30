@@ -5,7 +5,7 @@ section: procedures
 status: closed
 last-edited-by: codex
 created: 2026-05-31
-updated: 2026-08-01
+updated: 2026-09-10
 superseded-by: GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md
 ---
 
@@ -21,6 +21,12 @@ superseded-by: GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-autho
 > 목적: 이론 노트 정리 + 코드 구현 일치 검증을 동시에 진행하기 위한 계획서
 > 상태: 역사 기록으로 보존. 현재 실행 기준으로 사용하지 않는다.
 
+> **2026-09-10 후속 확인:** 아래의 B/B† "미수정 버그"와 "SM v5로 교체"
+> 항목은 당시 기록이다. 현재 구현에는 c735573의 수정이 이미 반영돼 있고,
+> 독립 회귀 검증을 마쳤다. 현재 상태는
+> [종결 이슈](../../Working-Pad/issue-notes/closed/260802-hamiltonian-b-block-substitution-bug.md)를
+> 따른다. 아래의 과거 계획과 체크박스는 소급 변경하지 않는다.
+
 ---
 
 ## 1. 배경 및 목표
@@ -28,7 +34,7 @@ superseded-by: GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-autho
 ### 현재 문제
 - LaTeX master와 과거 노트가 active source와 legacy archive로 분리됨
 - 마크다운 섹션(`research-space/theory/sections/`)은 구버전 구조 기반 — 최신 LaTeX와 불일치
-- 코드(`code-space/lswt/`)가 이론과 실제로 일치하는지 체계적으로 검증된 적 없음
+- 코드(`code-space/spintoolkit/`, 2026-09-29 이전 `code-space/lswt/`)가 이론과 실제로 일치하는지 체계적으로 검증된 적 없음
 
 ### 목표
 1. `research-space/sources/lswt/note_lswt_restructured.tex`를 단일 LaTeX 기준 소스로 확정
@@ -118,7 +124,7 @@ research-space/theory/sections/
 - **발견 섹션**: §2.3 Bosonic Hamiltonian construction
 - **증상**: B_k와 B†_k 블록이 뒤바뀜. Γ perturbation이 있는 비대칭 B_k에서 틀린 결과.
 - **수정 방법**: SM v5 수정 코드로 교체
-- **검증**: `doc-space/examples/nbcp_hamiltonian_check.py`의 bosonic constraint 테스트 통과 확인
+- **검증**: `examples/nbcp_hamiltonian_check.py`의 bosonic constraint 테스트 통과 확인
 
 ### Bug 2: Thermal Hall `real_space_volume` (`observables/topology.py`)
 - **발견 섹션**: Appendix E Topology
@@ -135,7 +141,7 @@ research-space/theory/sections/
 # 섹션 제목
 
 > **Source**: `research-space/sources/lswt/note_lswt_restructured.tex` §X.X
-> **Code**: `code-space/lswt/모듈명.py`
+> **Code**: `code-space/spintoolkit/모듈명.py`
 > **Status**: 🔴 Draft / 🟡 Review / 🟢 Verified
 
 ---
@@ -176,7 +182,7 @@ research-space/theory/sections/
 - [ ] 우선순위 7-9 섹션 정리 + 코드 대조 완료
 - [ ] Bug 2 (Thermal Hall) 수정 + 검증 완료
 - [ ] 부록 B, C, D 마크다운 작성 완료
-- [ ] `doc-space/examples/nbcp_hamiltonian_check.py` 전체 통과
+- [ ] `examples/nbcp_hamiltonian_check.py` 전체 통과
 
 ---
 
