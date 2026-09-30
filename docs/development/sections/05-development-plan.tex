@@ -48,7 +48,7 @@
     1-마그논 섹터의 차원은 사이트 수 정도라 ED 비용이 작다. 같은 토러스에서 비교하므로
     유한 전개의 항 중복도와 \texttt{cell\_offset} 부호도 함께 검증된다.
   \end{mdcallout}
-  \supportingtext{삼각격자 1차 벤치마크는 $h=0$과 $h>h_{\mathrm{sat}}$로 한정한다(D18). 하이젠버그의 Berry 곡률은 0이라 위상량은 null test다.}
+  \supportingtext{삼각격자 1차 벤치마크는 $h=0$과 $h>h_{\mathrm{sat}}$로 한정한다(D18). 하이젠버그의 Chern 수·thermal Hall은 0이라 null test다.}
   \slidesource{벤치마크 검증 기준}{plan}
 \end{frame}
 
@@ -62,12 +62,12 @@
       최근접 이웃에서 끊기는 정적 스핀 상관. U(1) 대칭이 없어 최소 ED 도구로는 검증할 수 없고,
       flux 보존량을 쓰는 ED 솔버가 필요하다. \\
     \textbf{LSWT 위상량 단계} & 고전 바닥상태가 거시적으로 축퇴되어 스핀 액체의 LSWT 기준 상태는 없다.
-      강한 장의 편극상은 Chern 수가 0이 아닌 마그논 밴드를 가져, 0이 아닌 thermal Hall의 기준 모델로 쓸 수 있다(선택). \\
+      강한 장의 편극상은 Chern 수가 0이 아닌 마그논 밴드를 가져, 이상항이 있는 thermal Hall 기준 모델로 쓴다(D29). \\
     \textbf{스키마 검증} & 비-Bravais honeycomb 격자, 결합 의존 이방성 항, Pauli 행렬 규약에서 $S$ 연산자 규약으로의 환산. \\
     \bottomrule
   \end{tabularx}
   \par\medskip
   \supportingtext{편극상 비교는 ED와의 정확 일치가 아니라 해석적 밴드 공식과 정수 Chern 수의 확인이다.
-  5단계에 포함할지는 그 단계에서 정한다.}
+  D29로 5단계 기준 모델에 포함했다.}
   \slidesource{후속 벤치마크 계획}{plan}
 \end{frame}

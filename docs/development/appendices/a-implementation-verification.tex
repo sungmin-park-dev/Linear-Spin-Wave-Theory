@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--4단계 구현(2b 포함) & 검토 항목 확인 \\
-    \textbf{미구현} & 위상량(5단계), 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 5단계부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--4단계(2b 포함)와 5a 구현 & 검토 항목 확인 \\
+    \textbf{미구현} & thermal Hall(5b), 기존 \texttt{Topology} 정리(5c), 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 5b부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -618,6 +618,26 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{영점 제공자 투영 기록}{d28impl}
 \end{frame}
 
+\begin{frame}[label=stage5a]{5a: Berry 곡률과 Chern 수, 부호는 ED Bloch 상태로 고정한다}
+  \framesubtitle{2026-09-30 · D29 · 저장된 대각화와 해석적 $\partial\mathsf H/\partial k$로 Kubo 곡률; Chern 수는 Kubo 적분과 FHS 링크 변수가 일치할 때만 받는다.}
+  \footnotesize\renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\textwidth}{@{}P{3.4cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    부호 기준(Haldane 마그논) & $\mathsf H(\mathbf k)$ 입자 블록 = ED 1-마그논 상태로 다시 만든 Bloch 행렬($2.7\times10^{-14}$), 켤레와는 2.0 차이; ED Bloch 상태만의 FHS도 $C=(+1,-1)$ \\
+    점별 & $\partial\mathsf H$ 중앙 차분 $6\times10^{-10}$; Kubo 곡률 = 작은 plaquette 위상(Haldane $2\times10^{-5}$, 키타에프 $3\times10^{-4}$) \\
+    Haldane($J=1$, $D=\pm0.2$, $h=0.3$) & $C=(+1,-1)$, $D$에 따라 반전; $D=0$이면 곡률 $2\times10^{-13}$ \\
+    키타에프 [111] 편극($K=-1$, 이상항 포함) & FHS $C=(+1,-1)$($h=0.5,1,2$); Kubo 수렴($h=2$: 0.775, 0.970, 0.99956, 0.9999999 at $N=12$--96); 합 0, 장 반전 시 반전, 셀 게이지 동일 \\
+    삼각 하이젠버그($h=1$) & $C=0$($5\times10^{-15}$); 전체 위치 게이지의 점별 곡률은 0.81까지 \\
+    판정 불가를 NaN으로 & 기운 정사각 AFM: 메시 점 사이 교차(링크 겹침 $10^{-15}$); $D=0$ Dirac 점: FHS 단독은 $12\times12$에서 틀린 정수 $-1$, Kubo 0 $\to$ 불일치로 거부; Néel: 퇴화 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{수치 기준(잠정): 밴드 간격 $10^{-8}E_0$, FHS 링크 겹침 $10^{-3}$, Kubo--FHS 일치 0.1. 퇴화·교차 밴드 묶음의 불변량은 구현하지 않는다. 테스트 489 통과, 스냅샷 144개 차이 0.}
+  \slidesource{5a 검증 기록}{stage5a}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -694,7 +714,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
     4 & 물리량(구현) & 4a 바닥상태, 4b 열역학·영모드, 4c 구조인자·결합 상관 \\
-    5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
+    5 & 위상량(5a 구현) & 5a 곡률·Chern(Kubo·FHS 대조); 5b thermal Hall; 5c 기존 코드 정리·이슈 해소 \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -714,7 +734,6 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     질문 & 결정 시점 \\
     \midrule
     키타에프 flux 섹터와 정확해 대조, ED 2-마그논 섹터 & 해당 벤치마크 시 \\
-    키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\

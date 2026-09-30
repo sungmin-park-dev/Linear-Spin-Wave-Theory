@@ -49,6 +49,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | 영모드 탐색, 무차원 유한 온도 물리량(D25; 4b) | `observables/zero_modes.py`의 `scan_zero_modes`, `observables/thermal.py`의 `thermal_quantities` |
 | 구조인자·결합 상관(D26; 4c), 임의 사이트 동시간 상관·사다리 성분(D27) | `observables/structure_factor.py`의 `structure_factor`, `bond_correlations`, `spin_correlation`, `to_ladder` |
 | 고전 궤도 위 에너지 지형(D27) | `methods/state_selection.py`의 `orbit_energy_landscape` |
+| Berry 곡률·Chern 수(D29; 5a) | `observables/berry.py`의 `berry_curvature`, `chern_numbers`, `chern_numbers_fhs`; 기준 모델 `models/honeycomb.py` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -99,6 +100,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D26 | 4c: 구조인자는 한 마그논 가로 성분과 정확한 탄성 Bragg까지(2-마그논 세로 연속체는 후속); 모드별 무게 `W_n^{ab}(q)`를 주 출력으로 하고 넓힌 스펙트럼은 보조; 전체 위치 게이지·사이트당 정규화; 새로 구현하고 기존 `observables/correlations.py`는 비교 대상으로만(유지·삭제는 별도 결정); 결합별 상관과 그 에너지 교차 확인 포함, 일반 실공간 상관은 후속; 영모드인 q는 비탄성 무게 NaN과 표시 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D27 | 기존 코드 정리: 검증되지 않은 `observables/correlations.py`를 삭제하고 동시간 실공간 상관(`spin_correlation`)과 사다리 성분(`to_ladder`)을 새 모듈로 옮김(실시간 상관·스펙트럼 함수는 이론 문서의 응답 규약 검토 뒤); MAGSWT 격자 탐색(`opt_method='MAGSWT'`)을 삭제하고 그 목적인 고전 궤도 위 에너지 지형은 `orbit_energy_landscape`로 제공; MAGSWT 정규화(D24)는 유지 | 사용자 결정 2026-09-30 | §1, §6 |
 | D28 | 고전·양자 비교 규칙: 부드러운 좌표 phi의 기준 상태는 완화 경로(각 phi에서 나머지 좌표를 고전 최소화) 위 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E_zp`의 최소로 정한다(부드러운 방향의 1-loop 정상성 조건); 곡률 비와 대역 (0.1, 10)을 대체; 고전 궤도가 평평하면 D17과 같음; 단열 분리 비를 기록; LSWT 차수(O(S^0) 보정 제외)의 T = 0 원리 | 사용자 결정 2026-09-30(원리와 세부 확정); 구현 2026-09-30(`0e9247f`); 기본 영점 제공자 `constrained`와 k = 0의 구속 모드 투영은 사용자 결정 2026-09-30 | §1 |
+| D29 | 5단계 위상량: thermal Hall은 층당 `kappa_xy^2D / T`를 `k_B^2 / hbar` 단위의 무차원 값으로 반환(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고하고 Chern 수와 kappa의 게이지 불변을 시험; 부호는 `Omega = dA_y/dk_x - dA_x/dk_y`, `A = i <u| eta grad u>`, `C = (1/2 pi) int Omega`, `kappa = -(k_B^2 T / hbar A) sum c2 Omega`이며 물리적 Bloch 상태(ED)로 고정; 이상항이 있는 기준 모델로 키타에프 [111] 편극상을 채택; 5a(곡률·Chern)·5b(thermal Hall)·5c(기존 `Topology` 정리와 이슈 260802)로 나눠 검증 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 
 ## Proposal
 
@@ -635,6 +637,17 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | LSWT 본문(D24) | k점(Cartesian, 자기 역격자 분율)과 가중치, 대각화한 `H(k)`, Colpa 고유값, paraunitary 고유벡터, 정규화 이동량, 선형항 크기, `E_cl`, `Delta E_zp`, `E_GS`(사이트당), 부격자별 `<n>`과 모멘트 `S - <n>`, 요청한 물리량. 대각화 정보는 같은 계산 안의 물리량이 재사용하며, JSON에는 요약만 쓰고 배열은 요청 시 |
 | ED 본문(D23) | 방법 `ed`, 섹터(양자화 축, 마그논 수, 운동량 사용 여부), 블록별 운동량(분율 `q`, Cartesian `k`)·차원·고유값(토러스 **전체** 에너지)·풀이 방법·잔차, 선택적 고유벡터, 축 방향 편극 상태의 기준 에너지, 진단(섹터를 바꾸는 계수, Hermite성). 사이트당 값과 들뜸 에너지(`E - E_ref`)는 메서드로 계산 |
 
+**위상량(D29).** `berry_curvature(result)`가 저장된 고유벡터와 `hamiltonian_derivatives_at`의
+`dH/dk`로 입자 밴드별 곡률을 Kubo 식으로 계산한다(밴드는 k마다 에너지 오름차순, 곡률 단위는 모델 길이
+단위의 제곱). 게이지는 D13 전체 위치이고, 이 `H(k)`의 입자 블록은 ED 1-마그논 상태에서 다시 만든 Bloch
+행렬과 같다(켤레가 아님; 5a 기록). Chern 수는 두 독립 계산을 대조한다: Kubo 적분
+`(2 pi / A_cell) <Omega>`와 고유벡터만 쓰는 FHS 링크 변수(paraunitary 곱, 영역 경계는 `H(k+G) = D H(k) D^+`의
+게이지 행렬). `chern_numbers`는 둘의 차이가 `TOPOLOGY_CHERN_AGREEMENT`(0.1) 이하일 때만 FHS 정수를 받고
+아니면 NaN과 경고를 낸다. 메시 점의 밴드 간격(`TOPOLOGY_BAND_GAP_CUTOFF`, 1e-8 E0 이하면 NaN)만으로는
+메시 점 사이의 교차나 갭 닫힘을 볼 수 없다: 교차는 FHS 링크 겹침(`TOPOLOGY_MIN_LINK_OVERLAP`, 1e-3 이하면
+NaN)으로, 닫힘은 Kubo와 FHS의 불일치로 드러난다. 퇴화·교차 밴드 묶음의 비가환 불변량은 구현하지 않는다.
+세 수치 기준은 잠정값이다.
+
 이 구조는 기존 `SolverResult`(`ground_state_energy`, `eigenvalues`, `spin_config`,
 `data`)를 확장한다. 구현 backlog의 "k-data dict를 dataclass로 전환" 항목은 LSWT
 본문 설계에 포함한다.
@@ -756,6 +769,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   변경은 확인 대기로 두고, 검토 기록의 오염된 기울인 장 수치를 정정했다. Open Questions를 갱신했다.
 - 2026-09-30 (claude): 기본 영점 제공자 결정(constrained, `k = 0`에서는 구속 모드 한 쌍만 투영 제거,
   제공자에 선택적 `axis`)을 §1과 결정 목록에 기록하고 mesh 수렴 비교를 추가했다. Open Questions를 갱신했다.
+- 2026-09-30 (claude): D29(5단계 위상량의 단위·게이지·부호·기준 모델)와 5a 구현(Berry 곡률, Chern 수의
+  Kubo·FHS 대조)을 결정 목록, 구현 상태 표, §5에 반영했다.
 
 ## 관련 기록
 

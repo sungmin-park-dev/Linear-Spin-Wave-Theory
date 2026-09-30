@@ -89,6 +89,19 @@
   \slidesource{2026-09-30 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-stage5]{결정 기록 (D29)}
+  \framesubtitle{2026-09-30 사용자 결정(추천안 채택). 근거와 수치 자료는 부록 A에 있다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D29 & 5단계 위상량: thermal Hall은 층당 $\kappa_{xy}^{2D}/T$를 $k_B^2/\hbar$ 단위의 무차원 값으로(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고, Chern 수·$\kappa$의 게이지 불변은 시험; 부호 $\Omega=\partial_{k_x}A_y-\partial_{k_y}A_x$, $A=i\langle u|\eta\nabla u\rangle$, $C=\frac{1}{2\pi}\int\Omega$, $\kappa=-\frac{k_B^2T}{\hbar A}\sum c_2\Omega$, 물리적 Bloch 상태(ED)로 고정; 이상항 기준 모델로 키타에프 [111] 편극상; 5a·5b·5c로 나눠 검증 & \textbf{사용자 결정}, 5a 구현 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
@@ -421,6 +434,9 @@
     \bibitem{d28impl}
       D28 구현 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행; \texttt{d28-provider-projection-2026-09-30.json} · $k=0$ 구속 모드 투영.
+    \bibitem{stage5a}
+      5a 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5a-berry-chern-2026-09-30.json} · \texttt{examples/lswt\_stage5a\_check.py}.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

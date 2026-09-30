@@ -1,0 +1,465 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "449cc9f",
+  "scope": "Stage 5a (D29): Berry curvature and Chern numbers of LSWT magnons on the common pipeline, reusing the stored diagonalization.",
+  "decisions": {
+    "D29": "User decision 2026-09-30 (recommendations adopted): (1) thermal Hall returned as kappa_xy^2D / T in units of k_B^2 / hbar per layer (5b); (2) curvature in the D13 full-position gauge, Chern numbers and kappa gauge invariant (tested); (3) Omega = dA_y/dk_x - dA_x/dk_y with A = i <u| eta grad u>, C = (1/2 pi) int Omega, kappa = -(k_B^2 T / hbar A) sum c2 Omega, sign anchored by the physical Bloch states (ED); (4) the Kitaev [111]-polarized state is the reference model with pairing terms."
+  },
+  "added": {
+    "code-space/spintoolkit/observables/berry.py": "berry_curvature (Kubo, reusing compute_berry_curvature of observables/topology.py), BerryCurvature.chern_numbers (Kubo integral), chern_numbers_fhs (link variables with the paraunitary product, zone-boundary gauge matrix, admissibility check), chern_numbers (accepted only when Kubo and FHS agree), zone_gauge",
+    "code-space/spintoolkit/models/honeycomb.py": "honeycomb_ferromagnet (NN ferromagnet + NNN DM along z: Haldane magnons), kitaev_honeycomb",
+    "code-space/spintoolkit/methods/lswt/run.py": "LSWTResult.hamiltonian_derivatives_at: analytic dH/dk of the same builder (not serialized)",
+    "code-space/spintoolkit/definitions/defaults.py": "TOPOLOGY_BAND_GAP_CUTOFF = 1e-8 (E0), TOPOLOGY_MIN_LINK_OVERLAP = 1e-3, TOPOLOGY_CHERN_AGREEMENT = 0.1 (provisional numerical policies)",
+    "code-space/tests/test_methods/test_berry.py": "13 tests",
+    "examples/lswt_stage5a_check.py": "this record"
+  },
+  "findings": [
+    "Sign anchor: the particle block of H(k) equals the Bloch matrix rebuilt from the ED one-magnon states (4 x 4 torus, 16 momenta) within 2.7e-14; its complex conjugate, which has the opposite Chern numbers, differs by 2.0. The ED Bloch states alone give C = (+1, -1) by FHS on a 5 x 5 torus. Eigenvalue comparisons (stage 3) could not fix this sign.",
+    "dH/dk equals central differences within 6e-10 (relative); the Kubo curvature equals small-plaquette phases of the eigenvectors within 2e-5 (Haldane) and 3e-4 (Kitaev, curvature up to 4, plaquette step 1e-4).",
+    "Haldane magnons (J = 1, D = +-0.2, h = 0.3): C = (+1, -1) for D > 0, flipping with D; D = 0 gives zero curvature (1.7e-13).",
+    "Kitaev [111] polarized (K = -1, h = 0.5, 1, 2; pairing up to 0.5): FHS C = (+1, -1) on every mesh, Kubo converges to it (h = 2: 0.7745, 0.9700, 0.99956, 0.9999999 at N = 12, 24, 48, 96); the particle bands sum to zero; reversing the field reverses C; the cell gauge gives the same FHS integers.",
+    "Triangular Heisenberg (Y-like state at h = 1): Chern numbers 0 within 5e-15 although the pointwise curvature in the full-position gauge reaches 0.81.",
+    "Band crossing between mesh points (canted square antiferromagnet, folded bands): the mesh level spacing (>= 4e-3) does not detect it; the FHS link overlap drops to 1e-15 and the Chern numbers are NaN with a warning.",
+    "Gap closing between mesh points (Haldane at D = 0, Dirac points): on the 12 x 12 mesh FHS still returns an integer (-1, +1) while the Kubo sum is 0; chern_numbers rejects the pair (NaN with a warning) and the 24 x 24 mesh gives 0 in both. An FHS integer alone is not a Chern number.",
+    "Neel state: the two particle bands are degenerate everywhere; curvature and Chern numbers are NaN (band-isolation policy of the issue 260802)."
+  ],
+  "report": {
+    "sign_anchor": {
+      "num_momenta": 16,
+      "max_abs_ed_minus_lswt": 2.7040200130041855e-14,
+      "max_abs_conjugate_minus_lswt": 2.000000000000003,
+      "ed_fhs_chern_5x5": [
+        1,
+        -1
+      ]
+    },
+    "pointwise": [
+      {
+        "case": "haldane D=0.2",
+        "derivative_relative_error": 5.680346103620837e-10,
+        "plaquette_vs_kubo_relative_error_max": 1.9365381832392448e-05,
+        "points": 21,
+        "plaquette_step": 0.0001
+      },
+      {
+        "case": "kitaev h=1",
+        "derivative_relative_error": 2.0221795083928252e-10,
+        "plaquette_vs_kubo_relative_error_max": 0.0003270498152830336,
+        "points": 21,
+        "plaquette_step": 0.0001
+      }
+    ],
+    "chern": [
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": 0.2,
+        "h": 0.3,
+        "mesh": 12,
+        "kubo": [
+          0.9999941958492872,
+          -0.9999941958492872
+        ],
+        "fhs": [
+          0.9999999999999996,
+          -0.9999999999999994
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "max_abs_curvature": 0.4264305270109742,
+        "min_level_spacing": 0.6228027769131133
+      },
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": 0.2,
+        "h": 0.3,
+        "mesh": 24,
+        "kubo": [
+          0.9999999999838847,
+          -0.9999999999838847
+        ],
+        "fhs": [
+          1.0000000000000009,
+          -1.0000000000000018
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "max_abs_curvature": 0.45249202440655895,
+        "min_level_spacing": 0.6057088575932967
+      },
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": -0.2,
+        "h": 0.3,
+        "mesh": 12,
+        "kubo": [
+          -0.9999941958492872,
+          0.9999941958492872
+        ],
+        "fhs": [
+          -0.9999999999999999,
+          0.9999999999999996
+        ],
+        "accepted": [
+          -1.0,
+          1.0
+        ],
+        "max_abs_curvature": 0.4264305270109741,
+        "min_level_spacing": 0.6228027769131131
+      },
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": -0.2,
+        "h": 0.3,
+        "mesh": 24,
+        "kubo": [
+          -0.9999999999838849,
+          0.9999999999838849
+        ],
+        "fhs": [
+          -1.0000000000000013,
+          1.0000000000000022
+        ],
+        "accepted": [
+          -1.0,
+          1.0
+        ],
+        "max_abs_curvature": 0.45249202440655917,
+        "min_level_spacing": 0.6057088575932972
+      },
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": 0.0,
+        "h": 0.3,
+        "mesh": 12,
+        "kubo": [
+          -2.3903482094173677e-15,
+          2.3579569499884518e-15
+        ],
+        "fhs": [
+          -1.0000000000000002,
+          0.9999999999999999
+        ],
+        "accepted": [
+          null,
+          null
+        ],
+        "max_abs_curvature": 2.4244487882999384e-14,
+        "min_level_spacing": 0.2610523844401025
+      },
+      {
+        "model": "honeycomb FM + NNN DM",
+        "D": 0.0,
+        "h": 0.3,
+        "mesh": 24,
+        "kubo": [
+          -1.6569507060938033e-15,
+          1.7093928778041962e-15
+        ],
+        "fhs": [
+          -2.592944204828001e-16,
+          1.157968422059442e-16
+        ],
+        "accepted": [
+          -0.0,
+          0.0
+        ],
+        "max_abs_curvature": 1.690839137516553e-13,
+        "min_level_spacing": 0.13080625846028626
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 0.5,
+        "mesh": 12,
+        "kubo": [
+          0.9928292850438247,
+          -0.992829285043826
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          1.0,
+          -1.0
+        ],
+        "max_pairing": 0.49619953718114784,
+        "max_abs_curvature": 1.5066060815803326,
+        "min_level_spacing": 0.1589603485545067,
+        "seconds": 0.08
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 0.5,
+        "mesh": 24,
+        "kubo": [
+          0.9999792411737728,
+          -0.999979241173774
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          0.9999999999999996,
+          -0.9999999999999994
+        ],
+        "max_pairing": 0.4990485237344505,
+        "max_abs_curvature": 2.1703628491391775,
+        "min_level_spacing": 0.1406652305564272,
+        "seconds": 0.15
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 0.5,
+        "mesh": 48,
+        "kubo": [
+          0.9999999999827264,
+          -0.9999999999827298
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          0.999999999999999,
+          -1.0000000000000007
+        ],
+        "max_pairing": 0.4997620459599418,
+        "max_abs_curvature": 2.4173348749197743,
+        "min_level_spacing": 0.13567996987477715,
+        "seconds": 0.5
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 0.5,
+        "mesh": 96,
+        "kubo": [
+          1.0000000000000024,
+          -0.9999999999999942
+        ],
+        "accepted": null,
+        "fhs": null,
+        "max_pairing": 0.4999405061800815,
+        "max_abs_curvature": 2.4865848580510876,
+        "min_level_spacing": 0.13440308065793805,
+        "seconds": 0.65
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 1.0,
+        "mesh": 12,
+        "kubo": [
+          0.9437997993555886,
+          -0.943799799355589
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          0.9999999999999999,
+          -1.0
+        ],
+        "max_pairing": 0.49619953718114784,
+        "max_abs_curvature": 2.0447071722408507,
+        "min_level_spacing": 0.1217516488535122,
+        "seconds": 0.08
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 1.0,
+        "mesh": 24,
+        "kubo": [
+          0.9984758630590556,
+          -0.9984758630590569
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          1.0000000000000002,
+          -0.9999999999999988
+        ],
+        "max_pairing": 0.4990485237344505,
+        "max_abs_curvature": 4.155526459418155,
+        "min_level_spacing": 0.0960900433561358,
+        "seconds": 0.18
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 1.0,
+        "mesh": 48,
+        "kubo": [
+          0.9999989733040766,
+          -0.9999989733040775
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          1.0000000000000016,
+          -0.9999999999999981
+        ],
+        "max_pairing": 0.4997620459599418,
+        "max_abs_curvature": 5.3217198884412955,
+        "min_level_spacing": 0.08847771701468354,
+        "seconds": 0.76
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 1.0,
+        "mesh": 96,
+        "kubo": [
+          0.9999999999997383,
+          -0.9999999999997438
+        ],
+        "accepted": null,
+        "fhs": null,
+        "max_pairing": 0.4999405061800815,
+        "max_abs_curvature": 5.70125984439482,
+        "min_level_spacing": 0.08646729081642568,
+        "seconds": 0.68
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 2.0,
+        "mesh": 12,
+        "kubo": [
+          0.7745022732623652,
+          -0.7745022732623643
+        ],
+        "accepted": [
+          null,
+          null
+        ],
+        "fhs": [
+          1.0,
+          -1.0000000000000007
+        ],
+        "max_pairing": 0.49619953718114784,
+        "max_abs_curvature": 2.100532111872799,
+        "min_level_spacing": 0.10042518901870201,
+        "seconds": 0.08
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 2.0,
+        "mesh": 24,
+        "kubo": [
+          0.9699757442736837,
+          -0.9699757442736849
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          0.999999999999999,
+          -1.0000000000000007
+        ],
+        "max_pairing": 0.4990485237344505,
+        "max_abs_curvature": 7.181764103166259,
+        "min_level_spacing": 0.06665458827375881,
+        "seconds": 0.17
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 2.0,
+        "mesh": 48,
+        "kubo": [
+          0.9995599990668125,
+          -0.999559999066812
+        ],
+        "accepted": [
+          1.0,
+          -1.0
+        ],
+        "fhs": [
+          1.0000000000000002,
+          -0.9999999999999994
+        ],
+        "max_pairing": 0.4997620459599418,
+        "max_abs_curvature": 12.783852248959635,
+        "min_level_spacing": 0.054997074672601176,
+        "seconds": 0.72
+      },
+      {
+        "model": "Kitaev K = -1, [111] polarized",
+        "h": 2.0,
+        "mesh": 96,
+        "kubo": [
+          0.999999908308977,
+          -0.9999999083089676
+        ],
+        "accepted": null,
+        "fhs": null,
+        "max_pairing": 0.4999405061800815,
+        "max_abs_curvature": 15.416462454394036,
+        "min_level_spacing": 0.051668807860448585,
+        "seconds": 0.55
+      },
+      {
+        "model": "Kitaev K = -1, -[111] polarized (time reversal)",
+        "h": 1.0,
+        "mesh": 24,
+        "kubo": [
+          -0.9984758630590591,
+          0.9984758630590603
+        ],
+        "fhs": [
+          -1.0,
+          0.9999999999999996
+        ]
+      }
+    ],
+    "null_and_undefined": {
+      "triangular_heisenberg_h1": {
+        "kubo": [
+          2.0222972713512436e-15,
+          2.4523346964321723e-15,
+          -4.388574352215845e-15
+        ],
+        "fhs": [
+          -5.648200097759499e-18,
+          7.043304269807205e-17,
+          5.0221041028930825e-17
+        ],
+        "max_abs_curvature": 0.8069624377575452,
+        "note": "pointwise curvature nonzero, integrals zero"
+      },
+      "canted_square_h2": {
+        "kubo": [
+          -5.008484482709227e-32,
+          3.980989495805145e-32
+        ],
+        "fhs": [
+          null,
+          null
+        ],
+        "max_abs_curvature": 1.4907386576404696e-27,
+        "warnings": [
+          "band 0: smallest link overlap 9.88e-16 <= 0.001; the band crosses another band between mes",
+          "band 1: smallest link overlap 1.54e-15 <= 0.001; the band crosses another band between mes"
+        ],
+        "note": "folded bands cross on lines between mesh points; FHS link overlap 1e-16"
+      },
+      "square_neel": {
+        "nan_fraction": 1.0,
+        "min_level_spacing": 0.0
+      }
+    }
+  },
+  "tests": {
+    "result": "489 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0",
+    "note": "OPENBLAS_NUM_THREADS=4"
+  },
+  "not_in_5a": "thermal Hall (5b), legacy Topology comparison on NBCP (5b), keep/remove the legacy Topology class and close the issue 260802 (5c); non-Abelian (band-group) invariants for degenerate or crossing bands are not implemented."
+}

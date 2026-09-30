@@ -150,6 +150,10 @@ class LSWTResult:
     hamiltonian_at : callable
         ``hamiltonian_at(k)`` returns the unregularized ``H(k)`` for momenta
         ``(m, 2)``, for zero-mode scans and later observables. Not serialized.
+    hamiltonian_derivatives_at : callable
+        ``hamiltonian_derivatives_at(k)`` returns ``(dH/dk_x, dH/dk_y)``, each
+        ``(m, 2Ns, 2Ns)``, analytic in the Fourier convention of ``H(k)``
+        (D13); for Berry curvature (stage 5). Not serialized.
     """
 
     header: ResultHeader
@@ -175,6 +179,8 @@ class LSWTResult:
     local_frames: Optional[np.ndarray] = None
     hamiltonian_at: Optional[Callable] = field(default=None, repr=False, compare=False)
     extra: Dict[str, Any] = field(default_factory=dict)
+    hamiltonian_derivatives_at: Optional[Callable] = field(default=None, repr=False,
+                                                           compare=False)
 
     @property
     def num_sites(self) -> int:
@@ -345,6 +351,12 @@ def solve_lswt(model: SpinModel, state: SpinState,
         return np.asarray(hamiltonian.Quadratic_Bose_Hamiltonian(
             np.atleast_2d(np.asarray(momenta, dtype=float)), angles=angles)[0])
 
+    def hamiltonian_derivatives_at(momenta):
+        momenta = np.atleast_2d(np.asarray(momenta, dtype=float))
+        hamiltonian.Quadratic_Bose_Hamiltonian(momenta[:1], angles=angles)   # local frames
+        dx, dy = hamiltonian.partial_derivatives_of_Hk(momenta)
+        return np.asarray(dx), np.asarray(dy)
+
     result = LSWTResult(header, keys, np.array([model.site(s).spin for s, _ in keys]),
                         np.array([state.direction(s, c) for s, c in keys]), k, fractional, weights,
                         H, E, T, shift, linear_max, float(e_cl), float(zero_point),
@@ -352,7 +364,7 @@ def solve_lswt(model: SpinModel, state: SpinState,
                         np.asarray(model.lattice, dtype=float), state.magnetic_lattice(model),
                         None, np.array([model.cartesian_position(s, c) for s, c in keys]),
                         np.array(list(hamiltonian.get_rmat_dict(angles=angles).values())),
-                        hamiltonian_at)
+                        hamiltonian_at, hamiltonian_derivatives_at=hamiltonian_derivatives_at)
     if conditions.temperature > 0:
         from spintoolkit.observables.thermal import thermal_quantities
 
