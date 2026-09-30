@@ -21,7 +21,7 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--5단계(2b, 5a--5d 포함) & 검토 항목 확인 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--6단계(2b, 5a--5d, 6a--6c 포함) & 검토 항목 확인 \\
     \textbf{미구현} & 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 결정 대기 \\
     \bottomrule
   \end{tabularx}
@@ -733,6 +733,24 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{6b 검증 기록}{stage6b}
 \end{frame}
 
+\begin{frame}[label=stage6c]{6c: 전역 고전 탐색이 기존 탐색을 그대로 재현한다}
+  \framesubtitle{2026-09-30 · D30, D32 · \texttt{classical\_search(model, supercell, conditions)}: $(\theta,\phi)$ 차분 진화(기존 설정) 뒤 해석적 정밀화.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.4cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    벤치마크 & Néel $-0.5$, 120° $-0.375$($\sqrt3\times\sqrt3$), 장 속 편극 $-2.0$: 해석값과 $6\times10^{-17}$ 안; 정밀화 뒤 정상점 \\
+    기존 탐색 8건 & 회귀 스냅샷의 NBCP xxz·nn\_soc, One--Four MSL(기운 장): 탐색 에너지 15자리 일치(같은 궤적), 정밀화 에너지 차이 $\le1.4\times10^{-17}$ \\
+    NBCP 예제 & 새 탐색으로 Four MSL($-0.119454043$ meV) $\to$ \texttt{no\_degeneracy}, D27 기록과 같음 \\
+    사용 중단 & \texttt{SpinOptimizer}, \texttt{EnergyFunction}에 경고. 이전 단계의 검증 스크립트는 기록 재현을 위해 기존 클래스를 계속 사용 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{D30의 구현이 끝났다(6a--6c). 사용 중단한 진입점의 삭제는 공개 배포 정리 때. 테스트 491 통과, 스냅샷 144개 차이 0.}
+  \slidesource{6c 검증 기록}{stage6c}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -822,15 +840,14 @@ save_json(r, "lswt.json")  # 머리부 + 요약
 \end{frame}
 
 \begin{frame}[label=open-questions]{미결 사항}
-  \framesubtitle{설계 미결 사항은 D30(2026-09-30)으로 결정했다. 남은 것과 재개 뒤 할 일.}
+  \framesubtitle{설계 미결 사항은 D30으로 결정하고 6a--6c로 구현했다. 남은 것.}
   \footnotesize\renewcommand{\arraystretch}{1.05}
   \begin{tabularx}{\textwidth}{@{}Yp{3.4cm}@{}}
     \toprule
     항목 & 시점 \\
     \midrule
     TN 관련 상태·계산 요청·결과의 필드 규약 & 솔버 경계 검증 실험 뒤 \\
-    LT 진단 도구 구현, \texttt{CommensurateStructure} 삭제 & LSWT 작업 재개 뒤(D30) \\
-    \texttt{LSWTSolver}·SI Hall API 사용 중단 경고, 전역 고전 탐색 이식 뒤 \texttt{EnergyFunction}/\texttt{SpinOptimizer} 정리 & LSWT 작업 재개 뒤(D30) \\
+    사용 중단한 진입점(\texttt{LSWTSolver}, SI Hall API, \texttt{SpinOptimizer}, \texttt{EnergyFunction})의 삭제 & 공개 배포 정리 때(D30) \\
     적응형 적분의 오차 추정 개선 & 보류 \\
     1차 범위 밖: D17 확장, 후속 항 종류와 $S\ge1$, 키타에프 flux·ED 2-마그논 & 필요한 벤치마크·모델이 생길 때 \\
     \bottomrule

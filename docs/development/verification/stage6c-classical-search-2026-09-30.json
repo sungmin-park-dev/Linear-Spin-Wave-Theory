@@ -1,0 +1,143 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "03351b8",
+  "scope": "Stage 6c (D30, D32): global classical search on SpinModel/SpinState; deprecation of SpinOptimizer and EnergyFunction; the NBCP example on the new path.",
+  "api": "spintoolkit.methods.classical.classical_search(model, supercell, conditions=None, seed=42, popsize=18, tol=1e-9, maxiter=800, mutation=(0.5, 0.9), recombination=0.8, refine=True) -> ClassicalSearchResult(state, energy, search_energy, evaluations, settings).",
+  "method": "Polar angles (theta, phi) in (-pi, pi) for every spin of the supercell; differential evolution (best1bin, immediate updating, L-BFGS-B polishing) on the vectorized energy of the compiled supercell (_compile/_energy_and_fields); then refine_classical (analytic gradient and Hessian in tangent coordinates). No fixed angles.",
+  "changed": {
+    "code-space/spintoolkit/methods/classical.py": "classical_search, ClassicalSearchResult",
+    "code-space/spintoolkit/definitions/defaults.py": "CLASSICAL_SEARCH_* (the former SpinOptimizer settings)",
+    "code-space/spintoolkit/methods/optimization.py": "SpinOptimizer raises DeprecationWarning",
+    "code-space/spintoolkit/methods/lswt/energy.py": "EnergyFunction raises DeprecationWarning",
+    "examples/nbcp_ground_state.py": "classical_search on the common model for the four cells, then select_on_manifold; the re-exported builder names are kept",
+    "code-space/tests/test_methods/test_classical_search.py": "5 tests",
+    "examples/classical_search_check.py": "this record"
+  },
+  "findings": [
+    "Benchmarks: square Neel -0.5, triangular 120 degrees -0.375 (sqrt3 x sqrt3), polarized square at h = 5: -2.0, exact within 6e-17; stationary after refinement.",
+    "The eight legacy SpinOptimizer searches stored in the regression snapshot (NBCP xxz and nn_soc, One-Four MSL, tilted field): the new search energy equals the stored differential-evolution energy to 15 digits (the same trajectory), and the refined energies agree within 1.4e-17.",
+    "NBCP example configuration (J_Gamma = 0.1 meV, 0.376418 meV field): Four MSL is the classical ground state (-0.119454043 meV per site) and select_on_manifold reports no_degeneracy, as in the D27 record.",
+    "Verification scripts of earlier stages (2b, D17 orbit checks, regression snapshot) keep the former classes to reproduce their records; they now emit DeprecationWarning."
+  ],
+  "report": {
+    "benchmarks": [
+      {
+        "case": "square Neel",
+        "energy": -0.5,
+        "expected": -0.5,
+        "difference": 0.0,
+        "evaluations": 4613,
+        "seconds": 0.19
+      },
+      {
+        "case": "triangular 120",
+        "energy": -0.37500000000000006,
+        "expected": -0.375,
+        "difference": -5.551115123125783e-17,
+        "evaluations": 16531,
+        "seconds": 0.57
+      },
+      {
+        "case": "square polarized, h = 5",
+        "energy": -2.0,
+        "expected": -2.0,
+        "difference": 0.0,
+        "evaluations": 723,
+        "seconds": 0.03
+      }
+    ],
+    "snapshot_searches": [
+      {
+        "family": "xxz",
+        "cell": "one_msl",
+        "legacy_search_energy": -0.014634289173723586,
+        "new_search_energy": -0.014634289173723586,
+        "legacy_refined_energy": -0.014634289173772574,
+        "new_energy": -0.014634289173772574,
+        "refined_difference": 0.0,
+        "seconds": 0.04
+      },
+      {
+        "family": "xxz",
+        "cell": "two_msl",
+        "legacy_search_energy": -0.04516028394411088,
+        "new_search_energy": -0.04516028394411088,
+        "legacy_refined_energy": -0.04516028394658555,
+        "new_energy": -0.04516028394658555,
+        "refined_difference": 0.0,
+        "seconds": 0.16
+      },
+      {
+        "family": "xxz",
+        "cell": "three_msl",
+        "legacy_search_energy": -0.06607981763026832,
+        "new_search_energy": -0.06607981763026832,
+        "legacy_refined_energy": -0.06607981764385826,
+        "new_energy": -0.06607981764385826,
+        "refined_difference": 0.0,
+        "seconds": 0.24
+      },
+      {
+        "family": "xxz",
+        "cell": "four_msl",
+        "legacy_search_energy": -0.0520319262649413,
+        "new_search_energy": -0.05203192626494131,
+        "legacy_refined_energy": -0.05203192627436648,
+        "new_energy": -0.05203192627436648,
+        "refined_difference": 0.0,
+        "seconds": 0.69
+      },
+      {
+        "family": "nn_soc",
+        "cell": "one_msl",
+        "legacy_search_energy": -0.014634289173723586,
+        "new_search_energy": -0.014634289173723572,
+        "legacy_refined_energy": -0.014634289173772574,
+        "new_energy": -0.014634289173772574,
+        "refined_difference": 0.0,
+        "seconds": 0.04
+      },
+      {
+        "family": "nn_soc",
+        "cell": "two_msl",
+        "legacy_search_energy": -0.06009908896518174,
+        "new_search_energy": -0.06009908896518175,
+        "legacy_refined_energy": -0.06009908896807623,
+        "new_energy": -0.06009908896807623,
+        "refined_difference": 0.0,
+        "seconds": 0.11
+      },
+      {
+        "family": "nn_soc",
+        "cell": "three_msl",
+        "legacy_search_energy": -0.06607981763026832,
+        "new_search_energy": -0.06607981763026832,
+        "legacy_refined_energy": -0.06607981764385824,
+        "new_energy": -0.06607981764385826,
+        "refined_difference": -1.3877787807814457e-17,
+        "seconds": 0.23
+      },
+      {
+        "family": "nn_soc",
+        "cell": "four_msl",
+        "legacy_search_energy": -0.06143237871260505,
+        "new_search_energy": -0.06143237871260504,
+        "legacy_refined_energy": -0.06143237874359515,
+        "new_energy": -0.061432378743595153,
+        "refined_difference": -6.938893903907228e-18,
+        "seconds": 0.62
+      }
+    ],
+    "example_configuration": {
+      "one_msl": -0.09445899999999999,
+      "two_msl": -0.10966707608474616,
+      "three_msl": -0.10185652015068476,
+      "four_msl": -0.11945404250454764
+    }
+  },
+  "tests": {
+    "result": "491 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0"
+  }
+}

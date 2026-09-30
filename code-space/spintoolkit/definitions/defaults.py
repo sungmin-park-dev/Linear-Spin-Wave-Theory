@@ -42,6 +42,13 @@ CLASSICAL_REFINE_GTOL = 1e-14      # E0 per radian per site, L-BFGS-B gradient t
 CLASSICAL_REFINE_NEWTON_STEPS = 5  # Newton steps after L-BFGS-B
 CLASSICAL_REFINE_ROUNDS = 20       # L-BFGS-B rounds, each re-centred on the previous result
 CLASSICAL_REFINE_RECENTRE = 1e-3   # radians; a larger move in a round triggers another round
+# Global classical search (D32): the differential-evolution settings of the former SpinOptimizer
+CLASSICAL_SEARCH_POPSIZE = 18
+CLASSICAL_SEARCH_TOL = 1e-9
+CLASSICAL_SEARCH_MAXITER = 800
+CLASSICAL_SEARCH_MUTATION = (0.5, 0.9)
+CLASSICAL_SEARCH_RECOMBINATION = 0.8
+CLASSICAL_SEARCH_SEED = 42
 
 SELECTION_MODE = "physics"         # "physics" or "fixed"
 SELECTION_GAP_RATIO = 1e-3         # fixed mode: w_min / w_next below this is a null mode

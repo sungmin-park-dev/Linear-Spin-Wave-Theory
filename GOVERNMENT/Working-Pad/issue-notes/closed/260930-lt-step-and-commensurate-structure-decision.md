@@ -1,12 +1,15 @@
 ---
 frontmatter-version: 1
 title: LT 단계 구현과 CommensurateStructure 정리 여부 판단
-section: issue-notes/open
+section: issue-notes/closed
 issue-type: discussion
-status: draft
+status: closed
+resolution: resolved
+outcome: docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json
 last-edited-by: claude
 created: 2026-09-30
 updated: 2026-09-30
+closed: 2026-09-30
 related:
   - GOVERNMENT/Working-Pad/issue-notes/closed/260602-commensurate-structure-test-failures.md
   - GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md
@@ -83,8 +86,12 @@ related:
 
 **2026-09-30 결정(D30, 사용자 결정):** 질문 1 — LT는 진단 도구로 구현한다(J(q) 최소 q*, 강한 제약 만족 여부,
 후보 셀 제안; 선택 단계는 바꾸지 않는다). 질문 2 — `CommensurateStructure`는 삭제한다(참조·호환 매핑·예시·테스트를
-함께 정리하고 옛 저장 객체 복원 여부를 먼저 확인한다). 구현은 LSWT 작업 재개 뒤에 하며, 구현·검증을 마치면 이 노트를
-닫는다.
+함께 정리하고 옛 저장 객체 복원 여부를 먼저 확인한다).
+
+**2026-09-30 구현·종결:** 사용자 요청으로 6단계에서 구현했다. 6a(`dd30584`): `CommensurateStructure`와 테스트 24개,
+내보내기, 호환 매핑, 실행되지 않던 예제를 지웠다(저장소에 이 클래스의 pickle 없음). 6b(`03351b8`): `luttinger_tisza`가
+J(q) 최소 q*, 후보 초격자, 단일 q 강한 제약을 보고하며 벤치마크(정사각, 삼각 √3×√3, J1-J2, Haldane, 키타에프)를
+재현한다. 기록은 `docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`.
 
 설계 검토면은 `docs/development` Beamer의 "미결 사항" 쪽이다(검토본 29).
 

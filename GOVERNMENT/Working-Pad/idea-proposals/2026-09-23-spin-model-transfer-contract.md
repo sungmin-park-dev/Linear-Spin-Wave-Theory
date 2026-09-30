@@ -40,7 +40,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 계산계 실현(열역학 극한·유한 토러스) | `system/geometry.py`의 `CalculationGeometry` |
 | §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
-| §1 고전 Hessian(접평면 좌표)과 국소 정밀화(2b) | `methods/classical.py`의 `tangent_expansion`, `refine_classical` |
+| §1 고전 Hessian(접평면 좌표)과 국소 정밀화(2b), 전역 고전 탐색(D32; 6c) | `methods/classical.py`의 `tangent_expansion`, `refine_classical`, `classical_search` |
 | §1 영점 에너지 상태 선택(D17, D19; 2b), 완화 경로 위 1-loop 유효 퍼텐셜(D28) | `methods/state_selection.py`의 `select_on_manifold`, `soft_path_point`, `LSWTZeroPointEnergy` |
 | §5 유한 토러스 항 전개(D23; 3단계) | `system/cluster.py`의 `expand_on_torus`, `allowed_momenta`; `classical_energy(..., geometry)` |
 | §5 ED 결과 본문, 최소 ED 도구(D10, D23; 3단계) | `methods/ed/`의 `solve_ed`, `EDSector`, `EDResult` |
@@ -800,6 +800,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   Open Questions에 반영했다.
 - 2026-09-30 (claude): D31(위상량 수치 기준과 적응형 적분 기본값 확정, Kubo·FHS의 역할)을 결정 목록과 §5에 반영했다.
 - 2026-09-30 (claude): D32(6단계 인터페이스)와 6a·6b 구현을 결정 목록과 구현 상태 표에 반영했다.
+- 2026-09-30 (claude): 6c(전역 고전 탐색, 기존 탐색 클래스 사용 중단)를 구현 상태 표에 반영했다.
 
 ## 관련 기록
 

@@ -2,9 +2,11 @@
 
 Finds the classical ground state among four candidate magnetic unit cells
 (One/Two/Three/Four MSL) for a triangular lattice antiferromagnet with
-bond-angle dependent exchange interactions, then selects among degenerate
+bond-angle dependent exchange interactions by the global classical search on
+the common model (classical_search, D32), then selects among degenerate
 classical states by the zero-point energy on the classical manifold
-(select_on_manifold, D17). The former MAGSWT grid search was removed (D27).
+(select_on_manifold, D17/D28). The former MAGSWT grid search was removed
+(D27); the former SpinOptimizer/EnergyFunction search is deprecated (D30).
 
 Parameters match legacy/scripts/modified_do_it.py for benchmarking.
 """
@@ -25,8 +27,9 @@ from model.nbcp.unit_cells import (
     DEFAULT_SPIN, DISP_NN, DISP_NNN,
     one_msl, two_msl, three_msl, four_msl,
 )
-from spintoolkit.methods.lswt.energy import EnergyFunction
-from spintoolkit.methods.optimization import SpinOptimizer
+from model import nbcp as nbcp_model
+from spintoolkit.methods.classical import classical_search
+from spintoolkit.system.conditions import ExternalConditions
 
 
 # ======================================================================
@@ -57,150 +60,51 @@ PHASES = {
 }
 
 
-def find_ground_state(config, opt_method="classical", N=20,
-                      angles_setting=None, verbose=True):
-    """Search all 4 MSL phases for the ground state.
+def find_ground_state(config, verbose=False):
+    """Classical ground state among the four candidate cells.
 
     Parameters
     ----------
     config : dict
-        NBCP configuration dictionary.
-    opt_method : str
-        "classical" (the only search; zero-point selection: select_zero_point).
-    N : int
-        BZ mesh density.
-    angles_setting : dict or None
-        Per-phase angle constraints, e.g.
-        {"One MSL": (None, 0), "Two MSL": (None, None, None, None), ...}.
+        NBCP couplings (meV) and the Zeeman field ``h`` (meV, g = I).
     verbose : bool
-        Print progress.
 
     Returns
     -------
-    opt_result : dict
-        Best result: phase_name, energy, angles, system, bz_type, MAGSWT.
-    cls_result : dict
-        Best classical result: phase_name, energy, angles, system, bz_type.
-    all_results : dict
-        Results for all phases.
+    best : dict
+        ``phase_name``, ``result`` (ClassicalSearchResult), ``model``,
+        ``conditions`` and ``bz_type`` of the lowest cell.
+    results : dict
+        ClassicalSearchResult of every cell.
     """
-    Exch_J = make_nn_exchange_matrices(config)
-    Exch_K = make_nnn_exchange_matrices(config)
-
-    if verbose:
-        print("=" * 60)
-        print("NBCP Ground State Search")
-        print("=" * 60)
-        for key, val in config.items():
-            print(f"  {key}: {val}")
-        print(f"  opt_method: {opt_method}, N: {N}")
-        print("=" * 60)
-
-        print("\nNearest-neighbor exchange matrices:")
-        for i, J in enumerate(Exch_J):
-            print(f"  Bond {i} (phi={i*120}deg):\n{J}\n")
-
-    optimizer = SpinOptimizer()
-    all_results = {}
-
-    opt_best_E = np.inf
-    cls_best_E = np.inf
-    opt_result = None
-    cls_result = None
-
-    for phase_name, phase_info in PHASES.items():
-        builder = phase_info["builder"]
-        bz_type = phase_info["bz_type"]
-
-        # Get angle setting for this phase
-        if angles_setting and phase_name in angles_setting:
-            a_setting = angles_setting[phase_name]
-        else:
-            a_setting = None
-
+    parameters = {k: v for k, v in config.items() if k != "h"}
+    model = nbcp_model.build_model(parameters)
+    conditions = ExternalConditions(field=config["h"])
+    results = {}
+    for phase_name in PHASES:
+        results[phase_name] = classical_search(
+            model, nbcp_model.SUPERCELLS[CELL_KEYS[phase_name]], conditions)
         if verbose:
-            print(f"\n--- {phase_name} ---")
-
-        # Build SpinSystem with random initial angles, convert to legacy dict
-        system = builder(config, angles=None, Exch_J=Exch_J, Exch_K=Exch_K)
-        spin_sys_data = system.to_legacy_dict(bz_type)
-
-        # Create energy function (still uses legacy dict)
-        cef = EnergyFunction(spin_sys_data, N=N, update_args=True)
-
-        # Optimize
-        phase_opt, phase_cls = optimizer.find_minimum(
-            cef, opt_method, a_setting, verbose=verbose,
-        )
-
-        all_results[phase_name] = phase_opt
-
-        # Rebuild SpinSystem with optimized angles
-        opt_system = builder(config, angles=tuple(phase_opt["angles"]),
-                             Exch_J=Exch_J, Exch_K=Exch_K)
-        cls_system = builder(config, angles=tuple(phase_cls["angles"]),
-                             Exch_J=Exch_J, Exch_K=Exch_K)
-
-        if phase_opt["energy"] < opt_best_E:
-            opt_best_E = phase_opt["energy"]
-            opt_result = {
-                "phase_name": phase_name,
-                "energy": phase_opt["energy"],
-                "angles": phase_opt["angles"],
-                "system": opt_system,
-                "bz_type": bz_type,
-                "MAGSWT": phase_opt["MAGSWT"],
-                "E_cl": phase_opt["E_cl"],
-                "E_qm": phase_opt["E_qm"],
-            }
-
-        if phase_cls["E_cl"] < cls_best_E:
-            cls_best_E = phase_cls["E_cl"]
-            cls_result = {
-                "phase_name": phase_name,
-                "energy": phase_cls["E_cl"],
-                "angles": phase_cls["angles"],
-                "system": cls_system,
-                "bz_type": bz_type,
-            }
-
-    if verbose:
-        print("\n" + "=" * 60)
-        print(f"Classical ground state: {cls_result['phase_name']}")
-        print(f"  E_cl = {cls_result['energy']:.6f}")
-        print(f"  angles = {np.round(cls_result['angles'], 4)}")
-        print(f"\n{opt_method} ground state: {opt_result['phase_name']}")
-        print(f"  E_tot = {opt_result['energy']:.6f}")
-        print(f"  E_cl  = {opt_result['E_cl']:.6f}")
-        print(f"  E_qm  = {opt_result['E_qm']:.6f}")
-        print(f"  MAGSWT (mu) = {opt_result['MAGSWT']:.2e}")
-        print(f"  angles = {np.round(opt_result['angles'], 4)}")
-        print("=" * 60)
-
-    return opt_result, cls_result, all_results
+            print(f"  {phase_name:9s}  E_cl = {results[phase_name].energy:.9f} meV per site")
+    best = min(results, key=lambda name: results[name].energy)
+    return ({"phase_name": best, "result": results[best], "model": model,
+             "conditions": conditions, "bz_type": PHASES[best]["bz_type"]}, results)
 
 
 CELL_KEYS = {"One MSL": "one_msl", "Two MSL": "two_msl",
              "Three MSL": "three_msl", "Four MSL": "four_msl"}
 
 
-def select_zero_point(config, classical_result, N=20):
+def select_zero_point(ground, N=20):
     """Zero-point selection on the classical manifold of the classical ground state.
 
-    Converts the legacy angles to the common model (Zeeman energy h as the
-    field with g = I) and runs :func:`select_on_manifold` with the LSWT
-    zero-point energy on the same Brillouin-zone type.
+    Runs :func:`select_on_manifold` with the LSWT zero-point energy on the
+    Brillouin-zone type of the ground-state cell.
     """
-    from model import nbcp
     from spintoolkit.methods.state_selection import lswt_zero_point_energy, select_on_manifold
-    from spintoolkit.system.conditions import ExternalConditions
 
-    parameters = {k: v for k, v in config.items() if k != "h"}
-    model = nbcp.build_model(parameters)
-    state = nbcp.candidate_state(model, CELL_KEYS[classical_result["phase_name"]],
-                                 classical_result["angles"])
-    return select_on_manifold(model, state, ExternalConditions(field=config["h"]),
-                              lswt_zero_point_energy(classical_result["bz_type"], N))
+    return select_on_manifold(ground["model"], ground["result"].state, ground["conditions"],
+                              lswt_zero_point_energy(ground["bz_type"], N))
 
 
 # ======================================================================
@@ -209,34 +113,22 @@ def select_zero_point(config, classical_result, N=20):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
+    from spintoolkit.system.conversion import to_spin_system
     from spintoolkit.visualization.spin_plotter import plot_spin_configuration
 
-    angles_setting = {
-        "One MSL":   (None, 0),
-        "Two MSL":   (None, None, None, None),
-        "Three MSL": (None, 0, None, 0, None, 0),
-        "Four MSL":  (None, None, None, None, None, None, None, None),
-    }
+    print("Classical search per candidate cell:")
+    ground, _ = find_ground_state(NBCP_CONFIG, verbose=True)
+    print(f"Classical ground state: {ground['phase_name']} "
+          f"(E_cl = {ground['result'].energy:.9f} meV per site)")
 
-    opt_result, cls_result, all_results = find_ground_state(
-        NBCP_CONFIG,
-        opt_method="classical",
-        N=20,
-        angles_setting=angles_setting,
-        verbose=True,
-    )
-
-    selection = select_zero_point(NBCP_CONFIG, cls_result, N=20)
+    selection = select_zero_point(ground, N=20)
     print(f"Zero-point selection on the classical manifold: {selection.verdict}")
     print(f"  {selection.message}")
 
-    # Plot classical ground state spin configuration
-    cls_system = cls_result["system"]
-    cls_phase = cls_result["phase_name"]
-    E_cl = cls_result["energy"]
-
+    system = to_spin_system(ground["model"], ground["result"].state, ground["conditions"])
     fig, ax = plot_spin_configuration(
-        cls_system, n_repeat=1, figsize=(8, 8),
-        title=f"NBCP {cls_phase} Classical Ground State  (E_cl = {E_cl:.6f})",
+        system, n_repeat=1, figsize=(8, 8),
+        title=f"NBCP {ground['phase_name']} Classical Ground State "
+              f"(E_cl = {ground['result'].energy:.6f})",
     )
     plt.show()

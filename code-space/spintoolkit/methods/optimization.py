@@ -16,6 +16,8 @@ its grid and finds lower energies between grid points, and
 energies along the classical orbit on any angle grid.
 """
 
+import warnings
+
 import numpy as np
 from typing import List, Union
 from scipy.optimize import differential_evolution
@@ -44,7 +46,12 @@ REMOVED_METHOD_NAMES = {"classical+quantum": "quantum", "quantum": "quantum",
 
 
 class SpinOptimizer:
-    """Optimizer for finding ground state spin configurations.
+    """Optimizer for finding ground state spin configurations (deprecated, D30).
+
+    Use :func:`spintoolkit.methods.classical.classical_search` on the common
+    model types; it runs the same differential evolution and refines the
+    result analytically (stage 6c). This class stays until the public-release
+    cleanup.
 
     Classical optimization via differential evolution; the zero-point energy is
     evaluated at the classical optimum.
@@ -56,6 +63,9 @@ class SpinOptimizer:
     """
 
     def __init__(self):
+        warnings.warn("SpinOptimizer is deprecated (D30); use "
+                      "spintoolkit.methods.classical.classical_search with SpinModel",
+                      DeprecationWarning, stacklevel=2)
         self.num_trials = 0
 
     def wrapping_by_angles(self, cef_obj, angles_setting, verbose=False):

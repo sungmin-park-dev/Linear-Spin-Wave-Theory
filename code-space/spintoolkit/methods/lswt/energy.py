@@ -6,6 +6,8 @@ optimization. It wraps the Brillouin zone sampling and LSWT Hamiltonian
 to provide callable energy functions of spin angles.
 """
 
+import warnings
+
 import numpy as np
 
 from spintoolkit.system.brillouin_zone import BrillouinZone
@@ -13,7 +15,13 @@ from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 
 class EnergyFunction:
-    """Construct energy density functions for spin system optimization.
+    """Construct energy density functions for spin system optimization (deprecated, D30).
+
+    Use :func:`spintoolkit.methods.classical.classical_energy` and
+    :func:`~spintoolkit.methods.classical.classical_search` for the classical
+    energy, and :func:`spintoolkit.methods.lswt.solve_lswt` or
+    ``state_selection.lswt_zero_point_energy`` for the zero-point energy. This
+    class stays until the public-release cleanup.
 
     Builds classical and quantum energy density functions as callable
     objects of spin angles, suitable for use with SpinOptimizer.
@@ -49,6 +57,8 @@ class EnergyFunction:
     """
 
     def __init__(self, spin_sys_data, N, update_args=False):
+        warnings.warn("EnergyFunction is deprecated (D30); use classical_energy/classical_search "
+                      "and solve_lswt on SpinModel/SpinState", DeprecationWarning, stacklevel=2)
         self._info_cache = None
         self.angle_args = None
         self.classical_energy_density = None

@@ -31,9 +31,13 @@ import warnings
 import numpy as np
 from scipy.optimize import minimize
 
+from dataclasses import dataclass, field
+
 from spintoolkit.definitions.defaults import (
     CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS, CLASSICAL_REFINE_RECENTRE,
-    CLASSICAL_REFINE_ROUNDS)
+    CLASSICAL_REFINE_ROUNDS, CLASSICAL_SEARCH_MAXITER, CLASSICAL_SEARCH_MUTATION,
+    CLASSICAL_SEARCH_POPSIZE, CLASSICAL_SEARCH_RECOMBINATION, CLASSICAL_SEARCH_SEED,
+    CLASSICAL_SEARCH_TOL)
 
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
@@ -364,3 +368,95 @@ def refine_classical(model: SpinModel, state: SpinState,
               "max_torque_before": before.max_torque, "max_torque_after": current.max_torque}
     return _with_directions(state, current.keys, current.directions,
                             {**dict(state.provenance), "refinement": record})
+
+
+# ---------------------------------------------------------------------------
+# Global search (stage 6c, D32)
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ClassicalSearchResult:
+    """Result of :func:`classical_search`.
+
+    Attributes
+    ----------
+    state : SpinState
+        The refined minimum (``refine_classical`` applied unless disabled).
+    energy : float
+        Its classical energy per site (E0).
+    search_energy : float
+        Energy per site of the differential-evolution result before refinement.
+    evaluations : int
+        Energy evaluations of the search.
+    settings : dict
+    """
+
+    state: SpinState
+    energy: float
+    search_energy: float
+    evaluations: int
+    settings: Dict = field(default_factory=dict)
+
+
+def _angles_to_directions(angles: np.ndarray) -> np.ndarray:
+    theta, phi = angles.reshape(-1, 2).T
+    return np.column_stack([np.sin(theta) * np.cos(phi), np.sin(theta) * np.sin(phi),
+                            np.cos(theta)])
+
+
+def classical_search(model: SpinModel, supercell, conditions: Optional[ExternalConditions] = None,
+                     seed: int = CLASSICAL_SEARCH_SEED, popsize: int = CLASSICAL_SEARCH_POPSIZE,
+                     tol: float = CLASSICAL_SEARCH_TOL, maxiter: int = CLASSICAL_SEARCH_MAXITER,
+                     mutation=CLASSICAL_SEARCH_MUTATION,
+                     recombination: float = CLASSICAL_SEARCH_RECOMBINATION,
+                     refine: bool = True) -> ClassicalSearchResult:
+    """Global minimum of the classical energy on a magnetic supercell.
+
+    Every spin of the supercell is parametrized by polar angles
+    ``(theta, phi)`` in ``(-pi, pi)`` and the energy per site is minimized by
+    differential evolution with the settings of the former ``SpinOptimizer``
+    (strategy best1bin, immediate updating, L-BFGS-B polishing). The result is
+    refined with :func:`refine_classical` (analytic gradient and Hessian in
+    tangent coordinates, free of the angular poles).
+
+    Parameters
+    ----------
+    model : SpinModel
+    supercell : (2, 2) int array_like
+        Magnetic supercell (rows in primitive lattice units).
+    conditions : ExternalConditions, optional
+    seed, popsize, tol, maxiter, mutation, recombination
+        Differential-evolution settings.
+    refine : bool
+        Apply :func:`refine_classical` to the search result.
+
+    Returns
+    -------
+    ClassicalSearchResult
+    """
+    from scipy.optimize import differential_evolution
+
+    conditions = conditions or ExternalConditions()
+    template = SpinState.from_function(model, supercell, lambda site, cell: (0.0, 0.0, 1.0),
+                                       {"origin": "classical_search"})
+    compiled = _compile(model, template, conditions)
+    n = len(compiled.keys)
+    count = [0]
+
+    def energy(angles):
+        count[0] += 1
+        return _energy_and_fields(compiled, _angles_to_directions(angles))[0] / n
+
+    result = differential_evolution(
+        energy, [(-np.pi, np.pi)] * (2 * n), strategy="best1bin", popsize=popsize, tol=tol,
+        mutation=mutation, recombination=recombination, maxiter=maxiter, polish=True,
+        updating="immediate", seed=seed)
+    settings = {"method": "differential_evolution", "seed": seed, "popsize": popsize, "tol": tol,
+                "maxiter": maxiter, "mutation": list(mutation), "recombination": recombination,
+                "polish": "L-BFGS-B", "refine": refine}
+    state = _with_directions(template, compiled.keys, _angles_to_directions(result.x),
+                             {"origin": "classical_search", "search": settings})
+    if refine:
+        state = refine_classical(model, state, conditions)
+    return ClassicalSearchResult(state, float(classical_energy(model, state, conditions)),
+                                 float(result.fun), int(count[0]), settings)

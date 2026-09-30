@@ -277,7 +277,16 @@ ED/TN 실행 가능성은 별도 검증이다.
 재현하고 NBCP XXZ는 단일 q로 불만족이다(486 통과). 기록은
 `docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`.
 
-**LSWT 작업 재개 뒤 할 일(D30).** (6a·6b는 위와 같이 구현했다.)
+6c를 구현했다: `classical_search`가 초격자의 모든 스핀을 (theta, phi)로 매개화해 기존 `SpinOptimizer`와 같은 차분 진화를
+돌린 뒤 `refine_classical`로 정밀화한다. 회귀 스냅샷에 저장된 기존 탐색 8건(NBCP xxz·nn_soc, One-Four MSL, 기운 장)에서
+탐색 에너지가 15자리까지 같고(같은 궤적) 정밀화 에너지 차이는 1.4e-17 이하다. 벤치마크(Néel, 120°, 장 속 편극)는 해석값
+그대로다. `SpinOptimizer`와 `EnergyFunction`은 사용 중단 경고를 내며, NBCP 예제는 새 탐색을 쓴다(491 통과, 스냅샷 차이 0).
+기록은 `docs/development/verification/stage6c-classical-search-2026-09-30.json`.
+
+**D30의 남은 일.** 사용 중단한 공개 진입점(`LSWTSolver`, SI Hall API, `SpinOptimizer`, `EnergyFunction`)의 삭제는 공개 배포
+정리 때 한다. 이전 단계의 검증 스크립트(2b, D17 궤도 확인, 회귀 스냅샷)는 기록 재현을 위해 기존 클래스를 계속 쓴다.
+
+**(참고) D30 당시의 할 일 목록.** (6a–6c로 구현했다.)
 
 - LT 진단 도구: J(q) 최소 q*, 강한 제약 만족 여부, 후보 셀 제안(선택 단계는 바꾸지 않음). 하이젠베르크·키타에프
   벤치마크의 기대 셀을 독립적으로 확인한다.
@@ -312,6 +321,7 @@ ED/TN 실행 가능성은 별도 검증이다.
 - 2026-09-30 (claude): D30으로 설계 미결 사항을 결정하고 재개 뒤 할 일을 적었다.
 - 2026-09-30 (claude): D31로 위상량 수치 기준과 적응형 적분 기본값을 확정했다.
 - 2026-09-30 (claude): D32와 6a·6b 구현·검증 결과를 기록했다.
+- 2026-09-30 (claude): 6c 구현·검증 결과를 기록했다.
 
 ## 관련 기록
 
