@@ -117,6 +117,29 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 검증 결과: 자기모멘트의 명시적 minus, 양의 field contraction과 $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$가 서로 일치함을 대수적으로 확인했다. 기존 semantic equation ID, draft 상태 및 내부 링크를 유지했다. Zeeman section·외부 근거·수정일 외 본문은 변경 전과 동일하며, 다른 이론 문서·원자료·코드·예제도 변경 전과 동일함을 확인했다. Quarto로 MathML HTML preview를 생성하고 출력에 Zeeman 수식 anchor와 갱신한 부호 정의가 들어 있음을 확인했다. 출력과 resource는 임시 디렉토리에 두었으며, source 옆의 생성 resource는 정리했다. 브라우저에서의 시각 검토, 문서 전체 Human Physics and Mathematics Review 및 legacy 코드 검증은 별도 대기다.
 
+## Luttinger–Tisza Draft — 2026-09-30
+
+사용자의 "LT 문서 진행" 지시에 따라 `docs/lswt/04-appendices/luttinger-tisza-method.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF와 reviewed TeX에는 해당 section이 없다. Restructured TeX에는 빈 TODO(overview, spin system optimization과의 연결)만 있다. 따라서 본문은 외부 문헌(Luttinger–Tisza 1946, Lyons–Kaplan 1960; APS 초록으로 서지와 주장 범위를 확인)과 문서 안의 유도에 근거한다. Kaplan–Menyuk 2007 리뷰는 서지를 확인하지 못해 인용하지 않았다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
+
+### 검토 묶음
+
+| 항목 | Draft의 처리 | 사용자 확인 사항 |
+|---|---|---|
+| LT 행렬 | 단위 벡터와 \(S_aS_b\)를 흡수한 \(\mathsf L_{\mathbf q}\)(full-position 위상, on-site \(S_a^2\mathsf D_a\) 포함, Zeeman 제외). stage 6b의 `lt_matrix`(D32)와 같은 정의다. 기호 \(\mathsf L\)을 새로 썼다(교환 \(\mathsf J_\ell\)와 구별). | 기호와 정의 |
+| 하한 | \(E_{\mathrm{cl}}/N_{\mathrm{site}}\ge\lambda_{\mathrm{LT}}\)와 등호 조건. | 없음 |
+| 단일 파수 조건 | 세 경우: 2Q∈G에서는 \(|\mathrm{Re}\,\mathbf u_a|=1\), 4Q∈G이고 2Q∉G에서는 \(\mathrm{Re}(\mathbf u\cdot\mathbf u)=0\)과 \(|\mathbf u|^2=2\)(x·y 각도 자유, uudd 포함), 그 외에는 \(\mathbf u\cdot\mathbf u=0\)(나선). 두 번째 경우는 문헌 인용이 아니라 유도다. | 유도 확인 |
+| 예시 | Bravais 격자 Heisenberg에서 \(\mathsf L=S^2J(\mathbf q)\mathsf I_3\), 나선 바닥상태(Lyons–Kaplan), 삼각격자 120° 상태 \(-\frac32JS^2\). | 없음 |
+| 일반화 | sublattice별 Lagrange 승수 하한 \(\max\sum\lambda_a\) s.t. \(\mathsf L_{\mathbf q}-\Lambda\succeq0\)을 유도했다. Lyons–Kaplan의 가중 약한 제약과는 "같은 목적의 일반화"로만 연결했고, 정확한 동치는 주장하지 않았다. | 서술 강도 |
+| 한계·LSWT 관계 | Zeeman 제외, 다중 Q, 퇴화 극소. 하한에 도달한 상태는 전역 최소이므로 \(\mathsf H_{\mathbf k}\succeq0\). | 없음 |
+
+새 equation ID 3개(`eq-lswt-lt-matrix`, `eq-lswt-lt-bound`, `eq-lswt-lt-single-q-length`)를 부여했으며 corpus 안에서 중복이 없다.
+
+### 검증과 코드 발견
+
+- \(\mathsf L_{\mathbf q}\)의 에너지 재현, 하한, 벤치마크(정사각 Néel·FM −0.5, 삼각 −0.375, J1–J2, 벌집 FM+DM, Kitaev)는 stage 6b 기록(`docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`)과 같다.
+- **코드 발견(D32 LT 진단의 거짓 음성):** `luttinger_tisza`는 2Q∉G인 모든 Q에 \(\mathbf u\cdot\mathbf u=0\)을 요구한다. 그래서 4Q∈G(1/4 벡터)에서 나선이 아닌 단일 파수 상태를 놓친다. 재현 예시는 정사각 격자 \(a_1\) 방향 2번째 이웃 Ising형 AFM \(\mathrm{diag}(0.2,0.2,1)\)과 \(a_2\) FM \(-\mathrm{diag}(0.2,0.2,1)\), S=1/2이다. 이때 λ_LT = −0.5, Q = (3/4, 0), 고유공간 1차원(z)에서 코드는 `strong_constraint=False`(잔차 2)를 준다. 그러나 uudd Ising 상태가 에너지 −0.5로 하한에 도달한다. 진단은 상태를 선택하지 않으므로(D30) 다른 결과를 틀리게 만들지는 않지만, "단일 q 상태 없음" 보고가 틀린다. 수정(4Q∈G 분기 추가와 회귀 테스트)은 사용자 승인 후 별도 코드 작업으로 한다.
+- Quarto preview는 경고와 미해결 참조가 없었다. 이는 출력 구조 검증이며 acceptance가 아니다.
+
 ## Correlations and Structure Factor Draft — 2026-09-30
 
 사용자 결정(2026-09-30): structure factor는 spin-correlations와 한 묶음으로 작성한다. 스핀 성분은 원문의 circular 규약 \(u_I^\alpha=\mathbf e_\alpha\cdot\mathbf e_I^+\)를 쓰고, 스펙트럼 함수는 완전 유도한다. 두 문서를 skeleton에서 본문 draft로 작성했다. Primary PDF pp. 15–23과 reviewed TeX(lines 1379–2157)를 대조했다. Circular 벡터 \(\mathbf e_I^\pm\)는 local frame 문서의 정의를 쓰고, 스핀 연산자의 전개는 그 정의에서 유도되므로 미결인 "행렬 성분 규약"(notation Conventions Not Yet Fixed)에 기대지 않는다. 두 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
@@ -246,6 +269,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | Quadratic \(H_2\) | `draft` | odd terms와 \(H_4\)의 문서 범위 결정 |
 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | General Nambu/BdG form | `draft` | A1, A2, A5, A10 해결 전 explicit block 보류 |
 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | Bogoliubov transformation, paraunitary condition, particle–hole spectrum, diagonal Hamiltonian과 zero-point correction, Colpa construction, semidefinite·indefinite 경계 | `draft` (2026-09-30 본문 작성) | 아래 Paraunitary Diagonalization Draft 검토 묶음의 사용자 물리·수학 검토 |
+| `docs/lswt/04-appendices/luttinger-tisza-method.md` | 약한 제약과 LT 행렬, 하한, 단일 파수 조건 세 경우, sublattice별 Lagrange 하한, 한계, LSWT와의 관계 | `draft` (2026-09-30 본문 작성, primary source 없음) | 아래 Luttinger–Tisza Draft 검토 묶음 |
 | `docs/lswt/02-observables/spin-correlations.md` | C(q,t) 정의·대칭, circular 전개, 전치 vertex와 N_q(t), 부격자 분해, elastic Bragg 항, 실공간 동시각 상관 | `draft` (2026-09-30 본문 작성) | 아래 Correlations and Structure Factor Draft 검토 묶음 |
 | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | one-magnon weight, 정적·동적 structure factor, detailed balance, broadening, 중성자 투영, retarded 함수·스펙트럼 함수·FDT·합 규칙 | `draft` (2026-09-30 본문 작성) | 같은 검토 묶음 |
 | `docs/lswt/02-observables/thermodynamics.md` | Magnon-gas validity, partition function, U, F, entropy, heat capacity, normalization, zero-mode limits | `draft` (2026-09-30 본문 작성) | 아래 Thermodynamics Draft 검토 묶음의 사용자 물리·수학 검토 |
@@ -257,11 +281,10 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 |---|---|---|
 | `docs/lswt/02-observables/magnon-observables.md` | Spectrum, energy correction, occupation, correlation matrix | `draft` skeleton |
 | `docs/lswt/03-examples/worked-example.md` | Single-mode quadratic-boson example | `draft` skeleton |
-| `docs/lswt/04-appendices/luttinger-tisza-method.md` | Luttinger-Tisza method | `draft` skeleton; source TODO |
 | `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
 | `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
 
-현재 합계는 일부 본문이 작성된 draft 12개, skeleton 5개, accepted 0개다.
+현재 합계는 일부 본문이 작성된 draft 13개, skeleton 4개, accepted 0개다.
 
 ## Source and Legacy Retention
 
@@ -338,7 +361,7 @@ Concept ownership은 다음 원칙을 따른다.
 `docs/lswt/04-appendices/luttinger-tisza-method.md`는 legacy converted Markdown에 대응 본문이
 없고 restructured TeX에 빈 TODO만 있다. 따라서 소유 파일은 유지하되 primary
 source와 현재 LSWT scope가 확인될 때까지 `source-only`에 준하는 미결 상태로
-둔다.
+둔다. 2026-09-30 사용자가 LT 문서 작성을 지시해 범위에 포함했다(아래 Luttinger–Tisza Draft). Primary source가 없으므로 본문은 외부 문헌과 문서화된 유도에 근거한다.
 
 이 mapping이 확정돼도 legacy 내용이 이식됐다는 뜻은 아니다. 각 row는 source
 구간 대조, canonical draft 반영, 사용자 검토를 거쳐야 `covered`로 바뀐다.
@@ -397,7 +420,7 @@ source-only evidence로 보존한다.
 |---|---|
 | Introduction | Restructured TeX에 content TODO가 남아 있음 |
 | Validity and limitations | Restructured TeX에 content TODO가 남아 있음 |
-| Luttinger-Tisza method | Primary PDF와 reviewed TeX에는 section이 없고, restructured TeX에만 빈 TODO section이 있음 |
+| Luttinger-Tisza method | Primary PDF와 reviewed TeX에는 section이 없고, restructured TeX에만 빈 TODO section이 있음. 2026-09-30 외부 문헌 기반 draft 작성 |
 
 ## Source Tooling Issues
 
@@ -432,7 +455,7 @@ source-only evidence로 보존한다.
 6. Correlation과 structure factor에서 \(N\), \(L\), \(m_s\) normalization
 7. Positive-semidefinite Goldstone mode를 Colpa 문서 범위에 포함할지 (2026-09-30 diagonalization draft가 경계 절을 제안; 사용자 결정 대기)
 8. Physical \(N\) bands와 \(2N\) BdG space의 topology sum convention (2026-09-30 topology draft가 D29 convention을 제안; 사용자 결정 대기)
-9. \(H_4\), Dyson-Maleev, Luttinger-Tisza를 현재 정본화 범위에 포함할지
+9. \(H_4\), Dyson-Maleev, Luttinger-Tisza를 현재 정본화 범위에 포함할지 (Luttinger–Tisza는 2026-09-30 사용자 지시로 appendix draft 작성; \(H_4\)와 Dyson–Maleev는 미결)
 
 ## Structural Gate Status
 
