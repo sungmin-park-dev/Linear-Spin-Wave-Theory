@@ -137,6 +137,21 @@
   \slidesource{2026-09-30 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d32]{결정 기록 (D32): 6단계 인터페이스}
+  \framesubtitle{2026-09-30 사용자 결정(추천안 채택). D30의 구현 방법.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    LT 진단 & \texttt{luttinger\_tisza(model, mesh=(N, N)) -> LTReport}(\texttt{methods/luttinger\_tisza.py}): $\mathbf q^*$, 분수와 후보 초격자, 고유공간 차원, 단일 q 강한 제약과 그 상태, 퇴화 표시; 영장; 선택하지 않음 \\
+    전역 고전 탐색 & \texttt{classical\_search(model, supercell, conditions, seed=42, ...)}(\texttt{methods/classical.py}): $(\theta,\phi)$ 차분 진화(기존 설정) 뒤 \texttt{refine\_classical}; 각도 고정 없음 \\
+    진행 & 6a(정리) $\to$ 6b $\to$ 6c; 6b·6c는 검증 뒤 사용자 확인 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
@@ -469,6 +484,9 @@
     \bibitem{d28impl}
       D28 구현 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행; \texttt{d28-provider-projection-2026-09-30.json} · $k=0$ 구속 모드 투영.
+    \bibitem{stage6b}
+      6b 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json} · \texttt{examples/luttinger\_tisza\_check.py}.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

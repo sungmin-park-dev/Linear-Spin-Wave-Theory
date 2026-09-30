@@ -1,0 +1,509 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "dd30584",
+  "scope": "Stage 6b (D30, API D32): Luttinger-Tisza diagnostic at zero field.",
+  "api": "spintoolkit.methods.luttinger_tisza(model, mesh=(48, 48)) -> LTReport (lambda_min, minima: LTWaveVector with fractional q*, fraction, supercell, multiplicity, strong_constraint, state, state_energy; near_minimal_fraction, extended_degeneracy); lt_matrix(model, q).",
+  "method": "J(q)_ab = (1/2)[S_a S_b J exp(i q.(r_b - r_a)) + h.c.] over the bilinear terms (D13 full positions, unit vectors); lambda_min over a zone-centred mesh refined by Nelder-Mead; minima identified up to q -> -q and G; fractions with denominator <= 12 give the smallest supercell holding q*; the single-q strong constraint is fitted in the eigenspace (u_a . u_a = 0 and |u_a|^2 = 2 for generic q*, |Re u_a| = 1 when 2q* is a reciprocal vector, u_a = w_a exp(i q*.r_a)). Zeeman terms ignored; multi-q states and generalized LT not treated; the tool never selects the state.",
+  "added": {
+    "code-space/spintoolkit/methods/luttinger_tisza.py": "luttinger_tisza, lt_matrix, LTReport, LTWaveVector",
+    "code-space/tests/test_methods/test_luttinger_tisza.py": "10 tests",
+    "examples/luttinger_tisza_check.py": "this record"
+  },
+  "findings": [
+    "J(q) reproduces the classical energy of random commensurate states on five models (triangular, J1-J2, honeycomb FM + DM, Kitaev, NBCP with J_PD) within 1.4e-16.",
+    "Benchmarks: square FM and Neel -0.5, triangular AFM -0.375 = -3JS^2/2 at K with the sqrt3 x sqrt3 cell (det 3), J1-J2 square Neel (0.3) and stripe (0.7, both stripes) at -0.35 and degenerate lines at J2 = J1/2 (-0.25, extended), honeycomb FM + DM at the zone centre (-0.375), Kitaev flat band (all mesh points minimal, -|K|S^2/2); the single-q strong constraint holds in each and the constructed state reaches the bound.",
+    "NBCP XXZ (zero field): q* at K with a one-dimensional eigenspace (the z component); the single-q strong constraint fails (residual 2), as expected for its multi-component ground state; the bound -0.046875 meV per site lies below the energies of random states."
+  ],
+  "report": {
+    "cases": [
+      {
+        "model": "square FM (J = -1)",
+        "lambda_min": -0.5,
+        "expected": -0.5,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.00043402777777777775,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.0,
+              0.0
+            ],
+            "fraction": [
+              "0",
+              "0"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.920141689132414e-17,
+            "state_energy": -0.5000000000000001
+          }
+        ],
+        "seconds": 0.11
+      },
+      {
+        "model": "square Neel (J = 1)",
+        "lambda_min": -0.5,
+        "expected": -0.5,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.00043402777777777775,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.5,
+              0.5
+            ],
+            "fraction": [
+              "1/2",
+              "1/2"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                1,
+                -1
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.920141689132414e-17,
+            "state_energy": -0.5000000000000002
+          }
+        ],
+        "seconds": 0.11
+      },
+      {
+        "model": "triangular AFM (J = 1)",
+        "lambda_min": -0.3750000000000001,
+        "expected": -0.375,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.0008680555555555555,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.3333333333333333,
+              0.6666666666666666
+            ],
+            "fraction": [
+              "1/3",
+              "2/3"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                2,
+                -1
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.295648015240379e-16,
+            "state_energy": -0.37499999999999994
+          }
+        ],
+        "seconds": 0.13
+      },
+      {
+        "model": "J1-J2 square, J2/J1 = 0.3",
+        "lambda_min": -0.3500000000000001,
+        "expected": -0.35,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.00043402777777777775,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.5,
+              0.5
+            ],
+            "fraction": [
+              "1/2",
+              "1/2"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                1,
+                -1
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.920141689132414e-17,
+            "state_energy": -0.3500000000000001
+          }
+        ],
+        "seconds": 0.16
+      },
+      {
+        "model": "J1-J2 square, J2/J1 = 0.5",
+        "lambda_min": -0.2500000000000001,
+        "expected": -0.25,
+        "extended_degeneracy": true,
+        "near_minimal_fraction": 0.04123263888888889,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.5625,
+              0.5
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 8.295648015240379e-16,
+            "state_energy": null
+          },
+          {
+            "fractional": [
+              0.5,
+              0.8333333333333334
+            ],
+            "fraction": [
+              "1/2",
+              "5/6"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                2,
+                0
+              ],
+              [
+                1,
+                3
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 6.47522841326931e-16,
+            "state_energy": -0.24999999999999997
+          },
+          {
+            "fractional": [
+              0.5,
+              0.5625
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 7.218133542383268e-16,
+            "state_energy": null
+          },
+          {
+            "fractional": [
+              0.8333333333333334,
+              0.5
+            ],
+            "fraction": [
+              "5/6",
+              "1/2"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                3,
+                1
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.760512313566854e-16,
+            "state_energy": -0.24999999999999997
+          }
+        ],
+        "seconds": 0.33
+      },
+      {
+        "model": "J1-J2 square, J2/J1 = 0.7",
+        "lambda_min": -0.35,
+        "expected": -0.35,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.0008680555555555555,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.5,
+              0.0
+            ],
+            "fraction": [
+              "1/2",
+              "0"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 8.920141689132414e-17,
+            "state_energy": -0.3500000000000001
+          },
+          {
+            "fractional": [
+              0.0,
+              0.5
+            ],
+            "fraction": [
+              "0",
+              "1/2"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 5.381390578112624e-17,
+            "state_energy": -0.35
+          }
+        ],
+        "seconds": 0.18
+      },
+      {
+        "model": "honeycomb FM + DM (D = 0.2)",
+        "lambda_min": -0.3750000000000003,
+        "expected": -0.375,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.00043402777777777775,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.0,
+              0.0
+            ],
+            "fraction": [
+              "0",
+              "0"
+            ],
+            "multiplicity": 3,
+            "supercell": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "strong_constraint": true,
+            "strong_residual": 1.7556052506230378e-16,
+            "state_energy": -0.375
+          }
+        ],
+        "seconds": 0.32
+      },
+      {
+        "model": "Kitaev (K = -1)",
+        "lambda_min": -0.12500000000000008,
+        "expected": -0.125,
+        "extended_degeneracy": true,
+        "near_minimal_fraction": 1.0,
+        "strong_constraint": true,
+        "minima": [
+          {
+            "fractional": [
+              0.4166666666666667,
+              0.2708333333333333
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 8.549545999028409e-16,
+            "state_energy": null
+          },
+          {
+            "fractional": [
+              0.7291666666666666,
+              0.4583333333333333
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 7.914540122131389e-16,
+            "state_energy": null
+          },
+          {
+            "fractional": [
+              0.10416666666666667,
+              0.020833333333333332
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 1.465400913478897e-15,
+            "state_energy": null
+          },
+          {
+            "fractional": [
+              0.2916666666666667,
+              0.7916666666666666
+            ],
+            "fraction": null,
+            "multiplicity": 3,
+            "supercell": null,
+            "strong_constraint": true,
+            "strong_residual": 1.0127076430598954e-11,
+            "state_energy": null
+          }
+        ],
+        "seconds": 0.31
+      },
+      {
+        "model": "NBCP XXZ (Jxy 0.075, Jz 0.125 meV)",
+        "lambda_min": -0.04687500000000001,
+        "expected": null,
+        "extended_degeneracy": false,
+        "near_minimal_fraction": 0.0008680555555555555,
+        "strong_constraint": false,
+        "minima": [
+          {
+            "fractional": [
+              0.3333333333333333,
+              0.3333333333333333
+            ],
+            "fraction": [
+              "1/3",
+              "1/3"
+            ],
+            "multiplicity": 1,
+            "supercell": [
+              [
+                1,
+                -1
+              ],
+              [
+                2,
+                1
+              ]
+            ],
+            "strong_constraint": false,
+            "strong_residual": 1.9999999999999996,
+            "state_energy": null
+          }
+        ],
+        "seconds": 0.14
+      }
+    ],
+    "fourier_identity": [
+      {
+        "model": "triangular",
+        "supercell": [
+          [
+            1,
+            1
+          ],
+          [
+            -1,
+            2
+          ]
+        ],
+        "difference": 2.7755575615628914e-17
+      },
+      {
+        "model": "J1-J2 0.4",
+        "supercell": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "difference": 1.3877787807814457e-16
+      },
+      {
+        "model": "honeycomb FM + DM",
+        "supercell": [
+          [
+            2,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "difference": 1.3877787807814457e-17
+      },
+      {
+        "model": "Kitaev K = 0.7",
+        "supercell": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "difference": 6.938893903907228e-18
+      },
+      {
+        "model": "NBCP",
+        "supercell": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "difference": 0.0
+      }
+    ]
+  },
+  "tests": {
+    "result": "486 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0"
+  }
+}

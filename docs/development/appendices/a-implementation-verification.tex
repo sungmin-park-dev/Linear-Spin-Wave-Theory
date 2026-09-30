@@ -713,6 +713,26 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{D30 결정과 구현}{contract}
 \end{frame}
 
+\begin{frame}[label=stage6b]{6b: LT 진단 도구가 벤치마크의 셀과 에너지를 재현한다}
+  \framesubtitle{2026-09-30 · D30, D32 · \texttt{luttinger\_tisza(model, mesh)}: $J(\mathbf q)$ 최소 $\mathbf q^*$, 후보 초격자, 단일 q 강한 제약; 영장, 선택하지 않는다.}
+  \footnotesize\renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\textwidth}{@{}P{3.4cm}P{2.4cm}Y@{}}
+    \toprule
+    모델 & $\lambda_{\min}$ (스핀당) & 결과 \\
+    \midrule
+    정사각 FM / Néel & $-0.5$ / $-0.5$ & Γ / M(초격자 det 2), 강한 제약 만족 \\
+    삼각 반강자성 & $-0.375=-\tfrac32JS^2$ & K, $\sqrt3\times\sqrt3$(det 3), 강한 제약 만족, 120° 에너지와 일치 \\
+    J1--J2 정사각 & $-0.35$, $-0.25$, $-0.35$ & $J_2/J_1=0.3$ Néel, $0.5$ 퇴화 선(확장 퇴화), $0.7$ 두 stripe \\
+    Haldane 강자성 & $-0.375$ & Γ \\
+    키타에프($K=-1$) & $-0.125=-\tfrac12|K|S^2$ & 평평한 밴드(격자점 100\% 최소) \\
+    NBCP XXZ & $-0.046875$ & K, 고유공간 1차원(z 성분), 단일 q 강한 제약 불만족(잔차 2) --- 여러 성분이 섞인 바닥상태와 부합 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{독립 확인: 무작위 정합 상태 5종(DM·키타에프·NBCP 포함)에서 $\sum_{\mathbf q}\mathbf n^\dagger J(\mathbf q)\mathbf n$ = 고전 에너지($1.4\times10^{-16}$). 여러 q 상태와 일반화 LT는 다루지 않는다. 테스트 486 통과, 스냅샷 144개 차이 0.}
+  \slidesource{6b 검증 기록}{stage6b}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
