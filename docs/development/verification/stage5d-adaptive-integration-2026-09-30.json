@@ -1,0 +1,893 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "cbc9a7f",
+  "scope": "Stage 5d: adaptive k integration of kappa_xy / T for curvature concentrated near small gaps and zero modes.",
+  "decision": "User decision 2026-09-30 (recommendations adopted): kappa_xy / T only (no adaptive Chern integration); optional argument thermal_hall(..., integration=AdaptiveIntegration(...)); provisional defaults relative 1e-3, absolute 1e-7 (k_B^2 / hbar), 2e5 points, depth 12.",
+  "method": "Cells in reciprocal-basis fractions start as the result mesh. Each cell holds its midpoint value and the midpoint values of its four quarters; |quarters - midpoint| is its error estimate and the Richardson combination (4 quarters - midpoint) / 3 its value. The cells holding half of the total error are split (Doerfler marking; 20 new points per split) until the total error estimate is below max(absolute, relative * |kappa / T|) at every temperature, the budget is spent, or only cells at the depth limit remain. H(k), dH/dk and the Colpa diagonalization are evaluated at new momenta; the integrand is the shared pair-form kernel of 5c.",
+  "added": {
+    "code-space/spintoolkit/observables/berry.py": "AdaptiveIntegration, thermal_hall(integration=...), ThermalHall.integration diagnostics (error estimate per temperature, points, convergence, stop reason, cells at the depth limit, largest-error cells, smallest particle gap)",
+    "code-space/spintoolkit/definitions/defaults.py": "TOPOLOGY_ADAPTIVE_RELATIVE, TOPOLOGY_ADAPTIVE_ABSOLUTE, TOPOLOGY_ADAPTIVE_MAX_POINTS, TOPOLOGY_ADAPTIVE_MAX_DEPTH",
+    "code-space/tests/test_methods/test_berry.py": "3 adaptive tests (23 in the file)",
+    "examples/lswt_stage5d_check.py": "this record"
+  },
+  "findings": [
+    "Narrow gaps (Haldane D = 0.01, 0.003, 0.001, t = 0.3): the adaptive result differs from the uniform 2048 x 2048 two-band reference (4.2e6 points) by 1.8e-8, 8.8e-10, 9.5e-10 with 57k, 77k, 92k points; the uniform 12 x 12 mesh is 23-49 percent off and 1024 x 1024 still 1.6e-4 (relative) off at D = 0.001.",
+    "The error estimate bounds the actual error in every reference case and is conservative by 10^2 to 10^4 (it is the unextrapolated difference while the value is extrapolated).",
+    "Smooth integrand (D = 0.2): the uniform midpoint rule on the periodic zone is exponentially accurate (12 x 12 exact to 1e-10); the adaptive cubature is second order locally and spends 24k points there. Adaptive integration is for sharp features, not a general replacement.",
+    "Kitaev [111] h = 2: adaptive equals uniform 192 x 192 within 4e-7 (relative) with 43k points.",
+    "NBCP (J_PD or J_Gamma = 0.01 meV): with the default budget (2e5 points, about 100 s per state) the error estimates are 0.1-0.35 percent and three of four cases stop at the budget; a 1e6-point run (about 500 s) converges and reproduces the 2e5-point values to six digits (Y J_PD identical, V J_PD within 1e-6), so the actual error is far below the estimate. The uniform 192 x 192 values of stage 5b were off by 1-4 percent (J_PD), and Y J_Gamma by 27 percent at N = 192.",
+    "Accidental zero modes at Gamma (linear dispersion E ~ 0.16 |q| meV for Y J_PD): the integrand grows as 1/|q| (4.1, 41, 413 at |q| = 1e-2, 1e-3, 1e-4 in fractions), an integrable singularity in two dimensions, so kappa is finite within LSWT; the refinement reaches the depth limit there with a small remaining error. A physical pseudo-Goldstone gap (beyond LSWT) would cut it off.",
+    "Coplanar triangular 120 degrees: kappa stays zero (3e-18) with 720 points."
+  ],
+  "budget_1e6": [
+    {
+      "phase": "Y",
+      "couplings": {
+        "JPD": 0.01
+      },
+      "rel": 0.001,
+      "kappa": [
+        -0.0030208891893125783,
+        0.010177830188259684,
+        0.02242601356224675,
+        0.014467911681373768
+      ],
+      "est": [
+        2.214030266822664e-06,
+        4.6038838239441185e-06,
+        6.656986923209772e-06,
+        5.3167932019325035e-06
+      ],
+      "points": 973200,
+      "converged": true,
+      "reason": "tolerance reached",
+      "depth": 12,
+      "at_limit": [
+        6.868936063929201e-07,
+        6.86918016520266e-07,
+        6.869326625967895e-07,
+        6.869375446222143e-07
+      ],
+      "gap": 0.0028760362648945492,
+      "low": 4.371402706534706e-07,
+      "seconds": 527
+    },
+    {
+      "phase": "V",
+      "couplings": {
+        "JPD": 0.01
+      },
+      "rel": 0.001,
+      "kappa": [
+        -0.13756049743714666,
+        -0.08538328180156193,
+        -0.039348480101383726,
+        -0.023293174757465934
+      ],
+      "est": [
+        1.6634973829458256e-05,
+        2.1711898377994798e-05,
+        2.4753404932388766e-05,
+        2.2882729153655808e-05
+      ],
+      "points": 911860,
+      "converged": true,
+      "reason": "tolerance reached",
+      "depth": 12,
+      "at_limit": [
+        2.0393364629928717e-06,
+        2.0393472468779024e-06,
+        2.0393537172092214e-06,
+        2.039355873985845e-06
+      ],
+      "gap": 0.002533103787438512,
+      "low": 3.313648787712789e-07,
+      "seconds": 488
+    }
+  ],
+  "report": {
+    "haldane": [
+      {
+        "D": 0.2,
+        "temperatures": [
+          0.05,
+          0.3
+        ],
+        "uniform_reference": {
+          "256": [
+            -2.2523278336304344e-06,
+            -0.07338860730666966
+          ],
+          "512": [
+            -2.2523278334756497e-06,
+            -0.07338860730666964
+          ],
+          "1024": [
+            -2.25232783355244e-06,
+            -0.07338860730666964
+          ],
+          "2048": [
+            -2.2523278336041726e-06,
+            -0.07338860730666964
+          ]
+        },
+        "uniform_12": [
+          -2.252351369645843e-06,
+          -0.0733884941864191
+        ],
+        "adaptive": [
+          -2.252327991520545e-06,
+          -0.07338875533434389
+        ],
+        "actual_error": [
+          1.5791637237498688e-13,
+          1.4802767424326735e-07
+        ],
+        "error_estimate": [
+          1.0610426859580963e-08,
+          4.9769518753437874e-05
+        ],
+        "points": 24220,
+        "converged": true,
+        "max_depth_reached": 3,
+        "seconds": 8.2
+      },
+      {
+        "D": 0.01,
+        "temperatures": [
+          0.05,
+          0.3
+        ],
+        "uniform_reference": {
+          "256": [
+            -1.1076090520709206e-07,
+            -0.010452085083051533
+          ],
+          "512": [
+            -1.107609053128481e-07,
+            -0.010452084875713842
+          ],
+          "1024": [
+            -1.1076090500027404e-07,
+            -0.010452084875713882
+          ],
+          "2048": [
+            -1.1076090502172922e-07,
+            -0.010452084875713875
+          ]
+        },
+        "uniform_12": [
+          -1.1076192332324577e-07,
+          -0.008069396078011156
+        ],
+        "adaptive": [
+          -1.1076861334068858e-07,
+          -0.010452067088404942
+        ],
+        "actual_error": [
+          7.708318959357292e-12,
+          1.7787308933051027e-08
+        ],
+        "error_estimate": [
+          8.871339794169654e-10,
+          8.723909637693619e-06
+        ],
+        "points": 56920,
+        "converged": true,
+        "max_depth_reached": 7,
+        "seconds": 21.3
+      },
+      {
+        "D": 0.003,
+        "temperatures": [
+          0.05,
+          0.3
+        ],
+        "uniform_reference": {
+          "256": [
+            -3.322710638027962e-08,
+            -0.004030605562380059
+          ],
+          "512": [
+            -3.3227107334409066e-08,
+            -0.004026598508455927
+          ],
+          "1024": [
+            -3.32271072245134e-08,
+            -0.0040265700744073875
+          ],
+          "2048": [
+            -3.322710716005792e-08,
+            -0.004026570072090017
+          ]
+        },
+        "uniform_12": [
+          -3.3227408224963435e-08,
+          -0.002452859192451658
+        ],
+        "adaptive": [
+          -3.3229481027889675e-08,
+          -0.004026569187594832
+        ],
+        "actual_error": [
+          2.373867831753994e-12,
+          8.844951854269922e-10
+        ],
+        "error_estimate": [
+          2.565888342595786e-10,
+          3.230954771368908e-06
+        ],
+        "points": 76720,
+        "converged": true,
+        "max_depth_reached": 9,
+        "seconds": 24.3
+      },
+      {
+        "D": 0.001,
+        "temperatures": [
+          0.05,
+          0.3
+        ],
+        "uniform_reference": {
+          "256": [
+            -1.1075667974300165e-08,
+            -0.001621635110404385
+          ],
+          "512": [
+            -1.1075668118524421e-08,
+            -0.001619515340762367
+          ],
+          "1024": [
+            -1.1075668123741926e-08,
+            -0.0016139638294246801
+          ],
+          "2048": [
+            -1.10756681414748e-08,
+            -0.0016137033609182865
+          ]
+        },
+        "uniform_12": [
+          -1.1075768599451746e-08,
+          -0.0008185897736179977
+        ],
+        "adaptive": [
+          -1.1076459404309679e-08,
+          -0.0016137024085044866
+        ],
+        "actual_error": [
+          7.912628348784292e-13,
+          9.524137999528809e-10
+        ],
+        "error_estimate": [
+          8.552781715051213e-11,
+          1.2988067300267766e-06
+        ],
+        "points": 91840,
+        "converged": true,
+        "max_depth_reached": 10,
+        "seconds": 28.9
+      }
+    ],
+    "kitaev": {
+      "h": 2.0,
+      "uniform": {
+        "48": [
+          -0.0,
+          -0.0013787868658563709
+        ],
+        "96": [
+          -0.0,
+          -0.001378875769835369
+        ],
+        "192": [
+          -0.0,
+          -0.001378875782961098
+        ]
+      },
+      "adaptive": [
+        -0.0,
+        -0.0013788763387771893
+      ],
+      "error_estimate": [
+        0.0,
+        1.2518323654520992e-06
+      ],
+      "points": 43040,
+      "converged": true,
+      "seconds": 15.1
+    },
+    "nbcp": [
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "adaptive": [
+          -0.0030208854679095,
+          0.010177832696767667,
+          0.02242601350392617,
+          0.014467910485245289
+        ],
+        "error_estimate": [
+          8.261717552155656e-06,
+          1.967166844884802e-05,
+          2.9675037795263118e-05,
+          2.336492740705063e-05
+        ],
+        "points": 200000,
+        "converged": false,
+        "stop_reason": "evaluation budget spent",
+        "max_depth_reached": 12,
+        "largest_error_cells": [
+          {
+            "fraction": [
+              5.086263020833333e-06,
+              5.086263020833333e-06
+            ],
+            "depth": 12,
+            "error": [
+              2.0559039497435278e-07,
+              2.0559461382987644e-07,
+              2.05597145143193e-07,
+              2.0559798891430403e-07
+            ]
+          },
+          {
+            "fraction": [
+              0.9999949137369791,
+              0.9999949137369791
+            ],
+            "depth": 12,
+            "error": [
+              2.0558715747749094e-07,
+              2.0559137631919372e-07,
+              2.055939076242046e-07,
+              2.0559475139253776e-07
+            ]
+          },
+          {
+            "fraction": [
+              1.52587890625e-05,
+              1.52587890625e-05
+            ],
+            "depth": 12,
+            "error": [
+              2.265683056830025e-08,
+              2.265765622822573e-08,
+              2.2658151624178945e-08,
+              2.2658316756166242e-08
+            ]
+          },
+          {
+            "fraction": [
+              0.9999847412109374,
+              0.9999847412109374
+            ],
+            "depth": 12,
+            "error": [
+              2.2656781180568967e-08,
+              2.2657606839551347e-08,
+              2.265810223494392e-08,
+              2.2658267366736294e-08
+            ]
+          },
+          {
+            "fraction": [
+              5.086263020833333e-06,
+              1.52587890625e-05
+            ],
+            "depth": 12,
+            "error": [
+              1.9173345875310947e-08,
+              1.9173644110304266e-08,
+              1.9173823051300954e-08,
+              1.9173882698298805e-08
+            ]
+          }
+        ],
+        "smallest_particle_gap_meV": 0.0028760362648945492,
+        "uniform_stage5b": {
+          "12": [
+            -0.007895333849059133,
+            0.002655434203313588,
+            0.012134722943282938,
+            0.005636359557922567
+          ],
+          "24": [
+            -0.005810712763773931,
+            0.00635317113392596,
+            0.01748694025686938,
+            0.010161444337865866
+          ],
+          "48": [
+            -0.004470645198025706,
+            0.008992695443313593,
+            0.021565271576455543,
+            0.013379394795423232
+          ],
+          "96": [
+            -0.0037700478868745056,
+            0.009420181216138655,
+            0.021663434759721344,
+            0.013703371659039376
+          ],
+          "192": [
+            -0.0033999352857169243,
+            0.00979659006070593,
+            0.022043456951781806,
+            0.014084916499298756
+          ]
+        },
+        "integrand_toward_gamma": [
+          {
+            "fraction": 0.01,
+            "integrand_t0.05": 4.08810631522398
+          },
+          {
+            "fraction": 0.001,
+            "integrand_t0.05": 41.2561543041042
+          },
+          {
+            "fraction": 0.0001,
+            "integrand_t0.05": 412.8141321991138
+          }
+        ],
+        "seconds": 105.0
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "adaptive": [
+          2.3340646852174258e-05,
+          0.0003640429639144397,
+          0.000754975890456047,
+          0.0005221900038516299
+        ],
+        "error_estimate": [
+          2.1880263014286007e-08,
+          2.7413507122050926e-07,
+          6.061669003788229e-07,
+          4.2983113522183117e-07
+        ],
+        "points": 200000,
+        "converged": true,
+        "stop_reason": "tolerance reached",
+        "max_depth_reached": 12,
+        "largest_error_cells": [
+          {
+            "fraction": [
+              0.36930338541666663,
+              0.6997070312499999
+            ],
+            "depth": 7,
+            "error": [
+              1.6306975785842466e-12,
+              5.5437467736818985e-11,
+              1.268770406250222e-10,
+              8.548639407704097e-11
+            ]
+          },
+          {
+            "fraction": [
+              0.6997070312499999,
+              0.36930338541666663
+            ],
+            "depth": 7,
+            "error": [
+              1.6306970351982427e-12,
+              5.543746718769415e-11,
+              1.2687703992839227e-10,
+              8.548639354486934e-11
+            ]
+          },
+          {
+            "fraction": [
+              0.3893229166666666,
+              0.7096354166666666
+            ],
+            "depth": 4,
+            "error": [
+              1.3384350056383515e-12,
+              4.81886076397551e-11,
+              1.1338832818057681e-10,
+              7.678060213513554e-11
+            ]
+          },
+          {
+            "fraction": [
+              0.7096354166666666,
+              0.3893229166666666
+            ],
+            "depth": 4,
+            "error": [
+              1.3384352576440455e-12,
+              4.818860744638263e-11,
+              1.133883278083399e-10,
+              7.678060187509134e-11
+            ]
+          },
+          {
+            "fraction": [
+              0.37190755208333337,
+              0.7042643229166666
+            ],
+            "depth": 7,
+            "error": [
+              1.0671444634619904e-12,
+              3.63540466278907e-11,
+              8.329135832414045e-11,
+              5.613153650142002e-11
+            ]
+          }
+        ],
+        "smallest_particle_gap_meV": 4.4696301326238586e-05,
+        "uniform_stage5b": {
+          "12": [
+            4.000340345998468e-05,
+            0.0008997729412158715,
+            0.001978410609990848,
+            0.0013467202412637577
+          ],
+          "24": [
+            1.886977217866952e-05,
+            0.00020742046450275436,
+            0.00039612710310489156,
+            0.00028042946235730333
+          ],
+          "48": [
+            2.05737619248974e-05,
+            0.0002693556045724922,
+            0.0005382172912594013,
+            0.000376146335234752
+          ],
+          "96": [
+            2.0457898045812902e-05,
+            0.000265662196869985,
+            0.0005294556798339438,
+            0.0003701932476130454
+          ],
+          "192": [
+            2.595009039751092e-05,
+            0.00045295501406839386,
+            0.000958714753090171,
+            0.0006594975678039268
+          ]
+        },
+        "integrand_toward_gamma": [
+          {
+            "fraction": 0.01,
+            "integrand_t0.05": 0.005791850805782324
+          },
+          {
+            "fraction": 0.001,
+            "integrand_t0.05": 0.006059156476960625
+          },
+          {
+            "fraction": 0.0001,
+            "integrand_t0.05": 0.006084494896183197
+          }
+        ],
+        "seconds": 104.2
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "adaptive": [
+          -0.1375605166836798,
+          -0.08538329115475775,
+          -0.03934846478709239,
+          -0.02329317094048981
+        ],
+        "error_estimate": [
+          6.925987842615374e-05,
+          9.07710863118003e-05,
+          0.000104910031626951,
+          9.675202174337462e-05
+        ],
+        "points": 200000,
+        "converged": false,
+        "stop_reason": "evaluation budget spent",
+        "max_depth_reached": 12,
+        "largest_error_cells": [
+          {
+            "fraction": [
+              0.9999949137369791,
+              5.086263020833333e-06
+            ],
+            "depth": 12,
+            "error": [
+              4.5660542550134793e-07,
+              4.566055924691581e-07,
+              4.566056926529072e-07,
+              4.5660572604781926e-07
+            ]
+          },
+          {
+            "fraction": [
+              5.086263020833333e-06,
+              0.9999949137369791
+            ],
+            "depth": 12,
+            "error": [
+              4.566015524329013e-07,
+              4.566017193001147e-07,
+              4.566018194210098e-07,
+              4.56601852794749e-07
+            ]
+          },
+          {
+            "fraction": [
+              5.086263020833333e-06,
+              5.086263020833333e-06
+            ],
+            "depth": 12,
+            "error": [
+              8.261825308031758e-08,
+              8.262004557070294e-08,
+              8.262112104708321e-08,
+              8.262147953718341e-08
+            ]
+          },
+          {
+            "fraction": [
+              0.9999949137369791,
+              0.9999949137369791
+            ],
+            "depth": 12,
+            "error": [
+              8.260745925464251e-08,
+              8.260925173304197e-08,
+              8.261032722299654e-08,
+              8.261068571993541e-08
+            ]
+          },
+          {
+            "fraction": [
+              0.921875,
+              0.08854166666666667
+            ],
+            "depth": 2,
+            "error": [
+              7.20647450163145e-08,
+              4.117985395491904e-08,
+              7.1793153533178385e-09,
+              5.113176419087407e-09
+            ]
+          }
+        ],
+        "smallest_particle_gap_meV": 0.0025340043343154983,
+        "uniform_stage5b": {
+          "12": [
+            -0.12102961097774685,
+            -0.06877927328616883,
+            -0.018324431954821314,
+            -0.0032925231449789987
+          ],
+          "24": [
+            -0.12715263381909947,
+            -0.07459316231322774,
+            -0.025884639938187345,
+            -0.010330600003170792
+          ],
+          "48": [
+            -0.13204762347422316,
+            -0.07969939555942328,
+            -0.03258991243522242,
+            -0.016730235935066468
+          ],
+          "96": [
+            -0.1347699277437107,
+            -0.0825735644228929,
+            -0.03640780738832888,
+            -0.020376899228205556
+          ],
+          "192": [
+            -0.13616230635532356,
+            -0.08398724102105158,
+            -0.03795984036321337,
+            -0.0219035194779587
+          ]
+        },
+        "integrand_toward_gamma": [
+          {
+            "fraction": 0.01,
+            "integrand_t0.05": 77.50282571525254
+          },
+          {
+            "fraction": 0.001,
+            "integrand_t0.05": 869.3222904808331
+          },
+          {
+            "fraction": 0.0001,
+            "integrand_t0.05": 8783.744487302656
+          }
+        ],
+        "seconds": 103.4
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "adaptive": [
+          0.0066117260647327305,
+          0.004305436958228453,
+          0.006264124667392523,
+          0.005530998152017835
+        ],
+        "error_estimate": [
+          9.8550373115755e-06,
+          1.742025756329669e-05,
+          2.294975786590366e-05,
+          1.8729189038449038e-05
+        ],
+        "points": 200000,
+        "converged": false,
+        "stop_reason": "evaluation budget spent",
+        "max_depth_reached": 11,
+        "largest_error_cells": [
+          {
+            "fraction": [
+              0.9999898274739583,
+              0.9999898274739583
+            ],
+            "depth": 11,
+            "error": [
+              4.6177975639446884e-08,
+              4.6180658813913984e-08,
+              4.6182268718640575e-08,
+              4.618280535355565e-08
+            ]
+          },
+          {
+            "fraction": [
+              1.0172526041666666e-05,
+              1.0172526041666666e-05
+            ],
+            "depth": 11,
+            "error": [
+              4.617787586582409e-08,
+              4.6180559038415634e-08,
+              4.618216894201659e-08,
+              4.6182705576552285e-08
+            ]
+          },
+          {
+            "fraction": [
+              0.9999898274739583,
+              0.999969482421875
+            ],
+            "depth": 11,
+            "error": [
+              1.2748576221040303e-08,
+              1.2749670121808532e-08,
+              1.2750326462221722e-08,
+              1.2750545242355105e-08
+            ]
+          },
+          {
+            "fraction": [
+              1.0172526041666666e-05,
+              3.0517578125e-05
+            ],
+            "depth": 11,
+            "error": [
+              1.2748571161210685e-08,
+              1.2749665061567391e-08,
+              1.2750321401735127e-08,
+              1.2750540181785905e-08
+            ]
+          },
+          {
+            "fraction": [
+              0.9999898274739583,
+              1.0172526041666666e-05
+            ],
+            "depth": 11,
+            "error": [
+              6.963380684965631e-09,
+              6.962922797124322e-09,
+              6.9626480644674166e-09,
+              6.962556486919543e-09
+            ]
+          }
+        ],
+        "smallest_particle_gap_meV": 0.0012923287649259096,
+        "uniform_stage5b": {
+          "12": [
+            0.007229987910873351,
+            0.004423078647036802,
+            0.003340090301533239,
+            0.0031666629246735406
+          ],
+          "24": [
+            0.006969431101829725,
+            0.004695911396448417,
+            0.00674778718853053,
+            0.006008191021303756
+          ],
+          "48": [
+            0.006807954646279083,
+            0.006228444536538044,
+            0.01872843399579076,
+            0.016267172553658206
+          ],
+          "96": [
+            0.00670914749737019,
+            0.004337210016747052,
+            0.005886736912223956,
+            0.005221186145290366
+          ],
+          "192": [
+            0.006661184237313203,
+            0.004349452889694645,
+            0.006273017631864589,
+            0.00554576686095959
+          ]
+        },
+        "integrand_toward_gamma": [
+          {
+            "fraction": 0.01,
+            "integrand_t0.05": -2.265709725695119
+          },
+          {
+            "fraction": 0.001,
+            "integrand_t0.05": -23.781151966637413
+          },
+          {
+            "fraction": 0.0001,
+            "integrand_t0.05": -239.1241607579172
+          }
+        ],
+        "seconds": 103.3
+      }
+    ],
+    "coplanar_zero": {
+      "kappa_over_t": [
+        -2.7026211711849453e-18,
+        -3.610396472680475e-18
+      ],
+      "points": 720,
+      "converged": true
+    }
+  },
+  "tests": {
+    "result": "500 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0",
+    "note": "OPENBLAS_NUM_THREADS=4"
+  },
+  "open": "The error estimate is conservative; a sharper estimate (e.g. of the extrapolated value) would save most of the budget but needs its own validation."
+}

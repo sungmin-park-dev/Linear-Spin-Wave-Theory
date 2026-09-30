@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--5단계(2b, 5a--5c 포함) & 검토 항목 확인 \\
-    \textbf{미구현} & 적응형 k 적분, 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 결정 대기 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--5단계(2b, 5a--5d 포함) & 검토 항목 확인 \\
+    \textbf{미구현} & 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 결정 대기 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -677,6 +677,26 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{5c 검증 기록}{stage5c}
 \end{frame}
 
+\begin{frame}[label=stage5d]{5d: 적응형 k 적분이 좁은 갭과 영모드 근처의 곡률을 잡는다}
+  \framesubtitle{2026-09-30 · \texttt{thermal\_hall(..., integration=AdaptiveIntegration())} · 칸마다 중점과 사분 중점의 차 = 오차 추정, Richardson 결합 = 값; 전체 오차의 절반을 가진 칸을 나눈다.}
+  \footnotesize\renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    좁은 갭(Haldane $D=10^{-2}$--$10^{-3}$, $t=0.3$) & 균일 $2048^2$ 기준(4.2e6점)과 1.8e-8--9.5e-10 차이, 5.7e4--9.2e4점; $12^2$는 23--49\% 어긋남 \\
+    오차 추정 & 모든 기준 사례에서 실제 오차 이상(보수적, $10^2$--$10^4$배) \\
+    매끄러운 경우($D=0.2$) & 균일 격자가 지수적으로 정확해 더 효율적(적응형은 2.4e4점) \\
+    키타에프 [111] $h=2$ & 균일 $192^2$와 4e-7(상대), 4.3e4점 \\
+    NBCP 4경우 & 기본 예산(2e5점, 약 100 s)이 1e6점 수렴값을 여섯 자리까지 재현; 5b의 균일 192 값은 1--4\%(Y $J_\Gamma$ 27\%) 어긋남 \\
+    Γ의 우연 영모드 & 적분 함수 $\propto1/|q|$(2D에서 적분 가능) $\to$ LSWT 안에서 $\kappa$ 유한 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{잠정 기본값: 상대 $10^{-3}$, 절대 $10^{-7}$, 2e5점, 깊이 12. 오차 추정이 보수적이라 NBCP는 예산에서 멈추며 경고한다. 테스트 500 통과, 스냅샷 144개 차이 0.}
+  \slidesource{5d 검증 기록}{stage5d}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -753,7 +773,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
     4 & 물리량(구현) & 4a 바닥상태, 4b 열역학·영모드, 4c 구조인자·결합 상관 \\
-    5 & 위상량(구현) & 5a 곡률·Chern(Kubo·FHS 대조); 5b thermal Hall; 5c 계산 핵심 통합 \\
+    5 & 위상량(구현) & 5a 곡률·Chern; 5b thermal Hall; 5c 핵심 통합; 5d 적응형 적분 \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -776,7 +796,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
-    NBCP $\kappa_{xy}$의 k 적분: 작은 밴드 간격 근처의 적응형 세분화 & 5d 또는 NBCP 연구 단계 \\
+    적응형 적분의 오차 추정을 덜 보수적으로(예산 절약, 별도 검증) & 필요 시 \\
     기존 SI Hall API(k\_data, W/K)의 삭제 여부 & 기존 \texttt{LSWTSolver} 정리 시 \\
     자기 셀 결정: LT 단계(구현 안 함·진단 도구·파이프라인 1단계)와 대각 셀 전용 \texttt{CommensurateStructure}의 유지·\texttt{SpinState} 흡수·삭제 & LSWT 작업 재개 시 \\
     \bottomrule

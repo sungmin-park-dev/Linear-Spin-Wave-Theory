@@ -96,7 +96,7 @@
     \toprule
     ID & 내용 & 상태 \\
     \midrule
-    D29 & 5단계 위상량: thermal Hall은 층당 $\kappa_{xy}^{2D}/T$를 $k_B^2/\hbar$ 단위의 무차원 값으로(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고, Chern 수·$\kappa$의 게이지 불변은 시험; 부호 $\Omega=\partial_{k_x}A_y-\partial_{k_y}A_x$, $A=i\langle u|\eta\nabla u\rangle$, $C=\frac{1}{2\pi}\int\Omega$, $\kappa=-\frac{k_B^2T}{\hbar A}\sum c_2\Omega$, 물리적 Bloch 상태(ED)로 고정; 이상항 기준 모델로 키타에프 [111] 편극상; 5a·5b·5c로 나눠 검증. 5b 세부: $\kappa$는 쌍 합(퇴화·교차 밴드에서도 정의), 영모드는 D25. 5c: 두 Hall 경로의 계산 핵심 통합, 기존 SI API 유지 & \textbf{사용자 결정}, 5a--5c 구현 \\
+    D29 & 5단계 위상량: thermal Hall은 층당 $\kappa_{xy}^{2D}/T$를 $k_B^2/\hbar$ 단위의 무차원 값으로(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고, Chern 수·$\kappa$의 게이지 불변은 시험; 부호 $\Omega=\partial_{k_x}A_y-\partial_{k_y}A_x$, $A=i\langle u|\eta\nabla u\rangle$, $C=\frac{1}{2\pi}\int\Omega$, $\kappa=-\frac{k_B^2T}{\hbar A}\sum c_2\Omega$, 물리적 Bloch 상태(ED)로 고정; 이상항 기준 모델로 키타에프 [111] 편극상; 5a·5b·5c로 나눠 검증. 5b 세부: $\kappa$는 쌍 합(퇴화·교차 밴드에서도 정의), 영모드는 D25. 5c: 두 Hall 경로의 계산 핵심 통합, 기존 SI API 유지. 5d: 적응형 k 적분($\kappa$만, 선택 인자) & \textbf{사용자 결정}, 5a--5d 구현 \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
@@ -434,6 +434,20 @@
     \bibitem{d28impl}
       D28 구현 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행; \texttt{d28-provider-projection-2026-09-30.json} · $k=0$ 구속 모드 투영.
+    \bibitem{stage2b}
+      2b단계 상태 선택 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
+    \bibitem{stage3}
+      3단계 토러스 전개·최소 ED 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 1-마그논 대 LSWT, 독립 구현 대조.
+  \end{thebibliography}
+\end{frame}
+
+\begin{frame}[label=sources-stage5]{근거 문서 (5단계)}
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{24}
+    \setcounter{enumiv}{20}
     \bibitem{stage5a}
       5a 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/stage5a-berry-chern-2026-09-30.json} · \texttt{examples/lswt\_stage5a\_check.py}.
@@ -443,11 +457,8 @@
     \bibitem{stage5c}
       5c 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/stage5c-hall-kernel-2026-09-30.json}.
-    \bibitem{stage2b}
-      2b단계 상태 선택 검증 기록, 2026-09-29.
-      \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
-    \bibitem{stage3}
-      3단계 토러스 전개·최소 ED 검증 기록, 2026-09-30.
-      \newblock \texttt{docs/development/verification/} · 1-마그논 대 LSWT, 독립 구현 대조.
+    \bibitem{stage5d}
+      5d 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5d-adaptive-integration-2026-09-30.json} · \texttt{examples/lswt\_stage5d\_check.py}.
   \end{thebibliography}
 \end{frame}

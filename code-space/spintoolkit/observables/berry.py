@@ -45,7 +45,9 @@ import numpy as np
 import warnings
 
 from spintoolkit.definitions.defaults import (
-    TOPOLOGY_BAND_GAP_CUTOFF, TOPOLOGY_CHERN_AGREEMENT, TOPOLOGY_MIN_LINK_OVERLAP)
+    TOPOLOGY_ADAPTIVE_ABSOLUTE, TOPOLOGY_ADAPTIVE_MAX_DEPTH, TOPOLOGY_ADAPTIVE_MAX_POINTS,
+    TOPOLOGY_ADAPTIVE_RELATIVE, TOPOLOGY_BAND_GAP_CUTOFF, TOPOLOGY_CHERN_AGREEMENT,
+    TOPOLOGY_MIN_LINK_OVERLAP)
 from spintoolkit.observables.topology import (
     c2_weight, c2_weight_derivative, compute_berry_curvature, curvature_pair_terms,
     weighted_curvature_sum)
@@ -339,6 +341,10 @@ class ThermalHall:
     zero_modes : dict
     band_gap_cutoff : float
     cell_area : float
+    integration : dict or None
+        Adaptive integration (5d): estimated error per temperature, points
+        used, convergence, cells stopped at the depth limit. None for the
+        stored mesh.
     """
 
     temperatures: np.ndarray
@@ -349,11 +355,51 @@ class ThermalHall:
     zero_modes: dict
     band_gap_cutoff: float
     cell_area: float
+    integration: Optional[dict] = None
+
+
+@dataclass(frozen=True)
+class AdaptiveIntegration:
+    """Settings of the adaptive k integration of :func:`thermal_hall` (5d).
+
+    The magnetic Brillouin zone, in reciprocal-basis fractions ``[0, 1)^2``,
+    starts as the cells of the result's mesh. Each cell carries the midpoint
+    values of its four quarters; their difference from its own midpoint value
+    is its error estimate, and the Richardson combination of the two
+    (midpoint error ~ h^2) is its value. The cells holding half of the total error
+    are split (Doerfler marking) until the total error is below
+    ``max(absolute_tolerance, relative_tolerance * |kappa / T|)`` at every
+    temperature, the evaluation budget is spent, or only cells at the depth
+    limit remain. A cell at the depth limit is not split further (e.g. at a
+    zero mode) and its error stays in the estimate.
+
+    Parameters
+    ----------
+    relative_tolerance, absolute_tolerance : float
+        On ``kappa / T`` in units of ``k_B^2 / hbar``.
+    max_points : int
+        Evaluation budget (k points).
+    max_depth : int
+        Halvings of an initial cell.
+    """
+
+    relative_tolerance: float = TOPOLOGY_ADAPTIVE_RELATIVE
+    absolute_tolerance: float = TOPOLOGY_ADAPTIVE_ABSOLUTE
+    max_points: int = TOPOLOGY_ADAPTIVE_MAX_POINTS
+    max_depth: int = TOPOLOGY_ADAPTIVE_MAX_DEPTH
+
+    def __post_init__(self):
+        if not (self.relative_tolerance >= 0 and self.absolute_tolerance >= 0
+                and self.relative_tolerance + self.absolute_tolerance > 0):
+            raise ValueError("tolerances must be non-negative and not both zero")
+        if self.max_points < 1 or self.max_depth < 0:
+            raise ValueError("max_points must be positive and max_depth non-negative")
 
 
 def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] = None,
                  band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
-                 curvature: Optional[BerryCurvature] = None) -> ThermalHall:
+                 curvature: Optional[BerryCurvature] = None,
+                 integration: Optional[AdaptiveIntegration] = None) -> ThermalHall:
     """Magnon thermal Hall conductivity ``kappa_xy / T`` (Matsumoto and Murakami).
 
     ``kappa^2D / T = -(k_B^2 / hbar) (1 / A_cell) < sum_n c2(rho_n) Omega_n >_k``
@@ -379,6 +425,10 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     band_gap_cutoff : float
     curvature : BerryCurvature, optional
         Reused for the band-sum comparison.
+    integration : AdaptiveIntegration, optional
+        Integrate adaptively (5d) instead of on the stored mesh; H(k) and
+        dH/dk are evaluated at new momenta, and ``kappa_over_t_band_sum`` is
+        NaN. Needed where the curvature concentrates near small gaps.
 
     Returns
     -------
@@ -404,6 +454,11 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     if gapless_flag:
         warnings.warn("gapless spectrum: kappa_xy includes the neighbourhood of the zero modes; "
                       "check its convergence on finer meshes", UserWarning, stacklevel=2)
+    if integration is not None:
+        area = float(abs(np.linalg.det(result.magnetic_lattice)))
+        kappa, diagnostics = _adaptive_kappa(result, t, band_gap_cutoff, integration, area)
+        return ThermalHall(t, kappa, np.full(len(t), np.nan), gapless_flag, decision,
+                           report.to_dict(), float(band_gap_cutoff), area, diagnostics)
     curvature = curvature if curvature is not None else berry_curvature(result, band_gap_cutoff)
     area = curvature.cell_area
     ns = result.num_sites
@@ -418,3 +473,133 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
                                                        * curvature.curvature, axis=1)) / area)
     return ThermalHall(t, np.array(kappa), np.array(band_sum), gapless_flag, decision,
                        report.to_dict(), float(band_gap_cutoff), area)
+
+
+def _integrand(result, fractions, temperatures, band_gap_cutoff):
+    """``sum_n c2 Omega_n`` (pair form) at fractional momenta, ``(m, nt)``; NaN where undefined.
+
+    Also returns the smallest particle-band gap and particle energy met.
+    """
+    from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+
+    reciprocal = 2 * np.pi * np.linalg.inv(result.magnetic_lattice).T
+    k = fractions @ reciprocal
+    H = result.hamiltonian_at(k)
+    dx, dy = result.hamiltonian_derivatives_at(k)
+    ns = result.num_sites
+    J = np.diag(np.r_[np.ones(ns), -np.ones(ns)])
+    values = np.full((len(k), len(temperatures)), np.nan)
+    smallest_gap, lowest = np.inf, np.inf
+    for i in range(len(k)):
+        try:
+            E, T = Diagonalizer.Colpa(np.linalg.cholesky(H[i]), J)
+        except np.linalg.LinAlgError:
+            continue                                   # not positive definite: undefined
+        terms = curvature_pair_terms(E, T, [dx[i], dy[i]], ns, band_gap_cutoff=band_gap_cutoff)
+        values[i] = [weighted_curvature_sum(terms, tk) for tk in temperatures]
+        particle = np.sort(E[:ns])
+        lowest = min(lowest, particle[0])
+        if ns > 1:
+            smallest_gap = min(smallest_gap, float(np.min(np.diff(particle))))
+    return values, smallest_gap, lowest
+
+
+_QUARTERS = np.array([[-1, -1], [1, -1], [-1, 1], [1, 1]]) / 4.0
+
+
+def _adaptive_kappa(result, temperatures, band_gap_cutoff, settings, area):
+    """Adaptive midpoint cubature of ``<sum_n c2 Omega_n>`` over the zone (see AdaptiveIntegration)."""
+    mesh = _mesh_indices(result)
+    if mesh is None:
+        raise TopologyError("adaptive integration starts from a complete uniform mesh")
+    _, n1, n2 = mesh
+    f = np.mod(np.asarray(result.fractional, dtype=float), 1.0)
+    size = np.array([1.0 / n1, 1.0 / n2])
+    nt = len(temperatures)
+    stats = {"points": 0, "smallest_gap": np.inf, "lowest_energy": np.inf, "undefined": 0}
+
+    def evaluate(points):
+        values, gap, low = _integrand(result, points, temperatures, band_gap_cutoff)
+        stats["points"] += len(points)
+        stats["smallest_gap"] = min(stats["smallest_gap"], gap)
+        stats["lowest_energy"] = min(stats["lowest_energy"], low)
+        stats["undefined"] += int(np.sum(np.isnan(values[:, 0]))) if nt else 0
+        return values
+
+    def children_of(centres, sizes, own):
+        """Quarter midpoints of each cell: values (m, 4, nt); estimate and error (m, nt)."""
+        points = (centres[:, None, :] + _QUARTERS[None] * sizes[:, None, :]).reshape(-1, 2)
+        quarters = evaluate(points).reshape(len(centres), 4, nt)
+        weight = np.prod(sizes, axis=1)[:, None]
+        fine = weight * quarters.mean(axis=1)
+        coarse = weight * own
+        # Richardson: the midpoint rule errs as h^2, so (4 fine - coarse) / 3 removes it.
+        return fine + (fine - coarse) / 3, np.abs(fine - coarse)
+
+    centres = f.copy()
+    sizes = np.tile(size, (len(centres), 1))
+    depth = np.zeros(len(centres), dtype=int)
+    own = evaluate(centres)
+    estimate, error = children_of(centres, sizes, own)
+    converged, reason = False, ""
+    while True:
+        if np.any(np.isnan(estimate)):
+            reason = "undefined integrand (a zero mode or an unstable point)"
+            break
+        total = estimate.sum(axis=0)
+        tolerance = np.maximum(settings.absolute_tolerance,
+                               settings.relative_tolerance * np.abs(total) / area) * area
+        remaining = error.sum(axis=0)
+        if np.all(remaining <= tolerance):
+            converged, reason = True, "tolerance reached"
+            break
+        refinable = depth < settings.max_depth
+        if not np.any(refinable):
+            reason = "only cells at the depth limit remain"
+            break
+        score = np.max(error / tolerance, axis=1) * refinable
+        order = np.argsort(score)[::-1]
+        cumulative = np.cumsum(score[order])
+        marked = order[:int(np.searchsorted(cumulative, 0.5 * cumulative[-1])) + 1]
+        marked = marked[score[marked] > 0]
+        cost = 20 * len(marked)                  # 4 new midpoints and 16 quarter points each
+        if stats["points"] + cost > settings.max_points:
+            marked = marked[:max(0, (settings.max_points - stats["points"]) // 20)]
+            if len(marked) == 0:
+                reason = "evaluation budget spent"
+                break
+        new_sizes = np.repeat(sizes[marked] / 2, 4, axis=0)
+        new_centres = (centres[marked][:, None, :] + _QUARTERS[None] * sizes[marked][:, None, :]
+                       ).reshape(-1, 2)
+        new_own = evaluate(new_centres)
+        new_estimate, new_error = children_of(new_centres, new_sizes, new_own)
+        keep = np.ones(len(centres), dtype=bool)
+        keep[marked] = False
+        centres = np.vstack([centres[keep], new_centres])
+        sizes = np.vstack([sizes[keep], new_sizes])
+        depth = np.concatenate([depth[keep], np.repeat(depth[marked] + 1, 4)])
+        estimate = np.vstack([estimate[keep], new_estimate])
+        error = np.vstack([error[keep], new_error])
+    total = estimate.sum(axis=0)
+    kappa = -total / area
+    at_limit = depth >= settings.max_depth
+    diagnostics = {
+        "method": "adaptive midpoint cubature, Doerfler marking",
+        "settings": {"relative_tolerance": settings.relative_tolerance,
+                     "absolute_tolerance": settings.absolute_tolerance,
+                     "max_points": settings.max_points, "max_depth": settings.max_depth},
+        "converged": converged, "stop_reason": reason, "points": stats["points"],
+        "cells": len(centres), "max_depth_reached": int(depth.max(initial=0)),
+        "error_estimate": (error.sum(axis=0) / area).tolist(),
+        "error_at_depth_limit": (error[at_limit].sum(axis=0) / area).tolist(),
+        "undefined_points": stats["undefined"],
+        "largest_error_cells": [
+            {"fraction": centres[i].tolist(), "depth": int(depth[i]),
+             "error": (error[i] / area).tolist()}
+            for i in np.argsort(np.max(error, axis=1))[::-1][:5]],
+        "smallest_particle_gap": stats["smallest_gap"], "lowest_particle_energy": stats["lowest_energy"],
+        "initial_mesh": [n1, n2]}
+    if not converged:
+        warnings.warn(f"adaptive thermal Hall integration not converged ({reason}); see "
+                      "ThermalHall.integration", UserWarning, stacklevel=3)
+    return kappa, diagnostics

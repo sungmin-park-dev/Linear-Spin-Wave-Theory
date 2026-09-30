@@ -20,6 +20,9 @@
    Heisenberg states, also with degenerate bands (Neel, 120 degrees) where
    the band sum is undefined; continuity as a gap closes; the existing SI
    routine on the same k data; zero-mode rule D25.
+6. Adaptive k integration (5d): a narrow-gap Haldane case against a fine
+   uniform two-band reference, error estimates bounding the actual error,
+   stop reasons (budget, depth limit), coplanar zero.
 """
 
 import warnings
@@ -34,8 +37,8 @@ from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 from spintoolkit.models import neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.models.honeycomb import honeycomb_ferromagnet, kitaev_honeycomb
 from spintoolkit.observables.berry import (
-    TopologyError, berry_curvature, c2_weight, c2_weight_derivative, chern_numbers,
-    chern_numbers_fhs, thermal_hall, zone_gauge)
+    AdaptiveIntegration, TopologyError, berry_curvature, c2_weight, c2_weight_derivative,
+    chern_numbers, chern_numbers_fhs, thermal_hall, zone_gauge)
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
@@ -383,3 +386,71 @@ def test_zero_mode_candidates_stop_the_thermal_hall_calculation():
     with pytest.raises(ZeroModeCandidateError):
         thermal_hall(result, [0.1])
     assert thermal_hall(result, [0.1], gapless=False).decision == "user"
+
+
+# ---------------------------------------------------------------------------
+# Adaptive k integration (5d)
+# ---------------------------------------------------------------------------
+
+PAULI = [np.array([[0, 1], [1, 0]]), np.array([[0, -1j], [1j, 0]]), np.diag([1, -1])]
+
+
+def haldane_reference(result, n, ts):
+    """Uniform n x n midpoint mesh; lower-band curvature d.(d_x d x d_y d) / (2 |d|^3)."""
+    reciprocal = 2 * np.pi * np.linalg.inv(result.magnetic_lattice).T
+    grid = (np.arange(n) + 0.5) / n
+    k = np.array(np.meshgrid(grid, grid, indexing="ij")).reshape(2, -1).T @ reciprocal
+    h = result.hamiltonian_at(k)[:, :2, :2]
+    dx, dy = result.hamiltonian_derivatives_at(k)
+
+    def parts(m):
+        return (np.real(np.trace(m, axis1=1, axis2=2)) / 2,
+                np.stack([np.real(np.einsum("kij,ji->k", m, p)) / 2 for p in PAULI], axis=1))
+
+    d0, d = parts(h)
+    ddx, ddy = parts(dx[:, :2, :2])[1], parts(dy[:, :2, :2])[1]
+    norm = np.linalg.norm(d, axis=1)
+    lower = np.einsum("ki,ki->k", d, np.cross(ddx, ddy)) / (2 * norm ** 3)
+    area = abs(np.linalg.det(result.magnetic_lattice))
+    return np.array([-np.mean((c2_weight(d0 - norm, t) - c2_weight(d0 + norm, t)) * lower) / area
+                     for t in ts])
+
+
+def test_adaptive_integration_resolves_a_narrow_gap():
+    """Haldane D = 0.01: the 12 x 12 mesh misses the curvature at K by 23 percent at t = 0.3."""
+    result = haldane(0.01, (12, 12))[2]
+    ts = [0.05, 0.3]
+    reference = haldane_reference(result, 512, ts)
+    coarse = thermal_hall(result, ts).kappa_over_t
+    assert abs(coarse[1] / reference[1] - 1) > 0.2
+    settings = AdaptiveIntegration(relative_tolerance=1e-2, max_points=40_000)
+    hall = thermal_hall(result, ts, integration=settings)
+    info = hall.integration
+    assert info["converged"] and info["points"] <= 40_000
+    actual = np.abs(hall.kappa_over_t - reference)
+    assert np.all(actual <= np.array(info["error_estimate"]))
+    assert np.all(actual <= 1e-2 * np.abs(reference))
+    assert np.all(np.isnan(hall.kappa_over_t_band_sum))
+
+
+def test_adaptive_integration_reports_why_it_stopped():
+    result = haldane(0.01, (12, 12))[2]
+    with pytest.warns(UserWarning, match="budget"):
+        budget = thermal_hall(result, [0.3], integration=AdaptiveIntegration(
+            relative_tolerance=1e-6, max_points=2_000))
+    assert not budget.integration["converged"] and budget.integration["points"] <= 2_000
+    with pytest.warns(UserWarning, match="depth limit"):
+        shallow = thermal_hall(result, [0.3], integration=AdaptiveIntegration(
+            relative_tolerance=1e-6, max_depth=0))
+    assert shallow.integration["error_at_depth_limit"][0] > 0
+    with pytest.raises(ValueError):
+        AdaptiveIntegration(relative_tolerance=0, absolute_tolerance=0)
+
+
+def test_adaptive_integration_keeps_the_coplanar_zero():
+    triangle = triangular_heisenberg()
+    result = solve_lswt(triangle, state_120(triangle), None, settings=LSWTSettings(mesh=(12, 12)))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        hall = thermal_hall(result, [0.1, 1.0], integration=AdaptiveIntegration(max_points=20_000))
+    assert np.max(np.abs(hall.kappa_over_t)) < 1e-7
