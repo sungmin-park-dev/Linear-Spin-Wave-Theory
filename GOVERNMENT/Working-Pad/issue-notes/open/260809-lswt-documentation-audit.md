@@ -127,10 +127,12 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 |---|---|---|
 | Table I | 공식 표를 owner index 표로 바꿨다. 원문 표의 오류(U에서 \(E_0\) 누락, κ의 \(-\pi^2/3\)와 V, "c2 is the Spence function", skyrmion 절댓값)는 각 owner draft에서 이미 정리했다. | 없음 |
 | Spectrum·band | 양의 고유값, MBZ 주기성, 교차점의 band 표지는 관례, CBZ 경로에서 folding과 weight는 SF 문서가 정한다는 점, 영모드에서 에너지는 극한으로 정의된다는 점을 적었다. | 없음 |
-| 바닥 에너지 | 유도는 diagonalization 문서에 두고 참조만 한다(ownership 표와 다름, 사용자 결정 대기). | 소유 위치 |
+| 바닥 에너지 | 유도는 diagonalization 문서에 두고 참조만 한다. | 사용자 결정(2026-09-30): diagonalization에서 유도 |
 | 상관행렬 | \(\langle\Psi\Psi^\dagger\rangle=\mathsf T\mathsf N(0)\mathsf T^\dagger\), Gibbs와 바닥상태의 \(\mathsf N\). 원문의 β 표기를 b로, \(\widetilde\Psi\)를 Φ로 바꿨다. | 없음 |
 | 보손 수 | 원문 식의 끊긴 등식(\(\frac1L\sum_{\mathbf k\in\mathrm{FBZ}} =\))과 L(셀 수) 표기를 정리했다. lower-right 성분이 \(-\mathbf k\)의 점유임을 명시했다. \(\mathsf P,\mathsf Q\) 형태 \(\sum[|P|^2n+|Q|^2(1+n)]\)와 양자 감소가 \(\mathsf B\ne0\)에서만 생긴다는 점을 추가했다. | 추가 형태 |
 | 감소 moment | \(\mathbf m_\mu=(S_\mu-\langle\hat n_\mu\rangle)\mathbf n_\mu\), 자화, \(\langle\hat n\rangle\ge S\)이면 LSWT 부적용. | 없음 |
+
+2026-09-30 사용자 피드백: 보손 수의 P·Q 형태와 영모드 절을 포함한 이 draft에 긍정 피드백("잘했어")을 받았다. 이는 lifecycle의 section별 acceptance 기록이 아니므로 `status: draft`는 유지한다.
 | 영모드(추가) | 2D에서 AFM Goldstone은 T=0 감소가 유한(1/q 적분 가능)하고, T>0에서 AFM·FM 모두 로그 발산(Mermin–Wagner)한다. 열역학 퍼텐셜은 유한하다. | 추가 내용 |
 
 새 equation ID 3개(`eq-lswt-boson-correlation-matrix`, `eq-lswt-boson-number`, `eq-lswt-reduced-moment`)를 부여했으며 corpus 안에서 중복이 없다. 기호 주의: 보손 수는 \(\langle\hat n_\mu\rangle\), 방향은 \(\mathbf n_\mu\)(굵은 글씨), 점유는 \(n_{n\mathbf k}\)로 구별한다.
@@ -230,7 +232,7 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 | Source Eq. (51) | "unitary transformation"을 paraunitary로 고쳤다. | 없음 |
 | Source Eq. (52) | "E가 실수라서 Ẽ=E" 논증 대신 particle–hole symmetry \(\Sigma_1\mathsf H_{-\mathbf k}^*\Sigma_1=\mathsf H_{\mathbf k}\)와 \(\Sigma_3\mathsf H\) 고유값으로 hole block이 \(\varepsilon_{n,-\mathbf k}\)임을 유도했다. 새 기호 \(\Sigma_1=\sigma_1\otimes\mathsf I\). \(\varepsilon_{n\mathbf k}\ne\varepsilon_{n,-\mathbf k}\)일 수 있음을 적었다. | 논증 교체와 새 기호 Σ1 |
 | Source Eqs. (53)–(54) | 식 (53)의 Tr A에 빠진 k 합을 넣고, 식 (54)에서 σ 합 안에 있던 Tr A를 밖으로 뺐다. \(-\mathbf k\to\mathbf k\) 재표기에 필요한 조건(MBZ 운동량 집합이 반전에 닫힘)을 적었다. | 수정 확인 |
-| Source Eqs. (55)–(56), A12 | E_0 대신 notation 문서의 \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\), FBZ→MBZ, N=Lm_s→\(N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}\). trace subtraction은 momentum-space 문서의 provisional 상태를 물려받는다고 적었다(A5). | ΔE_zp·E_GS를 이 문서가 소유할지, magnon-observables로 옮길지 |
+| Source Eqs. (55)–(56), A12 | E_0 대신 notation 문서의 \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\), FBZ→MBZ, N=Lm_s→\(N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}\). trace subtraction은 momentum-space 문서의 provisional 상태를 물려받는다고 적었다(A5). | 사용자 결정(2026-09-30): 이 문서가 소유 |
 | Source Eq. (57) | "T는 H가 양정치일 때만 존재"를 "양의 대각 성분으로 대각화하는 paraunitary T는 H가 양정치일 때만 존재"로 정확히 하고 양쪽 방향 근거를 적었다. | 없음 |
 | Source Eqs. (58)–(60) | Colpa 식은 그대로 두고, \(\mathsf K^\dagger\Sigma_3\mathsf K\)가 Sylvester inertia로 양·음 고유값을 N개씩 가진다는 근거와, Λ가 \(\Sigma_3\mathsf H\)의 고유값이라는 관계를 추가했다. 원문의 주석 처리된 \(\mathsf T^\dagger\Sigma_3\mathsf T\) 검산은 옮기지 않았다(첫 절의 동치로 대체). | 없음 |
 | 추가: gauge 자유도 | T→TU(열마다 위상, 축퇴 band 안의 unitary)만 남고 에너지·ΔE_zp는 불변, Berry connection은 변한다. | 추가 내용 확인 |
@@ -365,10 +367,10 @@ Concept ownership은 다음 원칙을 따른다.
 | `01_spin_wave_theory_intro.md` | Exact HP mapping, Dyson-Maleev alternative, truncation과 odd-term condition | `docs/lswt/01-derivation/holstein-primakoff-expansion.md` | `partial` | Current LSWT scope에서 Dyson-Maleev와 higher-order term의 포함 범위는 open이다. |
 | `01_spin_wave_theory_intro.md` | Even/odd expansion과 real-space constant, linear, quadratic, quartic terms | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | `partial` | Main LSWT derivation은 quadratic truncation을 소유하고 quartic detail은 범위 결정 전 보류한다. |
 | `01_spin_wave_theory_intro.md` | Fourier convention, MBZ, Nambu spinor와 BdG block | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `partial` | Fourier sign, gauge, same-sublattice factor와 B block은 open review item이다. |
-| `01_spin_wave_theory_intro.md` | Bogoliubov transform, paraunitary condition, spectrum과 canonical diagonal form | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 primary pp. 9–11과 대조해 작성. 원문 배치대로 ΔE_zp와 E_GS를 diagonal form에서 정의했으며, 소유 위치(이 문서 vs magnon-observables)는 사용자 확인 대기다. |
+| `01_spin_wave_theory_intro.md` | Bogoliubov transform, paraunitary condition, spectrum과 canonical diagonal form | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 primary pp. 9–11과 대조해 작성. 원문 배치대로 ΔE_zp와 E_GS를 diagonal form에서 정의했다. 사용자 결정(2026-09-30): 이 문서가 유도·소유한다. |
 | `01_spin_wave_theory_intro.md` | Colpa construction, positivity와 Goldstone-mode boundary | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 Sylvester inertia 근거와 B18 semidefinite 경계를 추가했다. 사용자 acceptance 대기. |
 | `01_spin_wave_theory_intro.md` | Paraunitarity and diagonalization proofs | `docs/lswt/04-appendices/paraunitarity-proofs.md` | `skeleton` | Main document의 결과를 다시 정의하지 않고 증명만 보충한다. |
-| `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands, ground-state energy와 zero-point correction | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30) | Diagonalization 문서는 spectrum 생성까지만 다루고 energy observable은 여기서 정의한다. 2026-09-30 draft는 원문 배치대로 ΔE_zp·E_GS 유도를 diagonalization 문서에 두고 여기서는 참조만 한다. 소유 위치는 사용자 결정 대기(diagonalization 검토 항목과 같음). |
+| `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30) | 사용자 결정(2026-09-30): ground-state energy와 zero-point correction(ΔE_zp, E_GS)은 `paraunitary-diagonalization.md`에서 유도·소유하고, 이 문서는 참조만 한다. |
 | `02_physical_quantities.md` | Post-diagonalization quantity index | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30, owner index 표로 작성) | 수식 복제 표가 아니라 각 observable owner로 가는 index로 다시 작성한다. |
 | `03_thermodynamics.md` | Partition function, internal energy, free energy, entropy와 specific heat | `docs/lswt/02-observables/thermodynamics.md` | `source-reviewed` (2026-09-30) | 정의와 최종 LSWT 식은 main observable 문서가 소유한다. |
 | `03_thermodynamics.md` | Long thermodynamic derivations | `docs/lswt/04-appendices/thermodynamic-derivations.md` | `skeleton` | Main document에 필요한 가정과 최종 결과를 남기고 중간 전개를 appendix로 보낸다. 2026-09-30 thermodynamics draft는 U·F·S·C 유도가 한두 줄이라 본문에 두었다. appendix로 옮길지는 사용자 확인 대기. |
