@@ -21,18 +21,15 @@ updated: 2026-09-30
 |---|---|---|---|---|
 | 1 | issue | `docs/lswt/` LSWT 이론 문서 — 다음: local circular component 및 real-space H2 내용 검토 | in-review; 17개 문서 일괄 문체 교정 반영, 10개 skeleton 내용 보완과 사용자 검토 대기 | `issue-notes/open/260809-lswt-documentation-audit.md` |
 | 2 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending — TN-Study에 findings draft v1(1D, Heisenberg점) 있음, 2D 4×4 단계 미완료라 LSWT 승격 전 | `handoff/open/260607-solver-seam-spike.md` |
-| 3 | handoff | 범용 2D spin-system simulation tool 전환 작업 | 2단계(code-space audit) 완료, 3–4단계 대기 | `handoff/open/260603-next-chat-general-2d-spin-tool.md` |
-| 4 | issue | code-space audit — 범용 2D spin-tool 대상 분류 | draft | `issue-notes/open/260802-code-space-audit-general-2d-spin-tool.md` |
-| 5 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); 남은 것: NBCP 적용 조건, 이론 문서 A6/A7/A16 검토 | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
-| 6 | issue | NBCP 연구노트와 arXiv 열적 주장 검토 | in-review; Y angular·smooth-wave와 density wall 164개 local minima 대조 완료; 벽 폭 3–4a, 장력 양수·크기 수렴 및 metastability 확인; 다음: vortex core·wall 결합, 이후 thermal 검증; quantum/thermal matching 미완료 | `issue-notes/open/260810-pseudo-goldstone-gap.md` |
-| 7 | issue | NBCP band plot와 LSWT 구현 backlog | draft; 우선순위 미정 | `issue-notes/open/260810-lswt-implementation-backlog.md` |
-| 8 | idea | 범용 2D 스핀 시스템 도구 전환 노트 | draft | `idea-proposals/260603-general-2d-spin-tool-migration-note.md` |
-| 9 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
-| 10 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
-| 11 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 다음: displacement convention과 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
-| 12 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D29 결정과 0–5단계 구현 반영 | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
-| 13 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–5단계(2b, 5a–5d 포함) 구현·검증; Beamer 검토본 35 사용자 검토 대기 | `../../docs/development/README.md` |
-| 14 | issue | 자기 셀 결정 — LT 단계와 `CommensurateStructure` 정리 | draft; LSWT 재개 시 결정 | `issue-notes/open/260930-lt-step-and-commensurate-structure-decision.md` |
+| 3 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); 남은 것: NBCP 적용 조건, 이론 문서 A6/A7/A16 검토 | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
+| 4 | issue | NBCP 연구노트와 arXiv 열적 주장 검토 | in-review; Y angular·smooth-wave와 density wall 164개 local minima 대조 완료; 벽 폭 3–4a, 장력 양수·크기 수렴 및 metastability 확인; 다음: vortex core·wall 결합, 이후 thermal 검증; quantum/thermal matching 미완료 | `issue-notes/open/260810-pseudo-goldstone-gap.md` |
+| 5 | issue | NBCP band plot와 남은 LSWT 구현 backlog | draft; H·Colpa 검증 끝(toolkit 2–4a), band plot 작성·검토와 시각화 포팅·공개 배포 등 남음 | `issue-notes/open/260810-lswt-implementation-backlog.md` |
+| 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
+| 7 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
+| 8 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 다음: displacement convention과 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
+| 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D29 결정과 0–5단계 구현 반영 | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
+| 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–5단계(2b, 5a–5d 포함) 구현·검증; Beamer 검토본 36 사용자 검토 대기 | `../../docs/development/README.md` |
+| 11 | issue | 자기 셀 결정 — LT 단계와 `CommensurateStructure` 정리 | draft; LSWT 재개 시 결정 | `issue-notes/open/260930-lt-step-and-commensurate-structure-decision.md` |
 
 ## 동기화 규칙
 

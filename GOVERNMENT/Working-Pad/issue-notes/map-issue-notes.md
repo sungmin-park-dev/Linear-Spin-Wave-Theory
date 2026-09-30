@@ -26,11 +26,10 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 
 | 파일 | 유형 | 역할 | 상태 |
 |---|---|---|---|
-| [[GOVERNMENT/Working-Pad/issue-notes/open/260802-code-space-audit-general-2d-spin-tool\|260802-code-space-audit-general-2d-spin-tool]] | review | 범용 2D spin-tool 기준 code-space 분류와 gap 기록 | draft |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug\|260802-topology-thermal-hall-real-space-volume-bug]] | problem | 층당/3D SI κ·full BZ·Chern, 고정 cutoff; 구현 항목은 toolkit 5a–5d(D29)로 해결, NBCP 적용·이론 검토 남음 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit\|260809-lswt-documentation-audit]] | review | `docs/lswt/` coverage, legacy consolidation과 열린 이론 검토 추적 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260810-pseudo-goldstone-gap\|260810-pseudo-goldstone-gap]] | problem | SOC Y/V gap 및 PD-only V의 6회 이방성; 위상 강성·열적 주장 검토와 패키지 설계 대기 | in-review |
-| [[GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog\|260810-lswt-implementation-backlog]] | review | NBCP band plot와 LSWT 구현 backlog | draft |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog\|260810-lswt-implementation-backlog]] | review | NBCP band plot 작성과 남은 LSWT 구현 backlog(시각화 포팅, 공개 배포, BdG, 비정합 구조) | draft |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260918-nbcp-physics-code-review\|260918-nbcp-physics-code-review]] | review | NBCP 9장 구조, claim-to-code 대응과 독립 물리 구현 검토 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260930-lt-step-and-commensurate-structure-decision\|260930-lt-step-and-commensurate-structure-decision]] | discussion | 자기 셀 결정: LT 단계와 `CommensurateStructure` 유지·흡수·삭제 | draft; LSWT 재개 시 결정 |
 
@@ -38,6 +37,7 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 
 | 파일 | 유형 | 역할 | 결과 |
 |---|---|---|---|
+| [[GOVERNMENT/Working-Pad/issue-notes/closed/260802-code-space-audit-general-2d-spin-tool\|260802-code-space-audit-general-2d-spin-tool]] | review | 범용 2D spin-tool 기준 code-space 분류와 gap 기록 | superseded; toolkit 0–5단계 공통 경로 |
 | [[GOVERNMENT/Working-Pad/issue-notes/closed/260602-commensurate-structure-test-failures\|260602-commensurate-structure-test-failures]] | problem | `CommensurateStructure` 테스트 5개 실패: 대각 셀과 각도 수 불일치(테스트 오류) | resolved (`3a2dad2`); 자기 셀 결정은 260930 |
 | [260916-docs-topic-consolidation](closed/260916-docs-topic-consolidation.md) | structure | docs와 research-space 통합, LSWT·NBCP 분리와 경로·출력 검증 | resolved; 물리 검토 상태 유지 |
 | [[GOVERNMENT/Working-Pad/issue-notes/closed/260604-lswt-section-migration-record\|260604-lswt-section-migration-record]] | review | 기존 Markdown/LaTeX source에서 새 LSWT 정본 파일로 가는 mapping 기록 | resolved |

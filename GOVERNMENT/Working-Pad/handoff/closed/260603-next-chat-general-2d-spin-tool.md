@@ -1,16 +1,24 @@
 ---
 frontmatter-version: 1
 title: Next Chat - General 2D Spin-System Simulation Tool
-section: handoff/open
-status: draft
-execution-status: pending
-last-edited-by: codex
+section: handoff/closed
+status: closed
+execution-status: superseded
+outcome: GOVERNMENT/Working-Pad/idea-proposals/2026-09-29-toolkit-first-development-plan.md
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-09-30
 branch: migrate/government-structure
 ---
 
 # Next Chat - General 2D Spin-System Simulation Tool
+
+> **종결 (2026-09-30, 사용자 승인):** 이 인수인계의 목표(범용 2D 도구로의 구체적 개편 계획)와 제안 단계
+> (범위 정의 → 기존 코드 점검 → 테스트 기준 → 구조 설계 → 작은 커밋)는 전달 규약
+> (`idea-proposals/2026-09-23-spin-model-transfer-contract.md`, D01–D29), 1차 개발 계획
+> (`idea-proposals/2026-09-29-toolkit-first-development-plan.md`)과 그 0–5단계 구현으로 수행되었다. 기존 코드
+> 점검은 `issue-notes/closed/260802-code-space-audit-general-2d-spin-tool.md`, 테스트 기준은 전체 통과(500개)로
+> 이어졌다. 설계와 검증 기록은 `docs/development/`(Beamer)에 있다. 아래 본문은 당시 기록으로 보존한다.
 
 ## Current State
 

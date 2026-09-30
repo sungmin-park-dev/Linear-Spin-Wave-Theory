@@ -4,9 +4,9 @@ template-version: 1
 title: Map - handoff
 section: handoff
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-18
+updated: 2026-09-30
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -24,13 +24,13 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 | 파일 | 목적 | 상태 |
 |---|---|---|
-| [[GOVERNMENT/Working-Pad/handoff/open/260603-next-chat-general-2d-spin-tool\|260603-next-chat-general-2d-spin-tool]] | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | pending |
 | [[GOVERNMENT/Working-Pad/handoff/open/260607-solver-seam-spike\|260607-solver-seam-spike]] | XXZ를 ED/DMRG/NQS로 풀어 시스템↔솔버 seam 실측 검증. 세부 계획은 문서 본문에서 관리 | pending |
 
 ### `closed/` — 완료된 handoff
 
 | 파일 | 목적 | 결과 |
 |---|---|---|
+| [[GOVERNMENT/Working-Pad/handoff/closed/260603-next-chat-general-2d-spin-tool\|260603-next-chat-general-2d-spin-tool]] | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | superseded; 전달 규약·1차 개발 계획·toolkit 0–5단계로 수행 |
 | [[GOVERNMENT/Working-Pad/handoff/closed/260917-codex-to-codex-nbcp-angular-matching\|260917-codex-to-codex-nbcp-angular-matching]] | Y 전체 BZ 안정성 검사 이후 각도별 강성·potential matching 재개 | done; 계산·독립 수치 대조 완료, 사용자 물리 검토 및 후속 결함·thermal 계산은 별도 |
 
 ## 에이전트 지침

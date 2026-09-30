@@ -4,11 +4,11 @@ title: LSWT implementation backlog migrated from AGENTS
 section: issue-notes/open
 issue-type: review
 status: draft
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-08-10
-updated: 2026-09-11
+updated: 2026-09-30
 related:
-  - GOVERNMENT/Working-Pad/issue-notes/open/260802-code-space-audit-general-2d-spin-tool.md
+  - GOVERNMENT/Working-Pad/issue-notes/closed/260802-code-space-audit-general-2d-spin-tool.md
   - GOVERNMENT/Working-Pad/issue-notes/closed/260810-agents-progress-history.md
 must-read: GOVERNMENT/Agents-Bylaws/templates/issue-notes-template.md
 ---
@@ -27,26 +27,22 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/issue-notes-template.md
 
 ### 리뷰 대상 현황
 
-NBCP band-plot 예제의 선행 작업 중 classical ground-state 최적화와 spin-configuration visualizer는 완료된 것으로 기록되어 있다. 남은 단계는 다음과 같다.
-
-- LSWT Hamiltonian 검증
-- Colpa diagonalization 검증
-- Band plot 작성과 결과 검토
+NBCP band-plot 예제의 선행 작업 중 classical ground-state 최적화와 spin-configuration visualizer는 완료된 것으로 기록되어 있다. 2026-09-30 기준으로 LSWT Hamiltonian은 toolkit 2단계(기존 builder와 원소 단위 일치)와 3단계(ED 1-마그논과 일치), Colpa 대각화는 4a단계에서 검증되었다. 남은 단계는 band plot 작성과 결과 검토다.
 
 그 밖에 `AGENTS.md`에서 이동한 미완료 항목은 다음과 같다.
 
 | 항목 | 현재 기록 | 관련 owner 또는 검토 경계 |
 |---|---|---|
-| `EnergyFunction`이 `SpinSystem`을 직접 받도록 변경 | legacy dict 경유 | `260802-code-space-audit-general-2d-spin-tool.md` |
-| Observables와 `LSWTSolver` 연결 | TODO 상태 | 같은 code-space audit |
-| `solver.hamiltonian_at(kx, ky)` convenience method | 합의됐으나 미구현으로 기록 | API 변경 전 현재 합의 근거 재확인 |
-| k-data dict를 dataclass로 전환 | 합의됐으나 낮은 우선순위로 기록 | 결과 데이터 인터페이스 검토 |
 | Band plotter와 interactive exchange viewer 포팅 | 미구현 | visualization backlog |
-| Lattice/magnetic-structure preset과 `SpinSystem` 연결 | 구현체는 있으나 미연결 | code-space audit와 commensurate issue |
-| `code-space/tests/` pytest baseline | 미완료 | 테스트 기준 수립 필요 |
 | 공개 배포 정리 | `.gitignore`, README 등이 미완료로 기록 | theory/code 검증과 별도 상태로 관리 |
 | Real-space BdG solver | 장기 과제 | `AbstractSolver` 인터페이스 검토 |
 | `IncommensurateStructure` | 장기 과제 | 물리적 표현과 API 검토 |
+
+2026-09-30 정리(사용자 승인): toolkit 0–5단계로 끝난 항목을 표에서 뺐다. `EnergyFunction`의 입력 형식과
+observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `LSWTResult`를 쓰는 물리량)로 대체되었고,
+`hamiltonian_at`은 `LSWTResult.hamiltonian_at`, k-data의 dataclass 전환은 `LSWTResult`(D24)로 구현되었다.
+격자·자기 구조와 시스템 연결은 `260930-lt-step-and-commensurate-structure-decision.md`로 옮겼고, pytest 기준은
+전체 통과(500개)다. 기존 경로의 정리 시점은 `docs/development` Beamer의 미결 사항에서 추적한다.
 
 ### 발견 사항
 
@@ -72,7 +68,7 @@ NBCP band-plot 예제의 선행 작업 중 classical ground-state 최적화와 s
 ## 참조
 
 - `GOVERNMENT/Working-Pad/TASK-QUEUE.md` — 활성 작업 인덱스
-- `GOVERNMENT/Working-Pad/issue-notes/open/260802-code-space-audit-general-2d-spin-tool.md` — 현재 code-space 구조 진단
+- `GOVERNMENT/Working-Pad/issue-notes/closed/260802-code-space-audit-general-2d-spin-tool.md` — 현재 code-space 구조 진단
 - `GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures.md` — magnetic-structure 검증 문제
 - [T=0 energy assembly 수정 및 유한온도 검토 경계](../closed/260910-zero-point-energy-normalization.md)
 - [유한온도 U/F 및 점유수 수정과 남은 정규화](../closed/260911-finite-temperature-energy-and-occupation.md)

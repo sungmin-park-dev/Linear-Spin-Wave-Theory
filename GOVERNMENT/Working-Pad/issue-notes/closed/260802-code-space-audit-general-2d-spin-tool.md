@@ -1,18 +1,21 @@
 ---
 frontmatter-version: 1
 title: code-space audit against general 2D spin-system tool target
-section: issue-notes/open
+section: issue-notes/closed
 issue-type: review
-status: draft
-last-edited-by: codex
+status: closed
+resolution: superseded
+outcome: docs/development/README.md
+last-edited-by: claude
 created: 2026-08-02
-updated: 2026-09-10
-related: handoff/open/260603-next-chat-general-2d-spin-tool.md
+updated: 2026-09-30
+closed: 2026-09-30
+related: handoff/closed/260603-next-chat-general-2d-spin-tool.md
 ---
 
 # code-space audit against general 2D spin-system tool target
 
-`handoff/open/260603-next-chat-general-2d-spin-tool.md`가 요청한 2단계
+`handoff/closed/260603-next-chat-general-2d-spin-tool.md`가 요청한 2단계
 ("Audit Current Code Against Target")의 결과다. 아직 리팩터는 하지 않았다 —
 분류와 사실관계 확인만 했다. `code-space/lswt/`, `examples/`,
 `legacy/`를 대상으로 했다.
@@ -78,6 +81,21 @@ Move-rename / Deprecate / Needs physics review.
 **Keep as-is, 재확인만.** `modules/`, `scripts/`, `research-notes/`는 `code-space`/`examples`
 어디서도 import되지 않음 (이전 대화에서 확인된 사실 재확인, 이번에 추가 조사 안 함). 이름에
 `-space` 접미사가 없는 것은 이미 알려진 사소한 불일치이며 우선순위 낮음.
+
+## 종결 (2026-09-30, 사용자 승인)
+
+toolkit 0–5단계의 공통 경로가 아래 핵심 발견 세 가지를 대체했다.
+
+1. 격자·자기 구조가 `SpinSystem`에 연결되지 않은 문제 → 공통 자료형 `SpinModel`(격자·사이트·항),
+   `SpinState`(자기 초격자와 방향), `CalculationGeometry`(1단계). 대각 셀 전용 `CommensurateStructure`의
+   유지·흡수·삭제는 `issue-notes/open/260930-lt-step-and-commensurate-structure-decision.md`로 옮겼다.
+2. Observables가 `LSWTSolver`와 연결되지 않은 문제 → `solve_lswt`의 `LSWTResult`가 대각화를 보관하고
+   열역학(4b), 구조인자(4c), 위상량(5단계)이 그것을 재사용한다.
+3. `EnergyFunction`/`SpinOptimizer`가 legacy dict를 받는 문제 → `classical_energy(model, state)`와 상태 선택의
+   `LSWTZeroPointEnergy`(1·2b단계). 기존 경로(`LSWTSolver`, `EnergyFunction`/`SpinOptimizer`, SI Hall API)의
+   정리 시점은 `docs/development` Beamer의 미결 사항에서 추적한다.
+
+테스트 기준은 전체 통과(500개, 2026-09-30)로 정리되었다. 아래 본문은 당시 점검 기록으로 보존한다.
 
 ## 핵심 발견 — 우선순위용
 
