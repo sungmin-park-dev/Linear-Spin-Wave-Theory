@@ -1,4 +1,4 @@
-"""Berry curvature and Chern numbers of LSWT magnons (stage 5a, D29).
+"""Berry curvature, Chern numbers and thermal Hall conductivity of LSWT magnons (stage 5, D29).
 
 1. Sign anchor: for the honeycomb ferromagnet with DM (Haldane magnons) the
    particle block of H(k) equals the Bloch matrix rebuilt from the ED
@@ -14,6 +14,12 @@
    degeneracies give NaN instead of a number, and a gap that closes between
    mesh points (where FHS alone returns a wrong integer) is rejected by the
    Kubo-FHS agreement.
+5. Thermal Hall (5b): the Haldane value from an independent two-band
+   curvature and a quadrature c2; pair form = band sum for separated bands;
+   limits t -> 0 and t -> infinity; time reversal; zero for coplanar
+   Heisenberg states, also with degenerate bands (Neel, 120 degrees) where
+   the band sum is undefined; continuity as a gap closes; the existing SI
+   routine on the same k data; zero-mode rule D25.
 """
 
 import warnings
@@ -28,7 +34,8 @@ from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 from spintoolkit.models import neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.models.honeycomb import honeycomb_ferromagnet, kitaev_honeycomb
 from spintoolkit.observables.berry import (
-    TopologyError, berry_curvature, chern_numbers, chern_numbers_fhs, zone_gauge)
+    TopologyError, berry_curvature, c2_weight, c2_weight_derivative, chern_numbers,
+    chern_numbers_fhs, thermal_hall, zone_gauge)
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
@@ -248,3 +255,131 @@ def test_inputs_that_cannot_give_a_chern_number_are_rejected():
     assert np.any(regularized.regularization_shift != 0)
     with pytest.raises(TopologyError, match="regularization"):
         berry_curvature(regularized)
+
+
+# ---------------------------------------------------------------------------
+# Thermal Hall (5b)
+# ---------------------------------------------------------------------------
+
+def c2_quadrature(energy, t):
+    """c2 from its definition int_x^inf z^2 e^-z / (1 - e^-z)^2 dz, x = E / t."""
+    from scipy.integrate import quad
+    return quad(lambda z: z * z * np.exp(-z) / (-np.expm1(-z)) ** 2, energy / t, np.inf,
+                epsabs=1e-13, epsrel=1e-12)[0]
+
+
+def test_c2_weight_and_its_derivative():
+    energies = np.array([1e-3, 0.05, 0.3, 1.0, 4.0])
+    for t in (0.1, 1.0):
+        assert np.allclose(c2_weight(energies, t), [c2_quadrature(e, t) for e in energies],
+                           rtol=1e-9, atol=1e-14)
+        step = 1e-6
+        numeric = (c2_weight(energies + step, t) - c2_weight(energies - step, t)) / (2 * step)
+        assert np.allclose(c2_weight_derivative(energies, t), numeric, rtol=1e-6)
+    assert np.all(c2_weight(energies, 0.0) == 0) and c2_weight(np.array([1e4]), 1.0)[0] == 0
+
+
+def test_haldane_thermal_hall_from_an_independent_two_band_calculation():
+    """Omega_-/+ = +/-(1/2) d.(d_x d x d_y d) by finite differences of d(k); c2 by quadrature."""
+    result = haldane(0.2, (12, 12))[2]
+    pauli = [np.array([[0, 1], [1, 0]]), np.array([[0, -1j], [1j, 0]]), np.diag([1, -1])]
+
+    def d_vector(k):
+        h = result.hamiltonian_at(k)[0][:2, :2]
+        return np.real(np.trace(h)) / 2, np.array([np.real(np.trace(h @ p)) / 2 for p in pauli])
+
+    step, ts = 1e-5, [0.1, 0.4, 2.0]
+    reference = np.zeros(len(ts))
+    for k in result.k_points:
+        d0, d = d_vector(k)
+        unit = lambda q: d_vector(q)[1] / np.linalg.norm(d_vector(q)[1])
+        dx = (unit(k + [step, 0]) - unit(k - [step, 0])) / (2 * step)
+        dy = (unit(k + [0, step]) - unit(k - [0, step])) / (2 * step)
+        solid = unit(k) @ np.cross(dx, dy) / 2
+        lower, upper = d0 - np.linalg.norm(d), d0 + np.linalg.norm(d)
+        for i, t in enumerate(ts):
+            reference[i] += c2_quadrature(lower, t) * solid - c2_quadrature(upper, t) * solid
+    area = abs(np.linalg.det(result.magnetic_lattice))
+    reference = -reference / len(result.k_points) / area
+    kappa = thermal_hall(result, ts).kappa_over_t
+    assert np.allclose(kappa, reference, rtol=1e-6)
+
+
+def test_pair_form_equals_band_sum_and_limits():
+    for result in (haldane(0.2, (24, 24))[2], kitaev(mesh=(24, 24))):
+        ts = [0.0, 0.02, 0.05, 1.0, 1e3]
+        hall = thermal_hall(result, ts)
+        assert np.allclose(hall.kappa_over_t, hall.kappa_over_t_band_sum, rtol=1e-10, atol=1e-16)
+        k = hall.kappa_over_t
+        assert k[0] == 0 and abs(k[1]) < 1e-3 * abs(k[3])      # gapped: exponentially small
+        assert abs(k[4]) < 1e-2 * abs(k[3])                       # sum of Chern numbers is zero
+    forward, backward = (thermal_hall(kitaev(mesh=(24, 24), sign=s), [0.3]).kappa_over_t
+                         for s in (1, -1))
+    assert np.allclose(forward, -backward, rtol=1e-10)             # time reversal
+
+
+def test_coplanar_heisenberg_states_have_zero_thermal_hall_even_with_degenerate_bands():
+    """T x C2 about the spin-plane normal: Omega(-k) = -Omega(k). Neel and 120 degrees have
+    degenerate or touching bands, so the band sum is undefined but the response is zero."""
+    square, triangle = square_heisenberg(), triangular_heisenberg()
+    with pytest.warns(UserWarning, match="gapless"):
+        neel = thermal_hall(solve_lswt(square, neel_state(square), None,
+                                       settings=LSWTSettings(mesh=(12, 12))), [0.1, 1.0])
+    assert np.all(np.isnan(neel.kappa_over_t_band_sum)) and neel.gapless
+    assert np.max(np.abs(neel.kappa_over_t)) < 1e-14
+    with pytest.warns(UserWarning, match="gapless"):
+        triangular = thermal_hall(solve_lswt(triangle, state_120(triangle), None,
+                                             settings=LSWTSettings(mesh=(12, 12))), [0.1, 1.0])
+    assert np.max(np.abs(triangular.kappa_over_t)) < 1e-14
+    conditions = ExternalConditions(field=(0, 0, 1.0))
+    state = refine_classical(triangle, state_120(triangle, ((1, 0, 0), (0, 0, 1))), conditions)
+    canted = solve_lswt(triangle, state, conditions, settings=LSWTSettings(mesh=(12, 12)))
+    with pytest.warns(UserWarning, match="gapless"):
+        assert np.max(np.abs(thermal_hall(canted, [0.1, 1.0]).kappa_over_t)) < 1e-14
+
+
+def test_thermal_hall_is_continuous_where_the_chern_numbers_jump():
+    """Haldane D -> 0: C jumps from +-1 to undefined, kappa / T goes to zero linearly in D."""
+    slope = [thermal_hall(haldane(D, (24, 24))[2], [0.3]).kappa_over_t[0] / D
+             for D in (1e-3, 1e-2)]
+    assert abs(slope[0] - slope[1]) < 0.1 * abs(slope[0])
+    assert abs(thermal_hall(haldane(0.0, (24, 24))[2], [0.3]).kappa_over_t[0]) < 1e-15
+
+
+def test_existing_si_routine_gives_the_same_kappa_on_the_same_k_data():
+    """observables.topology.Topology (W/K per layer, meV and kelvin) on the stored diagonalization."""
+    from types import SimpleNamespace
+
+    from spintoolkit.definitions.constants import K_BOLTZMANN_MEV
+    from spintoolkit.definitions import H_BAR_MEV
+    from spintoolkit.observables.topology import Topology
+    from tests.test_methods.test_thermal import nbcp_y
+
+    model, state, conditions = nbcp_y({"JPD": 0.01})
+    state = refine_classical(model, state, conditions)
+    result = solve_lswt(model, state, conditions, settings=LSWTSettings(mesh=(12, 12)))
+    dx, dy = result.hamiltonian_derivatives_at(result.k_points)
+    k_data = {i: [[H, dx[i], dy[i]], [E, T], [True, None]]
+              for i, (H, E, T) in enumerate(zip(result.hamiltonians, result.eigenvalues,
+                                                result.eigenvectors))}
+    parent = SimpleNamespace(Ns=result.num_sites, bz_data={"area": None},
+                             system=SimpleNamespace(lattice_vectors=result.magnetic_lattice))
+    kelvin = 0.5
+    t = K_BOLTZMANN_MEV * kelvin                               # E0 = meV
+    legacy = Topology(parent).compute_thermal_Hall(k_data, kelvin)[2]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ours = thermal_hall(result, [t], gapless=True).kappa_over_t[0]
+    si = ours * K_BOLTZMANN_MEV ** 2 * kelvin / H_BAR_MEV * 1.602176634e-22
+    assert abs(si - legacy) < 1e-10 * abs(legacy)
+
+
+def test_zero_mode_candidates_stop_the_thermal_hall_calculation():
+    from spintoolkit.observables.thermal import ZeroModeCandidateError
+    from tests.test_methods.test_thermal import square_model
+
+    model = square_model(anisotropy=1e-7)
+    result = solve_lswt(model, neel_state(model), None, settings=LSWTSettings(mesh=(8, 8)))
+    with pytest.raises(ZeroModeCandidateError):
+        thermal_hall(result, [0.1])
+    assert thermal_hall(result, [0.1], gapless=False).decision == "user"

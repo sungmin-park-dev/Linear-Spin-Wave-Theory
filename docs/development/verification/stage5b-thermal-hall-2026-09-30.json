@@ -1,0 +1,718 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "3c9c32f",
+  "scope": "Stage 5b (D29): magnon thermal Hall conductivity kappa_xy^2D / T per layer in units of k_B^2 / hbar, on the common pipeline.",
+  "decisions": {
+    "D29 (5b details, 2026-09-30)": "kappa is evaluated in pair form so that it is defined for degenerate and crossing bands (a degenerate group contributes c2 Tr F); per-band curvature and Chern numbers keep the 5a policy (NaN when not separated). Zero modes follow D25: candidates stop the calculation until gapless is given; with zero modes kappa is computed with a warning and its mesh convergence must be recorded."
+  },
+  "added": {
+    "code-space/spintoolkit/observables/berry.py": "thermal_hall, ThermalHall (kappa_over_t in pair form, kappa_over_t_band_sum for comparison, zero-mode decision), c2_weight, c2_weight_derivative",
+    "code-space/tests/test_methods/test_berry.py": "7 thermal Hall tests (20 in the file)",
+    "examples/lswt_stage5b_check.py": "this record"
+  },
+  "formula": "kappa^2D / T = -(k_B^2 / hbar)(1 / A_cell) < sum_n c2(rho_n) Omega_n >_k over particle bands (Matsumoto and Murakami, PRB 84, 184406 (2011)). Pair form: particle-particle terms (c2_n - c2_m) / (E_n - E_m) * [-2 Im(A_nm B_mn)] / (E_n - E_m), with the divided difference by the midpoint derivative dc2/dE = -ln(1 + 1/rho)^2 rho (1 + rho) / t for relative separations below 1e-6, and zero for pairs within band_gap_cutoff (exact degeneracy: equal weights); particle-hole terms as in the band sum; a particle-hole pair within the cutoff (zero mode on the mesh) gives NaN. SI: kappa^2D [W/K] = kappa_over_t * k_B^2 T / hbar, T = t E0 / k_B.",
+  "findings": [
+    "Haldane magnons: the implementation equals an independent two-band calculation (curvature from finite differences of d(k), c2 by quadrature) within 3.8e-11; the textbook two-band curvature Omega_-/+ = +/-(1/2) d.(d_x d x d_y d) also confirms the 5a sign pointwise.",
+    "Pair form = band sum within 1e-16 whenever the bands are separated (Haldane, Kitaev, NBCP); t -> 0 is exponentially small, t -> infinity decays as 1/t (sum of Chern numbers zero), and the Kitaev [111] value reverses exactly under field reversal.",
+    "Coplanar Heisenberg states give kappa = 0 (Neel, 120 degrees, canted triangular: <= 5e-17); for Neel and 120 degrees the band sum is undefined (NaN) because the bands are degenerate or touch, so the pair form is what makes this null test possible.",
+    "Continuity: Haldane kappa / T at t = 0.3 goes to zero linearly as D -> 0 (-0.99 D, -0.95 D at D = 1e-3, 1e-2; 7e-18 at D = 0) while the Chern numbers jump from +-1 to undefined.",
+    "The existing SI routine observables.topology.Topology on the same k data equals the converted value within 8e-15 (NBCP Y, 0.2, 0.5, 1 K).",
+    "Correction of the 5b plan: the pair form does not improve mesh convergence. For separated bands it is algebraically the band sum; the large opposite curvatures of nearly degenerate bands cancel at each k in both forms. Its gain is being defined for degenerate and crossing bands.",
+    "NBCP (J_PD or J_Gamma = 0.01 meV, gapless by D25): the curvature is concentrated near small avoided crossings (particle band gaps 2e-4 to 1e-2 meV, |Omega| up to 8e3), and uniform meshes converge slowly or erratically. N = 96 -> 192: Y J_PD and V J_PD change by 2-10 percent; V J_Gamma by about 7 percent after an outlier at N = 48; Y J_Gamma nearly doubles at N = 192 where the mesh meets a near crossing (gap 2e-4 meV). NBCP values need a convergence check beyond uniform meshes (adaptive refinement near small gaps) before physical use."
+  ],
+  "report": {
+    "independent_haldane": {
+      "temperatures": [
+        0.1,
+        0.4,
+        2.0
+      ],
+      "implementation": [
+        -0.0004135058008226252,
+        -0.11984998193921872,
+        -0.0882701470244567
+      ],
+      "independent": [
+        -0.00041350580082371685,
+        -0.11984998193483394,
+        -0.08827014702114261
+      ],
+      "max_relative_difference": 3.754485611295877e-11
+    },
+    "forms_and_limits": [
+      {
+        "case": "haldane D=0.2 h=0.3",
+        "temperatures": [
+          0.0,
+          0.02,
+          0.05,
+          0.2,
+          1.0,
+          10.0,
+          1000.0
+        ],
+        "kappa_over_t": [
+          0.0,
+          -4.893223464018288e-11,
+          -2.252327834192511e-06,
+          -0.02115909683249317,
+          -0.14485109399186916,
+          -0.018868363761003665,
+          -0.00018921426495567466
+        ],
+        "max_abs_pair_minus_band_sum": 8.326672684688674e-17
+      },
+      {
+        "case": "kitaev K=-1 h=1 [111]",
+        "temperatures": [
+          0.0,
+          0.02,
+          0.05,
+          0.2,
+          1.0,
+          10.0,
+          1000.0
+        ],
+        "kappa_over_t": [
+          0.0,
+          -0.0,
+          -7.608503208960149e-10,
+          -0.0060758131523282214,
+          -0.026727511856343415,
+          -0.003175103198758127,
+          -3.180734878969758e-05
+        ],
+        "max_abs_pair_minus_band_sum": 6.938893903907228e-18
+      },
+      {
+        "case": "kitaev K=-1 h=1 -[111]",
+        "temperatures": [
+          0.0,
+          0.02,
+          0.05,
+          0.2,
+          1.0,
+          10.0,
+          1000.0
+        ],
+        "kappa_over_t": [
+          0.0,
+          -0.0,
+          7.608476278010184e-10,
+          0.006075813152328126,
+          0.02672751185634343,
+          0.0031751031987581582,
+          3.180734878965223e-05
+        ],
+        "max_abs_pair_minus_band_sum": 6.071532165918825e-18
+      }
+    ],
+    "null_and_continuity": {
+      "square_neel": {
+        "kappa_over_t": [
+          -0.0,
+          -0.0
+        ],
+        "band_sum": [
+          null,
+          null
+        ],
+        "gapless": true
+      },
+      "triangular_120": {
+        "kappa_over_t": [
+          7.083486731149801e-19,
+          3.8377941181859515e-19
+        ],
+        "band_sum": [
+          null,
+          null
+        ]
+      },
+      "triangular_canted_h1": {
+        "kappa_over_t": [
+          4.9542183336309953e-17,
+          -4.688538746648338e-17
+        ]
+      },
+      "haldane_gap_closing_t0.3": [
+        {
+          "D": 0.0,
+          "kappa_over_t": 7.148065885880637e-18
+        },
+        {
+          "D": 0.001,
+          "kappa_over_t": -0.0009895356785609344
+        },
+        {
+          "D": 0.01,
+          "kappa_over_t": -0.009452489504549928
+        },
+        {
+          "D": 0.05,
+          "kappa_over_t": -0.032824136400769977
+        },
+        {
+          "D": 0.1,
+          "kappa_over_t": -0.0502012448680912
+        },
+        {
+          "D": 0.2,
+          "kappa_over_t": -0.07338860730644024
+        }
+      ]
+    },
+    "legacy_si": {
+      "case": "NBCP Y 0.2 T, J_PD = 0.01 meV, 12 x 12 mesh, E0 = meV",
+      "rows": [
+        {
+          "kelvin": 0.2,
+          "legacy_W_per_K": -2.951832637145628e-16,
+          "converted_W_per_K": -2.951832637145605e-16,
+          "relative_difference": 7.66053886991358e-15
+        },
+        {
+          "kelvin": 0.5,
+          "legacy_W_per_K": 1.1508855245232422e-14,
+          "converted_W_per_K": 1.1508855245232436e-14,
+          "relative_difference": 1.3322676295501878e-15
+        },
+        {
+          "kelvin": 1.0,
+          "legacy_W_per_K": 1.2874861226256874e-14,
+          "converted_W_per_K": 1.2874861226256882e-14,
+          "relative_difference": 6.661338147750939e-16
+        }
+      ]
+    },
+    "nbcp_convergence": [
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 12,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.007895333849059133,
+          0.002655434203313588,
+          0.012134722943282938,
+          0.005636359557922567
+        ],
+        "max_pair_minus_band_sum": 1.214306433183765e-17,
+        "max_abs_curvature": 3.766173554749476,
+        "min_particle_band_gap_meV": 0.012005301651048336,
+        "min_magnon_energy_meV": 0.007143875079915442,
+        "gapless": true,
+        "seconds": 0.7
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 24,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.005810712763773931,
+          0.00635317113392596,
+          0.01748694025686938,
+          0.010161444337865866
+        ],
+        "max_pair_minus_band_sum": 1.3877787807814457e-17,
+        "max_abs_curvature": 23.89136496278297,
+        "min_particle_band_gap_meV": 0.006273395689848027,
+        "min_magnon_energy_meV": 0.00357874271813158,
+        "gapless": true,
+        "seconds": 1.6
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 48,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.004470645198025706,
+          0.008992695443313593,
+          0.021565271576455543,
+          0.013379394795423232
+        ],
+        "max_pair_minus_band_sum": 3.469446951953614e-17,
+        "max_abs_curvature": 256.38889212920884,
+        "min_particle_band_gap_meV": 0.0028878894749410494,
+        "min_magnon_energy_meV": 0.001790230280500463,
+        "gapless": true,
+        "seconds": 2.4
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 96,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.0037700478868745056,
+          0.009420181216138655,
+          0.021663434759721344,
+          0.013703371659039376
+        ],
+        "max_pair_minus_band_sum": 1.3530843112619095e-16,
+        "max_abs_curvature": 193.32342346047022,
+        "min_particle_band_gap_meV": 0.0031736201301697797,
+        "min_magnon_energy_meV": 0.0008952227710838449,
+        "gapless": true,
+        "seconds": 6.3
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 192,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.0033999352857169243,
+          0.00979659006070593,
+          0.022043456951781806,
+          0.014084916499298756
+        ],
+        "max_pair_minus_band_sum": 1.5265566588595902e-16,
+        "max_abs_curvature": 237.68351261645873,
+        "min_particle_band_gap_meV": 0.0029619177354752307,
+        "min_magnon_energy_meV": 0.0004476248477559221,
+        "gapless": true,
+        "seconds": 17.1
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 12,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          4.000340345998468e-05,
+          0.0008997729412158715,
+          0.001978410609990848,
+          0.0013467202412637577
+        ],
+        "max_pair_minus_band_sum": 6.440160904563896e-17,
+        "max_abs_curvature": 13.808319363506074,
+        "min_particle_band_gap_meV": 0.0017796920635923252,
+        "min_magnon_energy_meV": 0.008745624620714744,
+        "gapless": true,
+        "seconds": 0.7
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 24,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          1.886977217866952e-05,
+          0.00020742046450275436,
+          0.00039612710310489156,
+          0.00028042946235730333
+        ],
+        "max_pair_minus_band_sum": 1.3173056395698879e-17,
+        "max_abs_curvature": 1.453649900030238,
+        "min_particle_band_gap_meV": 0.003767867046848547,
+        "min_magnon_energy_meV": 0.004374365834553611,
+        "gapless": true,
+        "seconds": 1.1
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 48,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          2.05737619248974e-05,
+          0.0002693556045724922,
+          0.0005382172912594013,
+          0.000376146335234752
+        ],
+        "max_pair_minus_band_sum": 9.611452259083997e-17,
+        "max_abs_curvature": 29.10678733380082,
+        "min_particle_band_gap_meV": 0.0013871044422670842,
+        "min_magnon_energy_meV": 0.0021873716737523573,
+        "gapless": true,
+        "seconds": 2.6
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 96,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          2.0457898045812902e-05,
+          0.000265662196869985,
+          0.0005294556798339438,
+          0.0003701932476130454
+        ],
+        "max_pair_minus_band_sum": 5.583641188300348e-17,
+        "max_abs_curvature": 96.77955740127354,
+        "min_particle_band_gap_meV": 0.0009295334645631759,
+        "min_magnon_energy_meV": 0.0010937092603810572,
+        "gapless": true,
+        "seconds": 4.4
+      },
+      {
+        "phase": "Y",
+        "field_T": 0.2,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 192,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          2.595009039751092e-05,
+          0.00045295501406839386,
+          0.000958714753090171,
+          0.0006594975678039268
+        ],
+        "max_pair_minus_band_sum": 7.600257229123386e-17,
+        "max_abs_curvature": 7949.568300431721,
+        "min_particle_band_gap_meV": 0.00021383917691127075,
+        "min_magnon_energy_meV": 0.0005468575527730633,
+        "gapless": true,
+        "seconds": 14.4
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 12,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.12102961097774685,
+          -0.06877927328616883,
+          -0.018324431954821314,
+          -0.0032925231449789987
+        ],
+        "max_pair_minus_band_sum": 3.469446951953614e-17,
+        "max_abs_curvature": 6.429464170773783,
+        "min_particle_band_gap_meV": 0.02069940870640688,
+        "min_magnon_energy_meV": 0.00533759713670639,
+        "gapless": true,
+        "seconds": 1.2
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 24,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.12715263381909947,
+          -0.07459316231322774,
+          -0.025884639938187345,
+          -0.010330600003170792
+        ],
+        "max_pair_minus_band_sum": 9.71445146547012e-17,
+        "max_abs_curvature": 13.870755567913093,
+        "min_particle_band_gap_meV": 0.010770727857389972,
+        "min_magnon_energy_meV": 0.0027024256424521605,
+        "gapless": true,
+        "seconds": 1.5
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 48,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.13204762347422316,
+          -0.07969939555942328,
+          -0.03258991243522242,
+          -0.016730235935066468
+        ],
+        "max_pair_minus_band_sum": 7.494005416219807e-16,
+        "max_abs_curvature": 76.06178593315606,
+        "min_particle_band_gap_meV": 0.006107034527135846,
+        "min_magnon_energy_meV": 0.0013557210317800457,
+        "gapless": true,
+        "seconds": 2.3
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 96,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.1347699277437107,
+          -0.0825735644228929,
+          -0.03640780738832888,
+          -0.020376899228205556
+        ],
+        "max_pair_minus_band_sum": 5.273559366969494e-16,
+        "max_abs_curvature": 431.0825101119037,
+        "min_particle_band_gap_meV": 0.0034301308106368944,
+        "min_magnon_energy_meV": 0.0006784340701432355,
+        "gapless": true,
+        "seconds": 5.3
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JPD": 0.01
+        },
+        "mesh": 192,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          -0.13616230635532356,
+          -0.08398724102105158,
+          -0.03795984036321337,
+          -0.0219035194779587
+        ],
+        "max_pair_minus_band_sum": 1.8596235662471372e-15,
+        "max_abs_curvature": 1065.9684953207961,
+        "min_particle_band_gap_meV": 0.0025341145860851566,
+        "min_magnon_energy_meV": 0.00033928904675311,
+        "gapless": true,
+        "seconds": 20.9
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 12,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          0.007229987910873351,
+          0.004423078647036802,
+          0.003340090301533239,
+          0.0031666629246735406
+        ],
+        "max_pair_minus_band_sum": 7.37257477290143e-18,
+        "max_abs_curvature": 2.8347367052842207,
+        "min_particle_band_gap_meV": 0.007644221453368218,
+        "min_magnon_energy_meV": 0.010201636047758953,
+        "gapless": true,
+        "seconds": 0.5
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 24,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          0.006969431101829725,
+          0.004695911396448417,
+          0.00674778718853053,
+          0.006008191021303756
+        ],
+        "max_pair_minus_band_sum": 6.245004513516506e-17,
+        "max_abs_curvature": 70.65133579764405,
+        "min_particle_band_gap_meV": 0.0049561361980231255,
+        "min_magnon_energy_meV": 0.005118712005291332,
+        "gapless": true,
+        "seconds": 1.5
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 48,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          0.006807954646279083,
+          0.006228444536538044,
+          0.01872843399579076,
+          0.016267172553658206
+        ],
+        "max_pair_minus_band_sum": 2.914335439641036e-16,
+        "max_abs_curvature": 3590.4539445541077,
+        "min_particle_band_gap_meV": 0.0013397501525326538,
+        "min_magnon_energy_meV": 0.002561553805132289,
+        "gapless": true,
+        "seconds": 2.6
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 96,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          0.00670914749737019,
+          0.004337210016747052,
+          0.005886736912223956,
+          0.005221186145290366
+        ],
+        "max_pair_minus_band_sum": 2.42861286636753e-17,
+        "max_abs_curvature": 490.06646207479696,
+        "min_particle_band_gap_meV": 0.0025990417939933397,
+        "min_magnon_energy_meV": 0.001281050400555755,
+        "gapless": true,
+        "seconds": 8.0
+      },
+      {
+        "phase": "V",
+        "field_T": 1.4,
+        "couplings": {
+          "JGamma": 0.01
+        },
+        "mesh": 192,
+        "temperatures_meV": [
+          0.01,
+          0.02,
+          0.05,
+          0.1
+        ],
+        "kappa_over_t": [
+          0.006661184237313203,
+          0.004349452889694645,
+          0.006273017631864589,
+          0.00554576686095959
+        ],
+        "max_pair_minus_band_sum": 2.862293735361732e-17,
+        "max_abs_curvature": 1981.9782879274187,
+        "min_particle_band_gap_meV": 0.0016321209232643685,
+        "min_magnon_energy_meV": 0.0006405593491116071,
+        "gapless": true,
+        "seconds": 17.4
+      }
+    ]
+  },
+  "tests": {
+    "result": "496 passed, 0 failed",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0",
+    "note": "OPENBLAS_NUM_THREADS=4"
+  },
+  "not_in_5b": "adaptive k integration; keep/remove the legacy Topology/Thermodynamics Hall paths and close the implementation part of issue 260802 (5c)."
+}

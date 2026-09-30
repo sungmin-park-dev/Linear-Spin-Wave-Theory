@@ -305,3 +305,186 @@ def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
                       "refine the mesh, or the gap closes between mesh points", UserWarning,
                       stacklevel=2)
     return accepted
+
+
+# ---------------------------------------------------------------------------
+# Thermal Hall conductivity (stage 5b)
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ThermalHall:
+    """Magnon thermal Hall conductivity on a temperature grid (D29).
+
+    ``kappa_xy^2D / T`` per layer in units of ``k_B^2 / hbar`` (dimensionless;
+    independent of the energy and length units). In SI:
+    ``kappa^2D [W/K] = kappa_over_t * k_B^2 T / hbar`` with
+    ``T = t E0 / k_B``; divide by the layer spacing for a 3D conductivity.
+
+    Attributes
+    ----------
+    temperatures : (nt,) array
+        ``t = k_B T / E0``.
+    kappa_over_t : (nt,) array
+        Pair form (see :func:`thermal_hall`); defined for degenerate and
+        crossing bands.
+    kappa_over_t_band_sum : (nt,) array
+        ``sum_n c2 Omega_n`` with the per-band curvature of
+        :func:`berry_curvature`; NaN if some band is not separated at some k.
+        Equal to the pair form when all bands are separated.
+    gapless : bool
+    decision : str
+        "scan" or "user" (as in :class:`~spintoolkit.observables.thermal.ThermalResult`).
+    zero_modes : dict
+    band_gap_cutoff : float
+    cell_area : float
+    """
+
+    temperatures: np.ndarray
+    kappa_over_t: np.ndarray
+    kappa_over_t_band_sum: np.ndarray
+    gapless: bool
+    decision: str
+    zero_modes: dict
+    band_gap_cutoff: float
+    cell_area: float
+
+
+def _bose(energies: np.ndarray, t: float) -> np.ndarray:
+    x = np.divide(energies, t, out=np.full_like(energies, np.inf), where=t > 0)
+    with np.errstate(over="ignore"):
+        return np.where(x < 700, 1.0 / np.expm1(np.minimum(x, 700)), 0.0)
+
+
+def c2_weight(energies: np.ndarray, t: float) -> np.ndarray:
+    """``c2(rho)`` with ``rho = 1 / (exp(E/t) - 1)`` (zero at ``t = 0``)."""
+    from spintoolkit.observables.topology import c_two_function
+
+    rho = _bose(np.asarray(energies, dtype=float), t)
+    return c_two_function(rho)
+
+
+def c2_weight_derivative(energies: np.ndarray, t: float) -> np.ndarray:
+    """``d c2 / dE = -ln(1 + 1/rho)^2 rho (1 + rho) / t`` (zero where ``rho`` underflows)."""
+    energies = np.asarray(energies, dtype=float)
+    if t <= 0:
+        return np.zeros_like(energies)
+    rho = _bose(energies, t)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        value = -np.log1p(1.0 / rho) ** 2 * rho * (1.0 + rho) / t
+    return np.where(rho > 0, value, 0.0)
+
+
+def _divided_difference(e1, e2, t, relative=1e-6):
+    """``(c2(e1) - c2(e2)) / (e1 - e2)``, by the midpoint derivative when ``e1 ~ e2``."""
+    close = np.abs(e1 - e2) <= relative * np.maximum(np.abs(e1), np.abs(e2))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        direct = (c2_weight(e1, t) - c2_weight(e2, t)) / (e1 - e2)
+    return np.where(close, c2_weight_derivative(0.5 * (e1 + e2), t), direct)
+
+
+def _pair_terms(result, band_gap_cutoff):
+    """Per k: particle-pair numerators and particle-hole curvature parts.
+
+    The band sum ``sum_n w_n Omega_n`` over particle bands splits into
+    particle-particle pairs, ``sum_{n<m} (w_n - w_m) P_nm / (E_n - E_m)^2`` with
+    ``P_nm = -2 Im(A_nm B_mn)`` (``A = T^+ dH_x T``, ``B = T^+ dH_y T``), and
+    particle-hole terms ``sum_n w_n S_n``. Pairs separated by at most the
+    cutoff are exactly degenerate within the policy and contribute zero
+    (equal weights); a particle-hole pair within the cutoff (a zero mode on
+    the mesh) leaves the sum undefined.
+    """
+    ns = result.num_sites
+    dx, dy = result.hamiltonian_derivatives_at(result.k_points)
+    eta = np.r_[np.ones(ns), -np.ones(ns)]
+    pairs, holes, undefined = [], [], False
+    iu = np.triu_indices(ns, 1)
+    for E, T, Dx, Dy in zip(result.eigenvalues, result.eigenvectors, dx, dy):
+        A = T.conj().T @ Dx @ T
+        B = T.conj().T @ Dy @ T
+        lam = eta * E
+        numerator = -2 * np.imag(A * B.T)                    # [n, m] = -2 Im(A_nm B_mn)
+        pp = numerator[:ns, :ns][iu]
+        gap = lam[:ns][iu[0]] - lam[:ns][iu[1]]
+        pp = np.where(np.abs(gap) <= band_gap_cutoff, 0.0, pp / np.where(gap == 0, 1.0, gap))
+        denominator = lam[:ns, None] - lam[None, ns:]
+        if np.any(np.abs(denominator) <= band_gap_cutoff):
+            undefined = True
+        with np.errstate(divide="ignore", invalid="ignore"):
+            s = -np.sum(numerator[:ns, ns:] / denominator ** 2, axis=1)   # eta_n eta_m = -1
+        pairs.append((E[:ns][iu[0]], E[:ns][iu[1]], pp))
+        holes.append((E[:ns], s))
+    return pairs, holes, undefined
+
+
+def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] = None,
+                 band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
+                 curvature: Optional[BerryCurvature] = None) -> ThermalHall:
+    """Magnon thermal Hall conductivity ``kappa_xy / T`` (Matsumoto and Murakami).
+
+    ``kappa^2D / T = -(k_B^2 / hbar) (1 / A_cell) < sum_n c2(rho_n) Omega_n >_k``
+    over the particle bands. It is evaluated in pair form: the curvature
+    terms between two particle bands enter with the weight difference
+    ``(c2_n - c2_m) / (E_n - E_m)``, so exactly degenerate bands contribute
+    zero, a degenerate group contributes ``c2 Tr F``, and nearly degenerate
+    bands with large opposite curvatures cancel before the k sum. The response
+    is defined for degenerate and crossing bands; only a particle-hole
+    degeneracy (a zero mode on the mesh) leaves it undefined (NaN).
+
+    Parameters
+    ----------
+    result : LSWTResult
+        On a complete uniform mesh, without regularization shift.
+    temperatures : sequence of float
+        ``t = k_B T / E0 >= 0``.
+    zero_modes, gapless
+        As in :func:`~spintoolkit.observables.thermal.thermal_quantities` (D25):
+        candidates stop the calculation until ``gapless`` is given; with zero
+        modes the result is computed with a warning, and its convergence
+        near the zero modes must be checked on finer meshes.
+    band_gap_cutoff : float
+    curvature : BerryCurvature, optional
+        Reused for the band-sum comparison.
+
+    Returns
+    -------
+    ThermalHall
+    """
+    from spintoolkit.observables.thermal import ZeroModeCandidateError
+    from spintoolkit.observables.zero_modes import scan_zero_modes
+
+    _check_result(result)
+    if _mesh_indices(result) is None:
+        raise TopologyError("the thermal Hall integral needs a complete uniform mesh of the "
+                            "magnetic Brillouin zone")
+    t = np.asarray(temperatures, dtype=float).ravel()
+    if np.any(~np.isfinite(t)) or np.any(t < 0):
+        raise ValueError("temperatures must be finite and non-negative")
+    report = zero_modes if zero_modes is not None else scan_zero_modes(result)
+    if gapless is None:
+        if report.has_candidates:
+            raise ZeroModeCandidateError(report)
+        gapless_flag, decision = report.has_zero, "scan"
+    else:
+        gapless_flag, decision = bool(gapless), "user"
+    if gapless_flag:
+        warnings.warn("gapless spectrum: kappa_xy includes the neighbourhood of the zero modes; "
+                      "check its convergence on finer meshes", UserWarning, stacklevel=2)
+    curvature = curvature if curvature is not None else berry_curvature(result, band_gap_cutoff)
+    area = curvature.cell_area
+    pairs, holes, undefined = _pair_terms(result, band_gap_cutoff)
+    weights = result.weights
+    kappa, band_sum = [], []
+    for tk in t:
+        if tk == 0:
+            kappa.append(0.0)
+            band_sum.append(0.0)
+            continue
+        total = 0.0
+        for w, (e1, e2, pp), (e, s) in zip(weights, pairs, holes):
+            total += w * (np.sum(_divided_difference(e1, e2, tk) * pp)
+                          + np.sum(c2_weight(e, tk) * s))
+        kappa.append(np.nan if undefined else -total / area)
+        band_sum.append(-float(weights @ np.sum(c2_weight(curvature.energies, tk)
+                                                * curvature.curvature, axis=1)) / area)
+    return ThermalHall(t, np.array(kappa), np.array(band_sum), gapless_flag, decision,
+                       report.to_dict(), float(band_gap_cutoff), area)

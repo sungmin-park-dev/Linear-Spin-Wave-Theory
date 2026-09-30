@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--4단계(2b 포함)와 5a 구현 & 검토 항목 확인 \\
-    \textbf{미구현} & thermal Hall(5b), 기존 \texttt{Topology} 정리(5c), 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 5b부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--4단계(2b 포함)와 5a·5b 구현 & 검토 항목 확인 \\
+    \textbf{미구현} & 기존 \texttt{Topology} 정리(5c), 적응형 k 적분, 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 5c부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -638,6 +638,26 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{5a 검증 기록}{stage5a}
 \end{frame}
 
+\begin{frame}[label=stage5b]{5b: thermal Hall은 퇴화 밴드에서도 정의되게 쌍 합으로 계산한다}
+  \framesubtitle{2026-09-30 · D29 · 층당 $\kappa_{xy}^{2D}/T$를 $k_B^2/\hbar$ 단위로; 입자 밴드 쌍은 $(c_{2,n}-c_{2,m})/(E_n-E_m)$로 묶어 정확한 퇴화는 0, 묶음은 $c_2\,\mathrm{Tr}F$.}
+  \footnotesize\renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\textwidth}{@{}P{3.2cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    독립 계산(Haldane) & $d(\mathbf k)$ 차분 곡률 + 구적 $c_2$와 $3.8\times10^{-11}$; 2-밴드 공식이 5a 부호도 점별로 확인 \\
+    기존 SI 경로 & 같은 k 자료에서 \texttt{Topology.compute\_thermal\_Hall}(W/K)과 $8\times10^{-15}$ (NBCP Y, 0.2--1 K) \\
+    형태·극한·대칭 & 분리된 밴드에서 쌍 합 = 밴드별 합($10^{-16}$); $t\to0$ 지수 감소, $t\to\infty$ $1/t$ 감소; 키타에프 장 반전 시 반전 \\
+    null test & Néel·120°·기운 삼각: $\kappa\le5\times10^{-17}$; Néel·120°의 밴드별 합은 정의 안 됨(NaN) \\
+    연속성 & Haldane $D\to0$: $\kappa/T\approx-0.99D$로 0에 수렴, Chern 수는 $\pm1\to$ 정의 안 됨 \\
+    NBCP 수렴 & 작은 회피 교차 근처에 곡률 집중($|\Omega|\le8\times10^3$, 간격 $2\times10^{-4}$ meV); $N=96\to192$: $J_{\mathrm{PD}}$ 2--10\%, Y $J_\Gamma$ 약 2배 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{정정: 쌍 합이 수렴을 개선한다는 계획의 예상은 틀렸다(분리된 밴드에서는 같은 합). NBCP 값은 적응형 세분화 등 추가 수렴 확인 전 물리적으로 쓰지 않는다. 영모드는 D25 규칙. 테스트 496 통과, 스냅샷 144개 차이 0.}
+  \slidesource{5b 검증 기록}{stage5b}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -714,7 +734,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
     4 & 물리량(구현) & 4a 바닥상태, 4b 열역학·영모드, 4c 구조인자·결합 상관 \\
-    5 & 위상량(5a 구현) & 5a 곡률·Chern(Kubo·FHS 대조); 5b thermal Hall; 5c 기존 코드 정리·이슈 해소 \\
+    5 & 위상량(5a·5b) & 5a 곡률·Chern(Kubo·FHS 대조); 5b thermal Hall; 5c 기존 코드 정리·이슈 해소 \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
@@ -737,6 +757,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
+    NBCP $\kappa_{xy}$의 k 적분: 균일 메시 확대 또는 작은 밴드 간격 근처의 적응형 세분화 & 5c 이후 \\
     자기 셀 결정: LT 단계(구현 안 함·진단 도구·파이프라인 1단계)와 대각 셀 전용 \texttt{CommensurateStructure}의 유지·\texttt{SpinState} 흡수·삭제 & LSWT 작업 재개 시 \\
     \bottomrule
   \end{tabularx}
