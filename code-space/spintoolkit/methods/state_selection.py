@@ -1,4 +1,4 @@
-"""Zero-point state selection on the classical ground-state manifold (D17, D19).
+"""Zero-point state selection on the classical ground-state manifold (D17, D19, D28).
 
 The zero-point energy E_qm is compared only between classical ground states.
 Off the manifold the torques do not vanish, the linear boson terms of LSWT
@@ -14,12 +14,22 @@ Steps of :func:`select_on_manifold`:
    (:func:`~spintoolkit.methods.classical.refine_classical`).
 2. Hessian of E_cl in tangent coordinates; project the global rotation
    generators ``n x n_i`` on it and find the flat rotation axis ``n``.
-3. Orbit ``R_n(phi)`` of the refined state: E_cl and E_qm at equally spaced
-   ``phi``, a least-squares Fourier fit up to a maximum harmonic, and a
-   bounded 1D minimization of the fitted E_qm. The fit locates the minimum
-   more precisely than the samples when the E_qm variation is tiny.
-4. Check that E_cl is constant along the whole orbit (the Hessian guarantees
-   flatness only to second order) and record the energies and curvatures used.
+3. Relaxed soft path (D28): at equally spaced rotation angles, ``R_n(phi)``
+   of the refined state is relaxed classically in every tangent direction
+   except the orbit tangent. Only the torque along the orbit remains; a
+   torque transverse to the spins does not change H2, so dropping the linear
+   term is the constrained one-loop calculation.
+4. One-loop effective potential ``Gamma(phi) = E_cl + E_zp`` on that path: a
+   least-squares Fourier fit up to a maximum harmonic and a bounded 1D
+   minimization. The minimum of Gamma is the selected state; the pure E_cl
+   and E_qm minima are kept as candidates with the shifts from them. For a
+   flat classical orbit Gamma = const + E_zp, which is D17. ``dGamma/dphi = 0``
+   balances the classical and zero-point torques along the soft direction.
+5. Validity: the soft coordinate must be softer than every other mode
+   (classical softness below one, otherwise ``no_degeneracy``), the other
+   modes must be stable at the refined state and the path must exist
+   (otherwise ``not_soft``), and the curvature of Gamma over the hard
+   stiffness (adiabatic ratio) above ``adiabatic_warning`` gives a warning.
 
 Two criteria modes (D19):
 
@@ -27,9 +37,9 @@ Two criteria modes (D19):
     Flatness is judged against the numerical accuracy of the refined state:
     the remaining Newton correction ``delta`` sets the curvature floor
     ``accuracy_factor * |H| * (delta + roundoff_factor * eps)``. A resolved
-    classical curvature ``C_cl`` along the orbit is compared with the
-    quantum curvature ``C_qm`` at the selected angle (classical pinning,
-    competition or quantum selection). "No selection" requires the rotation
+    classical curvature is handled by the effective potential (D28), with no
+    threshold between classical pinning and quantum selection. "No selection"
+    requires the rotation
     to be an exact symmetry of every term (``[K_n, J] = 0``,
     ``g^T b || n``); a non-symmetric orbit whose harmonic amplitude stays at
     the fit residual is "unresolved".
@@ -38,7 +48,7 @@ Two criteria modes (D19):
     ``w_min / w_next < gap_ratio``, a generator singular value is zero below
     ``rank_tolerance`` relative to the largest, and "no selection" means the
     harmonic amplitude is below ``max(residual_factor * residual,
-    roundoff_factor * eps * |E_qm|)``.
+    roundoff_factor * eps * |Gamma|)``; the orbit must be a null Hessian mode.
 
 The defaults live in :mod:`spintoolkit.definitions.defaults`; every threshold
 used is recorded in :attr:`SelectionResult.diagnostics`.
@@ -55,14 +65,16 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from typing import Any, Callable, Dict, Mapping, Optional, Tuple
+import warnings
 
 import numpy as np
 from scipy.optimize import minimize_scalar
 
 from spintoolkit.definitions.defaults import (
-    SELECTION_ACCURACY_FACTOR, SELECTION_COMPETITION_BAND, SELECTION_GAP_RATIO,
+    SELECTION_ACCURACY_FACTOR, SELECTION_ADIABATIC_WARNING, SELECTION_GAP_RATIO,
     SELECTION_MAX_HARMONIC, SELECTION_MODE, SELECTION_ORBIT_POINTS,
-    SELECTION_RANK_TOLERANCE, SELECTION_RESIDUAL_FACTOR, SELECTION_ROUNDOFF_FACTOR)
+    SELECTION_PATH_TOLERANCE, SELECTION_RANK_TOLERANCE, SELECTION_RESIDUAL_FACTOR,
+    SELECTION_ROUNDOFF_FACTOR)
 from spintoolkit.methods.classical import (
     classical_energy, refine_classical, tangent_expansion)
 from spintoolkit.states.spin_state import SpinState
@@ -74,8 +86,7 @@ NO_DEGENERACY = "no_degeneracy"
 SELECTED = "selected"
 NO_SELECTION = "no_selection"
 UNRESOLVED = "unresolved"
-COMPETITION = "competition"
-NOT_FLAT = "not_flat"
+NOT_SOFT = "not_soft"
 UNSUPPORTED_MANIFOLD = "unsupported_manifold"
 AXIS_REQUIRED = "axis_required"
 
@@ -104,9 +115,11 @@ class SelectionCriteria:
         Multiples of ``eps * |E|`` treated as round-off.
     accuracy_factor : float
         Physics mode: multiples of the estimated state accuracy.
-    competition_band : (float, float)
-        Physics mode: ``C_cl / C_qm`` inside this range is a competition;
-        below it the quantum selection wins, above it classical pinning.
+    adiabatic_warning : float
+        Warn when the curvature of Gamma over the hard stiffness exceeds this
+        (the verdict does not change).
+    path_tolerance : float
+        Relative gradient tolerance of the soft-path relaxation.
     orbit_points : int
         Equally spaced orbit samples.
     max_harmonic : int
@@ -122,7 +135,8 @@ class SelectionCriteria:
     residual_factor: float = SELECTION_RESIDUAL_FACTOR
     roundoff_factor: float = SELECTION_ROUNDOFF_FACTOR
     accuracy_factor: float = SELECTION_ACCURACY_FACTOR
-    competition_band: Tuple[float, float] = SELECTION_COMPETITION_BAND
+    adiabatic_warning: float = SELECTION_ADIABATIC_WARNING
+    path_tolerance: float = SELECTION_PATH_TOLERANCE
     orbit_points: int = SELECTION_ORBIT_POINTS
     max_harmonic: int = SELECTION_MAX_HARMONIC
     refine: bool = True
@@ -132,9 +146,8 @@ class SelectionCriteria:
             raise ValueError(f"mode must be one of {MODES}, got {self.mode!r}")
         if self.orbit_points <= 2 * self.max_harmonic + 1:
             raise ValueError("orbit_points must exceed 2 * max_harmonic + 1")
-        low, high = self.competition_band
-        if not 0 < low <= high:
-            raise ValueError("competition_band must satisfy 0 < low <= high")
+        if self.adiabatic_warning <= 0 or self.path_tolerance <= 0:
+            raise ValueError("adiabatic_warning and path_tolerance must be positive")
 
 
 @dataclass(frozen=True)
@@ -225,12 +238,14 @@ def fit_harmonics(phis: np.ndarray, values: np.ndarray, max_harmonic: int) -> Di
             "residual": residual}
 
 
-def _series(fit: Mapping[str, Any], phi, derivative: int = 0):
+def _series(fit: Mapping[str, Any], phi, derivative: int = 0, constant: bool = True):
     m = np.arange(1, len(fit["cos"]) + 1)
     angle = np.multiply.outer(phi, m)
     a, b = np.asarray(fit["cos"]), np.asarray(fit["sin"])
     if derivative == 0:
-        return fit["constant"] + np.cos(angle) @ a + np.sin(angle) @ b
+        # The oscillating part alone keeps full relative precision when the
+        # variation (e.g. 1e-12) is far below the constant (e.g. 5e-2).
+        return (fit["constant"] if constant else 0.0) + np.cos(angle) @ a + np.sin(angle) @ b
     if derivative == 2:
         return -(np.cos(angle) @ (m ** 2 * a) + np.sin(angle) @ (m ** 2 * b))
     raise ValueError("derivative must be 0 or 2")
@@ -239,9 +254,10 @@ def _series(fit: Mapping[str, Any], phi, derivative: int = 0):
 def _fit_minimum(fit: Mapping[str, Any], orbit_points: int) -> float:
     """Global minimum of a fitted series: dense grid, then bounded refinement."""
     grid = np.linspace(0.0, 2 * np.pi, 64 * orbit_points, endpoint=False)
-    start = grid[np.argmin(_series(fit, grid))]
+    start = grid[np.argmin(_series(fit, grid, constant=False))]
     step = grid[1] - grid[0]
-    result = minimize_scalar(lambda x: float(_series(fit, x)), bounds=(start - step, start + step),
+    result = minimize_scalar(lambda x: float(_series(fit, x, constant=False)),
+                             bounds=(start - step, start + step),
                              method="bounded", options={"xatol": 1e-12})
     return float(np.mod(result.x, 2 * np.pi))
 
@@ -326,7 +342,6 @@ def select_on_manifold(model: SpinModel, state: SpinState,
     """
     conditions = conditions or ExternalConditions()
     physics = criteria.mode == "physics"
-    low, high = criteria.competition_band
     if criteria.refine:
         state = refine_classical(model, state, conditions)
     expansion = tangent_expansion(model, state, conditions)
@@ -406,32 +421,26 @@ def select_on_manifold(model: SpinModel, state: SpinState,
         return result(NO_SELECTION, "the state is invariant under rotations about the axis",
                       axis_=axis)
     c_cl = float(tangent @ H @ tangent)
-    diagnostics["C_cl"] = c_cl
+    tangent_norm = float(np.linalg.norm(tangent))
+    hard = _hard_stiffness(H, tangent)
+    softness = (c_cl / tangent_norm ** 2) / hard if hard > 0 else np.inf
+    diagnostics.update({"C_cl": c_cl, "hard_stiffness": hard, "classical_softness": softness})
     hessian_flat = abs(c_cl) <= flat_limit
     diagnostics["hessian_flat_along_orbit"] = bool(hessian_flat)
     if not hessian_flat and not physics:
         return result(NO_DEGENERACY, "the orbit direction is not a null Hessian mode", axis_=axis)
+    if hard < -flat_limit:
+        return result(NOT_SOFT, "a hard mode is unstable at the refined state (a classical "
+                      "saddle, not a minimum); start from a classical minimum", axis_=axis)
+    if not hessian_flat and softness >= 1 - 1e-6:
+        return result(NO_DEGENERACY, "no soft coordinate: the classical curvature along the "
+                      "orbit is not below the stiffness of the other modes", axis_=axis)
 
     symmetric, violations = rotation_symmetry(
         model, conditions, axis, criteria.accuracy_factor * accuracy)
     diagnostics["symmetry_violation"] = violations
     diagnostics["exact_symmetry"] = bool(symmetric)
-
-    # Classical pinning screen: compare energy changes over one orbit step.
     step = 2 * np.pi / criteria.orbit_points
-    quantum_info = {}
-    if physics and not hessian_flat:
-        e0 = quantum_energy(model, state, conditions)
-        e_pm = [quantum_energy(model, rotate_state(state, axis, a), conditions) for a in (step, -step)]
-        quantum_change = max(abs(e - e0) for e in e_pm)
-        classical_change = 0.5 * c_cl * step ** 2
-        diagnostics["pinning_screen"] = {"orbit_step": step, "classical_change": classical_change,
-                                         "quantum_change": quantum_change}
-        if classical_change > high * quantum_change:
-            diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
-            return result(NO_DEGENERACY, "classical curvature along the softest rotation "
-                          "dominates the zero-point variation (classical pinning)", axis_=axis)
-
     if physics and symmetric and hessian_flat:
         phis = np.arange(criteria.orbit_points) * step
         e_cl = np.array([classical_energy(model, rotate_state(state, axis, p), conditions)
@@ -441,82 +450,227 @@ def select_on_manifold(model: SpinModel, state: SpinState,
         return result(NO_SELECTION, "the orbit is an exact symmetry of every term; E_qm is "
                       "constant", axis_=axis)
 
-    # Orbit.
-    phis = np.arange(criteria.orbit_points) * step
-    orbit_states = [rotate_state(state, axis, p) for p in phis]
-    e_cl = np.array([classical_energy(model, x, conditions) for x in orbit_states])
-    e_qm = np.array([quantum_energy(model, x, conditions) for x in orbit_states])
+    # Relaxed soft path and the one-loop effective potential Gamma = E_cl + E_zp (D28).
+    path = [soft_path_point(model, state, conditions, axis, p, criteria.path_tolerance * scale)
+            for p in np.arange(criteria.orbit_points) * step]
     diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
+    path_info = {"max_transverse_gradient": max(x.transverse_gradient for x in path),
+                 "min_hard_stiffness": min(x.hard_stiffness for x in path),
+                 "tolerance": criteria.path_tolerance * scale}
+    diagnostics["path"] = path_info
+    if not all(x.converged for x in path):
+        return result(NOT_SOFT, "the relaxed soft path does not exist (relaxation off the orbit "
+                      "does not converge or a hard mode is unstable)", axis_=axis)
+    phis = np.array([x.phi for x in path])
+    e_cl = np.array([classical_energy(model, x.state, conditions) for x in path])
+    e_qm = np.array([quantum_energy(model, x.state, conditions) for x in path])
+    gamma = e_cl + e_qm
+    rigid_cl = np.array([classical_energy(model, rotate_state(state, axis, p), conditions)
+                         for p in np.arange(criteria.orbit_points) * step])
+    path_info["relaxation_energy_max"] = float(np.max(rigid_cl - e_cl))
     fit_qm = fit_harmonics(phis, e_qm, criteria.max_harmonic)
     fit_cl = fit_harmonics(phis, e_cl, criteria.max_harmonic)
-    amplitude = float(max(fit_qm["amplitudes"]))
-    threshold = max(criteria.residual_factor * fit_qm["residual"],
-                    criteria.roundoff_factor * EPS * float(np.max(np.abs(e_qm))))
-    cl_floor = criteria.roundoff_factor * EPS * float(np.max(np.abs(e_cl)))
+    fit_gamma = fit_harmonics(phis, gamma, criteria.max_harmonic)
+    amplitude_qm = float(max(fit_qm["amplitudes"]))
+    amplitude = float(max(fit_gamma["amplitudes"]))
+    threshold = max(criteria.residual_factor * fit_gamma["residual"],
+                    criteria.roundoff_factor * EPS * float(np.max(np.abs(gamma))))
     diagnostics["orbit"] = {
         "phi": phis.tolist(), "E_cl": e_cl.tolist(), "E_qm": e_qm.tolist(),
-        "E_cl_span": float(np.ptp(e_cl)), "E_qm_span": float(np.ptp(e_qm)),
-        "E_cl_roundoff_floor": cl_floor,
-        "E_qm_fit": fit_qm, "E_cl_fit": fit_cl,
-        "E_qm_amplitude": amplitude,
+        "Gamma": gamma.tolist(), "E_cl_span": float(np.ptp(e_cl)),
+        "E_qm_span": float(np.ptp(e_qm)), "Gamma_span": float(np.ptp(gamma)),
+        "E_cl_fit": fit_cl, "E_qm_fit": fit_qm, "Gamma_fit": fit_gamma,
+        "E_qm_amplitude": amplitude_qm, "Gamma_amplitude": amplitude,
         "E_qm_dominant_harmonic": int(np.argmax(fit_qm["amplitudes"]) + 1),
-        "E_qm_resolution_threshold": threshold}
+        "E_qm_resolution_threshold": max(
+            criteria.residual_factor * fit_qm["residual"],
+            criteria.roundoff_factor * EPS * float(np.max(np.abs(e_qm)))),
+        "Gamma_resolution_threshold": threshold}
 
     if amplitude <= threshold:
         if physics:
-            return result(UNRESOLVED, "E_qm varies along a non-symmetric orbit by less than "
-                          "the fit resolution; increase the mesh or check the provider",
+            return result(UNRESOLVED, "Gamma = E_cl + E_qm varies along the soft path by less "
+                          "than the fit resolution; increase the mesh or check the provider",
                           axis_=axis)
-        return result(NO_SELECTION, "harmonic amplitude of E_qm below the threshold", axis_=axis)
+        return result(NO_SELECTION, "harmonic amplitude of Gamma below the threshold", axis_=axis)
 
-    phi_qm = _fit_minimum(fit_qm, criteria.orbit_points)
-    c_qm = float(_series(fit_qm, phi_qm, 2))
-    tolerance = max(criteria.residual_factor * fit_qm["residual"],
-                    criteria.roundoff_factor * EPS * float(np.max(np.abs(e_qm))))
+    phi_gamma = _fit_minimum(fit_gamma, criteria.orbit_points)
+    c_gamma = float(_series(fit_gamma, phi_gamma, 2))
     fine = np.linspace(0.0, 2 * np.pi, 64 * criteria.orbit_points, endpoint=False)
-    fitted = _series(fit_qm, fine)
+    fitted = _series(fit_gamma, fine, constant=False)
     is_min = (fitted <= np.roll(fitted, 1)) & (fitted <= np.roll(fitted, -1))
-    equivalent = fine[is_min & (fitted - fitted.min() <= tolerance)]
-    selected = rotate_state(state, axis, phi_qm,
-                            {**dict(state.provenance),
-                             "selection": {"method": "D17 orbit", "axis": axis.tolist(),
-                                           "phi": phi_qm, "mode": criteria.mode}})
+    equivalent = fine[is_min & (fitted - fitted.min() <= threshold)]
+    tol = criteria.path_tolerance * scale
+    chosen = soft_path_point(model, state, conditions, axis, phi_gamma, tol, target=True)
+    selected = SpinState(chosen.state.model_ref, chosen.state.supercell, chosen.state.directions,
+                         {**dict(state.provenance),
+                          "selection": {"method": "D28 effective potential", "axis": axis.tolist(),
+                                        "phi": phi_gamma, "mode": criteria.mode}})
+    candidates = {"selected": selected}
+    shifts = {}
+    for name, fit in (("quantum", fit_qm), ("classical", fit_cl)):
+        floor = max(criteria.residual_factor * fit["residual"],
+                    criteria.roundoff_factor * EPS * float(np.max(np.abs(gamma))))
+        if max(fit["amplitudes"]) <= floor:
+            continue
+        # nearest of the equivalent minima (e.g. sixfold E_qm) to the minimum of Gamma
+        phi_x = _nearest_equivalent_minimum(fit, phi_gamma, floor, criteria.orbit_points)
+        candidates[name] = soft_path_point(model, state, conditions, axis, phi_x, tol,
+                                           target=True).state
+        harmonic = int(np.argmax(fit["amplitudes"]) + 1)
+        shift = _wrap(phi_gamma - phi_x)
+        shifts[name] = {"phi": phi_x, "shift": shift, "dominant_harmonic": harmonic,
+                        "fraction_of_period": shift / (2 * np.pi / harmonic)}
+    adiabatic = ((c_gamma / chosen.tangent_norm ** 2) / chosen.hard_stiffness
+                 if chosen.hard_stiffness > 0 else np.inf)
     diagnostics.update({
-        "phi_qm": phi_qm, "C_qm": c_qm,
-        "equivalent_minima": equivalent.tolist(),
+        "phi_gamma": phi_gamma, "C_gamma": c_gamma, "adiabatic_ratio": adiabatic,
+        "minima": shifts, "equivalent_minima": equivalent.tolist(),
+        "phi_qm": shifts.get("quantum", {}).get("phi"),
+        "C_qm": (float(_series(fit_qm, shifts["quantum"]["phi"], 2)) if "quantum" in shifts else None),
         "E_qm_selected": float(quantum_energy(model, selected, conditions)),
         "E_cl_selected": classical_energy(model, selected, conditions)})
-    candidates = {"quantum": selected}
+    if adiabatic > criteria.adiabatic_warning:
+        warnings.warn(f"adiabatic ratio {adiabatic:.3g} > {criteria.adiabatic_warning}: the soft "
+                      "coordinate is weakly separated from the other modes", UserWarning, stacklevel=2)
+    message = f"Gamma = E_cl + E_qm is minimal at phi = {phi_gamma:.6f} about the axis"
+    if "quantum" in shifts:
+        message += f"; {shifts['quantum']['shift']:+.3g} rad from the E_qm minimum"
+    if "classical" in shifts:
+        message += f", {shifts['classical']['shift']:+.3g} rad from the E_cl minimum"
+    return result(SELECTED, message, selected=selected, axis_=axis, phi=phi_gamma,
+                  candidates=candidates)
 
-    # Classical variation along the orbit.
-    if physics:
-        span_cl = float(np.ptp(e_cl))
-        if hessian_flat:
-            ratio = 0.0 if span_cl <= cl_floor else span_cl / float(np.ptp(e_qm))
-            kind = "orbit span ratio E_cl / E_qm"
-        else:
-            ratio = c_cl / c_qm if c_qm > 0 else np.inf
-            kind = "curvature ratio C_cl / C_qm"
-        diagnostics["classical_to_quantum"] = {"kind": kind, "ratio": ratio}
-        if ratio >= low:
-            phi_cl = _fit_minimum(fit_cl, criteria.orbit_points)
-            candidates["classical"] = rotate_state(state, axis, phi_cl)
-            diagnostics["phi_cl"] = phi_cl
-            if ratio <= high:
-                return result(COMPETITION, f"{kind} = {ratio:.3g} inside the competition band; "
-                              "both minima kept", axis_=axis, candidates=candidates)
-            if hessian_flat:
-                return result(NOT_FLAT, "E_cl varies along the orbit beyond second order "
-                              "and dominates E_qm", axis_=axis, candidates=candidates)
-            return result(NO_DEGENERACY, "classical pinning dominates the zero-point "
-                          "selection", axis_=axis, candidates=candidates)
-    elif float(np.ptp(e_cl)) > cl_floor:
-        return result(NOT_FLAT, "E_cl is not constant along the orbit", axis_=axis,
-                      candidates=candidates)
 
-    return result(SELECTED, f"E_qm selects phi = {phi_qm:.6f} about the axis "
-                  f"(harmonic {diagnostics['orbit']['E_qm_dominant_harmonic']} dominant)",
-                  selected=selected, axis_=axis, phi=phi_qm, candidates=candidates)
+# ---------------------------------------------------------------------------
+# Relaxed soft path (D28)
+# ---------------------------------------------------------------------------
+
+def _wrap(angle: float) -> float:
+    return float(np.mod(angle + np.pi, 2 * np.pi) - np.pi)
+
+
+def _nearest_equivalent_minimum(fit, phi: float, tolerance: float, orbit_points: int) -> float:
+    """The minimum of a fitted series, among those within ``tolerance`` of the lowest, nearest to phi."""
+    grid = np.linspace(0.0, 2 * np.pi, 64 * orbit_points, endpoint=False)
+    values = _series(fit, grid, constant=False)
+    is_min = (values <= np.roll(values, 1)) & (values <= np.roll(values, -1))
+    candidates = grid[is_min & (values - values.min() <= tolerance)]
+    start = candidates[np.argmin(np.abs([_wrap(phi - c) for c in candidates]))]
+    step = grid[1] - grid[0]
+    result = minimize_scalar(lambda x: float(_series(fit, x, constant=False)),
+                             bounds=(start - step, start + step),
+                             method="bounded", options={"xatol": 1e-12})
+    return float(np.mod(result.x, 2 * np.pi))
+
+
+def _hard_stiffness(H: np.ndarray, tangent: np.ndarray) -> float:
+    """Lowest Hessian eigenvalue on the complement of the orbit tangent."""
+    unit = tangent / np.linalg.norm(tangent)
+    _, _, vt = np.linalg.svd(unit[None, :])
+    P = vt[1:].T
+    return float(np.min(np.linalg.eigvalsh(P.T @ H @ P)))
+
+
+def rotation_angle(reference: SpinState, state: SpinState, axis) -> float:
+    """Least-squares rotation angle about ``axis`` that maps ``reference`` onto ``state``."""
+    axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
+    cross = dot = 0.0
+    for key, r in reference.directions.items():
+        v = state.directions[key]
+        r_perp, v_perp = r - (r @ axis) * axis, v - (v @ axis) * axis
+        cross += np.cross(r_perp, v_perp) @ axis
+        dot += r_perp @ v_perp
+    return float(np.arctan2(cross, dot))
+
+
+@dataclass(frozen=True)
+class SoftPathPoint:
+    """A state on the relaxed soft path.
+
+    Attributes
+    ----------
+    state : SpinState
+    phi : float
+        Rotation angle of ``state`` from the reference about the axis.
+    transverse_gradient : float
+        Largest energy gradient off the orbit tangent (zero on the path).
+    orbit_torque : float
+        Gradient along the unit orbit tangent (balanced by the zero-point
+        torque at the minimum of Gamma).
+    hard_stiffness : float
+        Lowest Hessian eigenvalue off the orbit tangent (zero when other
+        exactly flat directions exist, e.g. an SO(3)-degenerate state).
+    tangent_norm : float
+        Norm of the orbit tangent per radian of rotation.
+    converged : bool
+        The transverse gradient vanishes and no hard mode is unstable.
+    """
+
+    state: SpinState
+    phi: float
+    transverse_gradient: float
+    orbit_torque: float
+    hard_stiffness: float
+    tangent_norm: float
+    converged: bool
+
+
+def _relax_transverse(model, state, conditions, axis, tolerance, steps=40):
+    for _ in range(steps):
+        ex = tangent_expansion(model, state, conditions)
+        tangent = _generators(ex) @ axis
+        unit = tangent / np.linalg.norm(tangent)
+        _, _, vt = np.linalg.svd(unit[None, :])
+        P = vt[1:].T
+        gP = P.T @ ex.gradient
+        if np.max(np.abs(gP)) <= tolerance:
+            break
+        w, v = np.linalg.eigh(P.T @ ex.hessian @ P)
+        floor = np.sqrt(np.finfo(float).eps) * np.max(np.abs(w))
+        if np.min(w) < -floor:
+            break                                   # a hard mode is unstable
+        keep = w > floor                            # other exactly flat directions stay put
+        step = -v[:, keep] @ ((v[:, keep].T @ gP) / w[keep])
+        directions = ex.directions + np.einsum("ia,iax->ix", (P @ step).reshape(-1, 2), ex.frames)
+        directions /= np.linalg.norm(directions, axis=1)[:, None]
+        state = SpinState(state.model_ref, state.supercell, dict(zip(ex.keys, directions)),
+                          state.provenance)
+    ex = tangent_expansion(model, state, conditions)
+    tangent = _generators(ex) @ axis
+    unit = tangent / np.linalg.norm(tangent)
+    _, _, vt = np.linalg.svd(unit[None, :])
+    P = vt[1:].T
+    transverse = float(np.max(np.abs(P.T @ ex.gradient)))
+    w = np.linalg.eigvalsh(P.T @ ex.hessian @ P)
+    stable = bool(np.min(w) >= -np.sqrt(np.finfo(float).eps) * np.max(np.abs(w)))
+    return (state, transverse, float(unit @ ex.gradient), float(np.min(w)),
+            float(np.linalg.norm(tangent)), stable)
+
+
+def soft_path_point(model: SpinModel, reference: SpinState,
+                    conditions: Optional[ExternalConditions], axis, phi: float,
+                    tolerance: float, target: bool = False) -> SoftPathPoint:
+    """Classical state on the relaxed soft path at rotation angle ``phi``.
+
+    Starts from ``R_n(phi) reference`` and minimizes E_cl over every tangent
+    direction except the orbit tangent (Newton steps with the analytic
+    Hessian). With ``target`` the rotation is corrected so that the relaxed
+    state sits at ``phi`` itself (relaxation shifts the angle at second order).
+    """
+    conditions = conditions or ExternalConditions()
+    axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
+    angle = phi
+    for _ in range(3 if target else 1):
+        start = rotate_state(reference, axis, angle)
+        state, transverse, torque, hard, norm, stable = _relax_transverse(
+            model, start, conditions, axis, tolerance)
+        measured = rotation_angle(reference, state, axis)
+        if not target:
+            break
+        angle += _wrap(phi - measured)
+    return SoftPathPoint(state, float(np.mod(measured, 2 * np.pi)), transverse, torque, hard, norm,
+                         transverse <= tolerance and stable)
 
 
 @dataclass(frozen=True)
@@ -554,9 +708,9 @@ def _no_quantum_energy(model, state, conditions) -> float:
 def orbit_energy_landscape(model: SpinModel, state: SpinState,
                            conditions: Optional[ExternalConditions] = None,
                            quantum_energy: Optional[QuantumEnergy] = None, axis=None,
-                           phis=None, criteria: SelectionCriteria = SelectionCriteria()
-                           ) -> OrbitLandscape:
-    """E_cl and E_qm along the classical orbit ``R_n(phi)`` on any angle grid.
+                           phis=None, criteria: SelectionCriteria = SelectionCriteria(),
+                           relax: bool = True) -> OrbitLandscape:
+    """E_cl and E_qm along the relaxed soft path (or the rigid orbit) on any angle grid.
 
     The axis is found as in :func:`select_on_manifold` (classical Hessian and
     global rotation generators, after refinement) unless given. This replaces
@@ -573,6 +727,11 @@ def orbit_energy_landscape(model: SpinModel, state: SpinState,
         Angles (default: 360 points in ``[0, 2 pi)``).
     criteria : SelectionCriteria
         Used for refinement and the axis determination.
+    relax : bool
+        Evaluate on the relaxed soft path (D28; ``phi`` is then the measured
+        rotation angle of each relaxed state). False gives the rigid orbit
+        ``R_n(phi)``, which overestimates classical pinning when the orbit is
+        not flat.
     """
     conditions = conditions or ExternalConditions()
     phis = (np.linspace(0.0, 2 * np.pi, 360, endpoint=False) if phis is None
@@ -581,17 +740,28 @@ def orbit_energy_landscape(model: SpinModel, state: SpinState,
                                criteria=criteria)
     if probe.axis is None:
         raise ValueError(f"no orbit axis: {probe.message}")
-    base = probe.state
+    base = refine_classical(model, state, conditions) if criteria.refine else state
     diagnostics = {key: probe.diagnostics.get(key) for key in
                    ("C_cl", "hessian_flat_along_orbit", "exact_symmetry", "flat_rotation_count",
-                    "generator_rank", "max_torque", "refinement")}
-    orbit = [rotate_state(base, probe.axis, p) for p in phis]
-    classical = np.array([classical_energy(model, x, conditions) for x in orbit])
+                    "generator_rank", "max_torque", "refinement", "classical_softness")}
+    scale = float(np.max(np.abs(np.linalg.eigvalsh(
+        tangent_expansion(model, base, conditions).hessian))))
+    if relax:
+        points = [soft_path_point(model, base, conditions, probe.axis, p,
+                                  criteria.path_tolerance * scale, target=True) for p in phis]
+        states = [x.state for x in points]
+        diagnostics["path_converged"] = all(x.converged for x in points)
+        diagnostics["max_transverse_gradient"] = max(x.transverse_gradient for x in points)
+        phis = np.array([x.phi for x in points])
+    else:
+        states = [rotate_state(base, probe.axis, p) for p in phis]
+    classical = np.array([classical_energy(model, x, conditions) for x in states])
     quantum = None
     if quantum_energy is not None:
-        quantum = np.array([quantum_energy(model, x, conditions) for x in orbit])
+        quantum = np.array([quantum_energy(model, x, conditions) for x in states])
         diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
     diagnostics["E_cl_span"] = float(np.ptp(classical))
+    diagnostics["relaxed"] = bool(relax)
     return OrbitLandscape(probe.axis, phis, classical, quantum, base, diagnostics)
 
 
@@ -600,13 +770,22 @@ def orbit_energy_landscape(model: SpinModel, state: SpinState,
 # ---------------------------------------------------------------------------
 
 class LSWTZeroPointEnergy:
-    """Zero-point energy per site from the existing LSWT ``EnergyFunction``.
+    """Zero-point energy per site for :func:`select_on_manifold` (D28).
 
-    The model and state are converted with
-    :func:`~spintoolkit.system.conversion.to_spin_system`; one
-    ``EnergyFunction`` is built per model, supercell and field and reused for
-    every orientation. The regularization value returned by the existing code
-    is logged: with MAGSWT a uniform shift of at least 1e-9 is always added.
+    ``method="constrained"`` (default): the one-loop zero-point energy about
+    a constrained classical configuration. The Brillouin-zone mesh of the
+    magnetic cell (``BrillouinZone.get_full(N)``, which keeps the point-group
+    symmetry) is used without the zone centre: the uniform rotation there is
+    the constrained soft coordinate itself, not a fluctuation, and dropping one
+    momentum changes nothing in the thermodynamic limit. No regularization is
+    added; where ``H(k)`` is not positive definite (long-wavelength modes of a
+    constrained state away from the classical minimum) the real part of the
+    harmonic frequencies is used and the number of such mode pairs is logged.
+    A uniform MAGSWT shift must not be used here: it is of the same order as
+    the zero-point energy differences and makes E_zp(phi) non-smooth.
+
+    ``method="legacy"``: the existing ``EnergyFunction`` (zone centre
+    included, regularization ``reg_type``, MAGSWT by default).
 
     Parameters
     ----------
@@ -614,39 +793,81 @@ class LSWTZeroPointEnergy:
         Brillouin-zone type of the magnetic cell (``SpinSystem.to_legacy_dict``).
     N : int
         Mesh density.
+    method : {"constrained", "legacy"}
     reg_type : int or str
-        Regularization passed to ``quantum_energy_density_func``.
+        Regularization of the legacy method.
     """
 
-    def __init__(self, bz_type: str, N: int, reg_type: Any = "MAGSWT"):
-        self.bz_type, self.N, self.reg_type = bz_type, N, reg_type
+    def __init__(self, bz_type: str, N: int, method: str = "constrained",
+                 reg_type: Any = "MAGSWT"):
+        if method not in ("constrained", "legacy"):
+            raise ValueError("method must be 'constrained' or 'legacy'")
+        self.bz_type, self.N, self.method, self.reg_type = bz_type, N, method, reg_type
         self._cache: Dict[Any, Any] = {}
         self.regularization: list = []
+        self.unstable_pairs: list = []
 
     def __call__(self, model: SpinModel, state: SpinState,
                  conditions: Optional[ExternalConditions] = None) -> float:
-        from spintoolkit.methods.lswt.energy import EnergyFunction
         from spintoolkit.system.conversion import to_spin_system
 
         conditions = conditions or ExternalConditions()
         system = to_spin_system(model, state, conditions)
         key = (model.fingerprint(), state.supercell.tobytes(), conditions.field.tobytes())
+        if self.method == "legacy":
+            from spintoolkit.methods.lswt.energy import EnergyFunction
+            if key not in self._cache:
+                self._cache[key] = EnergyFunction(system.to_legacy_dict(self.bz_type), N=self.N)
+            energy_function = self._cache[key]
+            value = float(energy_function.quantum_energy_density_func(
+                system.get_angles_flat(), reg_type=self.reg_type))
+            self.regularization.append(energy_function.mu_magswt)
+            return value
+        from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+        from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+        from spintoolkit.system.brillouin_zone import BrillouinZone
+
+        data = system.to_legacy_dict(self.bz_type)
         if key not in self._cache:
-            self._cache[key] = EnergyFunction(system.to_legacy_dict(self.bz_type), N=self.N)
-        energy_function = self._cache[key]
-        value = float(energy_function.quantum_energy_density_func(
-            system.get_angles_flat(), reg_type=self.reg_type))
-        self.regularization.append(energy_function.mu_magswt)
-        return value
+            _, k, _ = BrillouinZone(data["Lattice/BZ setting"], bz_type=self.bz_type).get_full(self.N)
+            k = np.asarray(k, dtype=float)
+            self._cache[key] = k[np.linalg.norm(k, axis=1) > 1e-12]
+        k = self._cache[key]
+        H, _ = LSWTHamiltonian(data["Spin info"], data["Couplings"]).Quadratic_Bose_Hamiltonian(
+            k, angles=system.get_angles_flat())
+        H = np.asarray(H)
+        ns = H.shape[1] // 2
+        eta = np.diag(np.r_[np.ones(ns), -np.ones(ns)])
+        total, unstable = 0.0, 0
+        for Hk in H:
+            try:
+                energies = Diagonalizer.Colpa(np.linalg.cholesky(Hk), eta, paraunitary=False)[:ns]
+            except np.linalg.LinAlgError:
+                w = np.linalg.eigvals(eta @ Hk)
+                stable = np.abs(w.imag) <= 1e-10 * np.max(np.abs(w))
+                unstable += int(np.sum(~stable)) // 2
+                energies = w.real[stable & (w.real > 0)]
+            total += np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4
+        self.unstable_pairs.append(unstable)
+        return float(total / len(H) / ns)
 
     def describe(self) -> Dict[str, Any]:
-        values = [x for x in self.regularization if x is not None]
-        return {"provider": "LSWT EnergyFunction via to_spin_system", "bz_type": self.bz_type,
-                "N": self.N, "reg_type": self.reg_type, "calls": len(self.regularization),
-                "regularization_min": min(values) if values else None,
-                "regularization_max": max(values) if values else None}
+        out = {"provider": "LSWT zero-point energy via to_spin_system", "method": self.method,
+               "bz_type": self.bz_type, "N": self.N}
+        if self.method == "legacy":
+            values = [x for x in self.regularization if x is not None]
+            out.update({"reg_type": self.reg_type, "calls": len(self.regularization),
+                        "regularization_min": min(values) if values else None,
+                        "regularization_max": max(values) if values else None})
+        else:
+            out.update({"zone_centre": "excluded (constrained soft coordinate)",
+                        "regularization": "none; real part where H(k) is not positive definite",
+                        "calls": len(self.unstable_pairs),
+                        "max_unstable_pairs": max(self.unstable_pairs, default=0)})
+        return out
 
 
-def lswt_zero_point_energy(bz_type: str, N: int, reg_type: Any = "MAGSWT") -> LSWTZeroPointEnergy:
-    """Zero-point energy provider for :func:`select_on_manifold`."""
-    return LSWTZeroPointEnergy(bz_type, N, reg_type)
+def lswt_zero_point_energy(bz_type: str, N: int, method: str = "constrained",
+                           reg_type: Any = "MAGSWT") -> LSWTZeroPointEnergy:
+    """Zero-point energy provider for :func:`select_on_manifold` (see LSWTZeroPointEnergy)."""
+    return LSWTZeroPointEnergy(bz_type, N, method, reg_type)

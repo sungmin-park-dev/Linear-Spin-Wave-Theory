@@ -92,8 +92,8 @@ def summary(result, started):
             'E_qm_fit_residual': fit.get('residual'),
             'E_qm_resolution_threshold': orbit.get('E_qm_resolution_threshold'),
             'equivalent_minima': len(d.get('equivalent_minima', [])),
-            'pinning_screen': d.get('pinning_screen'),
-            'classical_to_quantum': d.get('classical_to_quantum'),
+            'minima': d.get('minima'), 'adiabatic_ratio': d.get('adiabatic_ratio'),
+            'classical_softness': d.get('classical_softness'),
             'regularization': [provider.get('regularization_min'), provider.get('regularization_max')],
             'seconds': round(time.time() - started, 2)}
 

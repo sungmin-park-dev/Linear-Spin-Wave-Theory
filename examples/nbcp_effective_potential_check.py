@@ -1,4 +1,4 @@
-"""Check the one-loop effective potential on the relaxed soft path (proposal for D28).
+"""Check the one-loop effective potential on the relaxed soft path (D28).
 
 For NBCP Y (0.2 T, J_PD = 0.01 meV) and V (1.4 T, J_Gamma = 0.01 meV) with the
 field tilted by an in-plane component ``tilt * h``:
@@ -12,6 +12,8 @@ field tilted by an in-plane component ``tilt * h``:
    used now, and against the D17 selection in the limit tilt -> 0.
 3. Adiabatic ratio: curvature of Gamma at its minimum (per unit tangent
    displacement) over the smallest hard-mode stiffness of the classical Hessian.
+4. The implemented select_on_manifold (36-point path) against this independent
+   72-point prototype: verdict, minimum of Gamma and the shifts.
 
 Usage
 -----
@@ -160,12 +162,41 @@ def d17_reference(phase, field_T, extra):
     return {'verdict': result.verdict, 'phi': result.phi, 'absolute_phi': rotation_angle(ref, result.state, AXIS)}
 
 
+def implemented(phase, field_T, extra, tilt):
+    import warnings
+    model = nbcp.build_model({'Jxy': 0.075, 'Jz': 0.125, **extra})
+    h = G_Z * MU_B_MEV_PER_T * field_T
+    conditions = ExternalConditions(field=[tilt * h, 0, h])
+    ref = reference_state(model, phase)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter('always')
+        result = sel.select_on_manifold(model, ref, conditions,
+                                        sel.lswt_zero_point_energy('Hex_30', MESH_N))
+    d = result.diagnostics
+    row = {'phase': phase, 'tilt': tilt, 'verdict': result.verdict,
+           'warnings': [str(w.message)[:80] for w in caught]}
+    if result.verdict == sel.SELECTED:
+        offset = rotation_angle(ref, result.state, AXIS) - d['phi_gamma']
+        row.update({'phi_gamma_absolute': rotation_angle(ref, result.state, AXIS),
+                    'equivalent_minima_absolute': [float(np.mod(x + offset, 2 * np.pi))
+                                                   for x in d['equivalent_minima']],
+                    'minima': d['minima'], 'adiabatic_ratio': d['adiabatic_ratio'],
+                    'classical_softness': d['classical_softness']})
+    return row
+
+
 def main():
-    report = {'cases': [], 'd17': {}}
+    report = {'cases': [], 'd17': {}, 'implemented': []}
     for phase, field_T, extra, tilts in CASES:
         report['d17'][phase] = d17_reference(phase, field_T, extra)
         for tilt in tilts:
             report['cases'].append(case(phase, field_T, extra, tilt))
+            row = implemented(phase, field_T, extra, tilt)
+            proto = report['cases'][-1]['phi_min_gamma']
+            if 'equivalent_minima_absolute' in row:
+                row['distance_to_prototype_minimum'] = float(min(
+                    abs(wrap(proto - x)) for x in row['equivalent_minima_absolute']))
+            report['implemented'].append(row)
     print(json.dumps(report, indent=2, default=float))
 
 

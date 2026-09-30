@@ -32,7 +32,8 @@ import numpy as np
 from scipy.optimize import minimize
 
 from spintoolkit.definitions.defaults import (
-    CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS)
+    CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS, CLASSICAL_REFINE_RECENTRE,
+    CLASSICAL_REFINE_ROUNDS)
 
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
@@ -295,7 +296,9 @@ def refine_classical(model: SpinModel, state: SpinState,
     """Polish a classical minimum with the analytic gradient and Hessian.
 
     L-BFGS-B in tangent coordinates (spins renormalized after each step),
-    followed by Newton steps restricted to the non-flat Hessian directions so
+    repeated from the new state while a round moves any spin by more than
+    ``CLASSICAL_REFINE_RECENTRE`` radians (a fixed tangent chart cannot follow
+    large rotations, e.g. along a weakly pinned orbit), followed by Newton steps restricted to the non-flat Hessian directions so
     that exactly flat directions of a degenerate manifold are left alone.
     Intended for states that are already near a minimum, such as the result of
     a global search.
@@ -316,28 +319,33 @@ def refine_classical(model: SpinModel, state: SpinState,
         Same supercell; provenance gains a ``refinement`` record with the
         energy change and the maximum torque before and after.
     """
-    compiled = _compile(model, state, conditions)
-    n = len(compiled.keys)
-    start = compiled.directions
-    frames = tangent_frames(start)
-
-    def moved(x):
-        vectors = start + np.einsum("ia,iax->ix", x.reshape(n, 2), frames)
-        radii = np.linalg.norm(vectors, axis=1)
-        return vectors / radii[:, None], radii
-
-    def objective(x):
-        directions, radii = moved(x)
-        energy, fields = _energy_and_fields(compiled, directions)
-        force = -compiled.lengths[:, None] * fields                          # dE/dn_i
-        force -= np.einsum("ix,ix->i", force, directions)[:, None] * directions
-        gradient = np.einsum("ix,iax->ia", force, frames) / radii[:, None]
-        return energy / n, gradient.ravel() / n
-
     before = tangent_expansion(model, state, conditions)
-    result = minimize(objective, np.zeros(2 * n), jac=True, method="L-BFGS-B",
-                      options={"gtol": gtol, "ftol": 0.0, "maxiter": 10000})
-    refined = _with_directions(state, compiled.keys, moved(result.x)[0], state.provenance)
+    refined, rounds = state, 0
+    for rounds in range(1, CLASSICAL_REFINE_ROUNDS + 1):
+        compiled = _compile(model, refined, conditions)
+        n = len(compiled.keys)
+        start = compiled.directions
+        frames = tangent_frames(start)
+
+        def moved(x, start=start, frames=frames):
+            vectors = start + np.einsum("ia,iax->ix", x.reshape(n, 2), frames)
+            radii = np.linalg.norm(vectors, axis=1)
+            return vectors / radii[:, None], radii
+
+        def objective(x, compiled=compiled, frames=frames, moved=moved):
+            directions, radii = moved(x)
+            energy, fields = _energy_and_fields(compiled, directions)
+            force = -compiled.lengths[:, None] * fields                      # dE/dn_i
+            force -= np.einsum("ix,ix->i", force, directions)[:, None] * directions
+            gradient = np.einsum("ix,iax->ia", force, frames) / radii[:, None]
+            return energy / n, gradient.ravel() / n
+
+        result = minimize(objective, np.zeros(2 * n), jac=True, method="L-BFGS-B",
+                          options={"gtol": gtol, "ftol": 0.0, "maxiter": 10000})
+        refined = _with_directions(state, compiled.keys, moved(result.x)[0], state.provenance)
+        # A large move stretches the tangent chart of the start; re-centre and repeat.
+        if np.max(np.abs(result.x), initial=0.0) < CLASSICAL_REFINE_RECENTRE:
+            break
     current = tangent_expansion(model, refined, conditions)
     for _ in range(newton_steps):
         w, v = np.linalg.eigh(current.hessian)
@@ -351,7 +359,7 @@ def refine_classical(model: SpinModel, state: SpinState,
         if expansion.max_torque >= current.max_torque:
             break
         refined, current = trial, expansion
-    record = {"method": "L-BFGS-B + Newton (tangent coordinates)",
+    record = {"method": "L-BFGS-B + Newton (tangent coordinates)", "rounds": rounds,
               "energy_change": current.energy - before.energy,
               "max_torque_before": before.max_torque, "max_torque_after": current.max_torque}
     return _with_directions(state, current.keys, current.directions,

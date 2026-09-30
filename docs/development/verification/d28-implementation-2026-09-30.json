@@ -1,0 +1,262 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "912bc32",
+  "scope": "Implementation of D28 in select_on_manifold: relaxed soft path, one-loop effective potential Gamma = E_cl + E_zp, minimum of Gamma returned, pure classical and quantum minima kept as candidates with shifts, adiabatic-ratio warning, verdicts selected / no_selection / unresolved / not_soft plus no_degeneracy, axis_required, unsupported_manifold.",
+  "changed": {
+    "code-space/spintoolkit/methods/state_selection.py": "D28 tail of select_on_manifold; soft_path_point, SoftPathPoint, rotation_angle; orbit_energy_landscape(relax=True); LSWTZeroPointEnergy(method=\"constrained\") as the default provider; COMPETITION and NOT_FLAT removed, NOT_SOFT added; a refined state with an unstable non-orbit mode (classical saddle) is not_soft",
+    "code-space/spintoolkit/methods/classical.py": "refine_classical: re-centred L-BFGS-B rounds (CLASSICAL_REFINE_ROUNDS, CLASSICAL_REFINE_RECENTRE) before Newton; record gains rounds",
+    "code-space/spintoolkit/definitions/defaults.py": "SELECTION_ADIABATIC_WARNING = 0.1, SELECTION_PATH_TOLERANCE = 1e-8, CLASSICAL_REFINE_ROUNDS = 20, CLASSICAL_REFINE_RECENTRE = 1e-3; SELECTION_COMPETITION_BAND removed",
+    "code-space/tests/test_methods/test_state_selection.py": "D28 tests: continuity with D17, Y and V under tilt, missing soft path, classical saddles (tilted V from phi = 0, up-up-down in 20 h), adiabatic warning; the polarized-state test now uses the all-up state",
+    "examples/nbcp_effective_potential_check.py": "compares the implementation (36 points) with the independent 72-point prototype",
+    "examples/nbcp_state_selection_check.py": "summary uses minima, adiabatic_ratio, classical_softness"
+  },
+  "zero_point_provider": {
+    "default": "constrained: symmetric get_full(N) mesh with k = 0 excluded (the uniform soft mode is the constrained coordinate), no regularization, Colpa by Cholesky; E_zp = mean_k [sum omega / 2 - Tr H / 4] / Ns",
+    "reason": "Along the relaxed path the MAGSWT regularization adds a uniform O(S) shift that depends on phi and contaminates E_zp; a half-step shifted mesh breaks the point-group symmetry (D17 bias 0.05 rad at N = 6). The legacy provider stays available as method=\"legacy\".",
+    "mesh_convergence_Gamma_minimum_rad": {
+      "Y tilt 0": {
+        "N6": 1.047198,
+        "N12": 1.047198,
+        "N18": 1.047198
+      },
+      "Y 0.57 deg": {
+        "N6": 1.048336,
+        "N12": 1.0486,
+        "N18": 1.04869
+      },
+      "Y 1.7 deg": {
+        "N6": 1.057353,
+        "N12": 1.059692,
+        "N18": 1.0605
+      },
+      "Y 5.7 deg": {
+        "N6": 1.98741,
+        "N12": 1.961025,
+        "N18": 1.96
+      },
+      "V 0.57 deg": {
+        "N6": 3.103374,
+        "N12": 3.101479,
+        "N18": 3.101003
+      }
+    },
+    "unstable_modes": "none on these meshes"
+  },
+  "corrections_to_the_review_record": [
+    "effective-potential-check-2026-09-30.json used the MAGSWT-regularized provider; its tilted-field numbers are contaminated by the phi-dependent regularization shift. Corrected values (constrained provider, N = 6) are in the cases below.",
+    "Y at 1.7 degrees: the minimum of Gamma is -8.3e-3 rad from the E_qm minimum (review record: 8.9e-3 rad); the qualitative conclusion (quantum selection survives, classical pinning is second order in the tilt for Y) is unchanged.",
+    "Y at 16.7 degrees (tilt 0.3): adiabatic ratio 0.023 (MAGSWT provider: 0.151), below the warning threshold 0.1; no warning."
+  ],
+  "cases": [
+    {
+      "phase": "Y",
+      "tilt": 0.0,
+      "tilt_degrees": 0.0,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 5.235987755983657,
+      "distance_to_prototype_minimum": 6.679101716144942e-13,
+      "adiabatic_ratio": 0.01124121358123028,
+      "prototype_adiabatic_ratio": 0.011241212695070842,
+      "span_classical_path": 6.938893903907228e-18,
+      "span_quantum_path": 2.9258005407092197e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": 5.071498776487715e-13,
+      "quantum_dominant_harmonic": 6
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.001,
+      "tilt_degrees": 0.057,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 1.047208946711726,
+      "distance_to_prototype_minimum": 1.1487663133635806e-05,
+      "adiabatic_ratio": 0.011241485910644099,
+      "prototype_adiabatic_ratio": 0.011241347638423405,
+      "span_classical_path": 5.848019915544178e-10,
+      "span_quantum_path": 2.926440450887885e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": 9.521630014219795e-06,
+      "quantum_dominant_harmonic": 6,
+      "shift_from_classical_minimum": -1.0472104176317778,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.003,
+      "tilt_degrees": 0.172,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 4.188892754906502,
+      "distance_to_prototype_minimum": 0.00010172162834276577,
+      "adiabatic_ratio": 0.011242519274276266,
+      "prototype_adiabatic_ratio": 0.01124242558521717,
+      "span_classical_path": 5.263197745686288e-09,
+      "span_quantum_path": 2.931559697143954e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": -8.566985021563056e-05,
+      "quantum_dominant_harmonic": 6,
+      "shift_from_classical_minimum": 1.0473002473940118,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.01,
+      "tilt_degrees": 0.573,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 4.1899284562442745,
+      "distance_to_prototype_minimum": 0.0011474573036291957,
+      "adiabatic_ratio": 0.011254274855905565,
+      "prototype_adiabatic_ratio": 0.011254487772646144,
+      "span_classical_path": 5.8477426366498886e-08,
+      "span_quantum_path": 2.9897867374010373e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": 0.0009487805866150723,
+      "quantum_dominant_harmonic": 6,
+      "shift_from_classical_minimum": -1.0483266360081203,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.03,
+      "tilt_degrees": 1.718,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 4.198945227791388,
+      "distance_to_prototype_minimum": 0.0008361593212384832,
+      "adiabatic_ratio": 0.01134317452152263,
+      "prototype_adiabatic_ratio": 0.011345104383820194,
+      "span_classical_path": 5.260952853219925e-07,
+      "span_quantum_path": 3.5013260297825366e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": -0.008316868235109798,
+      "quantum_dominant_harmonic": 6,
+      "shift_from_classical_minimum": 1.0572693155997177,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.1,
+      "tilt_degrees": 5.711,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 5.128995624014724,
+      "distance_to_prototype_minimum": 0.00027886818988420714,
+      "adiabatic_ratio": 0.01075568655905697,
+      "prototype_adiabatic_ratio": 0.010775676555445172,
+      "span_classical_path": 5.820154536630151e-06,
+      "span_quantum_path": 1.1208050667505312e-05,
+      "warnings": [],
+      "shift_from_quantum_minimum": 0.08543297383838766,
+      "quantum_dominant_harmonic": 2,
+      "shift_from_classical_minimum": -1.1531292071399415,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "Y",
+      "tilt": 0.3,
+      "tilt_degrees": 16.699,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 1.5707963267946612,
+      "distance_to_prototype_minimum": 0.0012802348852480883,
+      "adiabatic_ratio": 0.02258579932348064,
+      "prototype_adiabatic_ratio": 0.02407126694268834,
+      "span_classical_path": 5.046029409828262e-05,
+      "span_quantum_path": 0.00010639692455515805,
+      "warnings": [],
+      "shift_from_quantum_minimum": 1.5809336775252092e-05,
+      "quantum_dominant_harmonic": 2,
+      "shift_from_classical_minimum": 1.5640943017905098,
+      "classical_dominant_harmonic": 2
+    },
+    {
+      "phase": "V",
+      "tilt": 0.0,
+      "tilt_degrees": 0.0,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 4.712388980392414,
+      "distance_to_prototype_minimum": 7.724487716131989e-12,
+      "adiabatic_ratio": 0.0011224638310267548,
+      "prototype_adiabatic_ratio": 0.0011224638310273244,
+      "span_classical_path": 0.0,
+      "span_quantum_path": 1.4423484341174325e-06,
+      "warnings": [],
+      "shift_from_quantum_minimum": -3.419486915845482e-12,
+      "quantum_dominant_harmonic": 3
+    },
+    {
+      "phase": "V",
+      "tilt": 0.01,
+      "tilt_degrees": 0.573,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 3.1033736886681376,
+      "distance_to_prototype_minimum": 0.00014952881009833163,
+      "adiabatic_ratio": 0.008302343475478742,
+      "prototype_adiabatic_ratio": 0.008241368445909157,
+      "span_classical_path": 0.00018086829299981955,
+      "span_quantum_path": 7.489280974952526e-05,
+      "warnings": [],
+      "shift_from_quantum_minimum": 3.0342750525002113,
+      "quantum_dominant_harmonic": 1,
+      "shift_from_classical_minimum": -0.03776283923161117,
+      "classical_dominant_harmonic": 1
+    },
+    {
+      "phase": "V",
+      "tilt": 0.03,
+      "tilt_degrees": 1.718,
+      "verdict": "selected",
+      "prototype_phi_min_gamma": 3.1304617838178306,
+      "distance_to_prototype_minimum": 4.5952627491185893e-05,
+      "adiabatic_ratio": 0.02074182338509714,
+      "prototype_adiabatic_ratio": 0.020255552397534612,
+      "span_classical_path": 0.0005384949406077172,
+      "span_quantum_path": 0.0002213708440998753,
+      "warnings": [],
+      "shift_from_quantum_minimum": 3.0909323651180696,
+      "quantum_dominant_harmonic": 1,
+      "shift_from_classical_minimum": -0.010730711583016639,
+      "classical_dominant_harmonic": 1
+    },
+    {
+      "phase": "V",
+      "tilt": 0.1,
+      "tilt_degrees": 5.711,
+      "verdict": "not_soft",
+      "prototype_phi_min_gamma": 0.8243357807218736,
+      "distance_to_prototype_minimum": null,
+      "adiabatic_ratio": null,
+      "prototype_adiabatic_ratio": 5634.299346598221,
+      "span_classical_path": 0.10680281813857283,
+      "span_quantum_path": 0.16830569893631017,
+      "warnings": []
+    }
+  ],
+  "stage2b_rerun": {
+    "nbcp": {
+      "selected": 16
+    },
+    "criteria": {
+      "no_selection": 6,
+      "selected": 21,
+      "no_degeneracy": 9
+    },
+    "benchmarks": {
+      "axis_required": 2,
+      "no_selection": 4,
+      "no_degeneracy": 2
+    },
+    "note": "NBCP Y/V with J_PD or J_Gamma at zero tilt: selected, adiabatic ratio 1.3e-8 to 0.066, classical softness at round-off (flat orbit, D17 limit). Criteria controls: tilted field (tilt 0.3) selected in physics mode and no_degeneracy in fixed mode; polarized state no_degeneracy in both modes. Benchmarks unchanged: triangular 120 degrees axis_required, then no_selection with the axis; polarized square no_degeneracy."
+  },
+  "tests": {
+    "result": "449 passed; 5 known CommensurateStructure failures unchanged (they fail on HEAD too)",
+    "regression_snapshot": "144 leaves compared against the stage-4c snapshot, maximum difference 0.0; 64 baseline leaves of the removed MAGSWT searches not compared",
+    "note": "OPENBLAS_NUM_THREADS=4"
+  },
+  "findings": [
+    "The implementation agrees with the independent 72-point prototype within 1.3e-3 rad in every selected case (36 orbit points).",
+    "A classical saddle was previously reported as no_degeneracy (classical softness = inf when a non-orbit Hessian mode is negative). Two cases: tilted V (0.1) refined from phi = 0 stops at a symmetric saddle; the Y angles at 20 h refine to the collinear up-up-down saddle (E = -0.210 against -0.444 for the polarized state), which the old polarized-state test accepted for the wrong reason. Both are now not_soft with the message that the input is not a classical minimum.",
+    "V at 5.7 degrees (tilt 0.1): not_soft from either start; the orbit is not a soft coordinate (prototype adiabatic ratio 5.6e3)."
+  ],
+  "pending": [
+    "user confirmation of the constrained provider as the default (a methodology change)",
+    "correct the review record, contract D28 (implemented) and the Beamer (revision 29)"
+  ]
+}

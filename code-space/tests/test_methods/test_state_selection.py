@@ -122,26 +122,87 @@ def test_axis_follows_a_rotation_of_the_whole_problem():
         plain.diagnostics["orbit"]["E_qm_amplitude"], rel=1e-9)
 
 
-def test_tilted_field_is_a_competition_in_physics_mode_and_pinned_in_fixed_mode():
-    model, state, _ = setup("Y", {"JPD": 0.01})
-    h = G_Z * MU_B_MEV_PER_T * 0.2
-    conditions = ExternalConditions(field=[0.3 * h, 0, h])
-    physics = select(model, state, conditions, "physics")
-    assert physics.verdict == sel.COMPETITION
-    assert set(physics.candidates) == {"classical", "quantum"}
-    assert physics.state is not physics.candidates["quantum"]    # no automatic pick
-    ratio = physics.diagnostics["classical_to_quantum"]["ratio"]
-    assert 0.1 < ratio < 10
+def tilted(phase, extra, tilt):
+    model, state, conditions = setup(phase, extra, noise=1e-3)
+    h = conditions.field[2]
+    return model, state, ExternalConditions(field=[tilt * h, 0, h])
+
+
+def test_effective_potential_is_continuous_with_d17():
+    """D28: a tiny in-plane field moves the selected angle only slightly from the D17 one."""
+    flat = select(*tilted("Y", {"JPD": 0.01}, 0.0))
+    weak = select(*tilted("Y", {"JPD": 0.01}, 1e-3))
+    assert flat.verdict == weak.verdict == sel.SELECTED
+    assert abs(flat.diagnostics["minima"]["quantum"]["shift"]) < 1e-6
+    assert abs(weak.diagnostics["minima"]["quantum"]["shift"]) < 1e-4
+
+
+def test_y_at_small_misalignment_stays_near_the_quantum_minimum():
+    """Relaxed path: 1.7 degrees shifts Gamma by ~0.008 rad from the E_qm minimum (Y has no
+    in-plane moment, so classical pinning is second order in the tilt)."""
+    result = select(*tilted("Y", {"JPD": 0.01}, 0.03))
+    minima = result.diagnostics["minima"]
+    assert result.verdict == sel.SELECTED
+    assert 1e-3 < abs(minima["quantum"]["shift"]) < 2e-2
+    assert abs(minima["classical"]["shift"]) > 0.5
+    assert minima["classical"]["dominant_harmonic"] == 2
+    assert result.diagnostics["adiabatic_ratio"] < 0.1
+    assert set(result.candidates) == {"selected", "quantum", "classical"}
+    assert result.diagnostics["path"]["relaxation_energy_max"] > 0
+
+
+def test_v_with_an_in_plane_moment_is_pinned_classically():
+    result = select(*tilted("V", {"JGamma": 0.01}, 0.01))
+    assert result.verdict == sel.SELECTED
+    assert abs(result.diagnostics["minima"]["classical"]["shift"]) < 0.05
+    assert result.diagnostics["minima"]["classical"]["dominant_harmonic"] == 1
+
+
+def test_missing_soft_path_is_reported():
+    result = select(*tilted("V", {"JGamma": 0.01}, 0.1))
+    assert result.verdict == sel.NOT_SOFT
+
+
+def test_classical_saddle_is_not_soft():
+    """V at tilt 0.1 refined from phi = 0 stops at a symmetric saddle (a hard mode < 0)."""
+    model, state, conditions = setup("V", {"JGamma": 0.01}, phi0=0.0)
+    h = conditions.field[2]
+    result = select(model, state, ExternalConditions(field=[0.1 * h, 0, h]))
+    assert result.verdict == sel.NOT_SOFT
+    assert result.diagnostics["hard_stiffness"] < 0
+
+
+def test_strong_tilt_warns_above_the_adiabatic_threshold_and_fixed_mode_needs_a_null_mode():
+    """Y at 16.7 degrees: adiabatic ratio ~0.023 (below the default 0.1), so the warning is
+    checked with a lower threshold; the verdict does not change."""
+    model, state, conditions = tilted("Y", {"JPD": 0.01}, 0.3)
+    quantum = sel.lswt_zero_point_energy("Hex_30", MESH_N)
+    with pytest.warns(UserWarning, match="adiabatic ratio"):
+        physics = sel.select_on_manifold(model, state, conditions, quantum,
+                                         criteria=sel.SelectionCriteria(adiabatic_warning=0.01))
+    assert physics.verdict == sel.SELECTED
+    assert 0.01 < physics.diagnostics["adiabatic_ratio"] < 0.1
     assert select(model, state, conditions, "fixed").verdict == sel.NO_DEGENERACY
 
 
 @pytest.mark.parametrize("mode", sel.MODES)
 def test_polarized_nbcp_state_has_no_degeneracy(mode):
     model, state, _ = setup("Y")
+    state = type(state)(state.model_ref, state.supercell,
+                        {k: np.array([0.0, 0.0, 1.0]) for k in state.directions}, {})
     conditions = ExternalConditions(field=[0, 0, 20 * G_Z * MU_B_MEV_PER_T * 0.2])
     result = select(model, state, conditions, mode)
     assert result.verdict == sel.NO_DEGENERACY
     assert result.diagnostics["generator_rank"] == 2
+
+
+def test_collinear_saddle_in_a_strong_field_is_not_soft():
+    """The Y angles refine to up-up-down at 20x the field, a saddle above the polarized state."""
+    model, state, _ = setup("Y")
+    conditions = ExternalConditions(field=[0, 0, 20 * G_Z * MU_B_MEV_PER_T * 0.2])
+    result = select(model, state, conditions)
+    assert result.verdict == sel.NOT_SOFT
+    assert result.diagnostics["hard_stiffness"] < 0
 
 
 @pytest.mark.parametrize("mode", sel.MODES)
