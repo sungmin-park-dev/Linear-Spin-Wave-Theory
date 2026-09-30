@@ -117,6 +117,29 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 검증 결과: 자기모멘트의 명시적 minus, 양의 field contraction과 $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$가 서로 일치함을 대수적으로 확인했다. 기존 semantic equation ID, draft 상태 및 내부 링크를 유지했다. Zeeman section·외부 근거·수정일 외 본문은 변경 전과 동일하며, 다른 이론 문서·원자료·코드·예제도 변경 전과 동일함을 확인했다. Quarto로 MathML HTML preview를 생성하고 출력에 Zeeman 수식 anchor와 갱신한 부호 정의가 들어 있음을 확인했다. 출력과 resource는 임시 디렉토리에 두었으며, source 옆의 생성 resource는 정리했다. 브라우저에서의 시각 검토, 문서 전체 Human Physics and Mathematics Review 및 legacy 코드 검증은 별도 대기다.
 
+## Magnon Observables Draft — 2026-09-30
+
+사용자의 "magnon-observables 문서 진행" 지시에 따라 `docs/lswt/02-observables/magnon-observables.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF p. 12의 Table I(Physical Quantities)과 pp. 15–16(Number and Spin moment)을 reviewed TeX(lines 1008–1108, 1259–1378)와 대조했다. Ownership 표에 따라 Table I은 공식 복제 대신 owner index로 다시 썼다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
+
+### 검토 묶음
+
+| 항목 | Draft의 처리 | 사용자 확인 사항 |
+|---|---|---|
+| Table I | 공식 표를 owner index 표로 바꿨다. 원문 표의 오류(U에서 \(E_0\) 누락, κ의 \(-\pi^2/3\)와 V, "c2 is the Spence function", skyrmion 절댓값)는 각 owner draft에서 이미 정리했다. | 없음 |
+| Spectrum·band | 양의 고유값, MBZ 주기성, 교차점의 band 표지는 관례, CBZ 경로에서 folding과 weight는 SF 문서가 정한다는 점, 영모드에서 에너지는 극한으로 정의된다는 점을 적었다. | 없음 |
+| 바닥 에너지 | 유도는 diagonalization 문서에 두고 참조만 한다(ownership 표와 다름, 사용자 결정 대기). | 소유 위치 |
+| 상관행렬 | \(\langle\Psi\Psi^\dagger\rangle=\mathsf T\mathsf N(0)\mathsf T^\dagger\), Gibbs와 바닥상태의 \(\mathsf N\). 원문의 β 표기를 b로, \(\widetilde\Psi\)를 Φ로 바꿨다. | 없음 |
+| 보손 수 | 원문 식의 끊긴 등식(\(\frac1L\sum_{\mathbf k\in\mathrm{FBZ}} =\))과 L(셀 수) 표기를 정리했다. lower-right 성분이 \(-\mathbf k\)의 점유임을 명시했다. \(\mathsf P,\mathsf Q\) 형태 \(\sum[|P|^2n+|Q|^2(1+n)]\)와 양자 감소가 \(\mathsf B\ne0\)에서만 생긴다는 점을 추가했다. | 추가 형태 |
+| 감소 moment | \(\mathbf m_\mu=(S_\mu-\langle\hat n_\mu\rangle)\mathbf n_\mu\), 자화, \(\langle\hat n\rangle\ge S\)이면 LSWT 부적용. | 없음 |
+| 영모드(추가) | 2D에서 AFM Goldstone은 T=0 감소가 유한(1/q 적분 가능)하고, T>0에서 AFM·FM 모두 로그 발산(Mermin–Wagner)한다. 열역학 퍼텐셜은 유한하다. | 추가 내용 |
+
+새 equation ID 3개(`eq-lswt-boson-correlation-matrix`, `eq-lswt-boson-number`, `eq-lswt-reduced-moment`)를 부여했으며 corpus 안에서 중복이 없다. 기호 주의: 보손 수는 \(\langle\hat n_\mu\rangle\), 방향은 \(\mathbf n_\mu\)(굵은 글씨), 점유는 \(n_{n\mathbf k}\)로 구별한다.
+
+### 검증
+
+- 수치 대조(scratchpad `check_mo.py`, NBCP Y 0.2 T, J_PD=0.01, 12×12): P·Q 형태의 \(\langle\hat n_\mu\rangle\)가 코드 `result.boson_numbers`(T=0) 및 `thermal_quantities`(t=0.02)와 모든 자리에서 일치했다(T=0: 0.0637331, 0.1358743; t=0.02: 0.0681932, 0.3547439). 상관행렬은 Hermitian 5e-17.
+- Quarto preview는 경고와 미해결 참조가 없었다. 이는 출력 구조 검증이며 acceptance가 아니다.
+
 ## Luttinger–Tisza Draft — 2026-09-30
 
 사용자의 "LT 문서 진행" 지시에 따라 `docs/lswt/04-appendices/luttinger-tisza-method.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF와 reviewed TeX에는 해당 section이 없다. Restructured TeX에는 빈 TODO(overview, spin system optimization과의 연결)만 있다. 따라서 본문은 외부 문헌(Luttinger–Tisza 1946, Lyons–Kaplan 1960; APS 초록으로 서지와 주장 범위를 확인)과 문서 안의 유도에 근거한다. Kaplan–Menyuk 2007 리뷰는 서지를 확인하지 못해 인용하지 않았다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
@@ -269,6 +292,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | Quadratic \(H_2\) | `draft` | odd terms와 \(H_4\)의 문서 범위 결정 |
 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | General Nambu/BdG form | `draft` | A1, A2, A5, A10 해결 전 explicit block 보류 |
 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | Bogoliubov transformation, paraunitary condition, particle–hole spectrum, diagonal Hamiltonian과 zero-point correction, Colpa construction, semidefinite·indefinite 경계 | `draft` (2026-09-30 본문 작성) | 아래 Paraunitary Diagonalization Draft 검토 묶음의 사용자 물리·수학 검토 |
+| `docs/lswt/02-observables/magnon-observables.md` | spectrum·band folding, 바닥 에너지 참조, 동시각 상관행렬, 보손 수(P·Q 형태)·감소 moment, 영모드, observable index | `draft` (2026-09-30 본문 작성) | 아래 Magnon Observables Draft 검토 묶음 |
 | `docs/lswt/04-appendices/luttinger-tisza-method.md` | 약한 제약과 LT 행렬, 하한, 단일 파수 조건 세 경우, sublattice별 Lagrange 하한, 한계, LSWT와의 관계 | `draft` (2026-09-30 본문 작성, primary source 없음) | 아래 Luttinger–Tisza Draft 검토 묶음 |
 | `docs/lswt/02-observables/spin-correlations.md` | C(q,t) 정의·대칭, circular 전개, 전치 vertex와 N_q(t), 부격자 분해, elastic Bragg 항, 실공간 동시각 상관 | `draft` (2026-09-30 본문 작성) | 아래 Correlations and Structure Factor Draft 검토 묶음 |
 | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | one-magnon weight, 정적·동적 structure factor, detailed balance, broadening, 중성자 투영, retarded 함수·스펙트럼 함수·FDT·합 규칙 | `draft` (2026-09-30 본문 작성) | 같은 검토 묶음 |
@@ -279,12 +303,11 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 
 | File | Intended coverage | Lifecycle |
 |---|---|---|
-| `docs/lswt/02-observables/magnon-observables.md` | Spectrum, energy correction, occupation, correlation matrix | `draft` skeleton |
 | `docs/lswt/03-examples/worked-example.md` | Single-mode quadratic-boson example | `draft` skeleton |
 | `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
 | `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
 
-현재 합계는 일부 본문이 작성된 draft 13개, skeleton 4개, accepted 0개다.
+현재 합계는 일부 본문이 작성된 draft 14개, skeleton 3개, accepted 0개다.
 
 ## Source and Legacy Retention
 
@@ -345,11 +368,11 @@ Concept ownership은 다음 원칙을 따른다.
 | `01_spin_wave_theory_intro.md` | Bogoliubov transform, paraunitary condition, spectrum과 canonical diagonal form | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 primary pp. 9–11과 대조해 작성. 원문 배치대로 ΔE_zp와 E_GS를 diagonal form에서 정의했으며, 소유 위치(이 문서 vs magnon-observables)는 사용자 확인 대기다. |
 | `01_spin_wave_theory_intro.md` | Colpa construction, positivity와 Goldstone-mode boundary | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 Sylvester inertia 근거와 B18 semidefinite 경계를 추가했다. 사용자 acceptance 대기. |
 | `01_spin_wave_theory_intro.md` | Paraunitarity and diagonalization proofs | `docs/lswt/04-appendices/paraunitarity-proofs.md` | `skeleton` | Main document의 결과를 다시 정의하지 않고 증명만 보충한다. |
-| `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands, ground-state energy와 zero-point correction | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | Diagonalization 문서는 spectrum 생성까지만 다루고 energy observable은 여기서 정의한다. |
-| `02_physical_quantities.md` | Post-diagonalization quantity index | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | 수식 복제 표가 아니라 각 observable owner로 가는 index로 다시 작성한다. |
+| `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands, ground-state energy와 zero-point correction | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30) | Diagonalization 문서는 spectrum 생성까지만 다루고 energy observable은 여기서 정의한다. 2026-09-30 draft는 원문 배치대로 ΔE_zp·E_GS 유도를 diagonalization 문서에 두고 여기서는 참조만 한다. 소유 위치는 사용자 결정 대기(diagonalization 검토 항목과 같음). |
+| `02_physical_quantities.md` | Post-diagonalization quantity index | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30, owner index 표로 작성) | 수식 복제 표가 아니라 각 observable owner로 가는 index로 다시 작성한다. |
 | `03_thermodynamics.md` | Partition function, internal energy, free energy, entropy와 specific heat | `docs/lswt/02-observables/thermodynamics.md` | `source-reviewed` (2026-09-30) | 정의와 최종 LSWT 식은 main observable 문서가 소유한다. |
 | `03_thermodynamics.md` | Long thermodynamic derivations | `docs/lswt/04-appendices/thermodynamic-derivations.md` | `skeleton` | Main document에 필요한 가정과 최종 결과를 남기고 중간 전개를 appendix로 보낸다. 2026-09-30 thermodynamics draft는 U·F·S·C 유도가 한두 줄이라 본문에 두었다. appendix로 옮길지는 사용자 확인 대기. |
-| `03_thermodynamics.md` | Boson occupation, sublattice moment와 correlation matrix | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | 온도 의존 분포는 thermodynamics를 참조하되 spin reduction 정의는 여기서 소유한다. |
+| `03_thermodynamics.md` | Boson occupation, sublattice moment와 correlation matrix | `docs/lswt/02-observables/magnon-observables.md` | `source-reviewed` (2026-09-30) | 온도 의존 분포는 thermodynamics를 참조하되 spin reduction 정의는 여기서 소유한다. |
 | `04_correlations.md` | Real-time/equal-time correlator, symmetry와 local-to-lab response | `docs/lswt/02-observables/spin-correlations.md` | `source-reviewed` (2026-09-30) | Structure factor와 spectral transform은 다음 owner로 분리한다. |
 | `04_correlations.md` | Static and dynamic structure factors | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | `source-reviewed` (2026-09-30) | Correlator 정의를 반복하지 않고 normalization contract를 참조한다. |
 | `04_correlations.md` | Retarded Green function and spectral function | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | `source-reviewed` (2026-09-30) | Response basis와 dagger convention은 open review item이다. |
@@ -398,7 +421,7 @@ source-only evidence로 보존한다.
 | A2 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | 2026-09-10 대표 bond당 exchange endpoint 2회, field 1회 기여를 검증했다. 원본 link 집합 정의와 식 (47)의 보완·사용자 검토는 남아 있다. |
 | A12 | Diagonalization and magnon observables | `open` | 공개 솔버의 T=0 energy assembly는 수정했다. 원본 식 (53)–(54)의 합 범위, E_cl·Delta E_0·E_0·e_0 구분과 이론 acceptance는 별도다. 2026-09-30 diagonalization draft는 k 합 누락과 σ 합 안의 Tr A를 바로잡고 notation의 E_GS·ΔE_zp를 적용했다. magnon-observables 쪽과 사용자 검토는 남아 있다. |
 | B18 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `draft-routed` | Positive-semidefinite Goldstone-mode caveat. 2026-09-30 draft에 semidefinite·indefinite 절을 추가했다(단일 mode 두 경우, δ shift, Colpa 1986). 사용자 검토 대기. |
-| B11 | `docs/lswt/02-observables/magnon-observables.md` | `source-cleanup` | First-person convention |
+| B11 | `docs/lswt/02-observables/magnon-observables.md` | `source-cleanup` | First-person convention. 2026-09-30 draft는 원문 도입 문장을 옮기지 않았다. |
 | C14 | Magnon and response observables | `draft-routed` | \(S_k\), \(\bar S_k\), \(U^\beta\) notation. 2026-09-30 correlation·SF draft는 원문의 \(\mathsf U^\alpha\mathsf S_{\mathbf k}\)(2N×2N 대각, 부분합)를 운동량 무관한 행 벡터 vertex \(\mathsf V^\alpha\) 하나로 바꿨다. 사용자 검토 대기. |
 | B20 | `docs/lswt/02-observables/spin-correlations.md` | `source-cleanup` | Correlation introduction 문장. 2026-09-30 draft에서 도입부를 새로 썼다. |
 | C17 | Correlation and response documents | `source-cleanup` | Roadmap과 상세 정의 중복. 2026-09-30 draft는 원문의 itemize 요약을 옮기지 않고 정의를 각 절에 한 번씩 두었다. |
