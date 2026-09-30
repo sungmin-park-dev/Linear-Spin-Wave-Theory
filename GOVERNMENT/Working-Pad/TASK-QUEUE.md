@@ -15,11 +15,11 @@ updated: 2026-09-30
 
 ## 현재 작업
 
-> **2026-09-30 전체 멈춤(사용자 결정):** 10–11월 지원 기간에 하루 연구 시간(5시간)을 Emergence EB 대표작(3시간, v1 12/8)과 TN+NQS 한 트랙(2시간)에 모으기 위해, LSWT 작업은 EB v1 이후 또는 2026-10-10 월간 검토까지 멈춘다. 재개 시 아래 순위를 그대로 이어간다.
+> **2026-09-30 재개(사용자 결정):** 같은 날의 전체 멈춤을 풀었다. 하루 연구 시간 5시간을 Emergence EB 대표작 2시간, TN+NQS 1.5시간, LSWT 1.5시간으로 나눈다. NBCP spin supersolid의 열린 유도·계산은 research-workspace 앱에 등록해 `workbench/blocks/`의 블록으로 진행한다(Y vortex·wall → 유한온도 matching → 유한 크기 열적 검증, quantum gradient, V clock·pinning, 전역 경쟁). 블록은 과정 기록이고 NBCP 내용 원본은 `docs/nbcp/main.tex`다. 아래 순위는 그대로 둔다.
 
 | 순위 | 유형 | 내용 | 상태 | 파일 |
 |---|---|---|---|---|
-| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 진행(C): 구현·검증된 부분부터 한 문서씩 작성(topology → 대각화 → 열역학 → structure factor → LT); 기존 다음 묶음: local circular component 및 real-space H2 | in-review; 17개 문서 일괄 문체 교정 반영; 2026-09-30 topology draft 작성·사용자 물리·수학 검토 대기, 남은 skeleton 9개 | `issue-notes/open/260809-lswt-documentation-audit.md` |
+| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 진행(C): 구현·검증된 부분부터 한 문서씩 작성(topology → 대각화 → 열역학 → structure factor → LT); 기존 다음 묶음: local circular component 및 real-space H2 | in-review; 17개 문서 일괄 문체 교정 반영; 2026-09-30 topology·대각화 draft 작성·사용자 물리·수학 검토 대기, 남은 skeleton 8개 | `issue-notes/open/260809-lswt-documentation-audit.md` |
 | 2 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending — TN-Study에 findings draft v1(1D, Heisenberg점) 있음, 2D 4×4 단계 미완료라 LSWT 승격 전 | `handoff/open/260607-solver-seam-spike.md` |
 | 3 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); 남은 것: NBCP 적용 조건, 이론 문서 A6/A7/A16 검토(2026-09-30 topology draft에 반영; A7 −π²/3는 양정치에서 동치로 정리, Goldstone 경우만 open) | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
 | 4 | issue | NBCP 연구노트와 arXiv 열적 주장 검토 | in-review; Y angular·smooth-wave와 density wall 164개 local minima 대조 완료; 벽 폭 3–4a, 장력 양수·크기 수렴 및 metastability 확인; 다음: vortex core·wall 결합, 이후 thermal 검증; quantum/thermal matching 미완료 | `issue-notes/open/260810-pseudo-goldstone-gap.md` |

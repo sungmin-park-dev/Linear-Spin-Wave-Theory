@@ -117,6 +117,32 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 검증 결과: 자기모멘트의 명시적 minus, 양의 field contraction과 $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$가 서로 일치함을 대수적으로 확인했다. 기존 semantic equation ID, draft 상태 및 내부 링크를 유지했다. Zeeman section·외부 근거·수정일 외 본문은 변경 전과 동일하며, 다른 이론 문서·원자료·코드·예제도 변경 전과 동일함을 확인했다. Quarto로 MathML HTML preview를 생성하고 출력에 Zeeman 수식 anchor와 갱신한 부호 정의가 들어 있음을 확인했다. 출력과 resource는 임시 디렉토리에 두었으며, source 옆의 생성 resource는 정리했다. 브라우저에서의 시각 검토, 문서 전체 Human Physics and Mathematics Review 및 legacy 코드 검증은 별도 대기다.
 
+## Paraunitary Diagonalization Draft — 2026-09-30
+
+사용자의 "대각화 문서 진행" 지시에 따라 `docs/lswt/01-derivation/paraunitary-diagonalization.md`를 skeleton에서 본문 draft로 작성했다. Primary PDF pp. 9–11 Source Eqs. (48)–(60)과 reviewed TeX(lines 783–1006)를 대조했으며 두 source의 식은 일치한다. 작성 전 writing style(`in-review`)을 다시 읽었다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
+
+### 검토 묶음
+
+| 항목 | Draft의 처리 | 사용자 확인 사항 |
+|---|---|---|
+| Source Eqs. (48)–(50) | β→b, Ψ̃→Φ, J→Σ3, M_s→N_sub로 표기를 바꾸고 네 commutator 조건을 \(\mathsf T\Sigma_3\mathsf T^\dagger=\Sigma_3\)로 묶었다. 두 형태의 동치 \(\mathsf T^{-1}=\Sigma_3\mathsf T^\dagger\Sigma_3\)를 적었다. | 표기 |
+| Source Eq. (51) | "unitary transformation"을 paraunitary로 고쳤다. | 없음 |
+| Source Eq. (52) | "E가 실수라서 Ẽ=E" 논증 대신 particle–hole symmetry \(\Sigma_1\mathsf H_{-\mathbf k}^*\Sigma_1=\mathsf H_{\mathbf k}\)와 \(\Sigma_3\mathsf H\) 고유값으로 hole block이 \(\varepsilon_{n,-\mathbf k}\)임을 유도했다. 새 기호 \(\Sigma_1=\sigma_1\otimes\mathsf I\). \(\varepsilon_{n\mathbf k}\ne\varepsilon_{n,-\mathbf k}\)일 수 있음을 적었다. | 논증 교체와 새 기호 Σ1 |
+| Source Eqs. (53)–(54) | 식 (53)의 Tr A에 빠진 k 합을 넣고, 식 (54)에서 σ 합 안에 있던 Tr A를 밖으로 뺐다. \(-\mathbf k\to\mathbf k\) 재표기에 필요한 조건(MBZ 운동량 집합이 반전에 닫힘)을 적었다. | 수정 확인 |
+| Source Eqs. (55)–(56), A12 | E_0 대신 notation 문서의 \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\), FBZ→MBZ, N=Lm_s→\(N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}\). trace subtraction은 momentum-space 문서의 provisional 상태를 물려받는다고 적었다(A5). | ΔE_zp·E_GS를 이 문서가 소유할지, magnon-observables로 옮길지 |
+| Source Eq. (57) | "T는 H가 양정치일 때만 존재"를 "양의 대각 성분으로 대각화하는 paraunitary T는 H가 양정치일 때만 존재"로 정확히 하고 양쪽 방향 근거를 적었다. | 없음 |
+| Source Eqs. (58)–(60) | Colpa 식은 그대로 두고, \(\mathsf K^\dagger\Sigma_3\mathsf K\)가 Sylvester inertia로 양·음 고유값을 N개씩 가진다는 근거와, Λ가 \(\Sigma_3\mathsf H\)의 고유값이라는 관계를 추가했다. 원문의 주석 처리된 \(\mathsf T^\dagger\Sigma_3\mathsf T\) 검산은 옮기지 않았다(첫 절의 동치로 대체). | 없음 |
+| 추가: gauge 자유도 | T→TU(열마다 위상, 축퇴 band 안의 unitary)만 남고 에너지·ΔE_zp는 불변, Berry connection은 변한다. | 추가 내용 확인 |
+| 추가: B18 | 부정치 H는 국소 최소가 아님. 양반정치 H는 단일 mode 두 경우(A=B>0: Jordan block·T 없음, AFM Goldstone; A=B=0: 영에너지 boson, FM Goldstone), δ shift에서 T가 δ^{-1/4}로 발산, 완전한 처리는 Colpa 1986(I, II; 초록으로 서지 확인)에 맡겼다. | 범위(Open Physical Decision 7) |
+
+Equation ID 7개(`eq-lswt-bogoliubov-transformation`, `eq-lswt-paraunitary-condition`, `eq-lswt-bdg-particle-hole-symmetry`, `eq-lswt-bdg-diagonal-form`, `eq-lswt-diagonal-magnon-hamiltonian`, `eq-lswt-zero-point-correction`, `eq-lswt-colpa-transformation`)를 새로 부여했으며 corpus 안에서 중복이 없다.
+
+### 검증
+
+- 수치 검산(scratchpad, 무작위 N_sub=3 비상반 BdG 쌍): particle–hole 관계 오차 0, Colpa T의 두 paraunitary 조건과 비대각 성분 ~1e-15, hole block = \(\varepsilon_{-\mathbf k}\), Λ = eig(Σ3H), 열 위상 gauge 뒤 불변, trace 합 등식 성립. 단일 mode A=B+δ: ε=√(2Aδ+δ²), T₁₁·δ^{1/4}→0.595, T₁₁/(A/ε)^{1/2}→1/√2, \((\Sigma_3\mathsf H)^2=0\).
+- 코드 대응(본문에 넣지 않음): `Diagonalizer.Colpa`는 numpy의 lower Cholesky로 식 (58)과 같은 T를 만든다. docstring은 반환 `JL`이 hole에서 음수라고 하지만, 실제 값은 \(\Lambda\Sigma_3\)라서 모두 양수다. docstring 수정은 별도 코드 항목이다.
+- Quarto preview는 경고가 없었다. 식 ID 7개가 출력됐고 참조 4개가 모두 해석됐다. 이는 출력 구조 검증이며 acceptance가 아니다.
+
 ## Topology Draft — 2026-09-30
 
 사용자의 연구·검토 항목 C 지시에 따라 `docs/lswt/02-observables/topological-magnon-quantities.md`를 skeleton에서 본문 draft로 작성했다. 구현·검증된 toolkit 부분(stage 5a–5d, D29, D31)과 대응하는 문서부터 진행한다. 작성 전 writing style(`in-review`)과 lifecycle을 읽었다. Primary PDF p. 24 Source Eqs. (143)–(149)와 reviewed TeX를 대조했다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
@@ -164,13 +190,13 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/01-derivation/holstein-primakoff-expansion.md` | Leading HP expansion과 linear-term condition | `draft` | exact HP, expansion hierarchy, Dyson-Maleev 범위 결정 |
 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | Quadratic \(H_2\) | `draft` | odd terms와 \(H_4\)의 문서 범위 결정 |
 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | General Nambu/BdG form | `draft` | A1, A2, A5, A10 해결 전 explicit block 보류 |
+| `docs/lswt/01-derivation/paraunitary-diagonalization.md` | Bogoliubov transformation, paraunitary condition, particle–hole spectrum, diagonal Hamiltonian과 zero-point correction, Colpa construction, semidefinite·indefinite 경계 | `draft` (2026-09-30 본문 작성) | 아래 Paraunitary Diagonalization Draft 검토 묶음의 사용자 물리·수학 검토 |
 | `docs/lswt/02-observables/topological-magnon-quantities.md` | Lattice skyrmion number, BdG Berry curvature, Chern number (Kubo, FHS), per-layer magnon thermal Hall | `draft` (2026-09-30 본문 작성) | 아래 Topology Draft 검토 묶음의 사용자 물리·수학 검토 |
 
 ### Draft Skeletons
 
 | File | Intended coverage | Lifecycle |
 |---|---|---|
-| `docs/lswt/01-derivation/paraunitary-diagonalization.md` | Bogoliubov transformation, Colpa, stability | `draft` skeleton |
 | `docs/lswt/02-observables/magnon-observables.md` | Spectrum, energy correction, occupation, correlation matrix | `draft` skeleton |
 | `docs/lswt/02-observables/thermodynamics.md` | Partition function, energy, entropy, specific heat | `draft` skeleton |
 | `docs/lswt/02-observables/spin-correlations.md` | Real-time and sublattice correlations | `draft` skeleton |
@@ -180,7 +206,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
 | `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
 
-현재 합계는 일부 본문이 작성된 draft 8개, skeleton 9개, accepted 0개다.
+현재 합계는 일부 본문이 작성된 draft 9개, skeleton 8개, accepted 0개다.
 
 ## Source and Legacy Retention
 
@@ -238,8 +264,8 @@ Concept ownership은 다음 원칙을 따른다.
 | `01_spin_wave_theory_intro.md` | Exact HP mapping, Dyson-Maleev alternative, truncation과 odd-term condition | `docs/lswt/01-derivation/holstein-primakoff-expansion.md` | `partial` | Current LSWT scope에서 Dyson-Maleev와 higher-order term의 포함 범위는 open이다. |
 | `01_spin_wave_theory_intro.md` | Even/odd expansion과 real-space constant, linear, quadratic, quartic terms | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | `partial` | Main LSWT derivation은 quadratic truncation을 소유하고 quartic detail은 범위 결정 전 보류한다. |
 | `01_spin_wave_theory_intro.md` | Fourier convention, MBZ, Nambu spinor와 BdG block | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `partial` | Fourier sign, gauge, same-sublattice factor와 B block은 open review item이다. |
-| `01_spin_wave_theory_intro.md` | Bogoliubov transform, paraunitary condition, spectrum과 canonical diagonal form | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `skeleton` | Energy correction과 observables를 이 문서에서 반복하지 않는다. |
-| `01_spin_wave_theory_intro.md` | Colpa construction, positivity와 Goldstone-mode boundary | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `skeleton` | Algorithm과 적용 조건은 main document가 소유한다. |
+| `01_spin_wave_theory_intro.md` | Bogoliubov transform, paraunitary condition, spectrum과 canonical diagonal form | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 primary pp. 9–11과 대조해 작성. 원문 배치대로 ΔE_zp와 E_GS를 diagonal form에서 정의했으며, 소유 위치(이 문서 vs magnon-observables)는 사용자 확인 대기다. |
+| `01_spin_wave_theory_intro.md` | Colpa construction, positivity와 Goldstone-mode boundary | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `source-reviewed` | 2026-09-30 Sylvester inertia 근거와 B18 semidefinite 경계를 추가했다. 사용자 acceptance 대기. |
 | `01_spin_wave_theory_intro.md` | Paraunitarity and diagonalization proofs | `docs/lswt/04-appendices/paraunitarity-proofs.md` | `skeleton` | Main document의 결과를 다시 정의하지 않고 증명만 보충한다. |
 | `01_spin_wave_theory_intro.md`, `02_physical_quantities.md` | Magnon bands, ground-state energy와 zero-point correction | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | Diagonalization 문서는 spectrum 생성까지만 다루고 energy observable은 여기서 정의한다. |
 | `02_physical_quantities.md` | Post-diagonalization quantity index | `docs/lswt/02-observables/magnon-observables.md` | `skeleton` | 수식 복제 표가 아니라 각 observable owner로 가는 index로 다시 작성한다. |
@@ -287,13 +313,13 @@ source-only evidence로 보존한다.
 | A8 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | `draft-routed` | Rotated local field |
 | A9 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `draft-routed` | Bond displacement 정의 |
 | A10 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | 2026-09-10 완전한 Fourier 합의 조건을 검증했다. DM의 복소 hopping과 Hermitian conjugate 관계를 구분해 본문에 반영하고 사용자 검토를 받아야 한다. |
-| A5 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | 2026-09-10 normal ordering과 해석 모델에서 -Tr(H)/4를 확인했다. -1/2 변경 annotation, 누락된 k 합과 pointwise trace 등식의 조건은 본문 반영·사용자 검토 대기다. |
+| A5 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | 2026-09-10 normal ordering과 해석 모델에서 -Tr(H)/4를 확인했다. -1/2 변경 annotation, 누락된 k 합과 pointwise trace 등식의 조건은 본문 반영·사용자 검토 대기다. 2026-09-30 diagonalization draft는 ΣTr A_k = ½ΣTr H_k가 운동량 합 뒤에만 성립한다고 적었고, trace subtraction 자체는 momentum-space 문서의 provisional 상태를 따른다. |
 | A11 | Momentum-space and magnon-observable documents | `open` | 2026-09-10 radial derivative 부호 및 trace 상수 관계를 대조했다. \(S(S+1)\) 표현은 E_cl의 S 의존 정의를 구분한 후 사용자 검토가 필요하다. |
 | A1 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | \(B_{\mathbf k}\) off-diagonal typo와 block 식. 2026-09-10 코드의 기존 수정 검증은 별도 종결했으며 이론 acceptance는 미완료다. |
 | B10 | Momentum-space source | `source-cleanup` | SJ/SP color annotation 제거 |
 | A2 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | `open` | 2026-09-10 대표 bond당 exchange endpoint 2회, field 1회 기여를 검증했다. 원본 link 집합 정의와 식 (47)의 보완·사용자 검토는 남아 있다. |
-| A12 | Diagonalization and magnon observables | `open` | 공개 솔버의 T=0 energy assembly는 수정했다. 원본 식 (53)–(54)의 합 범위, E_cl·Delta E_0·E_0·e_0 구분과 이론 acceptance는 별도다. |
-| B18 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `open` | Positive-semidefinite Goldstone-mode caveat |
+| A12 | Diagonalization and magnon observables | `open` | 공개 솔버의 T=0 energy assembly는 수정했다. 원본 식 (53)–(54)의 합 범위, E_cl·Delta E_0·E_0·e_0 구분과 이론 acceptance는 별도다. 2026-09-30 diagonalization draft는 k 합 누락과 σ 합 안의 Tr A를 바로잡고 notation의 E_GS·ΔE_zp를 적용했다. magnon-observables 쪽과 사용자 검토는 남아 있다. |
+| B18 | `docs/lswt/01-derivation/paraunitary-diagonalization.md` | `draft-routed` | Positive-semidefinite Goldstone-mode caveat. 2026-09-30 draft에 semidefinite·indefinite 절을 추가했다(단일 mode 두 경우, δ shift, Colpa 1986). 사용자 검토 대기. |
 | B11 | `docs/lswt/02-observables/magnon-observables.md` | `source-cleanup` | First-person convention |
 | C14 | Magnon and response observables | `open` | \(S_k\), \(\bar S_k\), \(U^\beta\) notation |
 | B20 | `docs/lswt/02-observables/spin-correlations.md` | `source-cleanup` | Correlation introduction 문장 |
@@ -349,7 +375,7 @@ source-only evidence로 보존한다.
 4. Crystallographic BZ와 magnetic BZ의 관계
 5. Ground-state energy, zero-point correction, constant/trace convention
 6. Correlation과 structure factor에서 \(N\), \(L\), \(m_s\) normalization
-7. Positive-semidefinite Goldstone mode를 Colpa 문서 범위에 포함할지
+7. Positive-semidefinite Goldstone mode를 Colpa 문서 범위에 포함할지 (2026-09-30 diagonalization draft가 경계 절을 제안; 사용자 결정 대기)
 8. Physical \(N\) bands와 \(2N\) BdG space의 topology sum convention (2026-09-30 topology draft가 D29 convention을 제안; 사용자 결정 대기)
 9. \(H_4\), Dyson-Maleev, Luttinger-Tisza를 현재 정본화 범위에 포함할지
 
