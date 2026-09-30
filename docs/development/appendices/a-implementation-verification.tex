@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b·3·4a·4b단계 구현 & 검토 항목 확인 \\
-    \textbf{미구현} & 상관함수(4c), ED 2-마그논·flux, TN, 여러 차원 영공간 & 4c부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0--4단계 구현(2b 포함) & 검토 항목 확인 \\
+    \textbf{미구현} & 위상량(5단계), 2-마그논 연속체, ED flux, TN, 여러 차원 영공간 & 5단계부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -475,6 +475,45 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{\texttt{examples/lswt\_stage4b\_check.py}}{stage4b}
 \end{frame}
 
+\begin{frame}[label=stage4c-structure-factor]{4c: 구조인자는 모드별 무게로 내고 ED와 정확히 맞춘다}
+  \framesubtitle{2026-09-30 · $S^{ab}(\mathbf q,\omega)=\sum_nW_n^{ab}(\mathbf q)\,\delta(\omega-\omega_n)+N\sum_{\mathbf G}I^{ab}(\mathbf G)\delta_{\mathbf q,\mathbf G}$ · 전체 위치 게이지, 사이트당(D26).}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}P{3.2cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 범위 \\
+    \midrule
+    ED 1-마그논 행렬 요소 & $10^{-15}$ & U(1) 편극: 정사각, DM, 2-사이트 벌집격자, $S=\tfrac32$, NBCP XXZ \\
+    Néel 해석식 & $2\times10^{-13}$ & 가로 무게 $S\sqrt{(1-\gamma)/(1+\gamma)}$, 세로 0 \\
+    합 규칙(확장 격자) & $10^{-16}$ & 비탄성 $\langle S(1+2n)\rangle$, 탄성 $\langle(S-n)^2\rangle$, 총합 $-S(S+1)=\langle n^2\rangle$ \\
+    게이지·주기 & 정확 & $S(\mathbf q+\mathbf G_{\mathrm{prim}})=S(\mathbf q)$, 자기 역격자로는 주기 아님 \\
+    결합 상관 에너지 & $E_{\mathrm{GS}}$와 $10^{-15}$ & 정사각, 삼각, NBCP Y($J_{\mathrm{PD}}$) \\
+    상세 균형, Bragg & 정확 & $S^{ab}(\mathbf q,-\omega)=e^{-\omega/t}S^{ba}(-\mathbf q,\omega)$; Néel $I^{zz}(\pi,\pi)=m^2$ \\
+    테스트·스냅샷 & 452 통과 / 같은 5 실패 & 새 15개; 스냅샷 차이 0 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{범위: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 세로 연속체는 후속). Bragg 벡터의 Goldstone 영모드에서는 비탄성 무게를 NaN으로 표시하고 탄성 항은 계산한다.}
+  \slidesource{4c 검증 기록}{stage4c}
+\end{frame}
+
+\begin{frame}[label=stage4c-legacy]{4c: 기존 상관 코드는 규약이 달라 쓰지 않는다}
+  \framesubtitle{\texttt{observables/correlations.py}는 연결·테스트가 없던 코드다. 새 구현과 같은 조건에서 비교했다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{3.2cm}Y@{}}
+    \toprule
+    항목 & 결과 \\
+    \midrule
+    정적 $S(\mathbf q)$ 비 & 기존/새 = 2--5.7(정사각), 3--14.4(삼각); 일정한 배수가 아님 \\
+    진단 & 기존 = $N_s\times$(전체 위치 게이지 $\mathsf H(\mathbf k)$ 위에 $e^{-i\mathbf q\cdot\symbf{\tau}_i}$를 한 번 더 곱한 값); 진단식과 $10^{-7}$ 일치 \\
+    원인 & 셀당 정규화(사이트당 아님)와 부격자 위상의 중복 적용 → 부격자 간 간섭 항이 틀림 \\
+    부가 결함 & 부격자 지정 출력에서 \texttt{[mu+Ns, nu]}를 두 번 더함(\texttt{[mu+Ns, nu+Ns]} 누락) \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{새 구현은 ED와 기계 정밀도로 맞는다. 기존 코드는 수정하지 않고 비교 기록으로 남겼다. 유지·삭제는 사용자 결정이다.}
+  \slidesource{4c 검증 기록}{stage4c}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -550,7 +589,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     2 & NBCP 연결(완료) & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
-    4 & 물리량(4a·4b) & 4a 바닥상태, 4b 열역학·영모드, 4c 상관함수 \\
+    4 & 물리량(구현) & 4a 바닥상태, 4b 열역학·영모드, 4c 구조인자·결합 상관 \\
     5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
     \bottomrule
   \end{tabularx}
@@ -565,7 +604,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
 
 \begin{frame}[label=open-questions]{미결 사항}
   \framesubtitle{해당 단계에 도달하기 전에 결정한다.}
-  \small
+  \footnotesize\renewcommand{\arraystretch}{1.05}
   \begin{tabularx}{\textwidth}{@{}Yp{3.2cm}@{}}
     \toprule
     질문 & 결정 시점 \\
@@ -577,6 +616,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     D19 물리 근거 모드의 계수(2b 구현값) & 사용자 검토 \\
     기울인 장처럼 고전 고정과 영점 선택이 비슷한 경우를 \texttt{competition}으로 볼지 & 사용자 검토 \\
     MAGSWT 격자 탐색의 유지·삭제(재현 확인 완료) & 사용자 결정 \\
+    기존 \texttt{correlations.py}의 유지·삭제(규약 차이 진단 완료) & 사용자 결정 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
     \bottomrule
   \end{tabularx}

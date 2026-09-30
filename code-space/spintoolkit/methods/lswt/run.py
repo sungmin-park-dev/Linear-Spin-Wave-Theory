@@ -124,7 +124,8 @@ class LSWTResult:
     hamiltonians : (nk, 2Ns, 2Ns) complex array
         ``H(k)`` as diagonalized (including any regularization shift).
     eigenvalues : (nk, 2Ns) array
-        Colpa order: particle energies (descending), then their negatives.
+        Colpa order: particle energies (descending), then the energies of the
+        hole components (also positive).
     eigenvectors : (nk, 2Ns, 2Ns) complex array
         Paraunitary ``T`` with ``T^dagger H T = diag(|eigenvalues|)`` and the
         columns in the order of ``eigenvalues``.
@@ -138,6 +139,12 @@ class LSWTResult:
         ``<a_i^dagger a_i>`` at zero temperature.
     lattice, magnetic_lattice : (2, 2) arrays
         Primitive and magnetic lattice vectors (rows).
+    positions : (Ns, 2) array
+        Cartesian positions of the magnetic-cell sites.
+    local_frames : (Ns, 3, 3) array
+        Rotation ``R_i`` of the Hamiltonian's local frame: columns are the
+        local x, y and z axes (z along the spin); spin deviations are
+        ``delta S_i = sqrt(S_i/2) [(x_i - i y_i) a_i + (x_i + i y_i) a_i^dagger]``.
     thermal : ThermalResult or None
         Finite-temperature quantities at ``conditions.temperature`` (4b).
     hamiltonian_at : callable
@@ -164,6 +171,8 @@ class LSWTResult:
     lattice: Optional[np.ndarray] = None
     magnetic_lattice: Optional[np.ndarray] = None
     thermal: Optional[Any] = None
+    positions: Optional[np.ndarray] = None
+    local_frames: Optional[np.ndarray] = None
     hamiltonian_at: Optional[Callable] = field(default=None, repr=False, compare=False)
     extra: Dict[str, Any] = field(default_factory=dict)
 
@@ -341,7 +350,9 @@ def solve_lswt(model: SpinModel, state: SpinState,
                         H, E, T, shift, linear_max, float(e_cl), float(zero_point),
                         float(e_cl + zero_point), boson_numbers,
                         np.asarray(model.lattice, dtype=float), state.magnetic_lattice(model),
-                        None, hamiltonian_at)
+                        None, np.array([model.cartesian_position(s, c) for s, c in keys]),
+                        np.array(list(hamiltonian.get_rmat_dict(angles=angles).values())),
+                        hamiltonian_at)
     if conditions.temperature > 0:
         from spintoolkit.observables.thermal import thermal_quantities
 

@@ -81,6 +81,7 @@
     ID & 내용 & 상태 \\
     \midrule
     D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
+    D26 & 4c: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 연속체는 후속); 모드별 무게가 주 출력, 넓힌 스펙트럼은 보조; 새 구현, 기존 \texttt{correlations.py}는 비교 대상만; 결합 상관과 에너지 교차 확인 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
@@ -343,6 +344,14 @@
     \bibitem{selection}
       상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · \texttt{quantum} 경로 수정과 D17 궤도 축 수치 확인.
+  \end{thebibliography}
+\end{frame}
+
+\begin{frame}[label=sources-continued]{근거 문서 (계속)}
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{12}
+    \setcounter{enumiv}{10}
     \bibitem{criteria}
       D17 판정 기준 자료, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · 영공간 판정 규칙 비교와 선택의 mesh 의존성.
@@ -355,6 +364,9 @@
     \bibitem{stage4b}
       4b 영모드·유한 온도 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · 영모드 판정, ED 저온 대조.
+    \bibitem{stage4c}
+      4c 구조인자 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · ED 무게, 합 규칙, 기존 코드 진단.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

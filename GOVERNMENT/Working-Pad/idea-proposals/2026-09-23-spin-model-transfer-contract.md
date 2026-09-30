@@ -47,6 +47,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 공통 결과 머리부·JSON(D14, D24; 4a) | `methods/result.py`의 `ResultHeader`, `save_json`, `load_json` |
 | §5 LSWT 결과 본문, 새 모델의 LSWT 진입점(D21, D24; 4a) | `methods/lswt/run.py`의 `solve_lswt`, `LSWTSettings`, `LSWTResult` |
 | 영모드 탐색, 무차원 유한 온도 물리량(D25; 4b) | `observables/zero_modes.py`의 `scan_zero_modes`, `observables/thermal.py`의 `thermal_quantities` |
+| 구조인자·결합 상관(D26; 4c) | `observables/structure_factor.py`의 `structure_factor`, `bond_correlations` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -94,6 +95,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D23 | 3단계: ED는 대칭을 가정하지 않는 일반 해밀토니안이 기본이고 U(1) 자화(n-마그논) 섹터와 병진 운동량 섹터는 선택; 1-마그논 비교는 일반 ED로 하고 별도 도구를 두지 않음; 2-마그논 섹터와 키타에프 flux 섹터·정확해 대조는 후속; 문헌 근사 비교는 4단계; 유한 토러스 항 전개는 `system/cluster.py`에서 한 번 하며 겹친 결합은 합산하고 한 사이트로 접히는 결합은 모든 방법에서 거부(온사이트 이차항 kind 도입 시 재검토); ED 본문은 토러스 전체 에너지를 저장하고 사이트당 값·들뜸 에너지는 메서드로; LSWT 대조는 변환 경유 비공개 도우미로 정규화 없이 | 사용자 결정 2026-09-30 | §4, §5, 개발 계획 |
 | D24 | 4단계: `solve_lswt(model, state, conditions, geometry, settings)` 함수를 새 진입점으로 두고 기존 `LSWTSolver`는 유지; 입출력은 무차원; 정규화 기본값은 없음이며 영모드·음의 모드는 오류로 보고(MAGSWT·k-dependent는 명시적 선택, 항상 기록); 대각화 정보(`H(k)`, Colpa 고유값, paraunitary 고유벡터)는 결과에 보관해 같은 계산의 물리량이 재사용하고 JSON에는 머리부와 요약(배열은 요청 시); 4a·4b·4c로 나눠 검증 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D25 | 4b: 영모드는 `H(k)`의 최소 고윳값 비 `lambda_min / scale`로 세 구간(수치적 영 <= 1e-12, 후보 <= 1e-6, 갭)으로 판정; 후보가 있으면 유한 온도 물리량은 사용자가 `gapless`를 정할 때까지 멈춤; gapless이면 T > 0의 보손 수·모멘트·자화는 NaN, F·U·S·C는 계산; 탐색점은 자기·원시 격자의 고대칭점과 격자 최소점, 연속 최소화와 선 검사, k = 0의 기원(Goldstone·우연·미상) 표시; 온도는 무차원 `t = k_B T / E0`이고 켈빈 도우미는 두지 않음 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
+| D26 | 4c: 구조인자는 한 마그논 가로 성분과 정확한 탄성 Bragg까지(2-마그논 세로 연속체는 후속); 모드별 무게 `W_n^{ab}(q)`를 주 출력으로 하고 넓힌 스펙트럼은 보조; 전체 위치 게이지·사이트당 정규화; 새로 구현하고 기존 `observables/correlations.py`는 비교 대상으로만(유지·삭제는 별도 결정); 결합별 상관과 그 에너지 교차 확인 포함, 일반 실공간 상관은 후속; 영모드인 q는 비탄성 무게 NaN과 표시 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 
 ## Proposal
 
@@ -678,6 +680,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   상태 표를 갱신했다.
 - 2026-09-30 (claude): 4b 구현을 반영했다. D25(영모드 판정과 사용자 확인 단계, 유한 온도 물리량)를
   추가하고 구현 상태 표를 갱신했다.
+- 2026-09-30 (claude): 4c 구현을 반영했다. D26(구조인자 범위·출력·기존 상관 코드의 위치)을 추가하고
+  구현 상태 표를 갱신했다.
 
 ## 관련 기록
 

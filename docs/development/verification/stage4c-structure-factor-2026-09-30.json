@@ -1,0 +1,229 @@
+{
+ "date": "2026-09-30",
+ "scope": "Stage 4c of the 1st development plan: mode-resolved LSWT structure factor (one-magnon transverse and exact Bragg), broadened spectra, and bond correlations, reusing the stored diagonalization (D26).",
+ "status": "passed",
+ "baseline_commit": "5c937a1",
+ "script": "examples/lswt_stage4c_check.py",
+ "added": {
+  "code-space/spintoolkit/observables/structure_factor.py": "structure_factor, StructureFactor (energies, weights W^{ab}, elastic, bragg, zero_mode; static, trace, neutron, spectrum), bond_correlations",
+  "code-space/tests/test_methods/test_structure_factor.py": "15 tests"
+ },
+ "changed": {
+  "code-space/spintoolkit/methods/lswt/run.py": "LSWTResult gains positions and local_frames; eigenvalue docstring corrected (hole-branch energies are positive)"
+ },
+ "tests": {
+  "result": "452 passed, 5 failed (known CommensurateStructure failures, unchanged)",
+  "regression_snapshot": "208 leaves, maximum difference 0.0",
+  "note": "OPENBLAS_NUM_THREADS=4"
+ },
+ "conventions": "S^a(q) = N^{-1/2} sum_r exp(-i q.r) S^a_r (full positions, per site); delta S_i = sqrt(S_i/2)[(x_i - i y_i) a_i + (x_i + i y_i) a_i^dagger] in the Hamiltonian's local frame; particle modes at +w with 1 + n_B, hole components at -w with n_B; Bragg I(G) = F F^dagger / N_s^2 with F = sum_i m_i exp(-i G.tau_i), m_i = (S_i - <n_i>) n_i; the longitudinal two-magnon continuum (O(S^0)) is excluded.",
+ "ed": [
+  {
+   "case": "square_S1/2",
+   "cluster": [
+    [
+     4,
+     0
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "num_momenta": 16,
+   "max_weight_difference": 1.1102842031828823e-16
+  },
+  {
+   "case": "square_DM",
+   "cluster": [
+    [
+     4,
+     0
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "num_momenta": 16,
+   "max_weight_difference": 3.8857816091110903e-16
+  },
+  {
+   "case": "honeycomb_two_sites",
+   "cluster": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     3
+    ]
+   ],
+   "num_momenta": 9,
+   "max_weight_difference": 9.714767380402074e-16
+  },
+  {
+   "case": "triangular_S3/2_nondiagonal",
+   "cluster": [
+    [
+     2,
+     1
+    ],
+    [
+     -1,
+     3
+    ]
+   ],
+   "num_momenta": 7,
+   "max_weight_difference": 4.440892098500626e-16
+  },
+  {
+   "case": "nbcp_xxz",
+   "cluster": [
+    [
+     3,
+     0
+    ],
+    [
+     0,
+     3
+    ]
+   ],
+   "num_momenta": 9,
+   "max_weight_difference": 1.1102230639338272e-16
+  }
+ ],
+ "neel_analytic": {
+  "num_q": 20,
+  "max_weight_error": 2.3447910280083306e-13
+ },
+ "sum_rules": [
+  {
+   "case": "square Neel",
+   "inelastic": 0.6646178163420207,
+   "expected_inelastic": 0.6646178163420207,
+   "elastic": 0.11248120911519462,
+   "expected_elastic": 0.11248120911519463,
+   "total": 0.7770990254572153,
+   "S(S+1)": 0.75,
+   "total_minus_S(S+1)": 0.02709902545721532,
+   "predicted_<n^2>": 0.027099025457215223
+  },
+  {
+   "case": "triangular 120",
+   "inelastic": 0.7320807983581205,
+   "expected_inelastic": 0.7320807983581203,
+   "elastic": 0.07178069860842215,
+   "expected_elastic": 0.07178069860842216,
+   "total": 0.8038614969665426,
+   "S(S+1)": 0.75,
+   "total_minus_S(S+1)": 0.05386149696654263,
+   "predicted_<n^2>": 0.05386149696654252
+  }
+ ],
+ "bond_energy": [
+  {
+   "case": "square",
+   "bond_energy": -0.6579322010319565,
+   "ground_state_energy": -0.6579322010319553,
+   "difference": -1.2212453270876722e-15
+  },
+  {
+   "case": "triangular",
+   "bond_energy": -0.538803454381703,
+   "ground_state_energy": -0.5388034543817034,
+   "difference": 4.440892098500626e-16
+  },
+  {
+   "case": "NBCP Y, J_PD",
+   "bond_energy": -0.05103191934712717,
+   "ground_state_energy": -0.051031919347127155,
+   "difference": -1.3877787807814457e-17
+  }
+ ],
+ "legacy_correlations": {
+  "rows": [
+   {
+    "case": "square Neel",
+    "legacy_over_new_min": 1.9999996701231466,
+    "legacy_over_new_max": 5.732050779712463,
+    "legacy_over_Ns_times_double_phase_max_deviation": 1.6493802235117982e-07
+   },
+   {
+    "case": "triangular 120",
+    "legacy_over_new_min": 2.9999998911285584,
+    "legacy_over_new_max": 14.358073459627583,
+    "legacy_over_Ns_times_double_phase_max_deviation": 3.6289594995686514e-08
+   }
+  ],
+  "diagnosis": "legacy static S(q) = N_s x (per-site S(q) computed with an extra exp(-i q.tau_i) on top of the full-position-gauge H(k)): per-cell normalization and a doubled sublattice phase; get_quantum_spin_corr_mat also repeats the [mu+Ns, nu] element instead of [mu+Ns, nu+Ns] for sublattice-resolved output"
+ },
+ "nbcp_paths": [
+  {
+   "phase": "Y",
+   "couplings": {
+    "JPD": 0.01
+   },
+   "num_q": 41,
+   "zero_mode_momenta": [
+    [
+     0.0,
+     0.0
+    ]
+   ],
+   "bragg_momenta": [
+    [
+     0.0,
+     0.0
+    ]
+   ],
+   "trace_weights_at_q_pi_over_2": [
+    0.10640395680480401,
+    0.1981089014366058,
+    0.03709438612698186,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "warnings": [
+    "H(q) has a zero mode at 1 of 41 momenta (e.g. Goldstone modes at Bragg vectors):"
+   ]
+  },
+  {
+   "phase": "Y",
+   "couplings": {
+    "JGamma": 0.01
+   },
+   "num_q": 41,
+   "zero_mode_momenta": [
+    [
+     0.0,
+     0.0
+    ]
+   ],
+   "bragg_momenta": [
+    [
+     0.0,
+     0.0
+    ]
+   ],
+   "trace_weights_at_q_pi_over_2": [
+    0.0988800837274836,
+    0.20746158526120198,
+    0.04330148341662721,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "warnings": [
+    "H(q) has a zero mode at 1 of 41 momenta (e.g. Goldstone modes at Bragg vectors):"
+   ]
+  }
+ ],
+ "findings": [
+  "The existing observables/correlations.py (untested, unwired) disagrees with ED-validated weights: its static S(q) equals N_s times a structure factor with an extra sublattice phase applied on top of the full-position-gauge H(k); sublattice-resolved output also repeats one matrix element. It is left unchanged and not used; keeping or removing it is a user decision.",
+  "Bragg vectors of an ordered state coincide with Goldstone zero modes; the structure factor reports NaN inelastic weights there (zero_mode flag) and still returns the elastic part."
+ ],
+ "decisions": "D26 (2026-09-30): one-magnon transverse plus exact elastic Bragg (two-magnon longitudinal continuum later); mode-resolved weights as the primary output with a broadening helper; new implementation, the existing Correlations only as a comparison; bond correlations included (energy cross-check), general real-space correlations later."
+}
