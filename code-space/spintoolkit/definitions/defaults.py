@@ -58,3 +58,11 @@ SELECTION_MAX_HARMONIC = 12        # highest Fourier harmonic fitted along the o
 ED_DENSE_LIMIT = 2000              # largest block diagonalized densely
 ED_LANCZOS_MIN_DIMENSION = 256     # smaller blocks are always diagonalized densely
 ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficients treated as round-off
+
+# =============================================================================
+# LSWT on the common model types (stage 4)
+# =============================================================================
+
+LSWT_DEFAULT_MESH = (24, 24)       # thermodynamic-limit mesh of the magnetic reciprocal cell
+LSWT_STATIONARITY_TOLERANCE = 1e-8 # E0, largest torque accepted without a warning
+LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below this is a zero mode

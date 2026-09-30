@@ -33,6 +33,7 @@ from spintoolkit.definitions.defaults import (
     ED_DENSE_LIMIT, ED_LANCZOS_MIN_DIMENSION, ED_SYMMETRY_TOLERANCE)
 from spintoolkit.methods.ed.basis import SectorBasis, TranslationOrbits, cluster_translations
 from spintoolkit.methods.ed.hamiltonian import frame_rotation, matrix_elements, operator_terms
+from spintoolkit.methods.result import ResultHeader, to_jsonable
 from spintoolkit.system.cluster import TorusCluster, allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
@@ -130,6 +131,8 @@ class EDResult:
         Energy of the product state polarized along ``+axis`` (an eigenstate
         when the magnetization is conserved); None without an axis.
     diagnostics : dict
+    header : ResultHeader or None
+        Common header (D14).
     """
 
     method: str
@@ -141,6 +144,22 @@ class EDResult:
     blocks: Tuple[EDBlock, ...]
     reference_energy: Optional[float]
     diagnostics: Dict[str, Any] = field(default_factory=dict)
+    header: Optional[ResultHeader] = None
+
+    def to_json_dict(self, include_arrays: bool = False) -> Dict[str, Any]:
+        """Header and blocks; eigenvectors only when ``include_arrays``."""
+        blocks = []
+        for b in self.blocks:
+            item = {"magnon_number": b.magnon_number, "momentum_index": b.momentum_index,
+                    "q": b.q, "k": b.k, "dimension": b.dimension, "energies": b.energies,
+                    "solver": b.solver, "residual": b.residual}
+            if include_arrays and b.vectors is not None:
+                item["vectors"] = b.vectors
+            blocks.append(item)
+        return to_jsonable({"header": self.header,
+                            "ed": {"sector": self.sector, "num_sites": self.num_sites,
+                                   "reference_energy": self.reference_energy,
+                                   "blocks": blocks}})
 
     def energies(self) -> np.ndarray:
         """All computed total energies, ascending."""
@@ -308,5 +327,10 @@ def solve_ed(model: SpinModel, geometry: CalculationGeometry,
         _, codes, values = matrix_elements(terms, up, np.zeros(1, dtype=np.int64),
                                            weights, cluster.spins)
         reference = float(np.real(np.sum(values[codes == 0])))
+    settings = {"sector": to_jsonable(sector), "num_eigenvalues": num_eigenvalues,
+                "return_vectors": return_vectors, "dense_limit": dense_limit,
+                "symmetry_tolerance": symmetry_tolerance}
+    header = ResultHeader.build("ed", model, None, geometry, conditions, settings,
+                                "total energies of the torus (E0)", diagnostics)
     return EDResult("ed", cluster.model_ref, cluster.cluster, conditions, sector,
-                    cluster.num_sites, tuple(blocks), reference, diagnostics)
+                    cluster.num_sites, tuple(blocks), reference, diagnostics, header)

@@ -44,6 +44,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §1 영점 에너지 상태 선택(D17, D19; 2b) | `methods/state_selection.py`의 `select_on_manifold` |
 | §5 유한 토러스 항 전개(D23; 3단계) | `system/cluster.py`의 `expand_on_torus`, `allowed_momenta`; `classical_energy(..., geometry)` |
 | §5 ED 결과 본문, 최소 ED 도구(D10, D23; 3단계) | `methods/ed/`의 `solve_ed`, `EDSector`, `EDResult` |
+| §5 공통 결과 머리부·JSON(D14, D24; 4a) | `methods/result.py`의 `ResultHeader`, `save_json`, `load_json` |
+| §5 LSWT 결과 본문, 새 모델의 LSWT 진입점(D21, D24; 4a) | `methods/lswt/run.py`의 `solve_lswt`, `LSWTSettings`, `LSWTResult` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -89,6 +91,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D21 | 2단계: NBCP 파라미터 세트는 문헌값(arXiv:2505.06398 Table 1)과 원고값을 두고 g는 세트별(모르면 `g = I`와 Zeeman 에너지); 변환 함수는 `system/conversion.py`; `from_spin_system`은 사이트 장이 모두 같을 때만 변환하고 `local_field` 항은 필요할 때 결정; `LSWTSolver.from_model` 같은 새 진입점은 4단계 | 사용자 결정 2026-09-29 | §6, 개발 계획 |
 | D22 | 2b단계(D17 구현): `methods/state_selection.py`의 `select_on_manifold`, `SelectionCriteria`, `SelectionResult`; C_cl과 C_qm이 비슷한 경쟁 영역은 "competition"으로 판정해 고전·양자 최소를 모두 기록하고 자동 선택하지 않음; E_qm은 호출 가능 객체로 받고 기본 제공자는 변환을 거친 기존 `EnergyFunction`(native는 4단계); 2b에서 새 자료형용 DE는 만들지 않고 기존 결과를 `candidate_state`로 변환; `quantum` 경로와 그 전용 BFGS 함수·테스트 삭제 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
 | D23 | 3단계: ED는 대칭을 가정하지 않는 일반 해밀토니안이 기본이고 U(1) 자화(n-마그논) 섹터와 병진 운동량 섹터는 선택; 1-마그논 비교는 일반 ED로 하고 별도 도구를 두지 않음; 2-마그논 섹터와 키타에프 flux 섹터·정확해 대조는 후속; 문헌 근사 비교는 4단계; 유한 토러스 항 전개는 `system/cluster.py`에서 한 번 하며 겹친 결합은 합산하고 한 사이트로 접히는 결합은 모든 방법에서 거부(온사이트 이차항 kind 도입 시 재검토); ED 본문은 토러스 전체 에너지를 저장하고 사이트당 값·들뜸 에너지는 메서드로; LSWT 대조는 변환 경유 비공개 도우미로 정규화 없이 | 사용자 결정 2026-09-30 | §4, §5, 개발 계획 |
+| D24 | 4단계: `solve_lswt(model, state, conditions, geometry, settings)` 함수를 새 진입점으로 두고 기존 `LSWTSolver`는 유지; 입출력은 무차원; 정규화 기본값은 없음이며 영모드·음의 모드는 오류로 보고(MAGSWT·k-dependent는 명시적 선택, 항상 기록); 대각화 정보(`H(k)`, Colpa 고유값, paraunitary 고유벡터)는 결과에 보관해 같은 계산의 물리량이 재사용하고 JSON에는 머리부와 요약(배열은 요청 시); 4a·4b·4c로 나눠 검증 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 
 ## Proposal
 
@@ -493,8 +496,8 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 세 객체를 모든 방법에 공통인 부분과 방법별 부분으로 나눈다(D14). 1차에서는 공통
 계산 요청, 공통 결과 머리부, 고전 계산·LSWT용 `SpinState`, LSWT 결과 본문을
 정한다. 최소 ED 검증 도구도 공통 요청과 공통 머리부를 사용한다. ED 결과 본문은
-3단계에서 정했고(D23), TN 관련 부분은 TN 도입 시 정한다. 공통 머리부와 JSON 직렬화의
-구현은 4단계다.
+3단계에서 정했고(D23), TN 관련 부분은 TN 도입 시 정한다. 공통 머리부와 JSON 직렬화는
+4a에서 구현했다(D24).
 
 | 객체 | 모든 방법 공통 | 방법별 |
 |---|---|---|
@@ -535,7 +538,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | 외부 조건 | 무차원 장 `field = mu_B B / E0`와 온도 `temperature = k_B T / E0`(D20) |
 | 계산계 실현 | `thermodynamic_limit` 또는 `finite_torus`. 유한 토러스는 정수 클러스터 행렬 `L`로 주고, `L @ inv(M)`가 정수여야 한다. 원통·열린 클러스터는 TN·ED 솔버 도입 시 추가 |
 | 목표 물리량 | 스펙트럼, 바닥상태 에너지, 열역학량, 상관함수, 위상량 중 요청한 항목 |
-| 방법 설정 | 방법별. LSWT: 열역학 극한에서의 k점 격자 `(N1, N2)`, regularization(없음·MAGSWT), 밴드 경로, 허용오차 |
+| 방법 설정 | 방법별. LSWT(D24): 열역학 극한에서의 k점 격자 `(N1, N2)`(기본 24 x 24, Γ를 피하는 반 칸 이동), 명시적 k점, regularization(기본 없음; MAGSWT·k-dependent), 정상성·영모드 허용오차 |
 
 유한 토러스에서는 클러스터가 허용 k점을 정하므로 별도 k점 격자를 받지 않는다.
 열역학 극한에서 k점 격자는 수렴을 조절하는 수치 설정이다.
@@ -558,7 +561,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | 부분 | 내용 |
 |---|---|
 | 머리부 | `schema_version`, 방법, 입력 출처(모델·상태 해시, 계산계 실현, 외부 조건, 방법 설정, 코드·상수 버전), 에너지 단위, 정규화(LSWT 에너지는 사이트당, ED 본문은 토러스 전체 에너지; D23), 진단(정상성 토크, Colpa 안정성, Zeeman 누락 경고, 적용한 regularization, k점 격자의 의미) |
-| LSWT 본문 | k점, 양의 밴드 에너지 `epsilon_n(k)`, `E_cl`, `Delta E_zp`, `E_GS`(사이트당), 필요 시 paraunitary 변환, 요청한 물리량 |
+| LSWT 본문(D24) | k점(Cartesian, 자기 역격자 분율)과 가중치, 대각화한 `H(k)`, Colpa 고유값, paraunitary 고유벡터, 정규화 이동량, 선형항 크기, `E_cl`, `Delta E_zp`, `E_GS`(사이트당), 부격자별 `<n>`과 모멘트 `S - <n>`, 요청한 물리량. 대각화 정보는 같은 계산 안의 물리량이 재사용하며, JSON에는 요약만 쓰고 배열은 요청 시 |
 | ED 본문(D23) | 방법 `ed`, 섹터(양자화 축, 마그논 수, 운동량 사용 여부), 블록별 운동량(분율 `q`, Cartesian `k`)·차원·고유값(토러스 **전체** 에너지)·풀이 방법·잔차, 선택적 고유벡터, 축 방향 편극 상태의 기준 에너지, 진단(섹터를 바꾸는 계수, Hermite성). 사이트당 값과 들뜸 에너지(`E - E_ref`)는 메서드로 계산 |
 
 이 구조는 기존 `SolverResult`(`ground_state_energy`, `eigenvalues`, `spin_config`,
@@ -669,6 +672,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   §6, Open Questions를 갱신했다.
 - 2026-09-30 (claude): 3단계 구현을 반영했다. D23을 추가하고, §5에 유한 토러스 전개 규칙과 ED
   결과 본문을 정했으며, 구현 상태 표와 Open Questions를 갱신했다.
+- 2026-09-30 (claude): 4a 구현을 반영했다. D24를 추가하고 §5의 방법 설정·LSWT 본문과 구현
+  상태 표를 갱신했다.
 
 ## 관련 기록
 

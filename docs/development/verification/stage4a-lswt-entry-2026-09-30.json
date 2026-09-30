@@ -1,0 +1,262 @@
+{
+ "date": "2026-09-30",
+ "scope": "Stage 4a of the 1st development plan: LSWT entry point on the common model types (solve_lswt), common result header and JSON output, ground-state energy and ordered moment, diagonalization data kept for reuse within a calculation (D24).",
+ "status": "passed",
+ "baseline_commit": "94b364f",
+ "script": "examples/lswt_stage4a_check.py",
+ "added": {
+  "code-space/spintoolkit/methods/lswt/run.py": "solve_lswt, LSWTSettings, LSWTResult, LSWTError; default regularization 'none' with zero-mode detection; half-step shifted mesh of the magnetic reciprocal cell; finite torus momenta reduced to the magnetic cell; H(k), Colpa eigenvalues and paraunitary eigenvectors kept in the result",
+  "code-space/spintoolkit/methods/result.py": "ResultHeader (schema version, method, model/state fingerprints, geometry, conditions, settings, code version, energy unit, normalization, diagnostics), state_fingerprint, to_jsonable, save_json, load_json",
+  "code-space/spintoolkit/definitions/defaults.py": "LSWT_DEFAULT_MESH, LSWT_STATIONARITY_TOLERANCE, LSWT_ZERO_MODE_TOLERANCE",
+  "code-space/tests/test_methods/test_lswt_run.py": "17 tests"
+ },
+ "changed": {
+  "code-space/spintoolkit/methods/ed/solver.py": "EDResult gains the common header and to_json_dict",
+  "code-space/spintoolkit/methods/lswt/__init__.py": "exports of the new entry point"
+ },
+ "tests": {
+  "result": "421 passed, 5 failed (known CommensurateStructure failures, unchanged)",
+  "regression_snapshot": "208 leaves, maximum difference 0.0",
+  "note": "run with OPENBLAS_NUM_THREADS=4 (machine under load)"
+ },
+ "regression_vs_LSWTSolver": {
+  "summary": "NBCP One-Four MSL, XXZ and SOC families, same momenta (BrillouinZone.get_full(6)) and MAGSWT",
+  "max_energy_difference": 1.3877787807814457e-17,
+  "max_band_difference": 0.0,
+  "max_boson_number_difference": 1.0658141036401503e-14
+ },
+ "zero_mode_finding": "An exact Goldstone mode at the zone centre can give min eig H(k) = +5.6e-16 by round-off; Cholesky then succeeds and returns omega ~ 4e-8 with <n> ~ 1.5e6. Without regularization, min eig H(k) <= 1e-10 max|eig H(k)| is therefore treated as a zero mode and reported (LSWTError).",
+ "convergence": [
+  {
+   "case": "square Neel, S = 1/2",
+   "meshes": [
+    {
+     "N": 8,
+     "energy": -0.6575388098051642,
+     "delta_s": 0.1646178163420206,
+     "min_magnon_energy": 0.5465231416730261,
+     "seconds": 0.044
+    },
+    {
+     "N": 16,
+     "energy": -0.6578961000283698,
+     "delta_s": 0.18055148922387249,
+     "min_magnon_energy": 0.2765676643027855,
+     "seconds": 0.041
+    },
+    {
+     "N": 32,
+     "energy": -0.6579409980124518,
+     "delta_s": 0.18856937184237543,
+     "min_magnon_energy": 0.13870078029337887,
+     "seconds": 0.06
+    },
+    {
+     "N": 64,
+     "energy": -0.6579466178391941,
+     "delta_s": 0.19258474714945728,
+     "min_magnon_energy": 0.06940262425555534,
+     "seconds": 0.146
+    },
+    {
+     "N": 128,
+     "energy": -0.6579473205559192,
+     "delta_s": 0.19459324079031445,
+     "min_magnon_energy": 0.03470784500666994,
+     "seconds": 0.585
+    }
+   ],
+   "delta_s_extrapolated_1_over_N": 0.19660173443117163
+  },
+  {
+   "case": "triangular 120, S = 1/2",
+   "meshes": [
+    {
+     "N": 8,
+     "energy": -0.5386565502680494,
+     "delta_s": 0.23208079835812034,
+     "min_magnon_energy": 0.2301105499669527,
+     "seconds": 0.036
+    },
+    {
+     "N": 16,
+     "energy": -0.5387902360706874,
+     "delta_s": 0.24669741522006264,
+     "min_magnon_energy": 0.11780134326432079,
+     "seconds": 0.047
+    },
+    {
+     "N": 32,
+     "energy": -0.5388066621157526,
+     "delta_s": 0.25400081312930817,
+     "min_magnon_energy": 0.05953047798859267,
+     "seconds": 0.078
+    },
+    {
+     "N": 64,
+     "energy": -0.5388087073371011,
+     "delta_s": 0.2576520941173963,
+     "min_magnon_energy": 0.029915115905125408,
+     "seconds": 0.26
+    },
+    {
+     "N": 128,
+     "energy": -0.5388089627436613,
+     "delta_s": 0.2594776870040077,
+     "min_magnon_energy": 0.014994050542281144,
+     "seconds": 0.628
+    }
+   ],
+   "delta_s_extrapolated_1_over_N": 0.2613032798906191
+  }
+ ],
+ "analytic_lswt": {
+  "square": {
+   "energy": -0.657947,
+   "delta_s": 0.196602
+  },
+  "triangular": {
+   "energy": -0.538809,
+   "delta_s": 0.2613032
+  },
+  "agreement": "N = 128 energies within 1e-7; 1/N-extrapolated moment reductions within 3e-7"
+ },
+ "approximate_comparison": {
+  "square_energy": {
+   "lswt": -0.6579473205559192,
+   "qmc": -0.669441857,
+   "relative_difference": 0.017170328272557996
+  },
+  "square_moment": {
+   "lswt": 0.3033982655688284,
+   "qmc": 0.307447,
+   "relative_difference": -0.013168885795508338
+  },
+  "triangular_moment": {
+   "lswt": 0.23869672010938092,
+   "dmrg": 0.205,
+   "dmrg_error": 0.015,
+   "relative_difference": 0.16437424443600457
+  }
+ },
+ "literature": {
+  "square_lswt": {
+   "energy": -0.6579,
+   "delta_s": 0.1966,
+   "source": "Manousakis, Rev. Mod. Phys. 63, 1 (1991); analytic LSWT integrals"
+  },
+  "square_qmc": {
+   "energy": -0.669441857,
+   "moment": 0.307447,
+   "source": "Sandvik, arXiv:2601.20189 (SSE QMC, extrapolated)"
+  },
+  "triangular_lswt": {
+   "energy_coefficient": 0.436824,
+   "delta_s": 0.2613032,
+   "source": "Chernyshev and Zhitomirsky, PRB 79, 144416 (2009), Eqs. (42), (18)"
+  },
+  "triangular_dmrg": {
+   "moment": 0.205,
+   "moment_error": 0.015,
+   "source": "White and Chernyshev, PRL 99, 127004 (2007), arXiv:0705.2746"
+  }
+ },
+ "nbcp": {
+  "summary": "Y (0.2 T) and V (1.4 T), XXZ, J_PD, J_Gamma = 0.01 meV: the zone-centred mesh reports the LSWT-order zero mode (accidental degeneracy) at Gamma; the default shifted 24 x 24 mesh needs no regularization.",
+  "rows": [
+   {
+    "phase": "Y",
+    "couplings": "xxz",
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig 4.84e-17). A z",
+    "energy": -0.050280139602272705,
+    "zero_point": -0.00815183110079662,
+    "moments": [
+     0.4429976115515849,
+     0.3970514843447998,
+     0.3970514843447998
+    ],
+    "min_magnon_energy": 0.004762975818797331,
+    "max_torque": 1.517450766502585e-17
+   },
+   {
+    "phase": "Y",
+    "couplings": {
+     "JPD": 0.01
+    },
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig 2.78e-17). A z",
+    "energy": -0.051031919347127155,
+    "zero_point": -0.008903610845651071,
+    "moments": [
+     0.4362666753266009,
+     0.3604257604632814,
+     0.36042576046328145
+    ],
+    "min_magnon_energy": 0.003578742718131724,
+    "max_torque": 1.517450766502585e-17
+   },
+   {
+    "phase": "Y",
+    "couplings": {
+     "JGamma": 0.01
+    },
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig 4.16e-17). A z",
+    "energy": -0.05030010235662659,
+    "zero_point": -0.008171793855150501,
+    "moments": [
+     0.4427401430539102,
+     0.39684246577072435,
+     0.3968424657707244
+    ],
+    "min_magnon_energy": 0.004374365834554313,
+    "max_torque": 1.5230180390957697e-17
+   },
+   {
+    "phase": "V",
+    "couplings": "xxz",
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig 1.64e-17). A z",
+    "energy": -0.10638764529392622,
+    "zero_point": -0.004678867612528431,
+    "moments": [
+     0.37045120839962287,
+     0.45897470928452466,
+     0.45897470928452466
+    ],
+    "min_magnon_energy": 0.005209669245165653,
+    "max_torque": 6.938893903907228e-18
+   },
+   {
+    "phase": "V",
+    "couplings": {
+     "JPD": 0.01
+    },
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig -3.4e-18). A z",
+    "energy": -0.10760065834132368,
+    "zero_point": -0.005891880659925901,
+    "moments": [
+     0.27687296405313844,
+     0.4241654555413352,
+     0.4241654555413352
+    ],
+    "min_magnon_energy": 0.002702425642451602,
+    "max_torque": 1.0417371955916405e-17
+   },
+   {
+    "phase": "V",
+    "couplings": {
+     "JGamma": 0.01
+    },
+    "zone_centred_mesh": "H(k) has a zero or negative mode at 1 of 144 momenta: k=[0.0, 0.0] (min eig -4.85e-17). A ",
+    "energy": -0.10643803627685662,
+    "zero_point": -0.00472925859545884,
+    "moments": [
+     0.3691241150438537,
+     0.45822462049961177,
+     0.45822462049961177
+    ],
+    "min_magnon_energy": 0.005118712005291267,
+    "max_torque": 6.992893892674703e-18
+   }
+  ]
+ },
+ "decisions": "D24 (2026-09-30): default regularization 'none' with zero modes reported, MAGSWT and k-dependent only on request and always recorded; diagonalization data kept in the result for reuse within a calculation, JSON holds the header and summary (arrays on request); solve_lswt function entry point next to the existing LSWTSolver; dimensionless inputs and outputs; stage 4 split into 4a, 4b, 4c."
+}
