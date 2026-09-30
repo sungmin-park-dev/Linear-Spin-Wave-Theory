@@ -4,7 +4,8 @@
 2. Neel transverse weights against the analytic formula.
 3. Sum rules on the extended mesh (square Neel, triangular 120).
 4. Bond correlations: energy against E_GS (square, triangular, NBCP Y with J_PD).
-5. Comparison with the existing observables.correlations.Correlations.
+5. (The comparison with the removed observables/correlations.py is kept in the
+   stage-4c record.)
 6. NBCP Y and V: structure factor along a path through the zone centre.
 
 Usage
@@ -22,13 +23,11 @@ sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import numpy as np
 
-from spintoolkit.methods.lswt import LSWTSettings, LSWTSolver, solve_lswt
+from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
 from spintoolkit.models import neel_state, square_heisenberg, state_120, triangular_heisenberg
-from spintoolkit.observables.correlations import Correlations
-from spintoolkit.observables.structure_factor import _deviation_vectors, bond_correlations, structure_factor
+from spintoolkit.observables.structure_factor import bond_correlations, structure_factor
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.conversion import to_spin_system
 from spintoolkit.system.geometry import CalculationGeometry
 from tests.test_methods.test_ed import CASES
 from tests.test_methods.test_structure_factor import ed_weights, extended_momenta
@@ -107,39 +106,6 @@ def bond_energy():
     return rows
 
 
-def legacy_comparison():
-    rows = []
-    for label, model, state, bz in [('square Neel', square_heisenberg(J=1.0), neel_state, 'Tetra'),
-                                    ('triangular 120', triangular_heisenberg(J=1.0), state_120, 'Hex_60')]:
-        s = state(model)
-        solver = LSWTSolver(to_spin_system(model, s), bz_type=bz)
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            k_data, _, _ = solver.diagnosing_lswt(bz_type=bz, N=6, regularization='MAGSWT')
-            corr = Correlations(solver)
-            TNT = corr.compute_TNT_for_structure(k_data, Temperature=0)
-            keys = np.array(list(TNT.keys()))
-            _, total, _ = corr.calculate_spin_corr_mat(TNT, k_points=keys, classical_contribution=False)
-        result = solve_lswt(model, s, settings=LSWTSettings(k_points=keys, regularization='MAGSWT'))
-        new = structure_factor(result, keys).trace().sum(axis=1)
-        ns = result.num_sites
-        A = _deviation_vectors(result) * np.sqrt(ns)
-        double_phase = []
-        for q, T in zip(keys, result.eigenvectors):
-            phase = np.exp(-1j * result.positions @ q)
-            Aq = np.concatenate([A[:, :ns] * phase, A[:, ns:] * phase], axis=1)
-            double_phase.append(float(np.sum(np.abs(Aq @ T[:, :ns]) ** 2)))
-        ratio = np.real(total) / new
-        rows.append({'case': label, 'legacy_over_new_min': float(ratio.min()),
-                     'legacy_over_new_max': float(ratio.max()),
-                     'legacy_over_Ns_times_double_phase_max_deviation':
-                         float(np.max(np.abs(np.real(total) / np.array(double_phase) - 1)))})
-    return {'rows': rows, 'diagnosis': 'legacy static S(q) = N_s x (per-site S(q) computed with an extra '
-            'exp(-i q.tau_i) on top of the full-position-gauge H(k)): per-cell normalization and a doubled '
-            'sublattice phase; get_quantum_spin_corr_mat also repeats the [mu+Ns, nu] element instead of '
-            '[mu+Ns, nu+Ns] for sublattice-resolved output'}
-
-
 def nbcp_paths():
     rows = []
     for phase, extra in [('Y', {'JPD': 0.01}), ('Y', {'JGamma': 0.01})]:
@@ -159,7 +125,7 @@ def nbcp_paths():
 
 def main():
     report = {'ed': ed_comparison(), 'neel_analytic': neel_analytic(), 'sum_rules': sum_rules(),
-              'bond_energy': bond_energy(), 'legacy_correlations': legacy_comparison(),
+              'bond_energy': bond_energy(),
               'nbcp_paths': nbcp_paths()}
     print(json.dumps(report, indent=2, default=float))
 

@@ -204,6 +204,13 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 남겨 두었으며 유지·삭제는 따로 정한다. 테스트는 452 통과 / 같은 5 실패, 208개 스냅샷 차이 0이다. 기록은
 `docs/development/verification/stage4c-structure-factor-2026-09-30.json`.
 
+4단계 뒤 기존 코드를 정리했다(D27). 검증되지 않은 `observables/correlations.py`를 삭제하고 동시간 실공간
+상관(`spin_correlation`, 구조인자와 Fourier 쌍으로 1e-13 일치)과 사다리 성분을 새 모듈로 옮겼다. MAGSWT
+격자 탐색을 삭제하고, 그 목적이던 NBCP 고전 궤도 위 에너지 지형은 `orbit_energy_landscape`로 그린다. NBCP
+예제는 고전 탐색 뒤 `select_on_manifold`를 쓴다. 테스트는 457 통과 / 같은 5 실패, 회귀 스냅샷은 남은 144개
+값의 차이 0(삭제한 MAGSWT 탐색 항목 64개 제외)이다. 기록은
+`docs/development/verification/legacy-cleanup-2026-09-30.json`.
+
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
 
@@ -240,6 +247,7 @@ ED/TN 실행 가능성은 별도 검증이다.
 - 2026-09-30 (claude): 4단계의 분할(D24)과 4a 구현·검증 결과를 기록했다.
 - 2026-09-30 (claude): 4b 구현·검증 결과(D25)를 기록했다.
 - 2026-09-30 (claude): 4c 구현·검증 결과(D26)를 기록했다.
+- 2026-09-30 (claude): 기존 코드 정리(D27)를 기록했다.
 
 ## 관련 기록
 

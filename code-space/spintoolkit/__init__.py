@@ -13,7 +13,7 @@ states : Classical magnetic structures
 methods : Shared solver interface, optimization, and calculation methods
     (``methods.lswt`` for linear spin-wave theory)
 definitions : Physical constants, numerical defaults, and spin basis
-observables : Thermodynamics, topology (Berry/Chern), correlations
+observables : thermodynamics, zero modes, structure factor and correlations, topology (Berry/Chern)
 visualization : Band structure, Berry curvature, spin configuration plots
 
 Model definitions: ``SpinModel`` is the common Hamiltonian definition shared by

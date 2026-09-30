@@ -1,8 +1,10 @@
 """NBCP ground state optimization example.
 
-Finds the classical + MAGSWT ground state among four candidate
-magnetic unit cells (One/Two/Three/Four MSL) for a triangular lattice
-antiferromagnet with bond-angle dependent exchange interactions.
+Finds the classical ground state among four candidate magnetic unit cells
+(One/Two/Three/Four MSL) for a triangular lattice antiferromagnet with
+bond-angle dependent exchange interactions, then selects among degenerate
+classical states by the zero-point energy on the classical manifold
+(select_on_manifold, D17). The former MAGSWT grid search was removed (D27).
 
 Parameters match legacy/scripts/modified_do_it.py for benchmarking.
 """
@@ -55,7 +57,7 @@ PHASES = {
 }
 
 
-def find_ground_state(config, opt_method="MAGSWT", N=20,
+def find_ground_state(config, opt_method="classical", N=20,
                       angles_setting=None, verbose=True):
     """Search all 4 MSL phases for the ground state.
 
@@ -64,7 +66,7 @@ def find_ground_state(config, opt_method="MAGSWT", N=20,
     config : dict
         NBCP configuration dictionary.
     opt_method : str
-        "classical" or "MAGSWT".
+        "classical" (the only search; zero-point selection: select_zero_point).
     N : int
         BZ mesh density.
     angles_setting : dict or None
@@ -178,6 +180,29 @@ def find_ground_state(config, opt_method="MAGSWT", N=20,
     return opt_result, cls_result, all_results
 
 
+CELL_KEYS = {"One MSL": "one_msl", "Two MSL": "two_msl",
+             "Three MSL": "three_msl", "Four MSL": "four_msl"}
+
+
+def select_zero_point(config, classical_result, N=20):
+    """Zero-point selection on the classical manifold of the classical ground state.
+
+    Converts the legacy angles to the common model (Zeeman energy h as the
+    field with g = I) and runs :func:`select_on_manifold` with the LSWT
+    zero-point energy on the same Brillouin-zone type.
+    """
+    from model import nbcp
+    from spintoolkit.methods.state_selection import lswt_zero_point_energy, select_on_manifold
+    from spintoolkit.system.conditions import ExternalConditions
+
+    parameters = {k: v for k, v in config.items() if k != "h"}
+    model = nbcp.build_model(parameters)
+    state = nbcp.candidate_state(model, CELL_KEYS[classical_result["phase_name"]],
+                                 classical_result["angles"])
+    return select_on_manifold(model, state, ExternalConditions(field=config["h"]),
+                              lswt_zero_point_energy(classical_result["bz_type"], N))
+
+
 # ======================================================================
 # Main
 # ======================================================================
@@ -195,11 +220,15 @@ if __name__ == "__main__":
 
     opt_result, cls_result, all_results = find_ground_state(
         NBCP_CONFIG,
-        opt_method="MAGSWT",
+        opt_method="classical",
         N=20,
         angles_setting=angles_setting,
         verbose=True,
     )
+
+    selection = select_zero_point(NBCP_CONFIG, cls_result, N=20)
+    print(f"Zero-point selection on the classical manifold: {selection.verdict}")
+    print(f"  {selection.message}")
 
     # Plot classical ground state spin configuration
     cls_system = cls_result["system"]

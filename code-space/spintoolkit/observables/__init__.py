@@ -1,1 +1,1 @@
-"""Observable modules: thermodynamics, topology, and correlations."""
+"""Observable modules: thermodynamics, zero modes, structure factor and correlations, topology."""

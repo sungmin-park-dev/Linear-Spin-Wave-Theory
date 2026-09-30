@@ -12,7 +12,8 @@
    polarized state (20 h).
 3. Benchmarks: triangular Heisenberg 120-degree state at zero field and the
    polarized square Heisenberg state above saturation.
-4. The existing MAGSWT grid search (z axis, k pi/6) against the orbit search.
+4. Energy landscape along the orbit (orbit_energy_landscape). The comparison with
+   the removed MAGSWT grid search is kept in the stage-2b record.
 
 Usage
 -----
@@ -34,7 +35,6 @@ from model import nbcp
 from spintoolkit.definitions.constants import MU_B_MEV_PER_T
 from spintoolkit.methods import state_selection as sel
 from spintoolkit.methods.lswt.energy import EnergyFunction
-from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.models import polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
@@ -212,29 +212,27 @@ def benchmark_cases():
     return rows
 
 
-def magswt_cases():
+def landscape_cases():
+    """Energies along the orbit (replaces the removed MAGSWT grid search, D27)."""
     scan = json.loads(SCAN.read_text())
     rows = []
+    phis = np.linspace(0, 2 * np.pi, 72, endpoint=False)
     for phase, field_T in PHASES.items():
         theta = np.array(scan['states'][phase]['theta'])
         for coupling, extra in COUPLINGS.items():
             model = nbcp.build_model({'Jxy': J, 'Jz': JZ, **extra})
             conditions = ExternalConditions(field=[0, 0, zeeman(field_T)])
-            for phi0 in (0.0, PHI0):
-                state = nbcp.candidate_state(model, 'three_msl',
-                                             np.column_stack([theta, np.full(3, phi0)]).ravel())
-                result = sel.select_on_manifold(model, state, conditions,
-                                                sel.lswt_zero_point_energy('Hex_30', 6))
-                orbit = result.diagnostics['E_cl_selected'] + result.diagnostics['E_qm_selected']
-                system = to_spin_system(model, state, conditions)
-                energy = EnergyFunction(system.to_legacy_dict('Hex_30'), N=6)
-                angles = system.get_angles_flat()
-                grid = SpinOptimizer.magswt_for_nbcp(
-                    energy, angles, energy.classical_energy_density_func(angles))
-                rows.append({'phase': phase, 'coupling': coupling, 'start_azimuth': phi0,
-                             'N': 6, 'orbit_E_total': orbit, 'magswt_E_total': float(grid['energy']),
-                             'magswt_minus_orbit': float(grid['energy'] - orbit),
-                             'magswt_method': grid['method']})
+            state = nbcp.candidate_state(model, 'three_msl',
+                                         np.column_stack([theta, np.full(3, PHI0)]).ravel())
+            landscape = sel.orbit_energy_landscape(model, state, conditions,
+                                                   sel.lswt_zero_point_energy('Hex_30', 6), phis=phis)
+            selected = sel.select_on_manifold(model, state, conditions,
+                                              sel.lswt_zero_point_energy('Hex_30', 6))
+            rows.append({'phase': phase, 'coupling': coupling, 'num_phi': len(phis),
+                         'E_cl_span': landscape.diagnostics['E_cl_span'],
+                         'E_qm_span': float(np.ptp(landscape.quantum)),
+                         'sampled_min_minus_selected': float(landscape.quantum.min()
+                                                             - selected.diagnostics['E_qm_selected'])})
     return rows
 
 
@@ -242,7 +240,7 @@ def main():
     report = {'J_meV': J, 'Jz_meV': JZ, 'g_z': G_Z, 'phi0': PHI0, 'reference': str(SCAN.relative_to(ROOT)),
               'criteria_defaults': {k: v for k, v in vars(sel.SelectionCriteria()).items()},
               'nbcp': nbcp_cases(), 'criteria': criteria_cases(),
-              'benchmarks': benchmark_cases(), 'magswt': magswt_cases()}
+              'benchmarks': benchmark_cases(), 'landscape': landscape_cases()}
     print(json.dumps(report, indent=2, default=float))
 
 

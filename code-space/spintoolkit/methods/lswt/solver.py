@@ -20,7 +20,6 @@ from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 # TODO: Uncomment once observables modules are connected
 # from spintoolkit.observables.thermodynamics import Thermodynamics
 # from spintoolkit.observables.topology import Topology
-# from spintoolkit.observables.correlations import Correlations
 
 
 class LSWTSolver(AbstractSolver):
@@ -195,7 +194,6 @@ class LSWTSolver(AbstractSolver):
 
         # TODO: Initialize physics modules once connected
         # self.ther = Thermodynamics(self)
-        # self.corr = Correlations(self)
         # self.topo = Topology(self)
 
         return k_data, bz_data, full_k_points

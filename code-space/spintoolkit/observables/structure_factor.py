@@ -1,4 +1,4 @@
-"""Spin structure factor and bond correlations from LSWT (stage 4c, D26).
+"""Spin structure factor and real-space correlations from LSWT (stage 4c, D26, D27).
 
 Conventions
 -----------
@@ -25,6 +25,13 @@ included. Temperatures are ``t = k_B T / E0``; energies are in E0.
 
 The stored diagonalization of the LSWT result is reused for momenta on its
 mesh; other momenta are diagonalized with the same regularization policy.
+
+Equal-time real-space correlations (:func:`spin_correlation`,
+:func:`bond_correlations`) and the ladder basis (:func:`to_ladder`) replace the
+former ``observables/correlations.py`` (D27), which used a per-cell
+normalization and applied the sublattice phase twice. Real-time correlations
+and the retarded spectral function wait for the review of the response
+conventions in the LSWT theory notes.
 """
 
 from __future__ import annotations
@@ -243,14 +250,82 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report)
 
 
+#: Ladder basis (S^+, S^-, S^z) from Cartesian components: S^mu = sum_a LADDER[mu, a] S^a.
+LADDER = np.array([[1.0, 1j, 0.0], [1.0, -1j, 0.0], [0.0, 0.0, 1.0]])
+
+
+def to_ladder(tensor: np.ndarray) -> np.ndarray:
+    """Cartesian ``T^{ab} = <S^a ... (S^b)^dagger>`` in the ladder basis ``(+, -, z)``.
+
+    ``T^{mu nu} = sum_ab L[mu, a] T^{ab} L[nu, b]^*`` for the last two axes, so
+    ``T^{++}`` pairs ``S^+`` with ``(S^+)^dagger = S^-``.
+    """
+    return np.einsum("ma,...ab,nb->...mn", LADDER, np.asarray(tensor), LADDER.conj())
+
+
+def _correlator_setup(result):
+    ns = result.num_sites
+    kernel = np.concatenate([np.ones(ns), np.zeros(ns)])
+    G = np.einsum("kmn,n,kln->kml", result.eigenvectors, kernel, result.eigenvectors.conj())
+    A = _deviation_vectors(result) * np.sqrt(ns)                # per-site operators
+    supercell = np.rint(np.asarray(result.magnetic_lattice)
+                        @ np.linalg.inv(result.lattice)).astype(int)
+    index = {key: i for i, key in enumerate(result.site_keys)}
+    return G, A, supercell, index
+
+
+def _fluctuation(result, G, A, i, j, r_i, r_j) -> np.ndarray:
+    """``<delta S_i^a delta S_j^b>`` at zero temperature on the stored mesh."""
+    ns = result.num_sites
+    phases = np.exp(1j * result.k_points @ (np.asarray(r_i) - np.asarray(r_j)))
+    Gij = np.einsum("k,kmn->mn", result.weights * phases, G)
+    Ai = np.zeros((3, 2 * ns), dtype=complex)
+    Aj = np.zeros((3, 2 * ns), dtype=complex)
+    Ai[:, [i, ns + i]] = A[:, [i, ns + i]]
+    Aj[:, [j, ns + j]] = A[:, [j, ns + j]]
+    return Ai @ Gij @ Aj.conj().T
+
+
+def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
+    """Equal-time ``<S_i^a S_j^b>`` between any two sites at zero temperature.
+
+    Parameters
+    ----------
+    result : LSWTResult
+    model : SpinModel
+    first, second : (site_id, cell)
+        Model site and primitive cell (any integers; reduced to the magnetic cell).
+
+    Returns
+    -------
+    dict
+        ``ordered`` ``m_i m_j^T``, ``fluctuation`` ``<delta S_i delta S_j>`` and
+        ``total`` (their sum), each (3, 3). The fluctuation part is quadratic in
+        the bosons (the order of LSWT); the mesh of ``result`` sets the
+        resolution at large distances. For the same site the fluctuation part
+        is the harmonic ``<delta S_i^a delta S_i^b>``, not the exact
+        ``S(S+1)`` identity.
+    """
+    from spintoolkit.states.spin_state import reduce_cell
+
+    G, A, supercell, index = _correlator_setup(result)
+    (a, ca), (b, cb) = first, second
+    i = index[(a, reduce_cell(ca, supercell))]
+    j = index[(b, reduce_cell(cb, supercell))]
+    r_i, r_j = model.cartesian_position(a, ca), model.cartesian_position(b, cb)
+    fluctuation = _fluctuation(result, G, A, i, j, r_i, r_j)
+    m = (result.spins - result.boson_numbers)[:, None] * result.directions
+    ordered = np.outer(m[i], m[j])
+    return {"ordered": ordered, "fluctuation": fluctuation, "total": ordered + fluctuation}
+
+
 def bond_correlations(result, model) -> Dict[str, Any]:
     """Equal-time correlations on every bilinear bond and the energy they imply.
 
-    ``<S_i^a S_j^b> = m_i^a m_j^b + <delta S_i^a delta S_j^b>`` with the
-    fluctuation part from the stored mesh (zero temperature). The energy is
-    evaluated to the order of LSWT: the product of ordered moments is
-    linearized in the boson numbers, so the result equals
-    ``result.ground_state_energy`` on the same mesh.
+    ``<S_i^a S_j^b> = m_i^a m_j^b + <delta S_i^a delta S_j^b>`` (see
+    :func:`spin_correlation`). The energy is evaluated to the order of LSWT:
+    the product of ordered moments is linearized in the boson numbers, so the
+    result equals ``result.ground_state_energy`` on the same mesh.
 
     Returns
     -------
@@ -262,11 +337,7 @@ def bond_correlations(result, model) -> Dict[str, Any]:
     from spintoolkit.states.spin_state import reduce_cell
 
     ns = result.num_sites
-    index = {key: i for i, key in enumerate(result.site_keys)}
-    supercell = np.rint(np.asarray(result.magnetic_lattice) @ np.linalg.inv(result.lattice)).astype(int)
-    kernel = np.concatenate([np.ones(ns), np.zeros(ns)])
-    G = np.einsum("kmn,n,kln->kml", result.eigenvectors, kernel, result.eigenvectors.conj())
-    A = _deviation_vectors(result) * np.sqrt(ns)               # per-site operator
+    G, A, supercell, index = _correlator_setup(result)
     spins, n_bos = result.spins, result.boson_numbers
     bonds, energy = [], 0.0
     for term in model.terms_of_kind(BILINEAR):
@@ -277,15 +348,8 @@ def bond_correlations(result, model) -> Dict[str, Any]:
             cj = (cell[0] + n2[0], cell[1] + n2[1])
             i = index[(a, reduce_cell(ci, supercell))]
             j = index[(b, reduce_cell(cj, supercell))]
-            r_i = np.asarray(model.cartesian_position(a, ci))
-            r_j = np.asarray(model.cartesian_position(b, cj))
-            phases = np.exp(1j * result.k_points @ (r_i - r_j))
-            Gij = np.einsum("k,kmn->mn", result.weights * phases, G)
-            Ai = np.zeros((3, 2 * ns), dtype=complex)
-            Aj = np.zeros((3, 2 * ns), dtype=complex)
-            Ai[:, [i, ns + i]] = A[:, [i, ns + i]]
-            Aj[:, [j, ns + j]] = A[:, [j, ns + j]]
-            fluctuation = np.real(Ai @ Gij @ Aj.conj().T)
+            fluctuation = np.real(_fluctuation(result, G, A, i, j, model.cartesian_position(a, ci),
+                                               model.cartesian_position(b, cj)))
             n_i, n_j = result.directions[i], result.directions[j]
             ordered = np.outer((spins[i] - n_bos[i]) * n_i, (spins[j] - n_bos[j]) * n_j)
             linear = (spins[i] * spins[j] - spins[i] * n_bos[j] - spins[j] * n_bos[i]) \

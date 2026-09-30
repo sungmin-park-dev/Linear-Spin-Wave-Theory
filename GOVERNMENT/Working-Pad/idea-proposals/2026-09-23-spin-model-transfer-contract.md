@@ -47,7 +47,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 공통 결과 머리부·JSON(D14, D24; 4a) | `methods/result.py`의 `ResultHeader`, `save_json`, `load_json` |
 | §5 LSWT 결과 본문, 새 모델의 LSWT 진입점(D21, D24; 4a) | `methods/lswt/run.py`의 `solve_lswt`, `LSWTSettings`, `LSWTResult` |
 | 영모드 탐색, 무차원 유한 온도 물리량(D25; 4b) | `observables/zero_modes.py`의 `scan_zero_modes`, `observables/thermal.py`의 `thermal_quantities` |
-| 구조인자·결합 상관(D26; 4c) | `observables/structure_factor.py`의 `structure_factor`, `bond_correlations` |
+| 구조인자·결합 상관(D26; 4c), 임의 사이트 동시간 상관·사다리 성분(D27) | `observables/structure_factor.py`의 `structure_factor`, `bond_correlations`, `spin_correlation`, `to_ladder` |
+| 고전 궤도 위 에너지 지형(D27) | `methods/state_selection.py`의 `orbit_energy_landscape` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
@@ -96,6 +97,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D24 | 4단계: `solve_lswt(model, state, conditions, geometry, settings)` 함수를 새 진입점으로 두고 기존 `LSWTSolver`는 유지; 입출력은 무차원; 정규화 기본값은 없음이며 영모드·음의 모드는 오류로 보고(MAGSWT·k-dependent는 명시적 선택, 항상 기록); 대각화 정보(`H(k)`, Colpa 고유값, paraunitary 고유벡터)는 결과에 보관해 같은 계산의 물리량이 재사용하고 JSON에는 머리부와 요약(배열은 요청 시); 4a·4b·4c로 나눠 검증 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D25 | 4b: 영모드는 `H(k)`의 최소 고윳값 비 `lambda_min / scale`로 세 구간(수치적 영 <= 1e-12, 후보 <= 1e-6, 갭)으로 판정; 후보가 있으면 유한 온도 물리량은 사용자가 `gapless`를 정할 때까지 멈춤; gapless이면 T > 0의 보손 수·모멘트·자화는 NaN, F·U·S·C는 계산; 탐색점은 자기·원시 격자의 고대칭점과 격자 최소점, 연속 최소화와 선 검사, k = 0의 기원(Goldstone·우연·미상) 표시; 온도는 무차원 `t = k_B T / E0`이고 켈빈 도우미는 두지 않음 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D26 | 4c: 구조인자는 한 마그논 가로 성분과 정확한 탄성 Bragg까지(2-마그논 세로 연속체는 후속); 모드별 무게 `W_n^{ab}(q)`를 주 출력으로 하고 넓힌 스펙트럼은 보조; 전체 위치 게이지·사이트당 정규화; 새로 구현하고 기존 `observables/correlations.py`는 비교 대상으로만(유지·삭제는 별도 결정); 결합별 상관과 그 에너지 교차 확인 포함, 일반 실공간 상관은 후속; 영모드인 q는 비탄성 무게 NaN과 표시 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
+| D27 | 기존 코드 정리: 검증되지 않은 `observables/correlations.py`를 삭제하고 동시간 실공간 상관(`spin_correlation`)과 사다리 성분(`to_ladder`)을 새 모듈로 옮김(실시간 상관·스펙트럼 함수는 이론 문서의 응답 규약 검토 뒤); MAGSWT 격자 탐색(`opt_method='MAGSWT'`)을 삭제하고 그 목적인 고전 궤도 위 에너지 지형은 `orbit_energy_landscape`로 제공; MAGSWT 정규화(D24)는 유지 | 사용자 결정 2026-09-30 | §1, §6 |
 
 ## Proposal
 
@@ -139,9 +141,9 @@ LSWT에서 자기 브릴루앙 영역의 `N1 x N2` k점 격자는 `N1 x N2`개�
 LSWT의 국소 회전축은 각 방법의 변환 단계에서 정하며 모델의 사이트 식별자를
 덮어쓰지 않는다. LSWT 기준 상태의 정상성과 안정성은 §4의 기준 상태 진단에서 다룬다.
 
-**상태 선택의 되먹임.** `methods/optimization.py`는 고전 에너지만 쓰는 최적화 외에
-고전 에너지와 영점 에너지를 함께 쓰는 `MAGSWT` 경로를 제공한다(`quantum`은 2b에서 삭제,
-D18). 고전 manifold 위의 선택은 `methods/state_selection.py`가 맡는다(D17, D22). 고전
+**상태 선택의 되먹임.** `methods/optimization.py`는 고전 에너지만 쓰는 최적화를 제공한다
+(`quantum`은 2b에서, MAGSWT 격자 탐색은 D27에서 삭제). 궤도 위 에너지 지형은
+`orbit_energy_landscape`로 그린다. 고전 manifold 위의 선택은 `methods/state_selection.py`가 맡는다(D17, D22). 고전
 축퇴를 영점 에너지로 가르는 경우 흐름은 "고전 최적화 → LSWT"의 한 방향이 아니다.
 결과에는 상태 선택에 사용한 에너지를 기록한다. ED·TN은 고전 기준 상태를 필수로
 요구하지 않는다.
@@ -153,7 +155,7 @@ D18). 고전 manifold 위의 선택은 `methods/state_selection.py`가 맡는다
 | 경로 | DE 이후 단계 | 한계 |
 |---|---|---|
 | `classical` | DE 각도에서 E_qm만 계산 | 고전 축퇴를 가르지 않음 |
-| `MAGSWT` | 모든 azimuth에 `k pi/6`(`k = 1..6`)을 더한 점들에서 E_cl + E_qm 비교 | z축 회전만 가정; `tl_angle`의 theta 성분은 회전이 아님; 격자 간격이 분해능 |
+| `MAGSWT`(D27에서 삭제) | 모든 azimuth에 `k pi/6`(`k = 1..6`)을 더한 점들에서 E_cl + E_qm 비교 | z축 회전만 가정; `tl_angle`의 theta 성분은 회전이 아님; 격자 간격이 분해능 |
 | `quantum`(2b에서 삭제) | DE 각도에서 L-BFGS-B로 모든 자유 각도의 E_cl + E_qm 최소화, 교란 재시작 2회 | manifold 제약 없음; 교란이 전역 `np.random` 사용 |
 
 **영점 에너지 상태 선택(D17).** 영점 에너지는 고전 바닥상태 manifold 위에서만
@@ -290,7 +292,7 @@ NBCP 확인(Y 0.2 T, V 1.4 T, J_PD 또는 J_Gamma = 0.010 meV, 기준 상태에�
   "상태가 회전에 불변"인 `no_selection`이다.
 - MAGSWT 재현(D18): 출발 azimuth가 `k pi/6` 격자 위(0)이면 네 경우 모두 같은 총에너지
   (차이 4.7e-16 이하)다. 격자 밖(0.3 rad)이면 궤도 탐색이 1.3e-12(Y, J_Gamma)–8.1e-6 meV
-  (V, J_PD) 낮다. MAGSWT의 유지 여부는 사용자 결정 대기다.
+  (V, J_PD) 낮다. 이 결과로 MAGSWT 격자 탐색은 삭제했다(D27).
 
 ```mermaid
 flowchart TD
@@ -583,7 +585,7 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 | `system/lattice/base.py` | basis position을 분율 좌표로 설명함 | 현재 NBCP Cartesian 위치와의 변환을 명시 |
 | `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
 | `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
-| `methods/optimization.py` | classical, `MAGSWT` 최적화 경로 제공. `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`과 전용 BFGS 함수는 2b에서 삭제(D18, D22), 알 수 없는 이름은 `ValueError` | 상태 선택에 사용한 에너지를 결과에 기록; MAGSWT 처리는 재현 확인(2b) 뒤 사용자 결정 |
+| `methods/optimization.py` | classical 최적화 경로 제공; MAGSWT 격자 탐색은 D27에서 삭제. `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`과 전용 BFGS 함수는 2b에서 삭제(D18, D22), 알 수 없는 이름은 `ValueError` | 상태 선택에 사용한 에너지를 결과에 기록; MAGSWT 처리는 재현 확인(2b) 뒤 사용자 결정 |
 | `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | `model/nbcp/model.py`가 모델(`build_model`)과 상태(`candidate_state`)를 분리해 제공; 기존 함수는 유지 |
 
 **NBCP 결합 변위의 해석(D13).** `SpinSystem.Coupling` 설명은 displacement를
@@ -640,8 +642,6 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
 - D19 물리 근거 모드의 계수(2b 구현값, §1 D17 구현 표)와, 장을 기울인 대조군처럼 고전 고정과
   영점 선택이 비슷한 경우를 `competition`으로 보고할지의 검토.
-- MAGSWT 격자 탐색의 처리: 2b에서 궤도 탐색이 격자 위의 결과를 재현하고 격자 밖에서는 더 낮은
-  에너지를 찾음을 확인했다. 유지·삭제를 정한다(D18).
 - D17 확장: 사이트별 회전축(숨은 U(1))과 여러 차원의 영공간. 삼각격자의 0 < h < h_sat 선택을
   벤치마크로 쓰기 전에 필요하다(D18).
 
@@ -682,6 +682,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
   추가하고 구현 상태 표를 갱신했다.
 - 2026-09-30 (claude): 4c 구현을 반영했다. D26(구조인자 범위·출력·기존 상관 코드의 위치)을 추가하고
   구현 상태 표를 갱신했다.
+- 2026-09-30 (claude): 기존 코드 정리(D27)를 반영했다. MAGSWT 격자 탐색과 `correlations.py` 삭제,
+  대체 기능, §1 표·§6·Open Questions를 갱신했다.
 
 ## 관련 기록
 

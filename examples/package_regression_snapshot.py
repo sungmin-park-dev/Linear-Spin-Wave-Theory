@@ -40,8 +40,9 @@ FAMILIES = {
     "dm": {"Dx": 0.002, "Dy": -0.001, "Dz": 0.003},
     "zero_exchange": {"Jxy": 0.0, "Jz": 0.0},
 }
-SEARCHES = [("xxz", "classical"), ("xxz", "MAGSWT"),
-            ("nn_soc", "classical"), ("nn_soc", "MAGSWT")]
+SEARCHES = [("xxz", "classical"), ("nn_soc", "classical")]
+# Leaves of methods removed on purpose; a baseline may still contain them.
+REMOVED_LEAVES = {"/MAGSWT/": "MAGSWT grid search removed (D27)"}
 
 
 def load_package():
@@ -110,11 +111,17 @@ def snapshot(path):
 
 def compare(path_a, path_b):
     a, b = np.load(path_a), np.load(path_b)
-    if sorted(a.files) != sorted(b.files):
-        missing = sorted(set(a.files) ^ set(b.files))
+    removed = sorted(k for k in set(a.files) - set(b.files)
+                     if any(pattern in k for pattern in REMOVED_LEAVES))
+    if sorted(set(a.files) - set(removed)) != sorted(b.files):
+        missing = sorted((set(a.files) - set(removed)) ^ set(b.files))
         raise SystemExit(f"Leaf sets differ: {missing}")
+    for pattern, reason in REMOVED_LEAVES.items():
+        count = sum(pattern in k for k in removed)
+        if count:
+            print(f"{count} baseline leaves not compared: {reason}")
     worst = 0.0
-    for key in a.files:
+    for key in b.files:
         if a[key].shape != b[key].shape:
             raise SystemExit(f"Shape differs: {key}")
         if a[key].dtype.kind in "US":
@@ -127,7 +134,7 @@ def compare(path_a, path_b):
             if not same_nan:
                 raise SystemExit(f"NaN pattern differs: {key}")
             worst = max(worst, float(0.0 if np.isnan(diff) else diff))
-    print(f"{len(a.files)} leaves compared; maximum difference {worst}")
+    print(f"{len(b.files)} leaves compared; maximum difference {worst}")
     return worst
 
 

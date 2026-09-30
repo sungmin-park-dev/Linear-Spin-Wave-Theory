@@ -519,6 +519,82 @@ def select_on_manifold(model: SpinModel, state: SpinState,
                   selected=selected, axis_=axis, phi=phi_qm, candidates=candidates)
 
 
+@dataclass(frozen=True)
+class OrbitLandscape:
+    """Energies along the orbit ``R_n(phi)`` of a classical state.
+
+    Attributes
+    ----------
+    axis : (3,) array
+    phi : (m,) array
+        Rotation angles from ``state``.
+    classical : (m,) array
+        ``E_cl(phi)`` per site.
+    quantum : (m,) array or None
+        ``E_qm(phi)`` per site when a provider was given.
+    state : SpinState
+        The (refined) reference state at ``phi = 0``.
+    diagnostics : dict
+        Axis determination (flat Hessian direction, ``C_cl``, exact symmetry)
+        and the provider description.
+    """
+
+    axis: np.ndarray
+    phi: np.ndarray
+    classical: np.ndarray
+    quantum: Optional[np.ndarray]
+    state: SpinState
+    diagnostics: Dict[str, Any]
+
+
+def _no_quantum_energy(model, state, conditions) -> float:
+    return 0.0
+
+
+def orbit_energy_landscape(model: SpinModel, state: SpinState,
+                           conditions: Optional[ExternalConditions] = None,
+                           quantum_energy: Optional[QuantumEnergy] = None, axis=None,
+                           phis=None, criteria: SelectionCriteria = SelectionCriteria()
+                           ) -> OrbitLandscape:
+    """E_cl and E_qm along the classical orbit ``R_n(phi)`` on any angle grid.
+
+    The axis is found as in :func:`select_on_manifold` (classical Hessian and
+    global rotation generators, after refinement) unless given. This replaces
+    the former MAGSWT grid search (D27): the orbit, not a fixed z rotation, is
+    sampled, and the classical energy shows whether the orbit is flat.
+
+    Parameters
+    ----------
+    model, state, conditions
+    quantum_energy : callable, optional
+        As in :func:`select_on_manifold`; omitted, only E_cl is evaluated.
+    axis : array_like, optional
+    phis : array_like, optional
+        Angles (default: 360 points in ``[0, 2 pi)``).
+    criteria : SelectionCriteria
+        Used for refinement and the axis determination.
+    """
+    conditions = conditions or ExternalConditions()
+    phis = (np.linspace(0.0, 2 * np.pi, 360, endpoint=False) if phis is None
+            else np.asarray(phis, dtype=float).ravel())
+    probe = select_on_manifold(model, state, conditions, _no_quantum_energy, axis=axis,
+                               criteria=criteria)
+    if probe.axis is None:
+        raise ValueError(f"no orbit axis: {probe.message}")
+    base = probe.state
+    diagnostics = {key: probe.diagnostics.get(key) for key in
+                   ("C_cl", "hessian_flat_along_orbit", "exact_symmetry", "flat_rotation_count",
+                    "generator_rank", "max_torque", "refinement")}
+    orbit = [rotate_state(base, probe.axis, p) for p in phis]
+    classical = np.array([classical_energy(model, x, conditions) for x in orbit])
+    quantum = None
+    if quantum_energy is not None:
+        quantum = np.array([quantum_energy(model, x, conditions) for x in orbit])
+        diagnostics["quantum_energy_provider"] = _describe(quantum_energy)
+    diagnostics["E_cl_span"] = float(np.ptp(classical))
+    return OrbitLandscape(probe.axis, phis, classical, quantum, base, diagnostics)
+
+
 # ---------------------------------------------------------------------------
 # Zero-point energy provider
 # ---------------------------------------------------------------------------

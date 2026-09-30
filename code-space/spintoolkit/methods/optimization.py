@@ -1,15 +1,19 @@
 """Spin system optimizer for finding ground state spin configurations.
 
-This module provides optimization routines for finding the minimum energy
-spin configuration using differential evolution (DE), including support for
-MAGSWT (modified spin wave theory) optimization.
+This module provides the classical optimization routine for finding the
+minimum energy spin configuration using differential evolution (DE); the
+zero-point energy is evaluated at the classical optimum.
 
 Zero-point selection among degenerate classical states is done on the
 classical manifold by :func:`spintoolkit.methods.state_selection.select_on_manifold`
 (D17). The former ``quantum`` method, an unconstrained minimization of
 E_cl + E_qm, was removed (D18): its result is not a classical stationary
 point, so the linear boson terms do not vanish and the energy goes beyond
-LSWT order.
+LSWT order. The MAGSWT grid search (``opt_method='MAGSWT'``: E_cl + E_qm at
+azimuth shifts ``k pi/6``) was removed (D27): the orbit search reproduces it on
+its grid and finds lower energies between grid points, and
+:func:`~spintoolkit.methods.state_selection.orbit_energy_landscape` draws the
+energies along the classical orbit on any angle grid.
 """
 
 import numpy as np
@@ -19,25 +23,31 @@ from scipy.optimize import differential_evolution
 
 # Optimization method name constants
 CLASSICAL_METHOD_NAME = ["classical", "Classical", "CLASSICAL"]
-MAGSWT_METHOD_NAME = ["MAGSWT", "magswt"]
 
-OPT_METHOD_NAMES = CLASSICAL_METHOD_NAME + MAGSWT_METHOD_NAME
+OPT_METHOD_NAMES = list(CLASSICAL_METHOD_NAME)
 
 #: Removed method names and the reason given when they are requested.
-REMOVED_METHOD_NAMES = ["classical+quantum", "quantum"]
-REMOVED_METHOD_MESSAGE = (
-    "opt_method 'quantum' was removed (D18): minimizing E_cl + E_qm without the "
-    "classical-manifold constraint does not give a valid LSWT reference state. "
-    "Use opt_method 'classical' and then "
-    "spintoolkit.methods.state_selection.select_on_manifold (D17)."
-)
+REMOVED_METHODS = {
+    "quantum": (
+        "opt_method 'quantum' was removed (D18): minimizing E_cl + E_qm without the "
+        "classical-manifold constraint does not give a valid LSWT reference state. "
+        "Use opt_method 'classical' and then "
+        "spintoolkit.methods.state_selection.select_on_manifold (D17)."),
+    "MAGSWT": (
+        "opt_method 'MAGSWT' (grid search of E_cl + E_qm over azimuth shifts k pi/6) was "
+        "removed (D27). Use opt_method 'classical', then "
+        "spintoolkit.methods.state_selection.select_on_manifold for the zero-point selection "
+        "on the classical manifold, or orbit_energy_landscape for E_cl and E_qm along the orbit."),
+}
+REMOVED_METHOD_NAMES = {"classical+quantum": "quantum", "quantum": "quantum",
+                        "MAGSWT": "MAGSWT", "magswt": "MAGSWT"}
 
 
 class SpinOptimizer:
     """Optimizer for finding ground state spin configurations.
 
-    Supports classical optimization via differential evolution and the
-    MAGSWT grid search.
+    Classical optimization via differential evolution; the zero-point energy is
+    evaluated at the classical optimum.
 
     Attributes
     ----------
@@ -180,7 +190,7 @@ class SpinOptimizer:
         return result
 
     def find_minimum(self, cef_obj, opt_method, angle_setting=None,
-                     verbose=False, full_range_search=False, num_search=6):
+                     verbose=False):
         """Find the minimum energy spin configuration.
 
         Parameters
@@ -193,17 +203,14 @@ class SpinOptimizer:
             Angle constraints (default: None, all free).
         verbose : bool, optional
             If True, print optimization progress (default: False).
-        full_range_search : bool, optional
-            If True, search over full 2*pi range for MAGSWT (default: False).
-        num_search : int, optional
-            Number of grid search points for MAGSWT (default: 6).
 
         Returns
         -------
         opt_result : dict
             Optimization result with keys: 'energy', 'angles', 'method',
             'E_cl', 'E_qm', 'MAGSWT'. 'energy' is E_cl + E_qm and 'angles'
-            is the full angle list.
+            is the full angle list; 'MAGSWT' is the regularization shift used
+            for E_qm (not a search method).
         cl_result : dict
             Classical optimization result with keys: 'E_cl', 'angles'.
 
@@ -214,7 +221,7 @@ class SpinOptimizer:
             ``quantum`` names get a message pointing to the D17 selection.
         """
         if opt_method in REMOVED_METHOD_NAMES:
-            raise ValueError(REMOVED_METHOD_MESSAGE)
+            raise ValueError(REMOVED_METHODS[REMOVED_METHOD_NAMES[opt_method]])
         if opt_method not in OPT_METHOD_NAMES:
             raise ValueError(f"unknown opt_method {opt_method!r}; use one of {OPT_METHOD_NAMES}")
         if verbose:
@@ -250,25 +257,6 @@ class SpinOptimizer:
             best_energy = E_cl + E_qm
             best_method = 'DE'
 
-        elif opt_method in MAGSWT_METHOD_NAME:
-            MAGSWT_result = self.magswt_for_nbcp(
-                cef_obj,
-                opt_angles=full_angles,
-                opt_energy=best_energy,
-                tl_angle=None,
-                verbose=verbose,
-                full_range_search=full_range_search,
-                num_search=num_search,
-            )
-
-            # Optimization results from MAGSWT
-            best_angles = MAGSWT_result["angles"]
-            best_energy = MAGSWT_result["energy"]
-            best_method = MAGSWT_result["method"]
-
-            E_cl = MAGSWT_result["E_cl"]
-            E_qm = MAGSWT_result["E_qm"]
-            mu_magswt = MAGSWT_result["mu_MAGSWT"]
 
         cef_obj.set_update_args(False)
 
@@ -293,128 +281,6 @@ class SpinOptimizer:
         }
 
         return opt_result, cl_result
-
-    @staticmethod
-    def magswt_for_nbcp(cef_obj, opt_angles, opt_energy, tl_angle=None,
-                        verbose=False, full_range_search=False, num_search=6):
-        """MAGSWT optimization by discrete rotation grid search.
-
-        Searches for the minimum total energy (classical + quantum) by
-        rotating all spins through a discrete set of angles.
-
-        Parameters
-        ----------
-        cef_obj : EnergyFunction
-            Energy function object.
-        opt_angles : np.ndarray
-            Initial (classically optimized) spin angles.
-        opt_energy : float
-            Classical energy at opt_angles.
-        tl_angle : list or None, optional
-            Rotation angle step [theta, phi]. If None, uses default
-            based on lattice symmetry (default: None).
-        verbose : bool, optional
-            If True, print search progress (default: False).
-        full_range_search : bool, optional
-            If True, search over full 2*pi range (default: False).
-        num_search : int, optional
-            Number of discrete rotation steps (default: 6).
-
-        Returns
-        -------
-        result : dict
-            Dictionary with keys: 'angles', 'energy', 'method',
-            'E_cl', 'E_qm', 'mu_MAGSWT'.
-        """
-        def angle_wrap(angles):
-            """Wrap angles back to standard spherical coordinates."""
-            reshaped = angles.reshape(-1, 2)
-            new_angles = []
-            for theta, phi in reshaped:
-                x = np.sin(theta) * np.cos(phi)
-                y = np.sin(theta) * np.sin(phi)
-                z = np.cos(theta)
-                new_theta = np.arccos(z)
-                new_phi = np.arctan2(y, x)
-                new_angles.append([new_theta, new_phi])
-            return np.array(new_angles).flatten()
-
-        if tl_angle is None:
-            theta_default = 0.0
-            if full_range_search:
-                num_search *= 2
-                phi_default = 2 * np.pi / num_search  # default: 2*pi / 6
-            else:
-                phi_default = np.pi / num_search  # default: pi / 6
-
-            tl_angle = [theta_default, phi_default]  # default rotation step [theta, phi]
-            if verbose:
-                print(
-                    f"[Opt] Grid searches angle difference: "
-                    f"theta={theta_default}, phi={phi_default}"
-                )
-        else:
-            if len(tl_angle) != 2 or not isinstance(tl_angle, (list, tuple)):
-                raise ValueError(
-                    "tl_angle should be a list or tuple of two angles. "
-                    "(theta, phi)"
-                )
-
-        cef_obj.set_update_args(True)
-        num_sl = cef_obj.num_SL
-
-        # Initial data from classical optimization
-        best_method = "DE(MAGSWT)"
-        best_angles = opt_angles  # angles initialization: classical optimal angles
-        best_E_cl = opt_energy  # classical optimal energy
-        best_E_qm = cef_obj.quantum_energy_density_func(best_angles)  # quantum correction
-        mu_magswt = cef_obj.mu_magswt  # chemical potential for positive energy
-        best_energy = best_E_cl + best_E_qm  # total energy
-
-        for i in range(1, 1 + num_search):
-            # Angle rotation respecting the lattice symmetry
-            discrete_rot = np.array(tl_angle * num_sl) * i
-            rot_angles = angle_wrap(opt_angles + discrete_rot)
-
-            E_cl = cef_obj.classical_energy_density_func(rot_angles)
-            E_qm = cef_obj.quantum_energy_density_func(rot_angles)
-            E_tot = E_cl + E_qm
-
-            if verbose:
-                print(
-                    f"[{i}th cal] E_cl: {E_cl:.5f}, E_qm: {E_qm:.5f}, "
-                    f"E_tot: {E_tot:.5f}"
-                )
-
-            if E_tot < best_energy:
-                if verbose:
-                    print("=" * 30)
-                    print(
-                        f"New minimum energy detected at "
-                        f"{np.round(rot_angles, 3)}"
-                    )
-                    print(f"E_new = {E_tot}")
-                    print(f"E_old = {best_energy}")
-                    print(f"Diff = {E_tot - best_energy}")
-                    print("=" * 30)
-                best_angles = rot_angles
-                best_energy = E_tot
-                best_E_cl = E_cl
-                best_E_qm = E_qm
-                mu_magswt = cef_obj.mu_magswt
-                best_method = "MAGSWT"
-
-        # Reset update flag
-        cef_obj.set_update_args(False)
-
-        return {
-            "angles": best_angles,
-            "energy": best_energy,
-            "method": best_method,
-            "E_cl": best_E_cl,
-            "E_qm": best_E_qm,
-            "mu_MAGSWT": mu_magswt,
-        }
 
     @staticmethod
     def recover_angles(angles, angle_setting):

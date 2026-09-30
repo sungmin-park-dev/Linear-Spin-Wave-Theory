@@ -16,11 +16,8 @@ import pytest
 from model import nbcp
 from spintoolkit.definitions.constants import MU_B_MEV_PER_T
 from spintoolkit.methods import state_selection as sel
-from spintoolkit.methods.lswt.energy import EnergyFunction
-from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.models import polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.conversion import to_spin_system
 from spintoolkit.system.model import SpinModel, Term
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -171,20 +168,24 @@ def test_square_polarized_state_is_rank_deficient_and_not_degenerate(mode):
     assert "invariant" in about_field.message
 
 
-def test_orbit_search_reproduces_the_magswt_grid_and_improves_off_grid():
-    for phi0, same in [(0.0, True), (0.3, False)]:
-        model, state, conditions = setup("V", {"JPD": 0.01}, phi0=phi0)
-        result = select(model, state, conditions)
-        orbit_energy = result.diagnostics["E_cl_selected"] + result.diagnostics["E_qm_selected"]
-        system = to_spin_system(model, state, conditions)
-        energy = EnergyFunction(system.to_legacy_dict("Hex_30"), N=MESH_N)
-        angles = system.get_angles_flat()
-        grid = SpinOptimizer.magswt_for_nbcp(energy, angles,
-                                             energy.classical_energy_density_func(angles))
-        if same:
-            assert grid["energy"] == pytest.approx(orbit_energy, abs=1e-14)
-        else:
-            assert grid["energy"] - orbit_energy > 1e-6
+def test_orbit_landscape_matches_the_selection_and_is_classically_flat():
+    """The landscape replacing the MAGSWT grid search (D27): E_cl flat, E_qm sixfold."""
+    model, state, conditions = setup("V", {"JPD": 0.01}, noise=1e-3)
+    quantum = sel.lswt_zero_point_energy("Hex_30", MESH_N)
+    phis = np.linspace(0, 2 * np.pi, 72, endpoint=False)
+    landscape = sel.orbit_energy_landscape(model, state, conditions, quantum, phis=phis)
+    np.testing.assert_allclose(landscape.axis, [0, 0, 1], atol=1e-12)
+    assert landscape.diagnostics["hessian_flat_along_orbit"]
+    assert landscape.diagnostics["E_cl_span"] < 1e-15
+    selected = select(model, state, conditions)
+    # the continuous minimum is not above the sampled one; the samples bracket it
+    assert selected.diagnostics["E_qm_selected"] <= landscape.quantum.min() + 1e-15
+    # sampling error of a 5-degree grid: A m^2 (step/2)^2 / 2 ~ 3.4e-7 for A = 1e-5, m = 6
+    assert landscape.quantum.min() - selected.diagnostics["E_qm_selected"] < 5e-7
+    fit = sel.fit_harmonics(phis, landscape.quantum, 12)
+    assert int(np.argmax(fit["amplitudes"])) + 1 == 6
+    classical_only = sel.orbit_energy_landscape(model, state, conditions, phis=phis[:4])
+    assert classical_only.quantum is None and len(classical_only.classical) == 4
 
 
 def test_fit_harmonics_recovers_coefficients():

@@ -514,6 +514,26 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{4c 검증 기록}{stage4c}
 \end{frame}
 
+\begin{frame}[label=legacy-cleanup]{기존 코드 정리: 검증되지 않은 경로를 지우고 기능은 옮긴다}
+  \framesubtitle{2026-09-30 · 삭제한 경로의 목적은 검증된 새 함수로 제공한다(D27).}
+  \footnotesize\renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}P{3.4cm}P{3.6cm}Y@{}}
+    \toprule
+    삭제 & 대체 & 확인 \\
+    \midrule
+    MAGSWT 격자 탐색(\texttt{opt\_method='MAGSWT'}) & \texttt{orbit\_energy\_landscape}: 임의 $\phi$ 격자의 $E_{\mathrm{cl}}$, $E_{\mathrm{qm}}$ & NBCP Y·V: $E_{\mathrm{cl}}$ 변동 $\le2\times10^{-17}$, 표본 최소가 선택값과 격자 오차 안 \\
+    \texttt{observables/correlations.py} & \texttt{spin\_correlation}, \texttt{to\_ladder} & 실공간 상관의 Fourier 합 = $S(\mathbf k)$($10^{-13}$); 편극 강자성 $S^{+}S^{-}$ 무게 $2S$ \\
+    MAGSWT 요청 & \texttt{ValueError}로 대체 경로 안내 & 테스트 \\
+    NBCP 예제 & 고전 탐색 뒤 \texttt{select\_on\_manifold} & 예제 설정: Four MSL, \texttt{no\_degeneracy} \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  테스트 457 통과 / 같은 5 실패. 회귀 스냅샷은 남은 144개 값 차이 0(삭제한 MAGSWT 탐색 항목 64개는 비교에서 빠졌다고 보고).
+  \par\medskip
+  \supportingtext{유지: \texttt{solve\_lswt}의 MAGSWT 정규화(D24). 보류: 실시간 상관과 지연 스펙트럼 함수는 LSWT 이론 문서의 응답 규약 검토 뒤 추가한다. 비교 결과는 2b·4c 검증 기록에 남아 있다.}
+  \slidesource{기존 코드 정리 기록}{cleanup}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -615,8 +635,6 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
     D19 물리 근거 모드의 계수(2b 구현값) & 사용자 검토 \\
     기울인 장처럼 고전 고정과 영점 선택이 비슷한 경우를 \texttt{competition}으로 볼지 & 사용자 검토 \\
-    MAGSWT 격자 탐색의 유지·삭제(재현 확인 완료) & 사용자 결정 \\
-    기존 \texttt{correlations.py}의 유지·삭제(규약 차이 진단 완료) & 사용자 결정 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
     \bottomrule
   \end{tabularx}

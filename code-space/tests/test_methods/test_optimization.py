@@ -1,8 +1,9 @@
 """Check SpinOptimizer.find_minimum argument handling.
 
 The unconstrained ``quantum`` method (E_cl + E_qm minimized off the classical
-manifold) was removed (D18); zero-point selection is done on the classical
-manifold by ``state_selection.select_on_manifold`` (D17).
+manifold) was removed (D18), and so was the MAGSWT grid search (D27);
+zero-point selection is done on the classical manifold by
+``state_selection.select_on_manifold`` (D17).
 """
 
 import numpy as np
@@ -36,8 +37,8 @@ def test_angle_setting_none_matches_all_free_list():
     assert_allclose(classical_none["angles"], classical_list["angles"])
 
 
-@pytest.mark.parametrize("method", ["quantum", "classical+quantum"])
-def test_removed_quantum_method_points_to_manifold_selection(method):
+@pytest.mark.parametrize("method", ["quantum", "classical+quantum", "MAGSWT", "magswt"])
+def test_removed_methods_point_to_manifold_selection(method):
     with pytest.raises(ValueError, match="select_on_manifold"):
         SpinOptimizer().find_minimum(_energy_function(), method)
 

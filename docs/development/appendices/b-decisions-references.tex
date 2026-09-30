@@ -73,7 +73,7 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=decisions-stage4]{결정 기록 (D25--)}
+\begin{frame}[label=decisions-stage4]{결정 기록 (D25--D27)}
   \framesubtitle{2026-09-30 사용자 결정. 근거와 수치 자료는 부록 A에 있다.}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
@@ -82,6 +82,7 @@
     \midrule
     D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
     D26 & 4c: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 연속체는 후속); 모드별 무게가 주 출력, 넓힌 스펙트럼은 보조; 새 구현, 기존 \texttt{correlations.py}는 비교 대상만; 결합 상관과 에너지 교차 확인 & \textbf{사용자 결정} \\
+    D27 & 기존 코드 정리: \texttt{correlations.py} 삭제, 동시간 실공간 상관·사다리 성분은 새 모듈로; MAGSWT 격자 탐색 삭제, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}; MAGSWT 정규화는 유지 & \textbf{사용자 결정} \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-09-30 결정}{contract}
@@ -111,8 +112,8 @@
   \slidesource{2026-09-29 세부 규칙 결정}{contract}
 \end{frame}
 
-\begin{frame}[label=state-search-current]{현재 상태 탐색: DE 뒤 세 경로}
-  \framesubtitle{세 경로 모두 differential evolution(DE)으로 고전 에너지를 최소화한 뒤 다음 단계만 다르다.}
+\begin{frame}[label=state-search-current]{2026-09-29 당시의 상태 탐색: DE 뒤 세 경로}
+  \framesubtitle{기록용. 지금은 \texttt{classical}만 남았다(\texttt{quantum}은 D18·D22, \texttt{MAGSWT}는 D27에서 삭제).}
   \small
   \begin{tabularx}{\textwidth}{@{}p{1.7cm}YP{2.2cm}Y@{}}
     \toprule
@@ -130,7 +131,7 @@
   \end{tabularx}
   \par\medskip
   \supportingtext{DE는 \texttt{seed=42}로 고정되어 결정론적이며, \texttt{angle\_setting}으로 일부 각도를 고정할 수 있다.
-  \texttt{quantum}의 fallback·배열 변경 결함은 \texttt{d43d8d4}에서 고쳤다(부록 A).}
+  \texttt{quantum}의 fallback·배열 변경 결함은 \texttt{d43d8d4}에서 고쳤다(부록 A). 영점 선택은 \texttt{select\_on\_manifold}, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}.}
   \slidesource{현재 \texttt{methods/optimization.py}}{implementation,selection}
 \end{frame}
 
@@ -367,6 +368,9 @@
     \bibitem{stage4c}
       4c 구조인자 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · ED 무게, 합 규칙, 기존 코드 진단.
+    \bibitem{cleanup}
+      기존 코드 정리 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · MAGSWT 격자 탐색·\texttt{correlations.py} 삭제와 대체.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

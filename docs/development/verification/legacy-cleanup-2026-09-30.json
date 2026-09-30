@@ -1,0 +1,67 @@
+{
+ "date": "2026-09-30",
+ "scope": "Cleanup of existing code (D27): remove the MAGSWT grid search and the unverified observables/correlations.py; add orbit_energy_landscape, spin_correlation and to_ladder as their replacements.",
+ "status": "passed",
+ "baseline_commit": "6dae3d8",
+ "removed": {
+  "code-space/spintoolkit/observables/correlations.py": "untested, unwired; per-cell normalization, doubled sublattice phase, sublattice-index typo (stage-4c record)",
+  "code-space/spintoolkit/methods/optimization.py": "opt_method 'MAGSWT'/'magswt' (magswt_for_nbcp) and the find_minimum arguments full_range_search, num_search; requesting MAGSWT raises ValueError pointing to select_on_manifold and orbit_energy_landscape"
+ },
+ "added": {
+  "code-space/spintoolkit/methods/state_selection.py": "orbit_energy_landscape, OrbitLandscape: E_cl and optional E_qm along R_n(phi) on any angle grid; axis from the classical Hessian as in select_on_manifold",
+  "code-space/spintoolkit/observables/structure_factor.py": "spin_correlation (equal-time <S_i S_j> between any sites), to_ladder ((+, -, z) basis); bond_correlations rebuilt on the same helpers"
+ },
+ "changed": {
+  "examples/nbcp_ground_state.py": "classical search plus select_zero_point (select_on_manifold) instead of MAGSWT",
+  "examples/nbcp_hamiltonian_check.py": "classical search",
+  "examples/nbcp_state_selection_check.py": "records the orbit landscape instead of the MAGSWT comparison (kept in the stage-2b record)",
+  "examples/lswt_stage4c_check.py": "the comparison with the removed module is kept in the stage-4c record",
+  "examples/package_regression_snapshot.py": "MAGSWT searches dropped; compare reports baseline leaves of removed methods instead of failing",
+  "code-space/tests": "MAGSWT grid test replaced by a landscape test; removed-method tests include MAGSWT; 3 correlation tests (Fourier pair with S(k), symmetry and bond consistency, ladder components)"
+ },
+ "not_kept": "real-time correlations and the retarded spectral function (legacy functions) wait for the review of the response conventions in docs/lswt/02-observables; the MAGSWT regularization of solve_lswt is unchanged (D24).",
+ "tests": {
+  "result": "457 passed, 5 failed (known CommensurateStructure failures, unchanged)",
+  "regression_snapshot": "144 leaves compared, maximum difference 0.0; 64 baseline leaves of the removed MAGSWT searches not compared",
+  "note": "OPENBLAS_NUM_THREADS=4"
+ },
+ "landscape": {
+  "summary": "NBCP Y/V with J_PD or J_Gamma, 72 angles: E_cl flat (<= 2e-17); sampled E_qm minimum within the grid error of the selected minimum",
+  "rows": [
+   {
+    "phase": "Y",
+    "coupling": "PD",
+    "num_phi": 72,
+    "E_cl_span": 2.0816681711721685e-17,
+    "E_qm_span": 2.829494717143319e-06,
+    "sampled_min_minus_selected": 3.836657708894409e-08
+   },
+   {
+    "phase": "Y",
+    "coupling": "Gamma",
+    "num_phi": 72,
+    "E_cl_span": 2.0816681711721685e-17,
+    "E_qm_span": 3.2002126643115858e-12,
+    "sampled_min_minus_selected": 4.306624501460021e-14
+   },
+   {
+    "phase": "V",
+    "coupling": "PD",
+    "num_phi": 72,
+    "E_cl_span": 0.0,
+    "E_qm_span": 2.006376249034502e-05,
+    "sampled_min_minus_selected": 2.7727912681619477e-07
+   },
+   {
+    "phase": "V",
+    "coupling": "Gamma",
+    "num_phi": 72,
+    "E_cl_span": 1.3877787807814457e-17,
+    "E_qm_span": 1.4229365264311136e-06,
+    "sampled_min_minus_selected": 4.700046307010153e-09
+   }
+  ]
+ },
+ "example_run": "NBCP_CONFIG of examples/nbcp_ground_state.py (J_Gamma = 0.1, N = 6): classical ground state Four MSL, select_on_manifold verdict no_degeneracy (classical pinning dominates)",
+ "decisions": "D27 (2026-09-30): delete observables/correlations.py and move equal-time real-space correlations and ladder components to the new module; delete the MAGSWT grid search, whose purpose (the energy landscape along the classical orbit for NBCP) is served by orbit_energy_landscape."
+}

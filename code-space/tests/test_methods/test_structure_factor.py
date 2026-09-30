@@ -17,7 +17,8 @@ from model import nbcp
 from spintoolkit.methods.ed import EDSector, solve_ed
 from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
 from spintoolkit.models import neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg
-from spintoolkit.observables.structure_factor import bond_correlations, structure_factor
+from spintoolkit.observables.structure_factor import (
+    bond_correlations, spin_correlation, structure_factor, to_ladder)
 from spintoolkit.observables.thermal import ZeroModeCandidateError
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
@@ -181,3 +182,47 @@ def test_spectrum_and_json():
     assert np.all(np.isfinite(sf.neutron()))
     data = sf.to_json_dict()
     assert set(data) >= {"q", "energies", "weights", "elastic", "bragg"}
+
+
+def test_real_space_correlations_are_the_fourier_pair_of_the_static_structure_factor():
+    """On an N x N magnetic mesh the correlations sum back to S(k) at the mesh momenta."""
+    model = triangular_heisenberg(J=1.0)
+    state = state_120(model)
+    result = solve_lswt(model, state, settings=LSWTSettings(mesh=(4, 4)))
+    static = structure_factor(result, result.k_points).static()
+    supercell = np.rint(result.magnetic_lattice @ np.linalg.inv(result.lattice)).astype(int)
+    ns, k = result.num_sites, result.k_points[5]
+    total = np.zeros((3, 3), dtype=complex)
+    for site_i, cell_i in result.site_keys:
+        for site_j, cell_j in result.site_keys:
+            for R in np.ndindex(4, 4):
+                shift = np.array(R) @ supercell
+                cell = (cell_j[0] + shift[0], cell_j[1] + shift[1])
+                c = spin_correlation(result, model, (site_i, cell_i), (site_j, cell))
+                dr = model.cartesian_position(site_i, cell_i) - model.cartesian_position(site_j, cell)
+                total += np.exp(-1j * k @ dr) * c["fluctuation"]
+    np.testing.assert_allclose(total / ns, static[5], atol=1e-13)
+
+
+def test_spin_correlation_symmetry_and_bond_consistency():
+    model = square_heisenberg(J=1.0)
+    result = solve_lswt(model, neel_state(model), settings=LSWTSettings(mesh=(8, 8)))
+    a = spin_correlation(result, model, ("A", (0, 0)), ("A", (2, 1)))
+    b = spin_correlation(result, model, ("A", (2, 1)), ("A", (0, 0)))
+    np.testing.assert_allclose(a["total"], b["total"].T, atol=1e-14)   # different sites commute
+    bond = bond_correlations(result, model)["bonds"][0]
+    first = spin_correlation(result, model, ("A", (0, 0)), ("A", (1, 0)))
+    np.testing.assert_allclose(np.real(first["total"]), bond["correlation"], atol=1e-14)
+    assert np.real(np.trace(first["total"])) < 0                     # antiferromagnetic bond
+
+
+def test_ladder_components_of_a_polarized_ferromagnet():
+    model = square_heisenberg(J=-1.0)
+    result = solve_lswt(model, polarized_state(model), ExternalConditions(field=(0, 0, 1.0)),
+                        settings=LSWTSettings(mesh=(6, 6)))
+    sf = structure_factor(result, [[0.4, -0.9]])
+    ladder = to_ladder(sf.weights[0].sum(axis=0))
+    # only S^+ (S^+)^dagger = S^+ S^- connects |FM> to one-magnon states: weight 2S
+    assert np.real(ladder[0, 0]) == pytest.approx(1.0, abs=1e-14)
+    ladder[0, 0] = 0
+    np.testing.assert_allclose(ladder, 0, atol=1e-14)

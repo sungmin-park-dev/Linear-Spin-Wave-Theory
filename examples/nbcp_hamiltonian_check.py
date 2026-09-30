@@ -37,11 +37,11 @@ angles_setting = {
 }
 
 opt_result, cls_result, all_results = find_ground_state(
-    NBCP_CONFIG, opt_method="MAGSWT", N=20,
+    NBCP_CONFIG, opt_method="classical", N=20,
     angles_setting=angles_setting, verbose=True,
 )
 
-# Use the MAGSWT-optimized result
+# Use the optimized (classical) result
 gs = opt_result
 print(f"\nUsing: {gs['phase_name']}")
 print(f"  angles = {np.round(gs['angles'], 6)}")
