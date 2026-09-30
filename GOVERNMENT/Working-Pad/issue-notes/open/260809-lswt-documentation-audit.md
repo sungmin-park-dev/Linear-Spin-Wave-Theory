@@ -125,15 +125,27 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 | 항목 | Draft의 처리 | 사용자 확인 사항 |
 |---|---|---|
-| Skyrmion number (Source Eq. (143)) | 원문의 절댓값과 arctan branch 대신 부호 있는 Berg–Lüscher solid angle, 즉 \(e^{i\chi/2}\propto 1+\mathbf m_I\cdot\mathbf m_J+\dots+i\,\mathbf m_I\cdot(\mathbf m_J\times\mathbf m_K)\)를 쓴다. 원문의 plaquette 예시는 elementary triangle 분할로 바꿨다. | 부호 있는 정의 채택과 LSWT 문서 scope 포함 여부 |
+| Skyrmion number (Source Eq. (143)) | 원문의 절댓값과 arctan branch 대신 부호 있는 Berg–Lüscher solid angle, 즉 \(e^{i\chi/2}\propto 1+\mathbf m_I\cdot\mathbf m_J+\dots+i\,\mathbf m_I\cdot(\mathbf m_J\times\mathbf m_K)\)를 쓴다. 원문의 plaquette 예시는 elementary triangle 분할로 바꿨다. | 사용자 결정(2026-09-30): LSWT 문서 scope에 포함. 부호 있는 정의는 물리·수학 검토에서 확인 |
 | Berry curvature (Source Eqs. (144)–(146)) | \(T^\dagger\Sigma_3T=\Sigma_3\), 2N column 합과 Σ3 부호, particle–hole 분모를 명시했다(A6). Gauge 문단에서 \(e^{\pm i\mathbf k\cdot\mathbf r_I}\)를 두 Nambu block에 같게 곱하면 curvature의 추가 항이 주기 함수의 curl이라 적분이 0임을 적었다. | 합 범위와 gauge 문단 |
 | Chern number | \(A_{\mathrm{MBZ}}/N_{\mathbf k}\) 합과 paraunitary link의 FHS를 적었다. 정수 값만으로 band 고립을 판정할 수 없다고 명시했다. | 수치 판정 기준(D31)은 코드 계약으로만 두고 본문에 넣지 않았다. |
 | Thermal Hall (Source Eqs. (147)–(149)) | 층당 \(\kappa^{\mathrm{2D}}_{xy}=-(k_B^2T/\hbar)(N_{\mathbf k}A_{\mathrm{uc}})^{-1}\sum c_2\Omega\), 3D는 \(/d\), pair form을 적었다. 원문의 V와 ħ 누락을 교체했다. | 단위·정규화(A7 앞부분은 2026-09-11 사용자 승인과 같음) |
-| −π²/3 상수항 (A7) | 원문 형태가 이 draft보다 \((\pi k_B^2T/6\hbar)\sum_nC_n\)만큼 크다는 관계만 적고, \(\sum_nC_n=0\)의 일반 성립은 "not established"로 남겼다. | 상수항 선택. 코드도 상수항 없는 c2를 쓰므로 다른 선택이면 코드 변경 항목이 된다. |
-| c2 명칭 | 원문의 "c2 is the Spence function" 문장은 옮기지 않고 \(\mathrm{Li}_2\)로 정의했다. | 명칭 정정 |
-| 생략 문장 | 원문의 관측 난이도 서술("hard to observe" 취지)과 B9 orphan text는 옮기지 않았다. | 생략 동의 |
+| −π²/3 상수항 (A7) | 원문 형태가 이 draft보다 \((\pi k_B^2T/6\hbar)\sum_nC_n\)만큼 크다는 관계를 적었다. 문헌 대조 후 양정치 H에서 \(\sum_nC_n=0\)(Shindou et al. 2013 식 (29), \(\mathsf H_\lambda=(1-\lambda)\mathsf H+\lambda\mathbb 1\) 변형)으로 두 형태가 같다고 교체했다. | 반영 완료(2026-09-30 사용자 승인). 양반정치(Goldstone) 경우는 open. 코드 변경 없음. |
+| c2 명칭 | 원문의 "c2 is the Spence function" 문장은 옮기지 않고 \(\mathrm{Li}_2\)로 정의했다. | 사용자 동의(2026-09-30) |
+| 생략 문장 | 원문의 관측 난이도 서술("hard to observe" 취지)과 B9 orphan text는 옮기지 않았다. | 사용자 동의(2026-09-30) |
 
 표기 변경: J→Σ3, FBZ→MBZ, \(\varepsilon_{n,k}\)→\(\varepsilon_{n\mathbf k}\), V→\(N_{\mathbf k}A_{\mathrm{uc}}\)와 명시적 ħ. Semantic equation ID 6개(`eq-lswt-lattice-skyrmion-number`, `eq-lswt-bdg-berry-curvature`, `eq-lswt-magnon-chern-number`, `eq-lswt-magnon-thermal-hall`, `eq-lswt-thermal-hall-weight`, `eq-lswt-thermal-hall-pair-form`)를 새로 부여했다.
+
+### 문헌 대조 — −π²/3 (2026-09-30)
+
+| 문헌 | 가중치 | 확인 내용 |
+|---|---|---|
+| Matsumoto–Murakami, PRB 84, 184406 (2011) 식 (23) | c2 | 상수항 없음, anomalous term 없는 ferromagnet |
+| Neumann et al., PRL 128, 117201 (2022) 식 (8) | c2 | 원본 노트가 인용한 식. physical band N개 합, Chern 합 0 언급 |
+| Zhang–Gao–Chen, arXiv:2305.04830 식 (1)–(4) | c2 | 고온 극한 κ/T → −(π²k_B²/6ħ)ΣC_n = 0 |
+| arXiv:2606.16704 식 (8) | c2 − π²/3 | "Matsumoto–Murakami convention"이라 인용하나 2011 원 논문에는 상수항이 없다 |
+| Shindou–Matsumoto–Murakami–Ohe, PRB 87, 174427 (2013) 식 (29) | — | 양정치 bosonic BdG에서 particle band Chern 합 0 증명 |
+
+Matsumoto–Shindou–Murakami, PRB 89, 054420 (2014)은 초록만 확인해 −π²/3의 출처인지 확인하지 못했다.
 
 ### 검증
 
@@ -295,7 +307,7 @@ source-only evidence로 보존한다.
 | B19 | `docs/lswt/02-observables/thermodynamics.md` | `source-cleanup` | Entropy 설명 |
 | B9 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-cleanup` | Primary PDF에는 orphan text가 남고 restructured draft에서만 제거됨. 2026-09-30 draft는 orphan text를 옮기지 않았다. |
 | A6 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | Physical bands와 \(2N\) BdG sum. 2026-09-30 draft는 curvature의 중간 합을 2N column 전체(Σ3 부호)로, Chern·κ를 physical band로 명시했다. 코드(D29)와 같고 사용자 검토 대기다. |
-| A7 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `open` | 2026-09-11 참고 논문 식 (8)의 physical-band 합·hbar·온도·area/volume 정의를 대조했다. 사용자가 층당 κ 기본 및 층간격을 통한 3D 환산을 승인했고 코드 32개 회귀를 통과했다. 원본 c2 상수항과 이론 acceptance는 별도 검토다. 2026-09-30 draft는 상수항 없는 c2를 쓰고, 원본 형태와의 차이가 (πk_B²T/6ħ)ΣC_n임을 적었다. ΣC_n=0의 일반 성립은 미확인이며 코드도 상수항 없는 c2를 쓴다. |
+| A7 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | 2026-09-11 참고 논문 식 (8)의 physical-band 합·hbar·온도·area/volume 정의를 대조했다. 사용자가 층당 κ 기본 및 층간격을 통한 3D 환산을 승인했고 코드 32개 회귀를 통과했다. 원본 c2 상수항과 이론 acceptance는 별도 검토다. 2026-09-30 draft는 상수항 없는 c2를 쓰고, 원본 형태와의 차이가 (πk_B²T/6ħ)ΣC_n임을 적었다. 코드도 상수항 없는 c2를 쓴다. 2026-09-30 사용자 요청으로 문헌을 대조해, H가 MBZ 전체에서 양정치이면 particle band Chern 합이 0(Shindou et al. 2013 식 (29))이라 두 형태가 같음을 본문에 반영했다. 양반정치(Goldstone) 경우만 open이다. |
 | A16 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | Primary PDF는 \(\varepsilon_{n,k}\), restructured draft는 \(E_{\mathbf k,n}\)을 사용. 2026-09-30 draft는 notation 문서의 \(\varepsilon_{n\mathbf k}\)를 따른다. |
 
 ## Source TODOs
