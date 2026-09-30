@@ -1,0 +1,541 @@
+{
+ "date": "2026-09-30",
+ "scope": "Stage 4b of the 1st development plan: zero-mode scan with a user decision step for unresolved candidates, and dimensionless finite-temperature LSWT quantities reusing the stored diagonalization (D25).",
+ "status": "passed",
+ "baseline_commit": "18239dc",
+ "script": "examples/lswt_stage4b_check.py",
+ "added": {
+  "code-space/spintoolkit/observables/zero_modes.py": "scan_zero_modes, ZeroModeReport, ZeroModePoint: classes zero / candidate / gapped from lambda_min(H(k))/scale; seeds at magnetic and primitive high-symmetry points and the lowest mesh points, continuous minimization, line probes, origin at k = 0 (goldstone / accidental / unknown)",
+  "code-space/spintoolkit/observables/thermal.py": "thermal_quantities, ThermalResult, ZeroModeCandidateError: F, U, S, C, boson numbers, moments, magnetization in t = k_B T / E0; existing kelvin routines reused through T = t / k_B",
+  "code-space/spintoolkit/definitions/defaults.py": "ZERO_MODE_ZERO_TOLERANCE 1e-12, ZERO_MODE_CANDIDATE_TOLERANCE 1e-6, ZERO_MODE_MESH_SEEDS, ZERO_MODE_SEARCH_THRESHOLD, ZERO_MODE_LINE_DIRECTIONS",
+  "code-space/tests/test_methods/test_thermal.py": "16 tests"
+ },
+ "changed": {
+  "code-space/spintoolkit/methods/lswt/run.py": "LSWTResult gains lattice, magnetic_lattice, thermal and hamiltonian_at; solve_lswt accepts a positive temperature; LSWTSettings.gapless records the user's decision"
+ },
+ "tests": {
+  "result": "437 passed, 5 failed (known CommensurateStructure failures, unchanged)",
+  "regression_snapshot": "208 leaves, maximum difference 0.0",
+  "note": "OPENBLAS_NUM_THREADS=4"
+ },
+ "findings": [
+  "The legacy boson-number kernel is correct at finite temperature: polarized ferromagnet <n> equals <n_B(omega)>, Neel equals an independent sum over paraunitary components.",
+  "Zero modes must be judged from lambda_min(H), not omega: lambda ~ Delta^2 / bandwidth, so an easy-axis gap of 9e-4 J (anisotropy 1e-7) already falls in the candidate band and is handed to the user.",
+  "J1-J2 square at J2 = J1/2: zero modes lie on lines; the shifted mesh cannot avoid them and solve_lswt without regularization reports 48 of 576 momenta. The scan (on a MAGSWT run) marks the off-centre zeros as lines.",
+  "LSWT boson numbers exceed S at high t; results there are flagged beyond_lswt with a warning."
+ ],
+ "zero_mode_scans": [
+  {
+   "case": "square Neel",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale 1.39e-16, zone centre, origin goldstone)",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 1.3907533026061024e-16,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 3,
+    "broken_symmetries": 2,
+    "classical_flat_directions": 2,
+    "origin": "goldstone"
+   },
+   "num_candidates": 1,
+   "seconds": 0.19
+  },
+  {
+   "case": "square polarized, h = 5",
+   "regularization": "none",
+   "has_zero": false,
+   "has_candidates": false,
+   "summary": "gapped: lowest lambda_min/scale 0.201 at q=[0.5, 0.5], gap 1",
+   "global_minimum": {
+    "fractional": [
+     0.5,
+     0.5
+    ],
+    "lowest": 0.2006867612250886,
+    "gap": 1.0,
+    "classification": "gapped"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 0,
+    "origin": "unknown"
+   },
+   "num_candidates": 0,
+   "seconds": 0.06
+  },
+  {
+   "case": "easy-axis XXZ, anisotropy 0.01",
+   "regularization": "none",
+   "has_zero": false,
+   "has_candidates": false,
+   "summary": "gapped: lowest lambda_min/scale 0.00499 at q=[0.0, 0.0], gap 0.283549",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 0.004985734739265731,
+    "gap": 0.28354893757515753,
+    "classification": "gapped"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 0,
+    "origin": "unknown"
+   },
+   "num_candidates": 0,
+   "seconds": 0.2,
+   "analytic_gap": 0.28354893757515653
+  },
+  {
+   "case": "easy-axis XXZ, anisotropy 1e-05",
+   "regularization": "none",
+   "has_zero": false,
+   "has_candidates": false,
+   "summary": "gapped: lowest lambda_min/scale 5.01e-06 at q=[0.0, 0.0], gap 0.00894429",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 5.0106917373112754e-06,
+    "gap": 0.008944294270742774,
+    "classification": "gapped"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 0,
+    "origin": "unknown"
+   },
+   "num_candidates": 0,
+   "seconds": 0.3,
+   "analytic_gap": 0.008944294270682131
+  },
+  {
+   "case": "easy-axis XXZ, anisotropy 1e-07",
+   "regularization": "none",
+   "has_zero": false,
+   "has_candidates": true,
+   "summary": "candidate at q=[0.0, 0.0] (lambda_min/scale 5.01e-08, zone centre, origin unknown, gap 0.000894)",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 5.01071660738382e-08,
+    "gap": 0.0008944272140357864,
+    "classification": "candidate"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 0,
+    "origin": "unknown"
+   },
+   "num_candidates": 1,
+   "seconds": 0.23,
+   "analytic_gap": 0.0008944272136038363
+  },
+  {
+   "case": "easy-axis XXZ, anisotropy 1e-09",
+   "regularization": "none",
+   "has_zero": false,
+   "has_candidates": true,
+   "summary": "candidate at q=[0.0, 0.0] (lambda_min/scale 5.01e-10, zone centre, origin unknown, gap 8.94e-05)",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 5.010718370238067e-10,
+    "gap": 8.944273177465827e-05,
+    "classification": "candidate"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 0,
+    "origin": "unknown"
+   },
+   "num_candidates": 1,
+   "seconds": 0.32,
+   "analytic_gap": 8.94427228002534e-05
+  },
+  {
+   "case": "easy-axis XXZ, anisotropy 0",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale 1.39e-16, zone centre, origin goldstone)",
+   "global_minimum": {
+    "fractional": [
+     0.0,
+     0.0
+    ],
+    "lowest": 1.3907533026061024e-16,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 3,
+    "broken_symmetries": 2,
+    "classical_flat_directions": 2,
+    "origin": "goldstone"
+   },
+   "num_candidates": 1,
+   "seconds": 0.24,
+   "analytic_gap": 0.0
+  },
+  {
+   "case": "J1-J2 square, J2 = J1/2 (Neel)",
+   "regularization": "MAGSWT",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0625, 0.0625] (lambda_min/scale -1.38e-16, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.166667, 0.833333] (lambda_min/scale -1.74e-17, primitive high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.5625, 0.4375] (lambda_min/scale -4.79e-18, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.833333, 0.166667] (lambda_min/scale 0, primitive high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.833333, 0.833333] (lambda_min/scale 0, primitive high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.166667, 0.166667] (lambda_min/scale 0, primitive high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.104167, 0.104167] (lambda_min/scale 0, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.145833, 0.145833] (lambda_min/scale 0, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.1875, 0.1875] (lambda_min/scale 0, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.229167, 0.770833] (lambda_min/scale 0, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.5, 0.5] (lambda_min/scale 2.23e-17, magnetic high-symmetry point, origin not a uniform rotation (k != 0), flat along 2 of 12 directions); zero at q=[0.333333, 0.333333] (lambda_min/scale 5.57e-17, magnetic high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.333333, 0.666667] (lambda_min/scale 5.57e-17, magnetic high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.1875, 0.8125] (lambda_min/scale 5.57e-17, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.8125, 0.1875] (lambda_min/scale 5.57e-17, mesh minimum, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.666667, 0.666667] (lambda_min/scale 9.06e-17, magnetic high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.666667, 0.333333] (lambda_min/scale 1.11e-16, magnetic high-symmetry point, origin not a uniform rotation (k != 0), flat along 1 of 12 directions); zero at q=[0.0, 0.0] (lambda_min/scale 1.39e-16, zone centre, origin goldstone, flat along 12 of 12 directions)",
+   "global_minimum": {
+    "fractional": [
+     0.0625,
+     0.0625
+    ],
+    "lowest": -1.3831313841900355e-16,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 3,
+    "broken_symmetries": 2,
+    "classical_flat_directions": 2,
+    "origin": "goldstone"
+   },
+   "num_candidates": 18,
+   "seconds": 0.09
+  },
+  {
+   "case": "triangular 120",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale -3.43e-16, mesh minimum, origin goldstone)",
+   "global_minimum": {
+    "fractional": [
+     8.137162055277258e-10,
+     0.9999999987313013
+    ],
+    "lowest": -3.425304030314024e-16,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 3,
+    "broken_symmetries": 3,
+    "classical_flat_directions": 3,
+    "origin": "goldstone"
+   },
+   "num_candidates": 1,
+   "seconds": 0.89
+  },
+  {
+   "case": "NBCP Y XXZ",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale -1.93e-26, mesh minimum, origin goldstone)",
+   "global_minimum": {
+    "fractional": [
+     1.1788896705047128e-09,
+     1.5134622444179513e-09
+    ],
+    "lowest": -1.932832518837496e-26,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 1,
+    "broken_symmetries": 1,
+    "classical_flat_directions": 1,
+    "origin": "goldstone"
+   },
+   "num_candidates": 1,
+   "seconds": 0.77
+  },
+  {
+   "case": "NBCP Y {'JPD': 0.01}",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale -1.1e-16, primitive high-symmetry point, origin accidental)",
+   "global_minimum": {
+    "fractional": [
+     3.3484699457630995e-09,
+     0.9999999967609345
+    ],
+    "lowest": -1.103814280578542e-16,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 0,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 1,
+    "origin": "accidental"
+   },
+   "num_candidates": 1,
+   "seconds": 1.1
+  },
+  {
+   "case": "NBCP Y {'JGamma': 0.01}",
+   "regularization": "none",
+   "has_zero": true,
+   "has_candidates": false,
+   "summary": "zero at q=[0.0, 0.0] (lambda_min/scale -7.02e-17, mesh minimum, origin accidental)",
+   "global_minimum": {
+    "fractional": [
+     0.9999999977749359,
+     0.9999999989801619
+    ],
+    "lowest": -7.017567009915917e-17,
+    "gap": null,
+    "classification": "zero"
+   },
+   "zone_centre": {
+    "symmetry_axes": 0,
+    "broken_symmetries": 0,
+    "classical_flat_directions": 1,
+    "origin": "accidental"
+   },
+   "num_candidates": 1,
+   "seconds": 1.01
+  }
+ ],
+ "ed_low_temperature": {
+  "summary": "F_ED - F_LSWT < exp(-2 Delta/t) and < 1e-3 exp(-Delta/t) for t <= Delta/5: the 0- and 1-magnon terms agree exactly, differences start at two magnons",
+  "rows": [
+   {
+    "case": "square 2x3",
+    "gap": 1.4999999999999998,
+    "t": 0.07499999999999998,
+    "F_ed_minus_F_lswt": 0.0,
+    "exp_minus_gap_over_t": 2.061153622438558e-09,
+    "exp_minus_2gap_over_t": 4.248354255291589e-18
+   },
+   {
+    "case": "square 2x3",
+    "gap": 1.4999999999999998,
+    "t": 0.14999999999999997,
+    "F_ed_minus_F_lswt": 1.5425882793351775e-10,
+    "exp_minus_gap_over_t": 4.5399929762484854e-05,
+    "exp_minus_2gap_over_t": 2.061153622438558e-09
+   },
+   {
+    "case": "square 2x3",
+    "gap": 1.4999999999999998,
+    "t": 0.29999999999999993,
+    "F_ed_minus_F_lswt": 6.563178954088755e-06,
+    "exp_minus_gap_over_t": 0.006737946999085467,
+    "exp_minus_2gap_over_t": 4.5399929762484854e-05
+   },
+   {
+    "case": "square 2x3",
+    "gap": 1.4999999999999998,
+    "t": 0.5999999999999999,
+    "F_ed_minus_F_lswt": 0.0017987502248733023,
+    "exp_minus_gap_over_t": 0.0820849986238988,
+    "exp_minus_2gap_over_t": 0.006737946999085467
+   },
+   {
+    "case": "triangular 3x3",
+    "gap": 0.5000000000000001,
+    "t": 0.025000000000000005,
+    "F_ed_minus_F_lswt": 0.0,
+    "exp_minus_gap_over_t": 2.061153622438558e-09,
+    "exp_minus_2gap_over_t": 4.248354255291589e-18
+   },
+   {
+    "case": "triangular 3x3",
+    "gap": 0.5000000000000001,
+    "t": 0.05000000000000001,
+    "F_ed_minus_F_lswt": 3.435141060492697e-11,
+    "exp_minus_gap_over_t": 4.5399929762484854e-05,
+    "exp_minus_2gap_over_t": 2.061153622438558e-09
+   },
+   {
+    "case": "triangular 3x3",
+    "gap": 0.5000000000000001,
+    "t": 0.10000000000000002,
+    "F_ed_minus_F_lswt": 1.5065693412807946e-06,
+    "exp_minus_gap_over_t": 0.006737946999085467,
+    "exp_minus_2gap_over_t": 4.5399929762484854e-05
+   },
+   {
+    "case": "triangular 3x3",
+    "gap": 0.5000000000000001,
+    "t": 0.20000000000000004,
+    "F_ed_minus_F_lswt": 0.00042697359657228873,
+    "exp_minus_gap_over_t": 0.0820849986238988,
+    "exp_minus_2gap_over_t": 0.006737946999085467
+   }
+  ]
+ },
+ "neel_finite_temperature": [
+  {
+   "N": 16,
+   "t": [
+    0.0,
+    0.1,
+    0.3
+   ],
+   "U": [
+    -0.6578961000283698,
+    -0.6575559203773667,
+    -0.644309083225479
+   ],
+   "C": [
+    0.0,
+    0.01182514971855993,
+    0.15779885099445282
+   ],
+   "S": [
+    0.0,
+    0.004495628852394894,
+    0.06383476976304577
+   ],
+   "moment": [
+    0.3194485107761276,
+    NaN,
+    NaN
+   ],
+   "gapless": true
+  },
+  {
+   "N": 32,
+   "t": [
+    0.0,
+    0.1,
+    0.3
+   ],
+   "U": [
+    -0.6579409980124515,
+    -0.6575568278976727,
+    -0.6443090832258821
+   ],
+   "C": [
+    0.0,
+    0.01189012352355178,
+    0.15779885102150165
+   ],
+   "S": [
+    0.0,
+    0.005500218884964772,
+    0.06484744138880608
+   ],
+   "moment": [
+    0.31143062815762457,
+    NaN,
+    NaN
+   ],
+   "gapless": true
+  },
+  {
+   "N": 64,
+   "t": [
+    0.0,
+    0.1,
+    0.3
+   ],
+   "U": [
+    -0.6579466178391944,
+    -0.6575568279307455,
+    -0.6443090832258822
+   ],
+   "C": [
+    0.0,
+    0.01189012908284506,
+    0.15779885102150112
+   ],
+   "S": [
+    0.0,
+    0.005753888653170342,
+    0.06510111147009102
+   ],
+   "moment": [
+    0.3074152528505427,
+    NaN,
+    NaN
+   ],
+   "gapless": true
+  }
+ ],
+ "triangular_polarized_scan": {
+  "h": 5.0,
+  "h_sat": 4.5,
+  "t": [
+   0.02,
+   0.05,
+   0.1,
+   0.2,
+   0.3,
+   0.5
+  ],
+  "F": [
+   -1.750000000000002,
+   -1.750000043313456,
+   -1.7500271187851666,
+   -1.7514734026585321,
+   -1.7580855767728152,
+   -1.7951403574738596
+  ],
+  "U": [
+   -1.7499999999999463,
+   -1.7499995216622068,
+   -1.749833997552221,
+   -1.7445978596139973,
+   -1.7275262947089054,
+   -1.659370185387639
+  ],
+  "S": [
+   2.795632354098094e-12,
+   1.043302497841277e-05,
+   0.001931212329454717,
+   0.03437771522267474,
+   0.1018642735463661,
+   0.27154034417244083
+  ],
+  "C": [
+   7.015345919117308e-11,
+   0.00010660922630527261,
+   0.010505820582381087,
+   0.10714808523090086,
+   0.23326809068462226,
+   0.435710651994325
+  ],
+  "moment": [
+   0.4999999999998965,
+   0.4999991337212445,
+   0.4997283764450772,
+   0.4924873843842273,
+   0.4717004350248446,
+   0.39870489573739065
+  ],
+  "beyond_lswt": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ]
+ },
+ "decisions": "D25 (2026-09-30): zero modes judged from lambda_min(H)/scale in three classes (zero <= 1e-12, candidate <= 1e-6, gapped); candidates stop finite-temperature quantities until the user sets gapless; gapless spectra report boson numbers, moments and magnetization at t > 0 as NaN while F, U, S, C are computed; scan points include magnetic and primitive high-symmetry points and mesh minima with continuous minimization and line probes; dimensionless t, no kelvin helper."
+}

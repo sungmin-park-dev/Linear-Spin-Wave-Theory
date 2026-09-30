@@ -22,8 +22,8 @@ Energies are per site in the energy unit E0 of the model (D20).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Tuple
+from dataclasses import dataclass, field, replace
+from typing import Any, Callable, Dict, Optional, Tuple
 import warnings
 
 import numpy as np
@@ -68,6 +68,9 @@ class LSWTSettings:
     zero_mode_tolerance : float
         Without regularization, ``min eig H(k) <= zero_mode_tolerance *
         max |eig H(k)|`` is a zero mode or an instability.
+    gapless : bool, optional
+        The user's decision after inspecting zero-mode candidates (4b); used
+        only for finite-temperature quantities, recorded in the header.
     """
 
     mesh: Tuple[int, int] = LSWT_DEFAULT_MESH
@@ -76,6 +79,7 @@ class LSWTSettings:
     regularization: str = "none"
     stationarity_tolerance: float = LSWT_STATIONARITY_TOLERANCE
     zero_mode_tolerance: float = LSWT_ZERO_MODE_TOLERANCE
+    gapless: Optional[bool] = None
 
     def __post_init__(self):
         if self.regularization not in REGULARIZATIONS:
@@ -94,7 +98,7 @@ class LSWTSettings:
                 "k_points": None if self.k_points is None else "explicit",
                 "regularization": self.regularization,
                 "stationarity_tolerance": self.stationarity_tolerance,
-                "zero_mode_tolerance": self.zero_mode_tolerance}
+                "zero_mode_tolerance": self.zero_mode_tolerance, "gapless": self.gapless}
 
 
 @dataclass(frozen=True)
@@ -132,6 +136,13 @@ class LSWTResult:
         Per site; ``ground_state_energy = classical + zero_point``.
     boson_numbers : (Ns,) array
         ``<a_i^dagger a_i>`` at zero temperature.
+    lattice, magnetic_lattice : (2, 2) arrays
+        Primitive and magnetic lattice vectors (rows).
+    thermal : ThermalResult or None
+        Finite-temperature quantities at ``conditions.temperature`` (4b).
+    hamiltonian_at : callable
+        ``hamiltonian_at(k)`` returns the unregularized ``H(k)`` for momenta
+        ``(m, 2)``, for zero-mode scans and later observables. Not serialized.
     """
 
     header: ResultHeader
@@ -150,6 +161,10 @@ class LSWTResult:
     zero_point_energy: float
     ground_state_energy: float
     boson_numbers: np.ndarray
+    lattice: Optional[np.ndarray] = None
+    magnetic_lattice: Optional[np.ndarray] = None
+    thermal: Optional[Any] = None
+    hamiltonian_at: Optional[Callable] = field(default=None, repr=False, compare=False)
     extra: Dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -257,6 +272,10 @@ def solve_lswt(model: SpinModel, state: SpinState,
     geometry : CalculationGeometry, optional
         Thermodynamic limit (default; momenta from ``settings.mesh``) or a
         finite torus (its momenta, reduced to the magnetic cell).
+        A positive ``conditions.temperature`` (dimensionless ``k_B T / E0``)
+        adds :attr:`LSWTResult.thermal`; zero-mode candidates must then be
+        resolved with ``settings.gapless`` (see
+        :func:`spintoolkit.observables.thermal.thermal_quantities`).
     settings : LSWTSettings
 
     Returns
@@ -270,8 +289,6 @@ def solve_lswt(model: SpinModel, state: SpinState,
     """
     conditions = conditions or ExternalConditions()
     geometry = geometry or CalculationGeometry.thermodynamic_limit()
-    if conditions.temperature != 0:
-        raise NotImplementedError("finite temperature observables come with stage 4b")
     validate_spin_state(state, model, geometry)
     k, fractional = _momenta(model, state, geometry, settings)
 
@@ -313,7 +330,21 @@ def solve_lswt(model: SpinModel, state: SpinState,
     header = ResultHeader.build(
         "lswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0); boson numbers per magnetic site", diagnostics)
-    return LSWTResult(header, keys, np.array([model.site(s).spin for s, _ in keys]),
-                      np.array([state.direction(s, c) for s, c in keys]), k, fractional, weights,
-                      H, E, T, shift, linear_max, float(e_cl), float(zero_point),
-                      float(e_cl + zero_point), boson_numbers)
+    angles = system.get_angles_flat()
+
+    def hamiltonian_at(momenta):
+        return np.asarray(hamiltonian.Quadratic_Bose_Hamiltonian(
+            np.atleast_2d(np.asarray(momenta, dtype=float)), angles=angles)[0])
+
+    result = LSWTResult(header, keys, np.array([model.site(s).spin for s, _ in keys]),
+                        np.array([state.direction(s, c) for s, c in keys]), k, fractional, weights,
+                        H, E, T, shift, linear_max, float(e_cl), float(zero_point),
+                        float(e_cl + zero_point), boson_numbers,
+                        np.asarray(model.lattice, dtype=float), state.magnetic_lattice(model),
+                        None, hamiltonian_at)
+    if conditions.temperature > 0:
+        from spintoolkit.observables.thermal import thermal_quantities
+
+        result = replace(result, thermal=thermal_quantities(
+            result, [conditions.temperature], gapless=settings.gapless))
+    return result

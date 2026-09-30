@@ -21,8 +21,8 @@
     \textbf{방향 합의} & 모델·계산계·기준상태·방법의 경계, 간결한 모델 작업 공간 & — \\
     \textbf{범위 결정} & 1차 범위, \texttt{terms} 형식, g-텐서와 외부 $B$, 벤치마크·최소 ED, \texttt{spintoolkit} & 필드 규약 작성 \\
     \textbf{규약 검토} & 필드·좌표·단위·항 수 규칙, 상태 정합 조건 & 세부 규약 검토 \\
-    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b·3·4a단계 구현 & 검토 항목 확인 \\
-    \textbf{미구현} & 열역학(4b), 상관함수(4c), ED 2-마그논·flux, TN, 여러 차원 영공간 & 4b부터 \\
+    \textbf{검증 기록 있음} & NBCP 모델 추출, 파일 배치, 0·1·2·2b·3·4a·4b단계 구현 & 검토 항목 확인 \\
+    \textbf{미구현} & 상관함수(4c), ED 2-마그논·flux, TN, 여러 차원 영공간 & 4c부터 \\
     \bottomrule
   \end{tabularx}
   \slidesource{설계 상태와 적용 범위}{contract,extraction,layout}
@@ -433,6 +433,48 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{\texttt{examples/lswt\_stage4a\_check.py}}{stage4a}
 \end{frame}
 
+\begin{frame}[label=stage4b-zero-modes]{4b: 영모드는 세 구간으로 판정하고, 애매하면 사용자가 정한다}
+  \framesubtitle{2026-09-30 · $\omega$가 아니라 $\lambda_{\min}(\mathsf H(\mathbf k))/\text{scale}$로 판정한다. 작은 갭 $\Delta$는 $\lambda\sim\Delta^2/\text{대역폭}$이다(D25).}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}P{3.6cm}Y@{}}
+    \toprule
+    경우 & 판정 & 비고 \\
+    \midrule
+    정사각 Néel, 삼각 120° & 영(Γ), Goldstone & 깨진 대칭 2개, 3개 \\
+    이방성 $10^{-2}$, $10^{-5}$ & 갭 0.2835, 0.00894 & 해석값 $2\sqrt{(1+d)^2-1}$과 일치 \\
+    이방성 $10^{-7}$, $10^{-9}$ & \textbf{후보}(갭 추정 $9\times10^{-4}$, $9\times10^{-5}$) & 사용자가 \texttt{gapless}를 정해야 진행 \\
+    J1--J2, $J_2=J_1/2$ & 영, 선(12방향 중 1방향 평평) & Γ 밖; 이동 격자로도 피할 수 없음 \\
+    NBCP Y: XXZ / $J_{\mathrm{PD}}$, $J_\Gamma$ & 영: Goldstone / \textbf{우연} & 대칭 없음, 고전 평평 방향 1개 \\
+    편극 상태 & 갭 $h-h_{\mathrm{sat}}$ & 후보 없음 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{구간: 영 $\le10^{-12}$, 후보 $\le10^{-6}$, 그 위는 갭. 탐색점: 자기·원시 격자의 고대칭점, 격자 최소점에서 연속 최소화, 12방향 선 검사.
+  후보가 있으면 \texttt{thermal\_quantities}는 \texttt{ZeroModeCandidateError}로 멈추고, 사용자의 결정은 결과 머리부에 기록된다.}
+  \slidesource{4b 검증 기록}{stage4b}
+\end{frame}
+
+\begin{frame}[label=stage4b-thermal]{4b: 무차원 유한 온도 물리량}
+  \framesubtitle{$t=k_BT/E_0$ · 저장된 대각화를 재사용 · 기존 켈빈 함수를 $T=t/k_B$로 감싼다 · 고정 기준 상태의 저온 근사.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}P{3.4cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 범위 \\
+    \midrule
+    직접 공식 & $10^{-13}$ & 편극 강자성의 $F,U,S,C$, 모멘트 \\
+    열역학 관계 & 수치 미분과 $10^{-7}$ & $U=F+tS$, $S=-\partial_tF$, $C=\partial_tU=t\partial_tS$ \\
+    고온·저온 & 모드당 $C\to1$; 활성형 & 고온에서 $\langle n\rangle>S$는 경고와 \texttt{beyond\_lswt} \\
+    ED 저온 대조 & $|F_{\mathrm{ED}}-F_{\mathrm{LSWT}}|<e^{-2\Delta/t}$ & 정사각 2$\times$3, 삼각 3$\times$3; 2-마그논부터 차이 \\
+    Néel, $t>0$ & $U,C$가 $N=16$--64에서 수렴 & 모멘트는 NaN(2D 로그 발산)과 경고 \\
+    기존 켈빈 계산 & $10^{-14}$ & NBCP 편극상, 같은 k·MAGSWT \\
+    테스트·스냅샷 & 437 통과 / 같은 5 실패 & 새 16개; 스냅샷 차이 0 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{2D에서 선형·이차 분산의 영모드는 $F,U,S,C$를 유한하게 두지만 $\langle n\rangle$을 로그 발산시킨다. 기존 보손 수 kernel은 유한 온도에서도 맞음을 독립 계산으로 확인했다.}
+  \slidesource{\texttt{examples/lswt\_stage4b\_check.py}}{stage4b}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
@@ -508,7 +550,7 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     2 & NBCP 연결(완료) & 1--4 MSL 수치 보존; $r_{\mathrm{target}}=r_{\mathrm{source}}-d$ 변환 후 $\mathsf H(\mathbf k)$ 원소 단위 일치; $k,-k$ 대응 \\
     2b & 상태 선택(구현) & NBCP Y·V의 축·선택이 독립 스캔 재현; D19 두 모드; MAGSWT 비교 \\
     3 & 최소 ED(구현) & 일반 ED가 독립 구현과 일치; 편극상 1-마그논 = 같은 토러스의 LSWT(모든 $\mathbf k$); 전개 규칙 공통 \\
-    4 & LSWT 물리량(4a) & 4a 바닥상태, 4b 열역학, 4c 상관함수; 문헌 비교는 출처 명시 \\
+    4 & 물리량(4a·4b) & 4a 바닥상태, 4b 열역학·영모드, 4c 상관함수 \\
     5 & 위상량 & 하이젠버그 null test; 0이 아닌 기준 모델 비교; 기존 real-space volume 이슈 해소 \\
     \bottomrule
   \end{tabularx}

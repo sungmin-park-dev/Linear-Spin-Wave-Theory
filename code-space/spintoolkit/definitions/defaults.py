@@ -66,3 +66,13 @@ ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficien
 LSWT_DEFAULT_MESH = (24, 24)       # thermodynamic-limit mesh of the magnetic reciprocal cell
 LSWT_STATIONARITY_TOLERANCE = 1e-8 # E0, largest torque accepted without a warning
 LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below this is a zero mode
+
+# =============================================================================
+# Zero-mode scan and finite temperature (stage 4b)
+# =============================================================================
+
+ZERO_MODE_ZERO_TOLERANCE = 1e-12       # lambda_min(H) / scale at or below: numerically zero
+ZERO_MODE_CANDIDATE_TOLERANCE = 1e-6   # up to this: candidate, the user decides
+ZERO_MODE_MESH_SEEDS = 8               # lowest mesh points used as scan starting points
+ZERO_MODE_SEARCH_THRESHOLD = 1e-2      # minimize lambda_min only from points at or below this
+ZERO_MODE_LINE_DIRECTIONS = 12         # directions probed for lines of zero modes

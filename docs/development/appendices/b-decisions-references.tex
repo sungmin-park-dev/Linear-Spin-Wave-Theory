@@ -73,6 +73,19 @@
   \slidesource{2026-09-29 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-stage4]{결정 기록 (D25--)}
+  \framesubtitle{2026-09-30 사용자 결정. 근거와 수치 자료는 부록 A에 있다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
@@ -339,6 +352,9 @@
     \bibitem{stage4a}
       4a LSWT 진입점·바닥상태 검증 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · 기존 솔버 재현, 해석값, QMC·DMRG.
+    \bibitem{stage4b}
+      4b 영모드·유한 온도 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 영모드 판정, ED 저온 대조.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
