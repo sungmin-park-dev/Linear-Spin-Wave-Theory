@@ -733,6 +733,22 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{6b 검증 기록}{stage6b}
 \end{frame}
 
+\begin{frame}[label=stage6b-quarter]{6b 보정: 1/4 파수의 단일 q 상태를 놓치지 않는다}
+  \framesubtitle{2026-09-30 · D30, D32 · 인터페이스 변경 없음 · LT 이론 부록 유도에서 발견.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 내용 \\
+    \midrule
+    결함 & $2\mathbf q^*\notin G$이면 모두 $\mathbf u_a\cdot\mathbf u_a=0$(나선)을 요구했다. $4\mathbf q^*\in G$이면 $e^{2i\mathbf q^*\cdot\mathbf R}=\pm1$이라 $\mathrm{Re}(\mathbf u_a\cdot\mathbf u_a)=0$, $|\mathbf u_a|^2=2$만 필요하다. 그래서 uudd 같은 비나선 상태를 거짓 음성으로 판정했다. \\
+    수정 & 위상 경우 세 가지($2\mathbf q^*\in G$, $4\mathbf q^*\in G$, 그 외)로 강한 제약 잔차를 고름 \\
+    재현 & 정사각, 2번째 이웃 Ising형 AFM + $a_2$ FM, $\lambda_{\min}=-0.5$, $\mathbf q^*=(3/4,0)$: 전 불만족(잔차 2) → 후 만족, uudd 상태 에너지 $-0.5$ \\
+    확인 & 6b 벤치마크 보고 전후 동일(시간 제외), 테스트 496 통과(회귀 1개 추가), 스냅샷 144개 차이 0 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{6b 보정 검증 기록}{stage6b-quarter}
+\end{frame}
+
 \begin{frame}[label=stage6c]{6c: 전역 고전 탐색이 기존 탐색을 그대로 재현한다}
   \framesubtitle{2026-09-30 · D30, D32 · \texttt{classical\_search(model, supercell, conditions)}: $(\theta,\phi)$ 차분 진화(기존 설정) 뒤 해석적 정밀화.}
   \footnotesize\renewcommand{\arraystretch}{1.08}

@@ -275,7 +275,10 @@ ED/TN 실행 가능성은 별도 검증이다.
 `luttinger_tisza`가 J(q) 최소, 후보 셀과 단일 q 강한 제약을 보고한다. 무작위 정합 상태 5종에서 J(q) 에너지 = 고전 에너지
 (1.4e-16), 벤치마크(정사각 FM·Néel, 삼각 K·√3×√3·-3JS²/2, J1-J2 Néel·stripe·퇴화 선, Haldane Γ, 키타에프 평평한 밴드)를
 재현하고 NBCP XXZ는 단일 q로 불만족이다(486 통과). 기록은
-`docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`.
+`docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`. 6b 보정(2026-09-30): LT 이론 부록 유도에서
+4q*∈G(2q*∉G)인 1/4 파수의 단일 q 조건이 Re(u·u)=0뿐임을 확인했다. 기존 u·u=0 요구가 uudd 같은 비나선 상태를
+거짓 음성으로 판정하던 것을 세 위상 경우로 고쳤다(인터페이스 변경 없음, 벤치마크 동일, 496 통과, 스냅샷 차이 0). 기록은
+`docs/development/verification/stage6b-quarter-wave-vector-2026-09-30.json`, 사용자 확인 대기.
 
 6c를 구현했다: `classical_search`가 초격자의 모든 스핀을 (theta, phi)로 매개화해 기존 `SpinOptimizer`와 같은 차분 진화를
 돌린 뒤 `refine_classical`로 정밀화한다. 회귀 스냅샷에 저장된 기존 탐색 8건(NBCP xxz·nn_soc, One-Four MSL, 기운 장)에서
@@ -333,6 +336,7 @@ ED/TN 실행 가능성은 별도 검증이다.
 - 2026-09-30 (claude): D32와 6a·6b 구현·검증 결과를 기록했다.
 - 2026-09-30 (claude): 6c 구현·검증 결과를 기록했다.
 - 2026-09-30 (claude): D33과 4d 구현·검증 결과, 7단계(시각화) 계획을 기록했다.
+- 2026-09-30 (claude): 6b 보정(1/4 파수 단일 q 강한 제약)을 기록했다.
 
 ## 관련 기록
 

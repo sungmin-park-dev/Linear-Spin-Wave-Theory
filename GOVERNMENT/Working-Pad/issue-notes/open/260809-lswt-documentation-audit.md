@@ -137,7 +137,7 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 ### 검증과 코드 발견
 
 - \(\mathsf L_{\mathbf q}\)의 에너지 재현, 하한, 벤치마크(정사각 Néel·FM −0.5, 삼각 −0.375, J1–J2, 벌집 FM+DM, Kitaev)는 stage 6b 기록(`docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`)과 같다.
-- **코드 발견(D32 LT 진단의 거짓 음성):** `luttinger_tisza`는 2Q∉G인 모든 Q에 \(\mathbf u\cdot\mathbf u=0\)을 요구한다. 그래서 4Q∈G(1/4 벡터)에서 나선이 아닌 단일 파수 상태를 놓친다. 재현 예시는 정사각 격자 \(a_1\) 방향 2번째 이웃 Ising형 AFM \(\mathrm{diag}(0.2,0.2,1)\)과 \(a_2\) FM \(-\mathrm{diag}(0.2,0.2,1)\), S=1/2이다. 이때 λ_LT = −0.5, Q = (3/4, 0), 고유공간 1차원(z)에서 코드는 `strong_constraint=False`(잔차 2)를 준다. 그러나 uudd Ising 상태가 에너지 −0.5로 하한에 도달한다. 진단은 상태를 선택하지 않으므로(D30) 다른 결과를 틀리게 만들지는 않지만, "단일 q 상태 없음" 보고가 틀린다. 수정(4Q∈G 분기 추가와 회귀 테스트)은 사용자 승인 후 별도 코드 작업으로 한다.
+- **코드 발견(D32 LT 진단의 거짓 음성):** `luttinger_tisza`는 2Q∉G인 모든 Q에 \(\mathbf u\cdot\mathbf u=0\)을 요구한다. 그래서 4Q∈G(1/4 벡터)에서 나선이 아닌 단일 파수 상태를 놓친다. 재현 예시는 정사각 격자 \(a_1\) 방향 2번째 이웃 Ising형 AFM \(\mathrm{diag}(0.2,0.2,1)\)과 \(a_2\) FM \(-\mathrm{diag}(0.2,0.2,1)\), S=1/2이다. 이때 λ_LT = −0.5, Q = (3/4, 0), 고유공간 1차원(z)에서 코드는 `strong_constraint=False`(잔차 2)를 준다. 그러나 uudd Ising 상태가 에너지 −0.5로 하한에 도달한다. 진단은 상태를 선택하지 않으므로(D30) 다른 결과를 틀리게 만들지는 않지만, "단일 q 상태 없음" 보고가 틀린다. 2026-09-30 사용자 승인 후 수정했다: 세 위상 경우 분기와 회귀 테스트, 재현 예시가 하한 −0.5에 도달한다. 벤치마크는 동일하고 496 통과, 스냅샷 차이 0이다. 기록은 `docs/development/verification/stage6b-quarter-wave-vector-2026-09-30.json`과 Beamer 검토본 43이며 사용자 확인 대기다.
 - Quarto preview는 경고와 미해결 참조가 없었다. 이는 출력 구조 검증이며 acceptance가 아니다.
 
 ## Correlations and Structure Factor Draft — 2026-09-30

@@ -128,6 +128,23 @@ def test_bound_lies_below_the_classical_energy_and_nbcp_fails_the_single_q_const
         assert classical_energy(model, state, None) >= report.lambda_min - 1e-12
 
 
+def test_quarter_wave_vector_accepts_the_up_up_down_down_state():
+    """4q* in G but 2q* not: only Re(u.u) = 0 is required, so the Ising uudd state
+    (not a spiral) reaches the bound; the former u.u = 0 test rejected it."""
+    ising = np.diag([0.2, 0.2, 1.0])
+    terms = [Term.bilinear(("A", (0, 0)), ("A", (2, 0)), ising),
+             Term.bilinear(("A", (0, 0)), ("A", (0, 1)), -ising)]
+    model = SpinModel(np.eye(2), [Site("A", (0, 0), 0.5)], terms, {"model_id": "quarter_ising"})
+    report = luttinger_tisza(model, mesh=(24, 24))
+    assert report.lambda_min == pytest.approx(-0.5)
+    minimum = report.minima[0]
+    assert minimum.fraction in {("1/4", "0"), ("3/4", "0")} and minimum.multiplicity == 1
+    assert minimum.strong_constraint and minimum.state_energy == pytest.approx(-0.5)
+    directions = np.array(list(minimum.state.directions.values()))
+    assert np.allclose(np.abs(directions[:, 2]), 1.0)
+    assert sorted(np.sign(directions[:, 2])) == [-1, -1, 1, 1]
+
+
 def test_supercell_is_the_smallest_cell_holding_the_wave_vector():
     from fractions import Fraction
     for f in [(Fraction(1, 3), Fraction(1, 3)), (Fraction(1, 2), Fraction(0)),

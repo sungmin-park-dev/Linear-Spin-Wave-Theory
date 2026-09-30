@@ -17,10 +17,14 @@ state built from the lowest eigenvectors also satisfies the strong constraint
 
 - ``n_a(R) = Re[u_a exp(i q* . R)]`` with the cell amplitude
   ``u_a = w_a exp(i q* . r_a)`` (``w`` an eigenvector, ``r_a`` the site offset);
-- ``q*`` generic (``2 q*`` not a reciprocal vector): unit length for every cell
-  ``R`` iff ``u_a . u_a = 0`` and ``|u_a|^2 = 2`` for every site (a spiral);
+- ``|n_a(R)|^2 = |u_a|^2 / 2 + Re[(u_a . u_a) exp(2 i q* . R)] / 2``, and the
+  phases ``exp(2 i q* . R)`` over all cells give three cases:
 - ``2 q*`` a reciprocal vector (zone centre, half reciprocal vectors):
-  ``exp(i q* . R) = +-1``, and ``|Re u_a| = 1`` is required.
+  ``exp(i q* . R) = +-1``, and ``|Re u_a| = 1`` is required;
+- ``4 q*`` but not ``2 q*`` a reciprocal vector (quarter vectors): the phases
+  are ``+-1``, so ``Re(u_a . u_a) = 0`` and ``|u_a|^2 = 2`` (the angle between
+  ``Re u_a`` and ``Im u_a`` is free, e.g. up-up-down-down);
+- otherwise: ``u_a . u_a = 0`` and ``|u_a|^2 = 2`` for every site (a spiral).
 
 ``w`` is sought in the eigenspace of ``lambda_min`` at ``q*``. Failure means no
 single-q LT state; multi-q states and the generalized (Lyons-Kaplan) LT are not
@@ -184,11 +188,23 @@ def _supercell(fractions) -> np.ndarray:
     raise RuntimeError("no supercell basis found")          # pragma: no cover
 
 
-def _strong_fit(space: np.ndarray, phases: np.ndarray, real_phase: bool,
+def _phase_case(fraction: np.ndarray) -> str:
+    """Values of ``exp(2 i q* . R)``: "real" (2q* in G), "quarter" (4q* in G), "generic"."""
+    def integer(x):
+        return bool(np.all(np.abs(x - np.rint(x)) < 1e-9))
+    if integer(2 * fraction):
+        return "real"
+    if integer(4 * fraction):
+        return "quarter"
+    return "generic"
+
+
+def _strong_fit(space: np.ndarray, phases: np.ndarray, case: str,
                 rng) -> Tuple[float, np.ndarray]:
     """Best cell amplitude ``u`` (Ns x 3) from the eigenspace ``space`` (3Ns x d).
 
-    ``phases`` are ``exp(i q* . r_a)``; ``u_a = phases_a (space @ c)_a``.
+    ``phases`` are ``exp(i q* . r_a)``; ``u_a = phases_a (space @ c)_a``;
+    ``case`` from :func:`_phase_case` selects the strong-constraint residual.
     """
     ns = space.shape[0] // 3
     d = space.shape[1]
@@ -199,12 +215,13 @@ def _strong_fit(space: np.ndarray, phases: np.ndarray, real_phase: bool,
 
     def residual(x):
         u = amplitude(x)
-        if real_phase:
+        if case == "real":
             v = np.real(u)
             return float(np.sum((np.sum(v * v, axis=1) - 1.0) ** 2))
         dot = np.sum(u * u, axis=1)
         norm = np.sum(np.abs(u) ** 2, axis=1)
-        return float(np.sum(np.abs(dot) ** 2) + np.sum((norm - 2.0) ** 2))
+        mismatch = np.real(dot) if case == "quarter" else dot
+        return float(np.sum(np.abs(mismatch) ** 2) + np.sum((norm - 2.0) ** 2))
 
     best = (np.inf, None)
     for _ in range(16):
@@ -272,9 +289,8 @@ def luttinger_tisza(model: SpinModel, mesh: Tuple[int, int] = (48, 48),
         k = f @ reciprocal
         w_all, v_all = np.linalg.eigh(lt_matrix(model, k)[0])
         space = v_all[:, w_all <= w_all[0] + tolerance * scale]
-        real_phase = bool(np.all(np.abs(np.mod(2 * f + 0.5, 1.0) - 0.5) < 1e-9))
         offsets = np.array([model.cartesian_position(site_id) for site_id in model.site_ids])
-        residual, u = _strong_fit(space, np.exp(1j * offsets @ k), real_phase, rng)
+        residual, u = _strong_fit(space, np.exp(1j * offsets @ k), _phase_case(f), rng)
         strong = residual < LT_STRONG_TOLERANCE
         fractions = _commensurate(f, max_denominator)
         cell = _supercell(fractions) if fractions is not None else None

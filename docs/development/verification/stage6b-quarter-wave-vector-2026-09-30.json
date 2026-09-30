@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-30",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "d80748e",
+  "scope": "Stage 6b correction (D30, D32): single-q strong constraint of the Luttinger-Tisza diagnostic at quarter wave vectors.",
+  "defect": "For every q* with 2q* not a reciprocal vector the fit required u_a . u_a = 0 (a spiral). When 4q* is a reciprocal vector but 2q* is not, the phases exp(2 i q* . R) are only +-1, and |n_a(R)|^2 = |u_a|^2/2 + Re[(u_a . u_a) exp(2 i q* . R)]/2 requires only Re(u_a . u_a) = 0 and |u_a|^2 = 2. Non-spiral single-q states such as up-up-down-down were rejected (false negative).",
+  "found_by": "Derivation for the Luttinger-Tisza theory appendix (docs/lswt/04-appendices/luttinger-tisza-method.md, 2026-09-30).",
+  "change": {
+    "code-space/spintoolkit/methods/luttinger_tisza.py": "_phase_case(fraction) -> 'real' (2q* in G), 'quarter' (4q* in G, 2q* not), 'generic'; _strong_fit uses Re(u.u) for 'quarter'; module docstring states the three cases. Interface unchanged.",
+    "code-space/tests/test_methods/test_luttinger_tisza.py": "test_quarter_wave_vector_accepts_the_up_up_down_down_state"
+  },
+  "reproduction": {
+    "model": "square lattice, S = 1/2; second-neighbour (2, 0) Ising-like AFM diag(0.2, 0.2, 1); (0, 1) FM -diag(0.2, 0.2, 1)",
+    "lambda_min": -0.5,
+    "q_star": ["3/4", "0"],
+    "eigenspace_dimension": 1,
+    "before": "strong_constraint False, residual 2.0",
+    "after": "strong_constraint True, state_energy -0.5 (bound reached), directions +z, +z, -z, -z along a1 (uudd)"
+  },
+  "findings": [
+    "The corrected fit accepts the uudd state, whose classical energy equals lambda_min.",
+    "The stage 6b benchmark report (square FM/Neel, triangular, J1-J2, honeycomb FM + DM, Kitaev, NBCP XXZ) is identical before and after, apart from timings.",
+    "Full suite: 496 passed (495 before plus the new test).",
+    "Package regression snapshot: 144 leaves compared, maximum difference 0.0."
+  ]
+}
