@@ -280,6 +280,48 @@
   \slidesource{2026-09-29 결정; 세부 계수는 부록 A의 2b단계 쪽}{contract}
 \end{frame}
 
+\begin{frame}[label=d28-principle]{D28 검토안: 비교 규칙을 1-loop 유효 퍼텐셜로 바꾼다}
+  \framesubtitle{검토안 · 결정 전. 지금 규칙(곡률 비, 대역 0.1--10)은 근거가 없고 조화 차수가 다르면 $m^2$만큼 치우친다.}
+  \small
+  \[
+    \Gamma(\phi)=\min_{\text{다른 좌표}}E_{\mathrm{cl}}\big|_{\phi}+E_{\mathrm{zp}}(\phi)+O(S^0)
+  \]
+  \begin{tabularx}{\textwidth}{@{}P{2.6cm}Y@{}}
+    \toprule
+    항목 & 내용 \\
+    \midrule
+    의미 & 부드러운 좌표 $\phi$의 1-loop 유효 퍼텐셜; 답은 $\Gamma$의 최소(Shender 1982, Henley 1989; 유사 Goldstone 갭: Rau--McClarty--Moessner 2018) \\
+    완화 경로 & 각 $\phi$에서 궤도 방향만 고정하고 나머지를 고전 최소화. 궤도 방향 토크만 남고, 스핀에 수직인 구속장은 $H_2$를 바꾸지 않으므로 선형항을 버린 계산이 구속된 1-loop 계산 \\
+    D17·D18과의 관계 & 고전 궤도가 평평하면 $\Gamma=\text{상수}+E_{\mathrm{zp}}$로 D17과 같다. $\phi$ 하나만 움직여 D18이 막은 딱딱한 좌표의 $O(1/S)$ 이완이 없다 \\
+    적용 조건 & 단열 분리: $\Gamma$의 곡률 $\ll$ 딱딱한 모드의 최소 강성. 비를 결과에 기록 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{결정할 점: 채택 여부; $\Gamma$ 최소를 선택 상태로 돌려줄지; 판정 이름을 순수 최소로부터의 이동으로만 묘사할지; 단열 비의 경고 기준값.}
+  \slidesource{D28 검토 자료}{potential}
+\end{frame}
+
+\begin{frame}[label=d28-results]{D28 검토 자료: 강체 궤도는 고전 고정을 과대평가했다}
+  \framesubtitle{NBCP Y(0.2 T, $J_{\mathrm{PD}}$)와 V(1.4 T, $J_\Gamma$), 면내 장 성분 비 = 기울기, 72점, $N=6$.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{1.9cm}P{2.3cm}P{2.3cm}P{2.1cm}Y@{}}
+    \toprule
+    경우 & 고전 변동: 강체 / 완화 & 양자 변동(완화) & $\Gamma$ 최소$-$양자 최소 & 단열 비 \\
+    \midrule
+    Y, 0° & 0 / 0 & $2.9\times10^{-6}$ & $3.7\times10^{-7}$ (D17) & $1.1\times10^{-2}$ \\
+    Y, 0.57° & -- / $5.9\times10^{-8}$ & $3.2\times10^{-6}$ & $-9.7\times10^{-4}$ & $1.1\times10^{-2}$ \\
+    Y, 1.7° & $7.5\times10^{-6}$ / $5.3\times10^{-7}$ & $3.8\times10^{-6}$ & $-8.9\times10^{-3}$ & $1.1\times10^{-2}$ \\
+    Y, 5.7° & -- / $5.8\times10^{-6}$ & $9.0\times10^{-6}$ & $+4.5\times10^{-2}$ & $2.8\times10^{-2}$ \\
+    Y, 16.7° & -- / $5.1\times10^{-5}$ & $5.7\times10^{-5}$ & $+6.1\times10^{-2}$ & $1.7\times10^{-1}$ \\
+    V, 0.57° & -- / $1.8\times10^{-4}$ & $5.8\times10^{-5}$ & 고전 최소 쪽($-3.3\times10^{-2}$) & $9.3\times10^{-3}$ \\
+    V, 5.7° & 완화 실패 & -- & -- & $2.4\times10^{3}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{정정: 강체 궤도로 얻은 ``1.7°면 고전 고정이 이긴다''는 틀렸다(고전 변동을 14배 과대평가). Y는 면내 알짜 모멘트가 없어 고전 변동 $\propto$ 기울기$^2$, V는 선형이라 0.57°에서 이미 고전 우세. V, 5.7°는 부드러운 경로 그림이 성립하지 않음을 단열 비로 보고. 에너지 단위 meV/spin, 이동 단위 rad.}
+  \slidesource{\texttt{examples/nbcp\_effective\_potential\_check.py}}{potential}
+\end{frame}
+
 \begin{frame}[label=record-management]{설계 문서와 부록을 갱신하는 방법}
   \framesubtitle{변경 내용, 근거, 판정, 다음 작업을 함께 남긴다.}
   \begin{columns}[T,onlytextwidth]
@@ -371,6 +413,9 @@
     \bibitem{cleanup}
       기존 코드 정리 기록, 2026-09-30.
       \newblock \texttt{docs/development/verification/} · MAGSWT 격자 탐색·\texttt{correlations.py} 삭제와 대체.
+    \bibitem{potential}
+      D28 검토 자료: 1-loop 유효 퍼텐셜, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 완화 경로, D17 극한, 기울인 장.
     \bibitem{stage2b}
       2b단계 상태 선택 검증 기록, 2026-09-29.
       \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.

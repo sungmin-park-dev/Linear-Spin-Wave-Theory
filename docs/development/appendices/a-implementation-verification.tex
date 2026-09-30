@@ -295,7 +295,7 @@ result.diagnostics  # 판정에 쓴 값 전부
   \textbf{MAGSWT 재현(D18)}: 출발 azimuth가 $k\pi/6$ 격자 위이면 네 경우 모두 같은 총에너지(차이 $\le4.7\times10^{-16}$),
   격자 밖(0.3 rad)이면 궤도 탐색이 $1.3\times10^{-12}$--$8.1\times10^{-6}$ meV 낮다.
   \par\smallskip
-  \supportingtext{검토 요청: 기울인 장의 고전 최소는 유일하지만 고정 곡률이 영점 선택 곡률과 비슷하다. 이를 \texttt{competition}으로 볼지, MAGSWT를 유지할지 정해야 한다.}
+  \supportingtext{후속: 기울인 장의 \texttt{competition}은 곡률 비 규칙의 결과다. 이 규칙의 대체안(D28 검토안)과 강체 궤도의 과대평가는 부록 B.}
   \slidesource{2b단계 검증 기록}{stage2b}
 \end{frame}
 
@@ -633,8 +633,8 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     키타에프 편극상을 0이 아닌 thermal Hall 기준 모델로 쓸지 & 5단계 \\
     TN 관련 상태·계산 요청·결과의 필드 규약 & TN 도입 시 \\
     후속 kind의 계수와 의미: $S$에 따른 환원, $S\ge1$ 사중극자 자유도의 LSWT 처리; 토러스에서 접히는 결합의 처리 & 고차 항 도입 시 \\
-    D19 물리 근거 모드의 계수(2b 구현값) & 사용자 검토 \\
-    기울인 장처럼 고전 고정과 영점 선택이 비슷한 경우를 \texttt{competition}으로 볼지 & 사용자 검토 \\
+    D19 해상도 계수(2b 구현값)의 확정 & 사용자 검토 \\
+    고전·양자 비교 규칙을 1-loop 유효 퍼텐셜로(D28 검토안, 부록 B) & 사용자 결정 \\
     D17 확장: 사이트별 회전축, 여러 차원 영공간(삼각격자 $0<h<h_{\mathrm{sat}}$에 필요) & 해당 벤치마크 전 \\
     \bottomrule
   \end{tabularx}
