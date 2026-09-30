@@ -3,9 +3,9 @@ frontmatter-version: 1
 title: NBCP physics-to-code review
 section: working-pad/issue-notes
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-09-18
-updated: 2026-09-18
+updated: 2026-09-30
 ---
 
 # NBCP physics-to-code review
@@ -31,6 +31,30 @@ This record accompanies the user-approved nine-chapter reorganization of [the NB
 ## Priority convention issue: displacement direction
 
 The current [SpinSystem.Coupling documentation](../../../../code-space/spintoolkit/system/spin_system.py) describes displacement as a vector from site i to site j. The existing NBCP [geometry_audit and torus_curvature](../../../../examples/nbcp_y_soc_conditions.py) use the reverse embedding, with the neighbor at r_i minus the stored displacement. The nonlinear wave and wall diagnostics follow that existing embedding. This is a confirmed wording/embedding discrepancy, not a conclusion that every spectrum or energy is wrong. Resolving its physical impact requires tracing the Fourier sign, basis positions and directed bonds together; no convention or production code is changed by this document reorganization.
+
+### 2026-09-30: resolved by the toolkit convention D13
+
+The displacement question is settled at the code level; manuscript wording is a separate edit.
+
+- Convention (transfer contract D13, user decision 2026-09-29): a stored displacement is
+  `d = r_source - r_target`; the target site sits at `r_source - d`, and the Hamiltonian phase is
+  `exp(-i k . d)`. The `SpinSystem.Coupling`/`add_coupling` docstrings state this since stage 2.
+  The earlier "from i to j" wording no longer exists in the code.
+- Numerical confirmation: stage 2 compared the common-model Hamiltonian built with
+  `r_target = r_source - d` against the existing NBCP builders element by element over 20 cases
+  (largest difference 1.7e-16; `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`).
+- Momentum sign and conjugation: stage 3 matched the one-magnon ED spectrum at every torus momentum,
+  with DM fixing the k sign; stage 5a matched the particle block of `H(k)` element by element to the
+  Bloch matrix rebuilt from ED one-magnon states (2.7e-14; its complex conjugate differs by 2), so
+  the code's `k` is the momentum of the physical Bloch state
+  `a_k^dagger = N^-1/2 sum_r exp(i k . r) a_r^dagger`.
+- Consequence: calculations that embed the neighbor at `r_i - d` (the NBCP geometry audit, torus
+  curvature, smooth-wave and wall diagnostics) use the physical momentum. An odd-in-k response can
+  be given a laboratory direction once the orientation of the model's `x` axis relative to the
+  crystal axes is stated; that orientation is a material input, not a code convention.
+- Remaining in this review: the manuscript sentences that call the sign unresolved (Chapter 8,
+  "The unresolved displacement sign must be fixed ..."; Chapter 10, "The physical displacement
+  convention must also be resolved ...") and the crystal-axis orientation.
 
 ## Independent review order
 

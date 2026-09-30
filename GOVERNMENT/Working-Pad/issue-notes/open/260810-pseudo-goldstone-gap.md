@@ -4,9 +4,9 @@ title: Pseudo-Goldstone gap and nonuniform soft-mode handling
 section: issue-notes/open
 issue-type: problem
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-08-10
-updated: 2026-09-18
+updated: 2026-09-30
 source: GOVERNMENT/Working-Pad/issue-notes/closed/260810-agents-progress-history.md
 related:
   - code-space/spintoolkit/methods/lswt/diagonalization.py
@@ -211,6 +211,13 @@ python examples/nbcp_research_export.py
 검증 자료는 [새 전용 폴더](../../../../data-space/verification/260917-y-soc-conditions/)에 저장했다. Wolfram 15.0의 13개 exact checks가 통과했다. Python 비교는 B=0.2 T, SOC 4쌍, 기준각 3개, 방향 3개, ka 4개를 사용한다. ka=0.001에서 최대 상대 차이는 static 1.28e-7, paired dispersion 1.18e-7, 개별 에너지 6.09e-8 미만이다. 별도 tangent dynamics와 production spectrum 차이는 1.46e-13 meV 미만이다. 576-site torus에서 exact-length spin 에너지로 Fourier curvature와 cell 정규화를 추가 대조했다. 이들은 같은 모델의 계산 대조이며 독립 실험·many-body 검증이 아니다.
 
 ### 미결: NBCP builder의 결합벡터와 API 정의가 반대
+
+> **2026-09-30 해결(코드 규약):** toolkit 전달 규약 D13(사용자 결정 2026-09-29)이 저장 변위를 `d = r_source - r_target`
+> (이웃은 `r_i - d`)로 정했고, `SpinSystem` 설명도 2단계에서 이 정의로 고쳤다. 2단계에서 `H(k)` 원소 단위 일치(1.7e-16),
+> 3단계에서 ED 1-마그논 스펙트럼의 운동량 부호, 5a에서 `H(k)` 입자 블록 = ED Bloch 행렬(켤레 아님, 2.7e-14)로 확인했다.
+> 따라서 아래의 `r_j = r_i - d` 해석으로 한 계산의 k는 물리적 Bloch 운동량이다. 실험실 방향을 붙이는 데 남은 것은
+> 모델 `x`축과 결정 축의 방향 관계(물질 입력)뿐이다. 원고의 "unresolved displacement" 문장 수정은
+> `260918-nbcp-physics-code-review.md`에 수정안과 함께 남긴다.
 
 `examples/nbcp_ground_state.py`의 three_msl basis positions와 lattice vectors를 기준으로, 저장된 d에서 (r_i-r_j)를 빼면 magnetic lattice의 정수 병진이다. 반대로 API가 명시하는 (r_j-r_i)를 빼면 정수 병진에서 최대 1/3만큼 어긋난다. `code-space/lswt/core/spin_system.py`의 Coupling/add_coupling 설명과 LSWT notation 문서는 forward displacement를 사용하지만, 현재 Hamiltonian과 NBCP 입력을 real-space로 일관되게 해석하려면 neighbor r_j=r_i-d를 사용한다. 검사 결과는 numerical JSON의 `bond_orientation_audit`에 9개 결합별로 남겼다.
 

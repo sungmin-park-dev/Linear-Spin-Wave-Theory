@@ -26,7 +26,7 @@ updated: 2026-09-30
 | 5 | issue | NBCP band plot와 남은 LSWT 구현 backlog | draft; H·Colpa 검증 끝(toolkit 2–4a), band plot 작성·검토와 시각화 포팅·공개 배포 등 남음 | `issue-notes/open/260810-lswt-implementation-backlog.md` |
 | 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
 | 7 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
-| 8 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 다음: displacement convention과 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
+| 8 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 변위 방향은 D13으로 해결(2026-09-30), 원고 문장 수정 대기; 다음: 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
 | 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D29 결정과 0–5단계 구현 반영 | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
 | 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–6단계(2b, 5a–5d, 6a–6c 포함) 구현·검증; Beamer 검토본 41 사용자 검토 대기 | `../../docs/development/README.md` |
 
