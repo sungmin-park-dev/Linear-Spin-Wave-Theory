@@ -1,7 +1,7 @@
 ---
 frontmatter-version: 1
 title: CommensurateStructure pytest failures
-section: issue-notes/open
+section: issue-notes/closed
 issue-type: problem
 last-edited-by: claude
 status: closed

@@ -4,9 +4,9 @@ title: Topology thermal Hall real_space_volume bug
 section: issue-notes/open
 issue-type: problem
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-08-02
-updated: 2026-09-12
+updated: 2026-09-30
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 related: code-space/spintoolkit/observables/topology.py
 must-read: GOVERNMENT/Agents-Bylaws/templates/issue-notes-template.md
@@ -711,7 +711,32 @@ cutoff 조절·경계·입력 검증·두 Hall 경로·온도 스캔·3D 환산�
 저장했다. seed, 실행 환경, 반복별 시간, 4가지 cutoff 민감도와 source hash를 포함한다.
 2026-09-11의 자료는 이전 판정 방식의 역사 기록으로 보존한다.
 
+## 2026-09-30 toolkit 5단계 — 공통 경로의 위상량과 계산 핵심 통합
+
+사용자 결정 D29(`GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md`)에 따라
+toolkit의 공통 LSWT 결과(`solve_lswt`)에서 위상량을 계산하는 경로를 만들고 이 이슈의 구현 항목을 정리했다.
+
+- 5a: `observables/berry.py`의 `berry_curvature`가 저장된 대각화와 해석적 `dH/dk`로 곡률을 계산한다. 부호는
+  Haldane 마그논의 `H(k)` 입자 블록이 ED 1-마그논 Bloch 행렬과 같음(켤레가 아님)으로 고정했다. Chern 수는
+  Kubo 적분과 FHS 링크 변수가 일치할 때만 받는다. 메시 점의 간격 기준만으로는 점 사이의 교차·갭 닫힘을 볼 수
+  없음을 확인했고(FHS 단독은 Dirac 점에서 틀린 정수), 링크 겹침과 Kubo–FHS 불일치로 NaN 처리한다.
+- 5b: `thermal_hall`이 층당 `kappa_xy/T`(`k_B^2/hbar` 단위)를 쌍 합 형태로 계산한다. 퇴화 묶음은 `c2 Tr F`로
+  기여하므로 위 4단계의 "밴드 하나라도 제외되면 NaN" 규칙은 Hall에 대해 대체되었다(밴드별 곡률·Chern은 유지).
+  기존 SI 경로와 같은 k 자료에서 8e-15 안에서 일치했다.
+- 5c: 새 경로와 이 이슈의 SI 경로(`Topology.compute_thermal_Hall`, `Thermodynamics`의 Hall)가 같은 계산 핵심
+  (`curvature_pair_terms`, `weighted_curvature_sum`)을 쓴다. 기존 SI API는 유지한다. 기존 검증 예제 4개의 수치는
+  변경 전과 1.1e-15 안에서 같고, `test_band_isolation`의 퇴화 기대값 6개를 NaN에서 0으로 갱신했다.
+- 5d: 적응형 k 적분(`AdaptiveIntegration`)으로 NBCP의 좁은 회피 교차와 우연 영모드 근처 곡률(적분 함수
+  `~1/|q|`, 2D에서 적분 가능)을 수렴시킨다. 균일 192 x 192 값은 1–4%(Y J_Gamma 27%) 어긋나 있었다.
+
+기록: `docs/development/verification/stage5a-berry-chern-2026-09-30.json`, `stage5b-thermal-hall-2026-09-30.json`,
+`stage5c-hall-kernel-2026-09-30.json`, `stage5d-adaptive-integration-2026-09-30.json`.
+
 ## 결론 / 미결 사항
+
+**2026-09-30 갱신:** 구현 항목(SI 계약, full-BZ 표본화, 밴드 분리 규칙, 퇴화 묶음의 Hall, 두 경로의 계산 핵심)은
+위 toolkit 5단계로 해결되었다. 아래 1은 Hall에 대해서는 쌍 합으로 대체되었고 NBCP 수렴은 5d로 다룰 수 있다. 남은
+것은 NBCP 적용 조건(실제 cutoff·수렴 확인과 물리적 해석), 3의 이론 문서 검토, pseudo-Goldstone(별도 이슈 260810)이다.
 
 층당/3D SI 계약, 실제 자기 격자를 보존하는 full-BZ 표본화, Chern의 불필요한 Ns
 나눗셈 제거와 부분 solver-grid의 적분 거부까지 구현·독립 검증을 마쳤다.
