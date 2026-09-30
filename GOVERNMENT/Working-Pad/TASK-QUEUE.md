@@ -19,9 +19,9 @@ updated: 2026-09-30
 
 | 순위 | 유형 | 내용 | 상태 | 파일 |
 |---|---|---|---|---|
-| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 다음: local circular component 및 real-space H2 내용 검토 | in-review; 17개 문서 일괄 문체 교정 반영, 10개 skeleton 내용 보완과 사용자 검토 대기 | `issue-notes/open/260809-lswt-documentation-audit.md` |
+| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 진행(C): 구현·검증된 부분부터 한 문서씩 작성(topology → 대각화 → 열역학 → structure factor → LT); 기존 다음 묶음: local circular component 및 real-space H2 | in-review; 17개 문서 일괄 문체 교정 반영; 2026-09-30 topology draft 작성·사용자 물리·수학 검토 대기, 남은 skeleton 9개 | `issue-notes/open/260809-lswt-documentation-audit.md` |
 | 2 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | pending — TN-Study에 findings draft v1(1D, Heisenberg점) 있음, 2D 4×4 단계 미완료라 LSWT 승격 전 | `handoff/open/260607-solver-seam-spike.md` |
-| 3 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); 남은 것: NBCP 적용 조건, 이론 문서 A6/A7/A16 검토 | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
+| 3 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); 남은 것: NBCP 적용 조건, 이론 문서 A6/A7/A16 검토(2026-09-30 topology draft에 반영, A7 −π²/3 상수항 open) | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
 | 4 | issue | NBCP 연구노트와 arXiv 열적 주장 검토 | in-review; Y angular·smooth-wave와 density wall 164개 local minima 대조 완료; 벽 폭 3–4a, 장력 양수·크기 수렴 및 metastability 확인; 다음: vortex core·wall 결합, 이후 thermal 검증; quantum/thermal matching 미완료 | `issue-notes/open/260810-pseudo-goldstone-gap.md` |
 | 5 | issue | NBCP band plot와 남은 LSWT 구현 backlog | draft; H·Colpa 검증 끝(toolkit 2–4a), band plot 작성·검토와 시각화 포팅·공개 배포 등 남음 | `issue-notes/open/260810-lswt-implementation-backlog.md` |
 | 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |

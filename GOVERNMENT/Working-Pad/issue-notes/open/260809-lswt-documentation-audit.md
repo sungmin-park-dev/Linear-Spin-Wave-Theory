@@ -4,9 +4,9 @@ title: Current LSWT Documentation Audit
 section: issue-notes/open
 issue-type: review
 status: in-review
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-16
+updated: 2026-09-30
 ---
 
 # Current LSWT Theory Documentation Audit
@@ -117,6 +117,28 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 검증 결과: 자기모멘트의 명시적 minus, 양의 field contraction과 $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$가 서로 일치함을 대수적으로 확인했다. 기존 semantic equation ID, draft 상태 및 내부 링크를 유지했다. Zeeman section·외부 근거·수정일 외 본문은 변경 전과 동일하며, 다른 이론 문서·원자료·코드·예제도 변경 전과 동일함을 확인했다. Quarto로 MathML HTML preview를 생성하고 출력에 Zeeman 수식 anchor와 갱신한 부호 정의가 들어 있음을 확인했다. 출력과 resource는 임시 디렉토리에 두었으며, source 옆의 생성 resource는 정리했다. 브라우저에서의 시각 검토, 문서 전체 Human Physics and Mathematics Review 및 legacy 코드 검증은 별도 대기다.
 
+## Topology Draft — 2026-09-30
+
+사용자의 연구·검토 항목 C 지시에 따라 `docs/lswt/02-observables/topological-magnon-quantities.md`를 skeleton에서 본문 draft로 작성했다. 구현·검증된 toolkit 부분(stage 5a–5d, D29, D31)과 대응하는 문서부터 진행한다. 작성 전 writing style(`in-review`)과 lifecycle을 읽었다. Primary PDF p. 24 Source Eqs. (143)–(149)와 reviewed TeX를 대조했다. 이 draft는 `status: draft`이며 사용자 물리·수학 acceptance를 받지 않았다.
+
+### 검토 묶음
+
+| 항목 | Draft의 처리 | 사용자 확인 사항 |
+|---|---|---|
+| Skyrmion number (Source Eq. (143)) | 원문의 절댓값과 arctan branch 대신 부호 있는 Berg–Lüscher solid angle, 즉 \(e^{i\chi/2}\propto 1+\mathbf m_I\cdot\mathbf m_J+\dots+i\,\mathbf m_I\cdot(\mathbf m_J\times\mathbf m_K)\)를 쓴다. 원문의 plaquette 예시는 elementary triangle 분할로 바꿨다. | 부호 있는 정의 채택과 LSWT 문서 scope 포함 여부 |
+| Berry curvature (Source Eqs. (144)–(146)) | \(T^\dagger\Sigma_3T=\Sigma_3\), 2N column 합과 Σ3 부호, particle–hole 분모를 명시했다(A6). Gauge 문단에서 \(e^{\pm i\mathbf k\cdot\mathbf r_I}\)를 두 Nambu block에 같게 곱하면 curvature의 추가 항이 주기 함수의 curl이라 적분이 0임을 적었다. | 합 범위와 gauge 문단 |
+| Chern number | \(A_{\mathrm{MBZ}}/N_{\mathbf k}\) 합과 paraunitary link의 FHS를 적었다. 정수 값만으로 band 고립을 판정할 수 없다고 명시했다. | 수치 판정 기준(D31)은 코드 계약으로만 두고 본문에 넣지 않았다. |
+| Thermal Hall (Source Eqs. (147)–(149)) | 층당 \(\kappa^{\mathrm{2D}}_{xy}=-(k_B^2T/\hbar)(N_{\mathbf k}A_{\mathrm{uc}})^{-1}\sum c_2\Omega\), 3D는 \(/d\), pair form을 적었다. 원문의 V와 ħ 누락을 교체했다. | 단위·정규화(A7 앞부분은 2026-09-11 사용자 승인과 같음) |
+| −π²/3 상수항 (A7) | 원문 형태가 이 draft보다 \((\pi k_B^2T/6\hbar)\sum_nC_n\)만큼 크다는 관계만 적고, \(\sum_nC_n=0\)의 일반 성립은 "not established"로 남겼다. | 상수항 선택. 코드도 상수항 없는 c2를 쓰므로 다른 선택이면 코드 변경 항목이 된다. |
+| c2 명칭 | 원문의 "c2 is the Spence function" 문장은 옮기지 않고 \(\mathrm{Li}_2\)로 정의했다. | 명칭 정정 |
+| 생략 문장 | 원문의 관측 난이도 서술("hard to observe" 취지)과 B9 orphan text는 옮기지 않았다. | 생략 동의 |
+
+표기 변경: J→Σ3, FBZ→MBZ, \(\varepsilon_{n,k}\)→\(\varepsilon_{n\mathbf k}\), V→\(N_{\mathbf k}A_{\mathrm{uc}}\)와 명시적 ħ. Semantic equation ID 6개(`eq-lswt-lattice-skyrmion-number`, `eq-lswt-bdg-berry-curvature`, `eq-lswt-magnon-chern-number`, `eq-lswt-magnon-thermal-hall`, `eq-lswt-thermal-hall-weight`, `eq-lswt-thermal-hall-pair-form`)를 새로 부여했다.
+
+### 검증
+
+Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경고가 없었고, equation ID 6개가 한 번씩 출력됐으며, display 식 9개의 delimiter와 brace가 균형을 이뤘다. 브라우저 pane이 local-file URL을 열지 못해 화면 시각 검토는 사용자 preview로 넘긴다. 이 검사는 출력 구조 검증이며 물리·수학 acceptance가 아니다. Notation 문서에서 Fourier gauge와 thermal-Hall 단위가 "not yet fixed"인 상태는 바꾸지 않았다.
+
 ## Active Workspace Inventory
 
 ### Draft Content
@@ -130,6 +152,7 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 | `docs/lswt/01-derivation/holstein-primakoff-expansion.md` | Leading HP expansion과 linear-term condition | `draft` | exact HP, expansion hierarchy, Dyson-Maleev 범위 결정 |
 | `docs/lswt/01-derivation/real-space-boson-hamiltonian.md` | Quadratic \(H_2\) | `draft` | odd terms와 \(H_4\)의 문서 범위 결정 |
 | `docs/lswt/01-derivation/momentum-space-bdg-hamiltonian.md` | General Nambu/BdG form | `draft` | A1, A2, A5, A10 해결 전 explicit block 보류 |
+| `docs/lswt/02-observables/topological-magnon-quantities.md` | Lattice skyrmion number, BdG Berry curvature, Chern number (Kubo, FHS), per-layer magnon thermal Hall | `draft` (2026-09-30 본문 작성) | 아래 Topology Draft 검토 묶음의 사용자 물리·수학 검토 |
 
 ### Draft Skeletons
 
@@ -140,13 +163,12 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 | `docs/lswt/02-observables/thermodynamics.md` | Partition function, energy, entropy, specific heat | `draft` skeleton |
 | `docs/lswt/02-observables/spin-correlations.md` | Real-time and sublattice correlations | `draft` skeleton |
 | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | Static/dynamic structure factor and spectral function | `draft` skeleton |
-| `docs/lswt/02-observables/topological-magnon-quantities.md` | Skyrmion number, Chern number, thermal Hall | `draft` skeleton |
 | `docs/lswt/03-examples/worked-example.md` | Single-mode quadratic-boson example | `draft` skeleton |
 | `docs/lswt/04-appendices/luttinger-tisza-method.md` | Luttinger-Tisza method | `draft` skeleton; source TODO |
 | `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
 | `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
 
-현재 합계는 일부 본문이 작성된 draft 7개, skeleton 10개, accepted 0개다.
+현재 합계는 일부 본문이 작성된 draft 8개, skeleton 9개, accepted 0개다.
 
 ## Source and Legacy Retention
 
@@ -215,9 +237,9 @@ Concept ownership은 다음 원칙을 따른다.
 | `04_correlations.md` | Real-time/equal-time correlator, symmetry와 local-to-lab response | `docs/lswt/02-observables/spin-correlations.md` | `skeleton` | Structure factor와 spectral transform은 다음 owner로 분리한다. |
 | `04_correlations.md` | Static and dynamic structure factors | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | `skeleton` | Correlator 정의를 반복하지 않고 normalization contract를 참조한다. |
 | `04_correlations.md` | Retarded Green function and spectral function | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | `skeleton` | Response basis와 dagger convention은 open review item이다. |
-| `05_topology.md` | Lattice skyrmion number | `docs/lswt/02-observables/topological-magnon-quantities.md` | `skeleton` | LSWT가 직접 필요하지 않는 개념이므로 현재 scope 포함 여부를 검토한다. |
-| `05_topology.md` | Berry curvature and Chern number | `docs/lswt/02-observables/topological-magnon-quantities.md` | `skeleton` | Physical band와 full BdG space의 sum convention은 open이다. |
-| `05_topology.md` | Magnon thermal Hall response | `docs/lswt/02-observables/topological-magnon-quantities.md` | `skeleton` | Band sum, volume normalization과 unit conversion 검증이 필요하다. |
+| `05_topology.md` | Lattice skyrmion number | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-reviewed` | 2026-09-30 원문 식을 부호 있는 Berg–Lüscher solid angle로 작성했다. Scope 포함 여부는 사용자 검토에서 확인한다. |
+| `05_topology.md` | Berry curvature and Chern number | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-reviewed` | 2026-09-30 2N column 합(Σ3 부호)의 curvature와 physical band Chern을 명시했다(A6). 사용자 acceptance 대기. |
+| `05_topology.md` | Magnon thermal Hall response | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-reviewed` | 2026-09-30 층당 κ, ħ, N_k A_uc 정규화와 pair form을 작성했다. 원본 −π²/3 상수항(A7)은 open. |
 | `06_worked_example.md` | Single-mode quadratic-boson solution and expectation values | `docs/lswt/03-examples/worked-example.md` | `skeleton` | 일반 Bogoliubov 정의는 derivation 문서를 참조하고 예제 고유 계산만 소유한다. |
 
 `docs/lswt/04-appendices/luttinger-tisza-method.md`는 legacy converted Markdown에 대응 본문이
@@ -271,10 +293,10 @@ source-only evidence로 보존한다.
 | B21 | `docs/lswt/03-examples/worked-example.md` | `source-cleanup` | Number-expectation heading |
 | C13 | `docs/lswt/00-foundations/notation-and-conventions.md` | `open` | Source \(R_k^\alpha\)를 canonical spin vertex \(\mathsf V_{\mathbf k}^{\alpha}\)로 분리했으며 정확한 definition, dagger convention과 energy symbol coverage는 open |
 | B19 | `docs/lswt/02-observables/thermodynamics.md` | `source-cleanup` | Entropy 설명 |
-| B9 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-cleanup` | Primary PDF에는 orphan text가 남고 restructured draft에서만 제거됨 |
-| A6 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `open` | Physical bands와 \(2N\) BdG sum |
-| A7 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `open` | 2026-09-11 참고 논문 식 (8)의 physical-band 합·hbar·온도·area/volume 정의를 대조했다. 사용자가 층당 κ 기본 및 층간격을 통한 3D 환산을 승인했고 코드 32개 회귀를 통과했다. 원본 c2 상수항과 이론 acceptance는 별도 검토다. |
-| A16 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `open` | Primary PDF는 \(\varepsilon_{n,k}\), restructured draft는 \(E_{\mathbf k,n}\)을 사용 |
+| B9 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `source-cleanup` | Primary PDF에는 orphan text가 남고 restructured draft에서만 제거됨. 2026-09-30 draft는 orphan text를 옮기지 않았다. |
+| A6 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | Physical bands와 \(2N\) BdG sum. 2026-09-30 draft는 curvature의 중간 합을 2N column 전체(Σ3 부호)로, Chern·κ를 physical band로 명시했다. 코드(D29)와 같고 사용자 검토 대기다. |
+| A7 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `open` | 2026-09-11 참고 논문 식 (8)의 physical-band 합·hbar·온도·area/volume 정의를 대조했다. 사용자가 층당 κ 기본 및 층간격을 통한 3D 환산을 승인했고 코드 32개 회귀를 통과했다. 원본 c2 상수항과 이론 acceptance는 별도 검토다. 2026-09-30 draft는 상수항 없는 c2를 쓰고, 원본 형태와의 차이가 (πk_B²T/6ħ)ΣC_n임을 적었다. ΣC_n=0의 일반 성립은 미확인이며 코드도 상수항 없는 c2를 쓴다. |
+| A16 | `docs/lswt/02-observables/topological-magnon-quantities.md` | `draft-routed` | Primary PDF는 \(\varepsilon_{n,k}\), restructured draft는 \(E_{\mathbf k,n}\)을 사용. 2026-09-30 draft는 notation 문서의 \(\varepsilon_{n\mathbf k}\)를 따른다. |
 
 ## Source TODOs
 
@@ -316,7 +338,7 @@ source-only evidence로 보존한다.
 5. Ground-state energy, zero-point correction, constant/trace convention
 6. Correlation과 structure factor에서 \(N\), \(L\), \(m_s\) normalization
 7. Positive-semidefinite Goldstone mode를 Colpa 문서 범위에 포함할지
-8. Physical \(N\) bands와 \(2N\) BdG space의 topology sum convention
+8. Physical \(N\) bands와 \(2N\) BdG space의 topology sum convention (2026-09-30 topology draft가 D29 convention을 제안; 사용자 결정 대기)
 9. \(H_4\), Dyson-Maleev, Luttinger-Tisza를 현재 정본화 범위에 포함할지
 
 ## Structural Gate Status
