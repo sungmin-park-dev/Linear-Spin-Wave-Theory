@@ -481,7 +481,8 @@ class Thermodynamics:
               excluding classical energy
             - 'Entropy Density': Entropy in meV/(K spin)
             - 'Specific Heat Density': Specific heat in meV/(K spin)
-            - 'Thermal Hall Conductance': Kappa_xy per layer in W/K, or
+            - 'Thermal Hall Conductance' (deprecated, D30; use
+              spintoolkit.observables.berry.thermal_hall): Kappa_xy per layer in W/K, or
               W/(m K) with layer_spacing_m, in pair form (D29; defined for
               degenerate and crossing bands). NaN if the parent has no magnetic
               lattice vectors, any sample/derivative is unavailable, or a

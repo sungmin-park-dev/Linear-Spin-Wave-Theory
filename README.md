@@ -85,16 +85,15 @@ NBCP의 LSWT 해밀토니안, Colpa 대각화, 밴드 구조, 열역학·위상 
 python -m pytest code-space/tests -q
 ```
 
-자동 테스트는 격자·자기구조, LSWT·열역학, 모델 구성과 옛 import 호환성을
-포함합니다. 기존 `CommensurateStructure` 테스트 5개의 실패는 남아 있으며,
-폴더 통합 전후의 결과는 `docs/development/verification/`에서 관리합니다.
+자동 테스트는 공통 모델·상태, 고전 에너지와 상태 선택, 정확 대각화, LSWT와
+물리량(열역학·구조인자·위상량), 모델 구성과 옛 import 호환성을 포함합니다. 단계별 검증
+기록은 `docs/development/verification/`에서 관리합니다.
 
 ## 알려진 제한사항
 
-- 비대칭 \(B_{\mathbf{k}}\)에서 anomalous block 배치에 관한 correctness 문제가 남아 있습니다.
-- Thermal Hall 계산의 부피 정규화와 단위 변환을 수정해야 합니다.
-- 열역학·위상·상관함수 모듈은 아직 `LSWTSolver`에 연결되지 않았습니다.
-- 현재 lattice preset은 삼각격자 중심이며 square, honeycomb 및 incommensurate 구조는 미구현 상태입니다.
+- 비정합(incommensurate) 자기 구조는 미구현 상태입니다.
+- 작은 회피 교차 근처에 곡률이 몰린 모델(NBCP 등)의 thermal Hall은 균일 격자로 수렴이 느려
+  적응형 적분(`AdaptiveIntegration`)과 수렴 확인이 필요합니다.
 - 비균일 pseudo-Goldstone soft mode 처리는 지원하지 않습니다.
 - LSWT는 질서화된 준고전적 상태를 중심으로 사용하는 근사입니다.
 

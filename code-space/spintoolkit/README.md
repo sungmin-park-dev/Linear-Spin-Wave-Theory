@@ -13,9 +13,9 @@
 | `states/` | 정합·비정합 자기구조의 표현. 비정합 구현은 기존 stub 상태 |
 | `states/spin_state.py` | 고전 스핀 배열 `SpinState`: 정수 초격자와 (사이트, 셀)별 단위 벡터, 상태 검증 |
 | `methods/base.py` | `AbstractSolver`와 `SolverResult` 공통 인터페이스 |
-| `methods/optimization.py` | 고전·양자 에너지 함수를 사용하는 스핀상태 최적화 |
+| `methods/optimization.py` | 기존 `SpinSystem` 기반 고전 스핀상태 탐색(`SpinOptimizer`; 새 자료형용 전역 탐색으로 옮긴 뒤 사용 중단 예정, D30) |
 | `methods/classical.py` | `SpinModel`의 항만 읽는 고전 에너지·국소장·토크 |
-| `methods/lswt/` | LSWT 솔버, 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`) |
+| `methods/lswt/` | 새 진입점 `solve_lswt`(D24), 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`). 기존 `LSWTSolver`는 사용 중단(D30) |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
 | `models/` | 표준 벤치마크 해밀토니안(사각·삼각격자 하이젠버그)과 해석적 기준 스핀 배열 |
 | `observables/` | 보스 통계, 열역학, 위상, 상관함수 |
@@ -43,10 +43,14 @@
 새 코드는 기능별 경로를 사용한다.
 
 ```python
-from spintoolkit.system import SpinSystem, exchange
-from spintoolkit.states import CommensurateStructure
-from spintoolkit.methods.lswt import LSWTSolver
+from spintoolkit.system.model import SpinModel, Site, Term
+from spintoolkit.states import SpinState
+from spintoolkit.system.conditions import ExternalConditions
+from spintoolkit.methods.lswt import solve_lswt
 ```
+
+기존 `SpinSystem`·`LSWTSolver` 경로는 호환을 위해 남아 있으며, `LSWTSolver`와
+SI 단위 Hall API(`Topology.compute_thermal_Hall`)는 사용 중단 경고를 낸다(D30).
 
 최상위 `from spintoolkit import SpinSystem, LSWTSolver` API를 제공한다.
 옛 이름은 `code-space/lswt/` 호환 패키지가 소유한다. `import lswt`는

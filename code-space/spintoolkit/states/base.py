@@ -40,9 +40,9 @@ class AbstractMagneticStructure(ABC):
     - The underlying lattice geometry (handled by AbstractLattice)
     - Exchange interactions (handled by Interaction classes)
 
-    Subclasses implement either:
-    - CommensurateStructure: Finite supercell with discrete angles
-    - IncommensurateStructure: Infinite spiral/helix with q-vector
+    Subclasses: IncommensurateStructure (infinite spiral/helix with q-vector,
+    stub). Commensurate states use SpinState (integer-matrix supercell); the
+    diagonal-cell CommensurateStructure was removed (D30).
 
     The interface is designed to work for both types while exposing
     the fundamental differences through methods like

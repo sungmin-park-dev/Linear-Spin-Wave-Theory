@@ -373,6 +373,12 @@ class Topology:
                              band_gap_cutoff=DEFAULT_BAND_GAP_CUTOFF):
         """Compute Berry curvature, Chern numbers, and thermal Hall conductance.
 
+        Deprecated (D30): use :func:`spintoolkit.observables.berry.thermal_hall`
+        on a ``solve_lswt`` result, which returns ``kappa_xy / T`` in units of
+        ``k_B^2 / hbar`` (SI: multiply by ``k_B^2 T / hbar``; divide by the
+        layer spacing for 3D). Both use the same pair-form kernel (5c). This
+        method stays until the public-release cleanup.
+
         Parameters
         ----------
         k_data : dict
@@ -424,6 +430,9 @@ class Topology:
             crossing bands are defined; a particle-hole pair within
             ``band_gap_cutoff`` (a zero mode) gives NaN.
         """
+        warnings.warn("Topology.compute_thermal_Hall is deprecated (D30); use "
+                      "spintoolkit.observables.berry.thermal_hall (kappa/T in k_B^2/hbar; "
+                      "SI: multiply by k_B^2 T / hbar)", DeprecationWarning, stacklevel=2)
         _validate_thermal_hall_inputs(Temperature, layer_spacing_m)
         _validate_band_gap_cutoff(band_gap_cutoff)
         cell_area = _magnetic_cell_area(self.lswt_obj)

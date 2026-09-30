@@ -119,14 +119,14 @@ class IncommensurateStructure(AbstractMagneticStructure):
     When to Implement?
     ------------------
     Implement when:
-    1. Commensurate implementation is complete and tested
+    1. Commensurate states (SpinState) are complete and tested
     2. Research requires incommensurate structures
     3. Have reference data for validation (e.g., known spiral phases)
     4. Extended zone BZ sampling is implemented
 
     See Also
     --------
-    CommensurateStructure : Finite supercell implementation (currently active)
+    SpinState : Commensurate states on an integer-matrix supercell
     AbstractMagneticStructure : Base interface
 
     Examples (Future)
@@ -186,7 +186,7 @@ class IncommensurateStructure(AbstractMagneticStructure):
             "  Toth & Lake, J. Phys. Condens. Matter 27, 166002 (2015)\n"
             "  'Linear spin wave theory for single-Q incommensurate magnetic structures'\n"
             "\n"
-            "For now, use CommensurateStructure for finite supercell structures.\n"
+            "For now, use SpinState for commensurate (finite supercell) states.\n"
             "\n"
             "Contact: sungmin.park.0226@gmail.com if you need this feature urgently."
         )

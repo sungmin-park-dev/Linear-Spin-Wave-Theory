@@ -8,6 +8,8 @@ observables.
 Ported from: modules/LinearSpinWaveTheory/linear_spin_wave_theory.py
 """
 
+import warnings
+
 import numpy as np
 from typing import Tuple, List, Dict, Optional, Union
 
@@ -23,7 +25,12 @@ from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
 
 class LSWTSolver(AbstractSolver):
-    """High-level Linear Spin Wave Theory solver.
+    """High-level Linear Spin Wave Theory solver (deprecated, D30).
+
+    Use :func:`spintoolkit.methods.lswt.run.solve_lswt` on the common model
+    types (``SpinModel``, ``SpinState``, ``ExternalConditions``); it keeps the
+    diagonalization for the observables and reproduces this solver (stage
+    4a). This class stays until the public-release cleanup.
 
     Parameters
     ----------
@@ -51,6 +58,8 @@ class LSWTSolver(AbstractSolver):
 
     def __init__(self, system: Union[SpinSystem, dict],
                  bz_type: str = "Hex_60"):
+        warnings.warn("LSWTSolver is deprecated (D30); use spintoolkit.methods.lswt.solve_lswt "
+                      "with SpinModel/SpinState", DeprecationWarning, stacklevel=2)
         # Accept both SpinSystem and legacy dict
         if isinstance(system, dict):
             self._system = SpinSystem.from_legacy_dict(system)

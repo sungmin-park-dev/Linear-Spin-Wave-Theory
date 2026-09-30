@@ -19,7 +19,7 @@ with pytest.warns(DeprecationWarning):
 def test_previous_package_name_resolves_to_current_modules():
     for old, new in [
         ('system.spin_system', 'system.spin_system'),
-        ('states.commensurate', 'states.commensurate'),
+        ('states.spin_state', 'states.spin_state'),
         ('definitions', 'definitions'),
         ('observables.topology', 'observables.topology'),
         ('methods.optimization', 'methods.optimization'),
@@ -46,7 +46,6 @@ def test_historical_imports_resolve_to_current_modules():
         ('core.lattice.presets', 'system.lattice.presets'),
         ('core.magnetic_structure', 'states'),
         ('core.magnetic_structure.base', 'states.base'),
-        ('core.magnetic_structure.commensurate', 'states.commensurate'),
         ('core.magnetic_structure.incommensurate', 'states.incommensurate'),
         ('solvers.base', 'methods.base'),
         ('solvers.optimizer', 'methods.optimization'),

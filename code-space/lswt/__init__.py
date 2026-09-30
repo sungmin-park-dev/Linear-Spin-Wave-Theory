@@ -37,7 +37,6 @@ _HISTORICAL = {
     'core.lattice.presets': 'system.lattice.presets',
     'core.magnetic_structure': 'states',
     'core.magnetic_structure.base': 'states.base',
-    'core.magnetic_structure.commensurate': 'states.commensurate',
     'core.magnetic_structure.incommensurate': 'states.incommensurate',
     'solvers.base': 'methods.base',
     'solvers.optimizer': 'methods.optimization',

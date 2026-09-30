@@ -697,6 +697,22 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{5d 검증 기록}{stage5d}
 \end{frame}
 
+\begin{frame}[label=stage6a]{6a: 대체된 자료형 삭제와 사용 중단 경고}
+  \framesubtitle{2026-09-30 · D30 구현의 정리 부분 · 인터페이스 추가 없음.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.2cm}Y@{}}
+    \toprule
+    항목 & 내용 \\
+    \midrule
+    \texttt{CommensurateStructure} 삭제 & 모듈과 테스트 24개, \texttt{states} 내보내기, \texttt{lswt} 호환 매핑, 실행되지 않던 \texttt{examples/phase1a\_demo.py}; 저장소에 이 클래스의 pickle 없음. 비정합 stub의 안내는 \texttt{SpinState}로 \\
+    사용 중단 경고 & \texttt{LSWTSolver}($\to$ \texttt{solve\_lswt}), \texttt{Topology.compute\_thermal\_Hall}($\to$ \texttt{thermal\_hall}, SI 환산 안내); \texttt{Thermodynamics}의 Hall 항목은 설명만(새 \texttt{thermal\_quantities}가 이 클래스의 $F,U,S,C$를 쓰므로) \\
+    확인 & 테스트 476 통과(삭제한 24개 외 변화 없음), 새 경로는 사용 중단 경고를 내지 않음, 스냅샷 144개 차이 0 \\
+    문서 & 저장소·패키지 README의 사실과 다른 항목 정리(해결된 제한사항, 새 진입점 예시) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{D30 결정과 구현}{contract}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small
