@@ -1,5 +1,7 @@
 # Local/system artifacts
 .DS_Store
+.obsidian/
+tmp/
 __pycache__/
 .pytest_cache/
 *.py[cod]
