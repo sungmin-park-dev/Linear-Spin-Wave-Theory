@@ -41,7 +41,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | §5 `SpinState`, §4 상태 검증 | `states/spin_state.py` |
 | §1 기준 상태 진단 중 정상성(토크) | `methods/classical.py` |
 | §1 고전 Hessian(접평면 좌표)과 국소 정밀화(2b) | `methods/classical.py`의 `tangent_expansion`, `refine_classical` |
-| §1 영점 에너지 상태 선택(D17, D19; 2b) | `methods/state_selection.py`의 `select_on_manifold` |
+| §1 영점 에너지 상태 선택(D17, D19; 2b), 완화 경로 위 1-loop 유효 퍼텐셜(D28) | `methods/state_selection.py`의 `select_on_manifold`, `soft_path_point`, `LSWTZeroPointEnergy` |
 | §5 유한 토러스 항 전개(D23; 3단계) | `system/cluster.py`의 `expand_on_torus`, `allowed_momenta`; `classical_energy(..., geometry)` |
 | §5 ED 결과 본문, 최소 ED 도구(D10, D23; 3단계) | `methods/ed/`의 `solve_ed`, `EDSector`, `EDResult` |
 | §5 공통 결과 머리부·JSON(D14, D24; 4a) | `methods/result.py`의 `ResultHeader`, `save_json`, `load_json` |
@@ -98,7 +98,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D25 | 4b: 영모드는 `H(k)`의 최소 고윳값 비 `lambda_min / scale`로 세 구간(수치적 영 <= 1e-12, 후보 <= 1e-6, 갭)으로 판정; 후보가 있으면 유한 온도 물리량은 사용자가 `gapless`를 정할 때까지 멈춤; gapless이면 T > 0의 보손 수·모멘트·자화는 NaN, F·U·S·C는 계산; 탐색점은 자기·원시 격자의 고대칭점과 격자 최소점, 연속 최소화와 선 검사, k = 0의 기원(Goldstone·우연·미상) 표시; 온도는 무차원 `t = k_B T / E0`이고 켈빈 도우미는 두지 않음 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D26 | 4c: 구조인자는 한 마그논 가로 성분과 정확한 탄성 Bragg까지(2-마그논 세로 연속체는 후속); 모드별 무게 `W_n^{ab}(q)`를 주 출력으로 하고 넓힌 스펙트럼은 보조; 전체 위치 게이지·사이트당 정규화; 새로 구현하고 기존 `observables/correlations.py`는 비교 대상으로만(유지·삭제는 별도 결정); 결합별 상관과 그 에너지 교차 확인 포함, 일반 실공간 상관은 후속; 영모드인 q는 비탄성 무게 NaN과 표시 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D27 | 기존 코드 정리: 검증되지 않은 `observables/correlations.py`를 삭제하고 동시간 실공간 상관(`spin_correlation`)과 사다리 성분(`to_ladder`)을 새 모듈로 옮김(실시간 상관·스펙트럼 함수는 이론 문서의 응답 규약 검토 뒤); MAGSWT 격자 탐색(`opt_method='MAGSWT'`)을 삭제하고 그 목적인 고전 궤도 위 에너지 지형은 `orbit_energy_landscape`로 제공; MAGSWT 정규화(D24)는 유지 | 사용자 결정 2026-09-30 | §1, §6 |
-| D28 | 고전·양자 비교 규칙: 부드러운 좌표 phi의 기준 상태는 완화 경로(각 phi에서 나머지 좌표를 고전 최소화) 위 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E_zp`의 최소로 정한다(부드러운 방향의 1-loop 정상성 조건); 곡률 비와 대역 (0.1, 10)을 대체; 고전 궤도가 평평하면 D17과 같음; 단열 분리 비를 기록; LSWT 차수(O(S^0) 보정 제외)의 T = 0 원리 | 사용자 결정 2026-09-30(원리와 세부 확정; 구현은 LSWT 작업 재개 시) | §1 |
+| D28 | 고전·양자 비교 규칙: 부드러운 좌표 phi의 기준 상태는 완화 경로(각 phi에서 나머지 좌표를 고전 최소화) 위 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E_zp`의 최소로 정한다(부드러운 방향의 1-loop 정상성 조건); 곡률 비와 대역 (0.1, 10)을 대체; 고전 궤도가 평평하면 D17과 같음; 단열 분리 비를 기록; LSWT 차수(O(S^0) 보정 제외)의 T = 0 원리 | 사용자 결정 2026-09-30(원리와 세부 확정); 구현 2026-09-30(`0e9247f`), 기본 영점 제공자(`constrained`)는 사용자 확인 대기 | §1 |
 
 ## Proposal
 
@@ -254,10 +254,10 @@ criteria=SelectionCriteria())`는 다음 순서로 판정하고 `SelectionResult
    fit 급수의 조밀 격자와 1차원 bounded 최소화로 정한다. fit이 위치를 정하므로 1e-12 규모의
    변동도 표본 간격보다 정밀하게 찾는다.
 
-판정 값은 `no_degeneracy`, `selected`, `no_selection`, `unresolved`, `competition`, `not_flat`,
-`unsupported_manifold`, `axis_required`다. 물리 근거 모드의 계수는 구현하면서 다음과 같이
+판정 값은 2b 구현 당시 `no_degeneracy`, `selected`, `no_selection`, `unresolved`, `competition`, `not_flat`,
+`unsupported_manifold`, `axis_required`였고, D28 구현에서 `competition`·`not_flat`을 없애고 `not_soft`를 더했다. 물리 근거 모드의 계수는 구현하면서 다음과 같이
 정했다(D19가 구현 시 정하도록 남긴 부분). 2026-09-30 해상도 관련 계수를 확정했고, 표의 "고전·양자 비교"와
-"고전 고정 선별"은 D28(1-loop 유효 퍼텐셜)로 대체한다(구현은 LSWT 작업 재개 시).
+"고전 고정 선별"은 D28(1-loop 유효 퍼텐셜)로 대체했다(구현 2026-09-30, `0e9247f`).
 
 | 항목 | 물리 근거 모드 | 기본값 |
 |---|---|---|
@@ -296,7 +296,7 @@ NBCP 확인(Y 0.2 T, V 1.4 T, J_PD 또는 J_Gamma = 0.010 meV, 기준 상태에�
   (차이 4.7e-16 이하)다. 격자 밖(0.3 rad)이면 궤도 탐색이 1.3e-12(Y, J_Gamma)–8.1e-6 meV
   (V, J_PD) 낮다. 이 결과로 MAGSWT 격자 탐색은 삭제했다(D27).
 
-**고전·양자 비교 규칙(D28, 2026-09-30 채택, 구현은 LSWT 작업 재개 시).** 현재 물리 근거 모드는 고전 곡률이 분해되면
+**고전·양자 비교 규칙(D28, 2026-09-30 채택·구현).** 2b 구현의 물리 근거 모드는 고전 곡률이 분해되면
 `C_cl / C_qm`가 대역 (0.1, 10) 안인지로 competition을 판정한다. 이 대역에는 물리적 근거가 없고, 조화
 차수가 다른 두 에너지(예: 기울인 장의 1배 대 PD의 6배)를 국소 곡률로 비교하면 m²만큼 치우친다.
 D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E_zp`의 최소를 답으로 삼는다.
@@ -325,8 +325,29 @@ D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E
   판정 이름에는 기준값을 두지 않는다: `competition`·`not_flat`을 없애고, 부드러운 좌표가 있으면
   `selected`(Gamma 최소, 순수 최소로부터의 이동량과 대칭 주기 대비 비율을 보고), `no_selection`(정확한
   대칭), `unresolved`, `not_soft`(단열 분리 실패)로 판정한다. 부드러운 좌표 자체와 관련된
-  `no_degeneracy`(부드러운 좌표 없음), `axis_required`, `unsupported_manifold`는 그대로 둔다. 단열 비가 0.1을 넘으면 경고만 낸다(판정 불변). 구현은 2026-09-30의
-  LSWT 작업 일시 중지 결정에 따라 재개 시(EB v1 이후 또는 2026-10-10 월간 검토) 한다.
+  `no_degeneracy`(부드러운 좌표 없음), `axis_required`, `unsupported_manifold`는 그대로 둔다. 단열 비가 0.1을 넘으면 경고만 낸다(판정 불변).
+- 구현(2026-09-30, `0e9247f`; 기록 `docs/development/verification/d28-implementation-2026-09-30.json`):
+  `select_on_manifold`는 궤도 방향을 뺀 모든 접평면 방향을 완화한 경로(`soft_path_point`) 36점에서
+  `Gamma = E_cl + E_zp`를 fit하고 그 최소를 반환한다. 순수 고전·양자 최소는 후보와 이동량으로 남긴다.
+  정밀화한 상태에 궤도 밖 불안정 모드가 있으면(고전 안장점) `no_degeneracy`가 아니라 `not_soft`다.
+  `refine_classical`은 Newton 전에 재중심 L-BFGS-B를 반복한다(`CLASSICAL_REFINE_ROUNDS = 20`,
+  `CLASSICAL_REFINE_RECENTRE = 1e-3`). 새 기본값은 `SELECTION_ADIABATIC_WARNING = 0.1`,
+  `SELECTION_PATH_TOLERANCE = 1e-8`이다.
+- 영점 제공자(방법론 변경, **사용자 확인 대기**): 기본 `LSWTZeroPointEnergy(method="constrained")`는
+  대칭을 지키는 `get_full(N)` mesh에서 `k = 0`을 빼고(균일 부드러운 모드가 구속 좌표 자체) 정규화 없이
+  Colpa로 계산한다. 완화 경로에서는 MAGSWT 정규화가 phi에 의존하는 O(S) 균일 이동을 더해 E_zp를
+  오염시키고, 반 칸 이동 mesh는 점군 대칭을 깨 D17을 0.05 rad 치우치게 한다(N = 6). 기존 제공자는
+  `method="legacy"`로 남았다.
+- 구현 확인: 36점 구현이 독립 72점 시제품과 선택된 모든 경우에 1.3e-3 rad 이내로 일치한다.
+  Gamma 최소의 mesh 수렴(N = 6, 12, 18)은 Y 1.7°에서 1.0574, 1.0597, 1.0605 rad, V 0.57°에서
+  3.1034, 3.1015, 3.1010 rad이다. V 5.7°는 어느 출발에서도 `not_soft`(시제품 단열 비 5.6e3)다.
+  2026-09-30 재실행에서 판정과 수치가 기록과 같았고(차이 0), 회귀 스냅샷 144개는 `912bc32`와 차이 0이다.
+- 검토 기록의 정정: 위 "확인"의 기울인 장 수치는 MAGSWT 정규화 제공자로 계산해 오염되었다.
+  constrained 제공자(N = 6)로 Y 1.7°의 Gamma 최소는 양자 최소에서 -8.3e-3 rad(검토 기록 8.9e-3)이고
+  결론(양자 선택 유지, Y의 고전 고정은 기울기의 2차)은 같다. Y 16.7°의 단열 비는 0.023(검토 기록
+  0.151)으로 경고 기준 아래다. 이전 편극 상태 테스트는 Y 각도에서 출발해 20 h에서 up-up-down
+  안장점(E = -0.210, 편극 -0.444)으로 정밀화된 상태를 `no_degeneracy`로 받아들였다. 이제 `not_soft`이고
+  테스트는 모두 위 방향 상태를 쓴다.
 
 ```mermaid
 flowchart TD
@@ -674,8 +695,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - 후속 kind(같은 사이트 이차항, 3·4-스핀 항)의 계수 형태와 의미. 같은 사이트 이차항을 도입하면
   토러스에서 한 사이트로 접히는 결합(D23에서 거부)을 모든 방법에서 그 kind로 처리할지 함께 정한다. `S`에 따른 환원,
   `S >= 1`에서 사중극자 자유도에 대한 LSWT 처리(SU(N) 일반화 여부)를 함께 검토한다.
-- D28 구현(LSWT 작업 재개 시): 완화 경로 함수, `select_on_manifold`의 비교 규칙 교체, 판정 이름 정리,
-  테스트(D17 극한, 기울인 장, 단열 분리 실패).
+- D28 기본 영점 제공자(`constrained`: `k = 0` 제외, 정규화 없음)를 기본값으로 둘지 사용자 확인.
 - D17 확장: 사이트별 회전축(숨은 U(1))과 여러 차원의 영공간. 삼각격자의 0 < h < h_sat 선택을
   벤치마크로 쓰기 전에 필요하다(D18).
 
@@ -723,6 +743,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - 2026-09-30 (claude): D28 원리 채택을 결정 목록과 §1에 기록했다(세부 사항과 구현 대기).
 - 2026-09-30 (claude): D28 세부 사항과 D19 해상도 계수 확정을 기록했다. 구현은 LSWT 작업 재개 시로
   남기고 Open Questions를 갱신했다.
+- 2026-09-30 (claude): D28 구현(`0e9247f`)을 결정 목록, 구현 상태 표, §1에 반영했다. 기본 영점 제공자
+  변경은 확인 대기로 두고, 검토 기록의 오염된 기울인 장 수치를 정정했다. Open Questions를 갱신했다.
 
 ## 관련 기록
 
