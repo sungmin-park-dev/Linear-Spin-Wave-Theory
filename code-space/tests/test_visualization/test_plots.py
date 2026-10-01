@@ -85,3 +85,13 @@ def test_spin_configuration_draws_the_state_of_the_model():
             plot_spin_configuration(system, show_polar=False)
     with pytest.raises(TypeError):
         plot_spin_configuration(system, state)
+
+
+def test_direction_panel_shows_the_coplanar_120_degree_pattern():
+    model = triangular_heisenberg()
+    fig, (_, ax_polar) = plot_spin_configuration(model, state_120(model))
+    tips = [a.xy for a in ax_polar.texts if hasattr(a, "arrow_patch") and a.arrow_patch is not None]
+    assert len(tips) == 3
+    azimuths = np.sort(np.mod([t[0] for t in tips], 2 * np.pi))
+    np.testing.assert_allclose(np.diff(azimuths), 2 * np.pi / 3, atol=1e-12)
+    np.testing.assert_allclose([t[1] for t in tips], 1.0, atol=1e-12)   # in-plane spins

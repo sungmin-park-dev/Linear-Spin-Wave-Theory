@@ -14,7 +14,7 @@
   "added": {
     "code-space/spintoolkit/visualization/bands.py": "plot_bands",
     "code-space/spintoolkit/visualization/spin_plotter.py": "(SpinModel, SpinState) input through to_spin_system; drawing unchanged",
-    "code-space/tests/test_visualization/test_plots.py": "4 tests",
+    "code-space/tests/test_visualization/test_plots.py": "5 tests",
     "examples/visualization_stage7_check.py": "this record",
     "docs/development/figures/stage7-bands.png": "benchmark figure",
     "docs/development/figures/stage7-spin-configuration.png": "benchmark figure"
@@ -22,7 +22,7 @@
   "findings": [
     "Square Neel (2 bands of the 2-site magnetic cell) and triangular 120 degrees (3 folded bands): every plotted line equals BandStructure.energies exactly; zero-mode markers at the 3 marked momenta (Goldstone vertices) at E = 0.",
     "Square antiferromagnet polarized below saturation (h = 3 < h_sat = 2zJS = 4): the dispersion h - 2(1 - gamma_k) is negative around M; band_structure gives NaN exactly where the formula is negative (85 of 301 points), the figure leaves that interval as a shaded gap, and the stable part matches the formula within 1.3e-15.",
-    "Spin-configuration drawing is the existing one; open for review: the polar panel shows only the polar angle theta, so a coplanar state (all theta = 90 degrees, e.g. 120 degrees) collapses to one direction there."
+    "Spin-configuration direction panel (decided 2026-10-01 under the user's delegation): the earlier panel drew only the polar angle theta, so a coplanar state (all theta = 90 degrees, e.g. 120 degrees) collapsed to one direction. It now shows each spin seen from +z: an arrow at the azimuth phi (same convention as the in-plane arrows of the lattice panel) with length sin(theta), coloured by Sz; spins along +-z are dots at the centre. The 120 degree state shows three unit arrows 120 degrees apart (test)."
   ],
   "report": {
     "square_neel": {
