@@ -1,0 +1,135 @@
+{
+ "mesh": [
+  24,
+  24
+ ],
+ "cases": [
+  {
+   "state": "Y",
+   "field": "0.2 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 8.429024369305244e-13,
+   "kappa_over_t": [
+    7.696173657646012e-18,
+    1.7180125852324542e-17
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "Y",
+   "field": "0.2 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125,
+    "JPD": 0.01
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 23.891364962782863,
+   "kappa_over_t": [
+    0.00635317113392625,
+    0.017486940256869556
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "Y",
+   "field": "0.2 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125,
+    "JGamma": 0.01
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 1.4536499000263108,
+   "kappa_over_t": [
+    0.0002074204645027103,
+    0.00039612710310480537
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "V",
+   "field": "1.4 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 5.982642306801203e-13,
+   "kappa_over_t": [
+    1.9540694378202795e-18,
+    -2.0752085925521586e-17
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "V",
+   "field": "1.4 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125,
+    "JPD": 0.01
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 13.870755567912635,
+   "kappa_over_t": [
+    -0.0745931623132148,
+    -0.025884639938173283
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "V",
+   "field": "1.4 T || c",
+   "couplings": {
+    "Jxy": 0.075,
+    "Jz": 0.125,
+    "JGamma": 0.01
+   },
+   "direction_rank": 2,
+   "max_abs_curvature": 70.65133579764404,
+   "kappa_over_t": [
+    0.004695911396447265,
+    0.006747787188530396
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  },
+  {
+   "state": "polarized",
+   "field": "3.5 T || b*",
+   "couplings": "woodland2025",
+   "direction_rank": 1,
+   "max_abs_curvature": 0.0,
+   "kappa_over_t": [
+    -0.0,
+    -0.0
+   ],
+   "temperatures": [
+    0.02,
+    0.05
+   ]
+  }
+ ]
+}

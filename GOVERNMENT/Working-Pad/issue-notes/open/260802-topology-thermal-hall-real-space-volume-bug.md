@@ -732,6 +732,39 @@ toolkit의 공통 LSWT 결과(`solve_lswt`)에서 위상량을 계산하는 경�
 기록: `docs/development/verification/stage5a-berry-chern-2026-09-30.json`, `stage5b-thermal-hall-2026-09-30.json`,
 `stage5c-hall-kernel-2026-09-30.json`, `stage5d-adaptive-integration-2026-09-30.json`.
 
+## 2026-10-01 NBCP 적용 조건 — 대칭으로 정해지는 0과 그것을 깨는 항
+
+**결론.** 최근접 XXZ 모델만으로는 LSWT 마그논의 열 Hall 전도도가 정확히 0이다. NBCP에서 0이 아닌 값을 내는 최소
+모델 요소는 결합 방향 의존 항 `J_PD`, `J_Gamma`이다(또는 비공면 상태, LSWT를 넘는 상호작용·포논).
+
+**대칭 논증.** 장이 c(z) 방향이고 상태가 z를 포함하는 평면 안의 공면 상태(Y, V, up-up-down)라 하자. 평면의 법선 n(xy 평면 안)에
+대한 스핀 pi 회전 `C2(n)`은 XXZ 교환을 바꾸지 않고 `h S^z`의 부호를 뒤집는다. 시간 반전 `T`가 그 부호를 되돌리고 스핀을
+뒤집으며, `C2(n)`이 상태를 되돌린다. 따라서 `T C2(n)`은 상태를 보존하는 반유니터리 대칭이다. 이 대칭은 k를 -k로 보내므로
+`Omega_n(k) = -Omega_n(-k)`, `E_n(k) = E_n(-k)`이고 `kappa_xy = 0`이다. 횡자기장 편극상은 공선 상태라 같은 이유로 0이다.
+`J_PD`의 `(S^x S^y + S^y S^x)` 성분과 `J_Gamma`는 `C2(n)`에 대해 불변이 아니다.
+
+**수치 확인** (`examples/nbcp_thermal_hall_applicability.py`, `data-space/verification/261001-nbcp-thermal-hall-symmetry/report.json`;
+균일 24 x 24, t = k_B T / meV = 0.02, 0.05):
+
+| 상태 | 결합 | 방향 rank | max abs(Omega) | kappa_xy/T |
+|---|---|---|---|---|
+| Y 0.2 T, Jxy 0.075, Jz 0.125 | XXZ | 2 | 8e-13 | 1e-17 |
+| Y | + J_PD 0.01 | 2 | 24 | 6.4e-3, 1.7e-2 |
+| Y | + J_Gamma 0.01 | 2 | 1.5 | 2.1e-4, 4.0e-4 |
+| V 1.4 T | XXZ | 2 | 6e-13 | 2e-17 |
+| V | + J_PD 0.01 | 2 | 14 | -7.5e-2, -2.6e-2 |
+| V | + J_Gamma 0.01 | 2 | 71 | 4.7e-3, 6.7e-3 |
+| 편극, 3.5 T b* (Woodland 2025) | XXZ | 1 | 0 | 0 |
+
+XXZ에서는 곡률이 점마다 0이다(`T C2(n)`만으로는 k와 -k의 상쇄까지만 보장된다). 격자 반전과 결합된 대칭에서 오는 것으로
+추정하며, 유도는 하지 않았다. 0이 아닌 값은 수렴한 값이 아니다(5d: 우연 영모드 근처에서 균일 격자는 수 % 어긋남). 확인한
+주장은 0인지 아닌지뿐이다. 회귀 테스트는 `test_nbcp_thermal_hall_symmetry.py`다.
+
+**NBCP에 주는 뜻.** Woodland et al.(arXiv:2505.06398)의 중성자 적합은 최근접 XXZ로 고자기장 분산을 잘 설명한다. 그 모델
+안에서 LSWT 마그논 열 Hall은 0이다. 따라서 측정된 열 Hall을 마그논 LSWT로 설명하려면 `J_PD`·`J_Gamma`의 크기를 독립적으로
+정해야 한다. 위 표의 부호와 크기는 그 값에 민감하다. 또한 Y의 Gamma 우연 영모드에서 곡률이 `1/|q|`로 커지므로 pseudo-Goldstone
+갭(이슈 260810)이 저온 값을 정한다. 이 두 가지가 정해지기 전에는 NBCP의 열 Hall 크기를 예측값으로 제시하지 않는다.
+
 ## 결론 / 미결 사항
 
 **2026-09-30 갱신:** 구현 항목(SI 계약, full-BZ 표본화, 밴드 분리 규칙, 퇴화 묶음의 Hall, 두 경로의 계산 핵심)은
