@@ -280,6 +280,54 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d42-texture]{결정 기록 (D42): 스커미온 수와 후보 상태 비교}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 두 목표 공통 2순위), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    스커미온 수 & 주기 삼각분할의 반시계 삼각형마다 Berg--L\"uscher $\tan(\Omega/2)=\mathbf n_i\cdot(\mathbf n_j\times\mathbf n_k)/(1+\sum\mathbf n\cdot\mathbf n)$, $Q=\sum\Omega/4\pi$; 연속 극한 $(1/4\pi)\int\mathbf n\cdot(\partial_x\mathbf n\times\partial_y\mathbf n)$ \\
+    정의 안 됨 & 삼중곱 0, 분모 $\le 0$(공면 120°, 반평행)이면 $Q$를 0이 아닌 ``정의 안 됨''으로 보고 \\
+    후보 비교 & 고전 정제, 셀 크기에 맞춘 메시의 LSWT 안정성, 안정할 때만 $E_{\rm cl}+E_{\rm zp}$; 주어진 후보 안의 순위일 뿐 바닥상태 판정이 아님 \\
+    검증 & 팔분구 $\pi/2$; 스커미온 $\mp1$(삼각·정사각); 사면체 $|Q|=2$; 삼각 Heisenberg $E=-0.5388J$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=decisions-d43-api]{결정 기록 (D43): 0.2 공개 API와 옛 API 삭제 일정}
+  \framesubtitle{2026-10-01 사용자 결정(결정 카드 A: 경고 후 다음 판 삭제).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    공개 API & \texttt{SpinModel}, \texttt{SpinState}, \texttt{solve\_lswt}, \texttt{LSWTSettings}, \texttt{LSWTResult}; README·docstring·예제는 이것만 쓴다 \\
+    옛 API & \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, SI Hall 메서드, \texttt{lswt} 이름: 0.2에서 동작, 경고에 삭제 판 0.3 명시 \\
+    내부 경로 & 새 API가 내부에서 만드는 \texttt{SpinSystem}은 \texttt{internal\_use()}로 경고하지 않음 \\
+    검증 & README 빠른 시작을 \texttt{-W error::DeprecationWarning}으로 실행; $E=-0.5388J$, M점 $\omega=1.0J$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
+\begin{frame}[label=decisions-d44-figures]{결정 기록 (D44): 공개 배포 전 시각화 묶음}
+  \framesubtitle{2026-10-01 Claude 결정(사용자: 공개 배포는 시각화가 갖춰진 뒤), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    그림 & 중성자 경로·일정 에너지·분말 지도, Berry 곡률과 Chern 수, thermal Hall, 스핀 텍스처와 입체각 밀도, 상도표, 열역학 곡선 \\
+    정의 안 됨 & NaN(Bragg 벡터의 Goldstone 가중치, 분리 안 된 밴드, 안정 후보 없음, 공면 120°의 $\Omega$)은 회색·빗금·``undefined''; 0이나 이웃 값으로 채우지 않음 \\
+    표시 & 저장된 수치만 그림; 단위 변환은 라벨과 함께만; $\langle n\rangle>S$ 구간 음영 \\
+    검증 & 120° 상태 M점 $\omega=1.0J$, $Q_x=\pi$ 직선 $\gamma=-1/3$; 벌집 DM Chern $\pm1$; \texttt{examples/gallery.py} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small

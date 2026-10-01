@@ -13,7 +13,6 @@ Visualizes spin arrangements on a 2D lattice:
 - Optional polar subplot: every spin seen from +z (azimuth phi, length sin theta)
 """
 
-import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,6 +21,7 @@ from matplotlib.patches import Polygon
 from matplotlib.colors import Normalize
 from itertools import product
 
+from spintoolkit._deprecation import warn_deprecated
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conversion import to_spin_system
 from spintoolkit.system.model import SpinModel
@@ -219,8 +219,8 @@ def _as_spin_system(model, state):
     if isinstance(model, SpinSystem):
         if state is not None:
             raise TypeError("a SpinSystem already holds its configuration; omit state")
-        warnings.warn("plot_spin_configuration(SpinSystem) is deprecated (D30); "
-                      "pass a SpinModel and a SpinState", DeprecationWarning, stacklevel=3)
+        warn_deprecated("plot_spin_configuration(SpinSystem)",
+                        "pass a SpinModel and a SpinState", stacklevel=4)
         return model
     if not isinstance(model, SpinModel) or not isinstance(state, SpinState):
         raise TypeError("plot_spin_configuration needs a SpinModel and a SpinState")
@@ -355,30 +355,32 @@ def _draw_spin_lattice(ax, system, n_repeat, show_couplings,
                 # Black quiver arrow for Sxy direction
                 ax.quiver(pos[0], pos[1], sx, sy,
                           angles='xy', scale_units='xy',
-                          scale=1.0 / arrow_scale,
+                          scale=1.0 / arrow_scale, pivot='middle',
                           color='black', alpha=alpha,
-                          width=0.008, headwidth=4, headlength=3,
-                          zorder=5)
+                          width=0.004, headwidth=3.5, headlength=4,
+                          headaxislength=3.5, zorder=5)
 
-                # Label opposite to arrow direction
+                # Label opposite to arrow direction, home magnetic cell only
                 label_offset = min_dist * 0.25
                 lx = -sx / sxy * label_offset
                 ly = -sy / sxy * label_offset
-                ax.text(pos[0] + lx, pos[1] + ly, site.label,
-                        ha='center', va='center', fontsize=9,
-                        fontweight='bold', alpha=alpha,
-                        color='black', zorder=6)
+                if (n1, n2) == (0, 0):
+                    ax.text(pos[0] + lx, pos[1] + ly, site.label,
+                            ha='center', va='center', fontsize=8,
+                            fontweight='bold', alpha=alpha,
+                            color='black', zorder=6)
             else:
                 # Pure z-spin: colored dot
                 dot_color = '#CC3333' if sz > 0 else '#3333CC'
                 ax.scatter(pos[0], pos[1], c=[dot_color], s=25,
                            edgecolors='none', alpha=alpha, zorder=5)
 
-                # Label offset downward for z-spin
-                ax.text(pos[0], pos[1] - min_dist * 0.25, site.label,
-                        ha='center', va='center', fontsize=9,
-                        fontweight='bold', alpha=alpha,
-                        color='black', zorder=6)
+                # Label offset downward for z-spin, home magnetic cell only
+                if (n1, n2) == (0, 0):
+                    ax.text(pos[0], pos[1] - min_dist * 0.25, site.label,
+                            ha='center', va='center', fontsize=8,
+                            fontweight='bold', alpha=alpha,
+                            color='black', zorder=6)
 
     # ------------------------------------------------------------------
     # Colorbar
@@ -395,7 +397,6 @@ def _draw_spin_lattice(ax, system, n_repeat, show_couplings,
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
     ax.set_aspect('equal')
-    ax.grid(True, linestyle=':', alpha=0.2, color='#CCCCCC')
     ax.set_xlabel('x', fontsize=11)
     ax.set_ylabel('y', fontsize=11)
 

@@ -28,6 +28,7 @@ import warnings
 
 import numpy as np
 
+from spintoolkit._deprecation import internal_use
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import BILINEAR, ZEEMAN, Site, SpinModel, Term
@@ -86,8 +87,9 @@ def to_spin_system(model: SpinModel, state: SpinState,
             warnings.warn(f"sites {uncoupled} have no zeeman term and do not couple "
                           "to the applied field", UserWarning, stacklevel=2)
 
-    system = SpinSystem(lattice_vectors=state.magnetic_lattice(model),
-                        label=label or model.metadata["model_id"])
+    with internal_use():
+        system = SpinSystem(lattice_vectors=state.magnetic_lattice(model),
+                            label=label or model.metadata["model_id"])
     n = state.num_cells
     for site in model.sites:
         h = g_of[site.id].T @ field if site.id in g_of else np.zeros(3)

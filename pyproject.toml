@@ -1,13 +1,14 @@
 [build-system]
-requires = ["setuptools>=64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "spin-toolkit"
-version = "0.2.dev0"
+dynamic = ["version"]
 description = "Calculation toolkit for 2D spin systems: classical optimization and linear spin-wave theory"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
 authors = [
     {name = "Sung-Min Park", email = "sungmin.park.0226@gmail.com"},
@@ -28,11 +29,14 @@ dependencies = [
     "numpy>=1.21",
     "scipy>=1.7",
     "matplotlib>=3.4",
-    "tqdm>=4.60",
 ]
 
 [project.optional-dependencies]
+progress = [
+    "tqdm>=4.60",
+]
 dev = [
+    "tqdm>=4.60",
     "pytest>=7.0",
     "pytest-cov>=4.0",
 ]
@@ -40,6 +44,9 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory"
 Repository = "https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory"
+
+[tool.setuptools.dynamic]
+version = {attr = "spintoolkit.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["code-space"]

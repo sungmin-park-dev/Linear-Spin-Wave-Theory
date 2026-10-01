@@ -19,7 +19,8 @@ from spintoolkit import *  # noqa: F401,F403
 from spintoolkit import __all__, __author__, __email__, __version__  # noqa: F401
 
 warnings.warn(
-    "The 'lswt' package was renamed to 'spintoolkit'; import spintoolkit instead.",
+    "The 'lswt' package was renamed to 'spintoolkit' and the alias will be removed in "
+    "spintoolkit 0.3; import spintoolkit instead.",
     DeprecationWarning, stacklevel=2,
 )
 

@@ -8,42 +8,44 @@ added as subpackages of ``methods``. The conventional alias is
 
 Main Components
 ---------------
-system : SpinSystem, exchange matrices, and lattice geometry
-states : Classical magnetic structures
-methods : Shared solver interface, optimization, and calculation methods
-    (``methods.lswt`` for linear spin-wave theory)
-definitions : Physical constants, numerical defaults, and spin basis
-observables : thermodynamics, zero modes, structure factor and correlations, topology (Berry/Chern)
-visualization : Band structure, Berry curvature, spin configuration plots
+system : ``SpinModel`` (Hamiltonian), external conditions, lattice geometry and symmetry
+states : ``SpinState`` (commensurate) and ``IncommensurateStructure`` (single-Q spirals)
+methods : classical search, Luttinger-Tisza, Monte Carlo, Landau-Lifshitz dynamics,
+    exact diagonalization, linear spin-wave theory (``solve_lswt``) and
+    comparison of candidate states
+observables : bands, thermodynamics, structure factor and neutron intensity,
+    Berry curvature, Chern numbers, thermal Hall, skyrmion number
+visualization : band structure and spin configuration plots
+models : benchmark Hamiltonians and reference states
 
-Model definitions: ``SpinModel`` is the common Hamiltonian definition shared by
-all methods and ``SpinState`` a classical configuration on a magnetic supercell.
-``SpinSystem`` is the current LSWT input, which stage 2 of the development plan
-connects to ``SpinModel``. Benchmark models live in ``spintoolkit.models``.
+All energies are dimensionless, in the unit E0 of the coupling coefficients;
+fields are ``mu_B B / E0`` and temperatures ``k_B T / E0``.
 
-The previous package name ``lswt`` remains importable as a deprecated alias.
+Deprecated API
+--------------
+``SpinSystem`` (with ``SpinSite``, ``Coupling``), ``LSWTSolver``,
+``SpinOptimizer``, ``EnergyFunction``, ``Topology.compute_thermal_Hall`` and
+the old package name ``lswt`` work in 0.2 with a DeprecationWarning and are
+removed in 0.3 (D43).
 
 Quick Start
 -----------
->>> import numpy as np
->>> from spintoolkit import SpinSystem, LSWTSolver
->>> from spintoolkit.system import exchange
->>>
->>> # Define sites, couplings, and lattice
->>> sites = [SpinSystem.Site("A", [0, 0], spin=0.5,
-...          angles=[np.pi/2, 0], magnetic_field=[0, 0, 0])]
->>> J = exchange.heisenberg(1.0)
->>> couplings = [SpinSystem.Coupling(0, 0, J, [1.0, 0.0])]
->>> system = SpinSystem(sites, couplings, lattice_vectors=[[1, 0], [0.5, 0.866]])
+>>> import spintoolkit as stk
+>>> from spintoolkit.models import triangular_heisenberg, state_120
+>>> model = triangular_heisenberg(J=1.0, S=0.5)
+>>> result = stk.solve_lswt(model, state_120(model),
+...                         settings=stk.LSWTSettings(mesh=(24, 24)))
+>>> round(result.ground_state_energy, 4)   # E_cl + E_zp per spin, units of J
+-0.5388
 """
 
-__version__ = "0.2.0-dev"
+__version__ = "0.2.0.dev0"   # PEP 440; the single source of the package version
 __author__ = "Sung-Min Park"
 __email__ = "sungmin.park.0226@gmail.com"
 
 # Physical systems
 from spintoolkit.system.spin_system import SpinSystem
-# Backward-compatible aliases (to be removed in future versions)
+# Backward-compatible aliases, removed in 0.3 with SpinSystem (D43)
 from spintoolkit.system.spin_system import SpinSite, Coupling
 from spintoolkit.system.exchange import heisenberg, xxz, xxz_with_soc, dzyaloshinskii_moriya, kitaev
 from spintoolkit.system.brillouin_zone import BrillouinZone
@@ -60,6 +62,7 @@ from spintoolkit.states.incommensurate import IncommensurateStructure
 
 # Calculation methods
 from spintoolkit.methods.base import AbstractSolver, SolverResult
+from spintoolkit.methods.lswt import LSWTResult, LSWTSettings, solve_lswt
 from spintoolkit.methods.lswt.solver import LSWTSolver
 from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.methods.lswt.energy import EnergyFunction
@@ -67,10 +70,11 @@ from spintoolkit import models
 
 __all__ = [
     '__version__', '__author__', '__email__',
-    # Core
-    'SpinSystem', 'SpinSite', 'Coupling',
+    # Exchange matrices and zone geometry
     'heisenberg', 'xxz', 'xxz_with_soc', 'dzyaloshinskii_moriya', 'kitaev',
     'BrillouinZone',
+    # Deprecated, removed in 0.3 (D43)
+    'SpinSystem', 'SpinSite', 'Coupling',
     # Common model definition
     'SpinModel', 'Site', 'Term', 'SpinModelError', 'validate_spin_model',
     'ExternalConditions', 'CalculationGeometry',
@@ -78,6 +82,7 @@ __all__ = [
     'SpinState', 'SpinStateError', 'validate_spin_state', 'IncommensurateStructure',
     'models',
     # Solvers
-    'AbstractSolver', 'SolverResult',
+    'AbstractSolver', 'SolverResult', 'solve_lswt', 'LSWTSettings', 'LSWTResult',
+    # Deprecated, removed in 0.3 (D43)
     'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',
 ]
