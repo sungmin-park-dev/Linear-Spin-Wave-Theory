@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-01T01:46:20.922632+00:00",
+  "generated_utc": "2026-10-01T03:21:08.700597+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -9,19 +9,19 @@
     "docs/nbcp/preamble.tex": "e8aaaeb72b96d0ebf7af25e3ac8e3d696984cbb18e117880352a84738b4035dc",
     "docs/nbcp/metadata.tex": "0aed8fcffc63d59235e44c40e4ba459fb6ef1f66e5240fe3b7aeeedc0527fe6a",
     "docs/nbcp/chapters/01-introduction.tex": "05bf123f8dd092e53fb2aaeb0831596c475f41f8291fd0c5ad88a28452f2d1d3",
-    "docs/nbcp/chapters/02-model-hamiltonian.tex": "e1df3a2b6e8cc7ab1704aea6bb42f6a06ddcc4fb8efbd2eb8551a9a3664b38eb",
+    "docs/nbcp/chapters/02-model-hamiltonian.tex": "3a0d2a0341535a75b03ba75d4c4606731dd334fd118e6b7948fab703350b0942",
     "docs/nbcp/chapters/03-phase-diagram.tex": "f45625a00c4f38a9c57ea1e236c1ef1504b5361fd852754bc0ab1136eb107673",
     "docs/nbcp/chapters/04-phase-characterization.tex": "96f71d8a5fd8d8c2169560bf6cbc98afcc5f4f5a23f4cba7b932499df626f545",
     "docs/nbcp/chapters/05-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
     "docs/nbcp/chapters/06-yv-low-energy.tex": "c43966a3db1ecc5dea4b80b86071925dd475b0636bf0b98677341fd37d017d86",
     "docs/nbcp/chapters/07-supersolidity.tex": "dac7dd624fb2cfd55ad503c8039d5f16557e7340a6b1de065c7650ba7b824922",
     "docs/nbcp/chapters/08-y-phase.tex": "8912aad046dc67f78b60ccb1875ec52da5253f764dcbdea556dba175a5a90a0c",
-    "docs/nbcp/chapters/09-v-phase.tex": "fd0d28ce812718da9b268e1f066a7a2241c823808d1183cd6befd2c9a67e750b",
+    "docs/nbcp/chapters/09-v-phase.tex": "145b1ce59497662d74c654ca62b23f7e43b0b7e088e20c62aa06f83dafa0837f",
     "docs/nbcp/chapters/10-discussion.tex": "a14fee3666569d4d497f562a4d8a4fa7cd0d113b783faff86a88e4d476a967d4",
     "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "b6f60f8f4db37162d082a8c8f60e114b25e046742727c795ed98b35991177e08",
     "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
     "docs/nbcp/appendices/c-y-stiffness.tex": "77030a5a1477dcd300c1a4024ebc63e0746758f90772766237d484ca4aca8dfa",
-    "docs/nbcp/appendices/d-numerical-verification.tex": "110afff1f6732cff970107f102c09c4995e7f59c65f9b4549291befc8cfda7a6",
+    "docs/nbcp/appendices/d-numerical-verification.tex": "a7106a5950d4ec802079e7ed3434b3ff5e0afbc09aef83821db1922087ea0151",
     "docs/nbcp/appendices/e-model-derivation.tex": "e57143a3f77508ba209f60d4499ff18969c4e473a409f0229108c4404f58a3bf",
     "docs/nbcp/references.tex": "fd339a135cc065ef0d0e91891e2028bbed387ef5aa1a019dff9b76fb082ad9a8",
     "docs/nbcp/references.bib": "3a016aef2204b1adf5ced2fbd9c064d5c1c04a07386f22e07c4383c790524e94",
@@ -49,7 +49,7 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "2b396ea98a56155644fbb9b320c5ed23adc1316d20d0566cc24c4446e5f2157b"
+    "research-note.pdf": "f5a045aefe8fcc3f3435351d76db2efeadcd234eac0e268c06c0c3b195053ed8"
   },
   "latex_review_messages": [],
   "source_display_equations": 92,
