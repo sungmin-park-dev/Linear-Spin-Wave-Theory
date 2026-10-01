@@ -20,6 +20,10 @@ at 3.5 T || b*. Reported: the rank of the spin directions (1 collinear, 2 coplan
 0.02 and 0.05 (E0 = 1 meV, about 0.23 K and 0.58 K) on a uniform 24 x 24
 mesh. The nonzero values are not converged (stage 5d: uniform meshes are off
 by percent near the accidental zero modes); only zero vs nonzero is the claim.
+The values are those of the full-position Bloch convention returned by
+``thermal_hall`` (the physical one); the cell convention, which drops the
+site positions, would give other nonzero values here, even of opposite sign
+(issue note 260802, 2026-10-01).
 
 Usage
 -----

@@ -19,7 +19,11 @@
    limits t -> 0 and t -> infinity; time reversal; zero for coplanar
    Heisenberg states, also with degenerate bands (Neel, 120 degrees) where
    the band sum is undefined; continuity as a gap closes; the existing SI
-   routine on the same k data; zero-mode rule D25.
+   routine on the same k data; zero-mode rule D25; the cell-convention
+   kappa (sites at the cell origin) differs from the returned full-position
+   one by the closed form in the berry module docstring, vanishes with C3,
+   and changes when B is assigned to another cell, while the returned value
+   does not.
 6. Adaptive k integration (5d): a narrow-gap Haldane case against a fine
    uniform two-band reference, error estimates bounding the actual error,
    stop reasons (budget, depth limit), coplanar zero.
@@ -35,13 +39,15 @@ from spintoolkit.methods.ed import EDSector, solve_ed
 from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
 from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 from spintoolkit.models import neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg
-from spintoolkit.models.honeycomb import honeycomb_ferromagnet, kitaev_honeycomb
+from spintoolkit.models.honeycomb import NEAREST_NEIGHBOUR_OFFSETS, honeycomb_ferromagnet, kitaev_honeycomb
 from spintoolkit.observables.berry import (
     AdaptiveIntegration, TopologyError, berry_curvature, c2_weight, c2_weight_derivative,
     chern_numbers, chern_numbers_fhs, thermal_hall, zone_gauge)
+from spintoolkit.observables.topology import curvature_pair_terms, weighted_curvature_sum
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
+from spintoolkit.system.model import Site, SpinModel, Term
 
 N111 = np.ones(3) / np.sqrt(3)
 
@@ -388,6 +394,76 @@ def test_existing_si_routine_gives_the_same_kappa_on_the_same_k_data():
         ours = thermal_hall(result, [t], gapless=True).kappa_over_t[0]
     si = ours * K_BOLTZMANN_MEV ** 2 * kelvin / H_BAR_MEV * 1.602176634e-22
     assert abs(si - legacy) < 1e-10 * abs(legacy)
+
+
+def anisotropic_haldane(bonds, b_cell=(0, 0), mesh=(24, 24)):
+    """Haldane magnons with nearest-neighbour bonds ``bonds`` (C3 broken unless equal).
+
+    B sits at fractional ``(1/3, 1/3) + b_cell``; the bonds are the same.
+    """
+    base = honeycomb_ferromagnet(J=1.0, D=0.2)
+    terms = [t for t in base.terms if t.label != "NN"]
+    terms += [Term.bilinear(("A", (0, 0)), ("B", (o[0] - b_cell[0], o[1] - b_cell[1])),
+                            -J * np.eye(3), label="NN")
+              for J, o in zip(bonds, NEAREST_NEIGHBOUR_OFFSETS)]
+    sites = [Site("A", (0.0, 0.0), 0.5), Site("B", (1 / 3 + b_cell[0], 1 / 3 + b_cell[1]), 0.5)]
+    model = SpinModel(base.lattice, sites, terms, base.metadata)
+    return solve_lswt(model, polarized_state(model), ExternalConditions(field=(0, 0, 0.3)),
+                      settings=LSWTSettings(mesh=mesh))
+
+
+def kappa_in_cell_convention(result, ts):
+    """kappa / T with sites at the cell origin: H_c(k) = D^+ H D, dH_c = D^+ (dH + i s [H, X]) D, D = diag exp(i s k.r)."""
+    sign, _ = zone_gauge(result)
+    ns = result.num_sites
+    r = np.r_[result.positions, result.positions]
+    dx, dy = result.hamiltonian_derivatives_at(result.k_points)
+    total = np.zeros(len(ts))
+    for k, E, T, H, Dx, Dy in zip(result.k_points, result.eigenvalues, result.eigenvectors,
+                                  result.hamiltonians, dx, dy):
+        D = np.diag(np.exp(1j * sign * r @ k))
+        derivatives = [D.conj().T @ (dH + 1j * sign * (H * r[:, a] - r[:, a, None] * H)) @ D
+                       for a, dH in enumerate((Dx, Dy))]
+        terms = curvature_pair_terms(E, D.conj().T @ T, derivatives, ns)
+        total += [weighted_curvature_sum(terms, t) for t in ts]
+    return -total / len(result.k_points) / abs(np.linalg.det(result.magnetic_lattice))
+
+
+def cell_convention_shift(result, t):
+    """(s / A) sum_a z . (J_a x tau_a), J_a = < sum_n c2'(E_n) w_na grad E_n >_k (berry docstring)."""
+    sign, _ = zone_gauge(result)
+    ns = result.num_sites
+    dx, dy = result.hamiltonian_derivatives_at(result.k_points)
+    J = np.zeros((ns, 2))
+    for E, T, Dx, Dy in zip(result.eigenvalues, result.eigenvectors, dx, dy):
+        for n in range(ns):                            # particle modes
+            u = T[:, n]
+            w = np.abs(u[:ns]) ** 2 - np.abs(u[ns:]) ** 2
+            velocity = np.real([np.vdot(u, Dx @ u), np.vdot(u, Dy @ u)])
+            J += c2_weight_derivative(E[n:n + 1], t)[0] * np.outer(w, velocity)
+    J /= len(result.k_points)
+    tau = result.positions
+    return sign * np.sum(J[:, 0] * tau[:, 1] - J[:, 1] * tau[:, 0]) / abs(
+        np.linalg.det(result.magnetic_lattice))
+
+
+def test_cell_convention_kappa_is_not_a_property_of_the_system():
+    """Only Chern numbers agree; the returned kappa is the full-position one."""
+    ts = [0.2, 1.0]
+    symmetric = anisotropic_haldane((1.0, 1.0, 1.0))
+    assert np.allclose(kappa_in_cell_convention(symmetric, ts),
+                       thermal_hall(symmetric, ts).kappa_over_t, rtol=1e-10)  # C3: J_a = 0
+    broken = anisotropic_haldane((1.0, 0.6, 0.3))
+    moved = anisotropic_haldane((1.0, 0.6, 0.3), b_cell=(1, 0))
+    full = thermal_hall(broken, ts).kappa_over_t
+    assert np.allclose(thermal_hall(moved, ts).kappa_over_t, full, rtol=1e-10)
+    cell, cell_moved = kappa_in_cell_convention(broken, ts), kappa_in_cell_convention(moved, ts)
+    assert np.all(np.abs(cell - full) > 0.2 * np.abs(full))        # 0.025 vs 0.042 at t = 0.2
+    assert np.all(np.abs(cell_moved - cell) > 0.2 * np.abs(cell))  # depends on the cell choice
+    for result, value in ((broken, cell), (moved, cell_moved)):
+        shift = [cell_convention_shift(result, t) for t in ts]
+        assert np.allclose(value - thermal_hall(result, ts).kappa_over_t, shift, rtol=1e-10)
+    assert np.array_equal(chern_numbers(broken), chern_numbers(moved))
 
 
 def test_zero_mode_candidates_stop_the_thermal_hall_calculation():
