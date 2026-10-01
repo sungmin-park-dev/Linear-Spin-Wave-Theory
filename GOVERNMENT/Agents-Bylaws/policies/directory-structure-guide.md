@@ -5,7 +5,7 @@ section: policies
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Directory Structure Guide
@@ -28,7 +28,7 @@ LSWT 프로젝트의 지식·코드·운영 문서를 어디에 둘지 판단하
 | `legacy/` | 과거 코드와 연구 노트의 보존 영역 | 현재 정본이 아니며 출처·누락 대조에만 사용 |
 | `model/<name>/` | 모델별 물리 정의·계산과 원시·중간 결과 | 공통 계산법은 `code-space/spintoolkit/`에 두고, 정돈된 결과만 `data-space/`로 승격 |
 | `data-space/` | 검토하고 정돈한 계산 결과 데이터 | 문서나 코드의 source of truth로 사용하지 않음 |
-| `workbench/` | research-workspace 앱이 관리하는 NBCP 유도·계산 과정 블록(`blocks/`)과 일지(`log/`) (2026-09-30 사용자 승인) | 과정 기록이며 NBCP 내용 원본이 아님. 결론은 사람이 `docs/nbcp/` 해당 장·부록에 옮겨 적는다(2026-09-18 NBCP LaTeX 원본 결정 유지). 컴파일 부산물 `.build/`는 git 제외 |
+| `workbench/` | research-workspace 앱이 관리하는 NBCP 유도·계산 과정 블록(`blocks/`)과 일지(`log/`) (2026-09-30 사용자 승인) | 과정 기록이며 NBCP 내용 원본이 아님. 결론은 사람이 `docs/nbcp/` 해당 장·부록에 옮겨 적는다(2026-09-18 NBCP LaTeX 원본 결정 유지). 컴파일 부산물 `.build/`는 git 제외. `STATUS.md`는 앱이 `research.yaml`의 `sources:`에 적힌 정본(TASK-QUEUE·검토 상태·참고문헌)과 블록·일지를 모아 쓰는 자동 요약으로 정본이 아니며 git 제외(2026-10-01 사용자 승인) |
 
 `docs/`의 1단계는 주제(`development`, `lswt`, `nbcp`)와 보관 역할(`archive`)로 나눈다.
 `docs/lswt/` 안에서는 `00-`, `01-`처럼 숫자 prefix로 큰 읽기 순서를 표현한다. 개별 파일명에는 숫자 prefix를 반복하지 않는다. 상세 규칙은
