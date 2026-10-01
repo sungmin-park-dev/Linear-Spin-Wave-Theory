@@ -6,7 +6,7 @@ status: in-review
 author: codex
 last-edited-by: claude
 created: 2026-09-23
-updated: 2026-09-30
+updated: 2026-10-01
 source_refs:
   - conversation: 2026-09-23 model workspace and common physical-system transfer contract
   - conversation: 2026-09-29 development Beamer review and 1st development scope
@@ -104,7 +104,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D28 | 고전·양자 비교 규칙: 부드러운 좌표 phi의 기준 상태는 완화 경로(각 phi에서 나머지 좌표를 고전 최소화) 위 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E_zp`의 최소로 정한다(부드러운 방향의 1-loop 정상성 조건); 곡률 비와 대역 (0.1, 10)을 대체; 고전 궤도가 평평하면 D17과 같음; 단열 분리 비를 기록; LSWT 차수(O(S^0) 보정 제외)의 T = 0 원리 | 사용자 결정 2026-09-30(원리와 세부 확정); 구현 2026-09-30(`0e9247f`); 기본 영점 제공자 `constrained`와 k = 0의 구속 모드 투영은 사용자 결정 2026-09-30 | §1 |
 | D29 | 5단계 위상량: thermal Hall은 층당 `kappa_xy^2D / T`를 `k_B^2 / hbar` 단위의 무차원 값으로 반환(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고하고 Chern 수와 kappa의 게이지 불변을 시험; 부호는 `Omega = dA_y/dk_x - dA_x/dk_y`, `A = i <u| eta grad u>`, `C = (1/2 pi) int Omega`, `kappa = -(k_B^2 T / hbar A) sum c2 Omega`이며 물리적 Bloch 상태(ED)로 고정; 이상항이 있는 기준 모델로 키타에프 [111] 편극상을 채택; 5a(곡률·Chern)·5b(thermal Hall)·5c(기존 `Topology` 정리와 이슈 260802)로 나눠 검증 ; 5b 세부: kappa는 쌍 합 형태(퇴화·교차 밴드에서도 정의, 밴드별 Chern은 5a 규칙 유지), 영모드는 D25 규칙; 5c: 두 경로의 Hall 계산 핵심을 하나로 합치고 기존 SI API(k_data, W/K)는 유지, 삭제 여부는 기존 `LSWTSolver` 정리 시; 5d: 적응형 k 적분(`thermal_hall(..., integration=AdaptiveIntegration(...))`, kappa만, 기본값 상대 1e-3·절대 1e-7·2e5점·깊이 12, D31로 확정)| 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D30 | 설계 미결 사항 정리: (1) 자기 셀 — LT는 진단 도구로 구현(J(q) 최소 q*, 강한 제약 만족 여부, 후보 셀 제안; 선택 단계는 바꾸지 않음), 계산 흐름의 자동 셀 결정 단계로는 두지 않음; 대각 셀 전용 `CommensurateStructure`는 삭제(참조·호환 매핑·예시·테스트 함께 정리, 옛 저장 객체 복원 여부 먼저 확인). (2) 기존 경로 — 검증된 대체가 있는 공개 진입점(`LSWTSolver` → `solve_lswt`, SI Hall API → `thermal_hall`)에는 사용 중단 경고를 붙이고 삭제는 공개 배포 정리 때; `EnergyFunction`/`SpinOptimizer`는 전역 고전 탐색을 새 자료형 위에 옮긴 뒤 같은 방식으로 정리; `SpinSystem`과 기존 해밀토니안 구성기는 내부 계산 도구로 유지. (3) 1차 범위에서 제외: D17 확장(사이트별 회전축·여러 차원 영공간), 후속 항 종류(같은 사이트 이차항, 3·4-스핀 항, `S >= 1`), 키타에프 flux 섹터 대조와 ED 2-마그논 섹터 — 필요한 벤치마크나 모델이 생길 때 다시 연다. (4) TN 필드 규약은 솔버 경계 검증 실험(인수인계 260607) 결과를 보고 정한다. (5) 적응형 적분의 오차 추정 개선은 보류. (1)·(2)의 구현은 LSWT 작업 재개 뒤 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
-| D31 | 위상량 수치 기준 확정: 밴드 간격 `TOPOLOGY_BAND_GAP_CUTOFF = 1e-8` E0(이하이면 그 점의 곡률 판정 불가), FHS 링크 겹침 `TOPOLOGY_MIN_LINK_OVERLAP = 1e-3`(이하이면 격자점 사이 밴드 교차로 판정 불가; 정상 경우 최소 겹침 0.55–0.95, 대칭 보호 교차 1e-15), Kubo–FHS 일치 `TOPOLOGY_CHERN_AGREEMENT = 0.1`(FHS는 갭이 있으면 거친 격자에서도 정확하지만 갭 닫힘을 알아채지 못하고, Kubo는 느리지만 갭 닫힘·격자 부족을 정수에서 벗어남으로 드러내므로 둘이 일치할 때만 채택; 시험한 모델에서 거짓 채택 없음, 거부되면 격자를 키움); 적응형 적분 기본값 상대 1e-3, 절대 1e-7, 2e5점, 깊이 12 | 사용자 결정 2026-09-30 | §5 |
+| D31 | 위상량 수치 기준 확정: 밴드 간격 `TOPOLOGY_BAND_GAP_CUTOFF = 1e-8` E0(이하이면 그 점의 곡률 판정 불가), FHS 링크 겹침 `TOPOLOGY_MIN_LINK_OVERLAP = 1e-3`(이하이면 격자점 사이 밴드 교차로 판정 불가; 정상 경우 최소 겹침 0.55–0.95, 대칭 보호 교차 1e-15), Kubo–FHS 일치 `TOPOLOGY_CHERN_AGREEMENT = 0.1`(FHS는 갭이 있으면 거친 격자에서도 정확하지만 갭 닫힘을 알아채지 못하고, Kubo는 느리지만 갭 닫힘·격자 부족을 정수에서 벗어남으로 드러내므로 둘이 일치할 때만 채택; 거부되면 격자를 키움), FHS admissibility `TOPOLOGY_PLAQUETTE_PHASE_MARGIN = 1e-6` rad(plaquette 위상이 ±π에 이만큼 붙으면 판정 불가: 밴드 접촉을 둘러싼 plaquette의 Berry 위상 π는 ±π 가지가 반올림으로 정해지므로 FHS 정수가 임의; 2026-10-01 보완, 사용자 승인 — 이전 기록의 "시험한 모델에서 거짓 채택 없음"은 D=0 Haldane 24×24에서 FHS가 0으로 반올림되어 Kubo 0과 일치, [0, 0]을 채택한 사례로 반증됨; 측정 최대 위상 D=0에서 π, D=1e-3에서 π−0.06, D=0.2와 Kitaev에서 1.01 이하); 적응형 적분 기본값 상대 1e-3, 절대 1e-7, 2e5점, 깊이 12 | 사용자 결정 2026-09-30 | §5 |
 | D32 | 6단계 인터페이스: LT 진단 `luttinger_tisza(model, mesh=(N, N)) -> LTReport`(`methods/luttinger_tisza.py`; J(q) 최소 q*, 분수와 후보 초격자, 고유공간 차원, 단일 q 강한 제약 판정과 그 상태, 퇴화 표시; 영장, 선택하지 않음); 전역 고전 탐색 `classical_search(model, supercell, conditions, seed=42, ...) -> ClassicalSearchResult`(`methods/classical.py`; (theta, phi) 차분 진화를 기존 설정대로 한 뒤 `refine_classical`; 각도 고정 없음); 진행 순서 6a(정리) → 6b → 6c, 6b·6c는 검증 뒤 사용자 확인 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D33 | 4d 밴드 구조: `high_symmetry_points(lattice)`(`system/high_symmetry.py`; 역격자 Wigner–Seitz 셀의 꼭짓점·변 중점, 육각 Γ·M·K·K′, 정사각·직사각 Γ·X·Y·M, 그 밖은 일반 이름)와 `band_structure(result, path, points, lattice="primitive")`(`observables/bands.py`; 결정 격자 경로 기본, 자기 셀의 밴드는 접힌 채, 영모드는 표시, 불안정은 NaN과 경고)을 LSWT 물리량으로 추가; 밴드·스핀 배치 그림은 LSWT 구현이 끝난 뒤 별도 시각화 단계에서 설계·검토 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 
@@ -651,9 +651,14 @@ LSWT의 기준 상태는 각 스핀이 국소장과 평행하여 토크가 0인 
 게이지 행렬). `chern_numbers`는 둘의 차이가 `TOPOLOGY_CHERN_AGREEMENT`(0.1) 이하일 때만 FHS 정수를 받고
 아니면 NaN과 경고를 낸다. 메시 점의 밴드 간격(`TOPOLOGY_BAND_GAP_CUTOFF`, 1e-8 E0 이하면 NaN)만으로는
 메시 점 사이의 교차나 갭 닫힘을 볼 수 없다: 교차는 FHS 링크 겹침(`TOPOLOGY_MIN_LINK_OVERLAP`, 1e-3 이하면
-NaN)으로, 닫힘은 Kubo와 FHS의 불일치로 드러난다. 퇴화·교차 밴드 묶음의 비가환 불변량은 구현하지 않는다.
-세 수치 기준은 D31로 확정했다. 두 계산은 반대 방향으로 실패하므로(FHS는 갭 닫힘에서 임의의 정수, Kubo는 작은
-갭에서 느린 수렴) 일치를 요구하면 틀린 정수 대신 NaN이 나온다. 거부되면 격자를 키운다.
+NaN)으로, 닫힘은 Kubo와 FHS의 불일치로 드러난다. 밴드 접촉점(예: D=0의 Dirac 점)을 둘러싼 plaquette는
+Berry 위상이 정확히 π여서 ±π 가지와 FHS 정수가 반올림으로 정해지므로, plaquette 위상이 ±π에서
+`TOPOLOGY_PLAQUETTE_PHASE_MARGIN`(1e-6 rad) 이내이면 FHS admissibility(|F| < π) 위반으로 NaN이다(2026-10-01).
+퇴화·교차 밴드 묶음의 비가환 불변량은 구현하지 않는다.
+네 수치 기준은 D31로 확정했다. 두 계산은 반대 방향으로 실패하므로(FHS는 갭 닫힘에서 임의의 정수, Kubo는 작은
+갭에서 느린 수렴) 일치를 요구하면 대부분 틀린 정수 대신 NaN이 나온다. 다만 FHS가 우연히 Kubo와 같은 정수로
+반올림되면 일치만으로는 막지 못하므로(D=0, 24×24에서 [0, 0] 채택 사례) admissibility 검사가 따로 필요하다.
+거부되면 격자를 키운다.
 
 `thermal_hall(result, temperatures)`은 층당 `kappa_xy^2D / T`를 `k_B^2 / hbar` 단위의 무차원 값으로 반환한다
 (SI: 값 x `k_B^2 T / hbar`, `T = t E0 / k_B`; 3D는 층간격으로 나눔). 입자 밴드 쌍의 곡률 항을 가중치 차
@@ -804,6 +809,8 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 - 2026-09-30 (claude): D32(6단계 인터페이스)와 6a·6b 구현을 결정 목록과 구현 상태 표에 반영했다.
 - 2026-09-30 (claude): 6c(전역 고전 탐색, 기존 탐색 클래스 사용 중단)를 구현 상태 표에 반영했다.
 - 2026-09-30 (claude): D33과 4d(밴드 구조)를 결정 목록과 구현 상태 표에 반영했다.
+- 2026-10-01 (claude): D31에 네 번째 기준(FHS admissibility, plaquette 위상 여유 1e-6 rad)을 사용자 승인으로 보완하고,
+  반증된 "시험한 모델에서 거짓 채택 없음"을 정정했다(D31 행, §5).
 
 ## 관련 기록
 
