@@ -46,6 +46,20 @@ observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `
 
 ### 발견 사항
 
+- 2026-10-01 NBCP 3부분격자 상(0.7, 1.0, 1.4 T ∥ b*, arXiv:2505.06398 Table 1·Fig. 6의 자기장) 밴드
+  (`examples/nbcp_three_sublattice_bands.py`, `data-space/verification/261001-nbcp-three-sublattice-bands/`,
+  `test_nbcp_three_sublattice_bands.py`).
+  - **고전 기준 상태.** √3×√3 셀에서 무작위 시작 30개를 정련하면 두 정류 상태가 나온다. 상태 I은 스핀 하나가 B를 따르고
+    두 스핀이 b*-c 평면에서 +c, −c 쪽으로 대칭 기운 상태다. 기울기는 닫힌 식 `cos beta = (h/S - 3 Jxy) / (3 (Jxy + Jz))`와
+    1e-8 안에서 맞고, beta → 0이 편극상의 고전 임계장 1.717 T와 같다. 상태 II는 두 스핀이 같고 하나가 다르며, 모든 장에서
+    상태 I보다 높고(1.5 T에서 셀당 1e-5 meV) LSWT가 불안정한 안장점이다.
+  - **선택의 근거와 한계.** LSWT 기준은 상태 I이다. 두 상태의 에너지 차가 작으므로 LSWT를 넘는 양자 보정이 선택을 바꿀 수
+    있는지는 열린 질문이다. 논문은 양자 요동이 이 구조를 고른다고 서술한다(원문 미대조, 요약 기반).
+  - **안정성과 밴드.** 장이 b*를 따르면 연속 대칭이 없다. 고전 Hessian에 0 고유값이 없고(0.25 T에서 최소 1.7e-3), LSWT에
+    영모드도 없다. 경로 M-K'-Γ-K-M에서 세 모드가 모두 안정하고, K가 자기 BZ의 Γ로 접힌다. 최저 갭은 0.7, 1.0, 1.4 T에서
+    0.041, 0.031, 0.015 meV이고, B → B_C^cl 아래에서 연속으로 닫힌다(1.71 T에서 3e-4 meV). 이는 편극상 갭이 위에서 닫히는 것과
+    맞는다.
+  - **미완료.** 측정 데이터와의 비교는 하지 않았다. 논문의 측정 B_C ≈ 1.65 T와 고전값의 차이는 LSWT 밖의 효과다.
 - 2026-09-11 후속: 스핀당 U/S/C와 sublattice 점유수의 정규화, 통합·온도 스캔의 Ns 추론을 신규 21개 테스트로 검증·수정했다. [정규화 종결 이슈](../closed/260911-thermodynamic-observable-normalization.md)에 해석해·legacy 대조를 기록하고 완료 항목을 표에서 제거했다. Thermal Hall, 적용되지 않는 `exclude_gamma` 및 Goldstone/invalid-mode 처방은 별도 검토 범위다.
 - 2026-09-11 온도 전달, thermal energy의 band 합, free-energy logarithm 결함은 신규 17개 회귀 테스트로 수정·종결했다. [해당 이슈](../closed/260911-finite-temperature-energy-and-occupation.md)에 legacy 대조와 검증 범위를 기록했다.
 - 2026-09-10 B/B† 구현 회귀 검증과 공개 솔버의 T=0 에너지 반환식 수정은 각각 종결 이슈에 기록했다. 이는 전체 Hamiltonian, Colpa 또는 유한온도 검증의 완료를 뜻하지 않는다.
