@@ -1,30 +1,30 @@
 {
-  "generated_utc": "2026-09-22T10:26:56.216727+00:00",
+  "generated_utc": "2026-10-01T01:26:54.233889+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
-  "engine": "XeTeX 3.141592653-2.6-0.999997 (TeX Live 2025)",
+  "engine": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)",
   "inputs_sha256": {
     "docs/nbcp/main.tex": "176516cc2ad5f7c239ce39e7e6aa2a0e83d143ff38959a95f6e504315aed1099",
     "docs/nbcp/preamble.tex": "e8aaaeb72b96d0ebf7af25e3ac8e3d696984cbb18e117880352a84738b4035dc",
-    "docs/nbcp/metadata.tex": "e5281141916289f35c93eefc02e1b662dcbac1cafad70cb4313a2095c5013533",
+    "docs/nbcp/metadata.tex": "0aed8fcffc63d59235e44c40e4ba459fb6ef1f66e5240fe3b7aeeedc0527fe6a",
     "docs/nbcp/chapters/01-introduction.tex": "05bf123f8dd092e53fb2aaeb0831596c475f41f8291fd0c5ad88a28452f2d1d3",
-    "docs/nbcp/chapters/02-model-hamiltonian.tex": "b1da196960ea50f5537c9e8a8e5943c4f334536ec67491505e5985534df208ad",
-    "docs/nbcp/chapters/03-phase-diagram.tex": "23ecfa72d58bdfcdb17661e7e6f06f28ad8763db0ea73102ba620a2c18955c1b",
-    "docs/nbcp/chapters/04-phase-characterization.tex": "d68a48419e3034a63db53a3e94a91bd9f4a52c64b0753789306a6e9961caad14",
+    "docs/nbcp/chapters/02-model-hamiltonian.tex": "e1df3a2b6e8cc7ab1704aea6bb42f6a06ddcc4fb8efbd2eb8551a9a3664b38eb",
+    "docs/nbcp/chapters/03-phase-diagram.tex": "f45625a00c4f38a9c57ea1e236c1ef1504b5361fd852754bc0ab1136eb107673",
+    "docs/nbcp/chapters/04-phase-characterization.tex": "96f71d8a5fd8d8c2169560bf6cbc98afcc5f4f5a23f4cba7b932499df626f545",
     "docs/nbcp/chapters/05-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
-    "docs/nbcp/chapters/06-yv-low-energy.tex": "2b26bc104d545b18dd3c9925c7e219fcabd06005198659a220525e57468a6442",
+    "docs/nbcp/chapters/06-yv-low-energy.tex": "24b33b6fe71daf34d8fe21fa3dadd0cd3686e4633de15599c91af2764d2a3cb1",
     "docs/nbcp/chapters/07-supersolidity.tex": "dac7dd624fb2cfd55ad503c8039d5f16557e7340a6b1de065c7650ba7b824922",
-    "docs/nbcp/chapters/08-y-phase.tex": "0b0c4455c79a793fe72d639417a620c66856671896495458ab783228e4b80a0c",
-    "docs/nbcp/chapters/09-v-phase.tex": "a2389eac1ffe454edabae530b1cd0c65cbc4779a1663fa230517fdf43b605259",
-    "docs/nbcp/chapters/10-discussion.tex": "dc0c1e808b2a7e4285f0a70851eb1e6f9766f83bd7a5a3681a0d278f0bdadf35",
+    "docs/nbcp/chapters/08-y-phase.tex": "8912aad046dc67f78b60ccb1875ec52da5253f764dcbdea556dba175a5a90a0c",
+    "docs/nbcp/chapters/09-v-phase.tex": "16bea4dafb7f4c5090426f5a85b0133aec0f408d171b610fc0cdafbd0827516f",
+    "docs/nbcp/chapters/10-discussion.tex": "679e118757c9b3cf63b82ee52eb8d434bb796a7365cfa0b9df98fc6a9b2a3a8a",
     "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "b6f60f8f4db37162d082a8c8f60e114b25e046742727c795ed98b35991177e08",
     "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
-    "docs/nbcp/appendices/c-y-stiffness.tex": "1ce3e4c58d8104baf0793405c2ccd147c0ecde0048f584fbf9643195ee8c3f92",
-    "docs/nbcp/appendices/d-numerical-verification.tex": "15acc57d6ca791bda2f1221d075448cc997547b9b91291acdbd30a916fd2cba5",
-    "docs/nbcp/appendices/e-model-derivation.tex": "7d87d70c034de5d315876ade178b942c403fbd5ff30e92e26a771fb767a5fd1a",
+    "docs/nbcp/appendices/c-y-stiffness.tex": "77030a5a1477dcd300c1a4024ebc63e0746758f90772766237d484ca4aca8dfa",
+    "docs/nbcp/appendices/d-numerical-verification.tex": "c99fc4fbdc452296e96b4e9584053b536f57ecd7297e158758820f936042e5f7",
+    "docs/nbcp/appendices/e-model-derivation.tex": "e57143a3f77508ba209f60d4499ff18969c4e473a409f0229108c4404f58a3bf",
     "docs/nbcp/references.tex": "fd339a135cc065ef0d0e91891e2028bbed387ef5aa1a019dff9b76fb082ad9a8",
-    "docs/nbcp/references.bib": "f35f6170dd9f8ac7e7c536d9b5d3b51ef0e1981d5c951d33f738bb40f5ec0bfc",
+    "docs/nbcp/references.bib": "3a016aef2204b1adf5ced2fbd9c064d5c1c04a07386f22e07c4383c790524e94",
     "docs/nbcp/figures/tikz/style.tex": "e40e65799dbef9be941e5e350e5b29f7ad056f97f68ad31fb54fa464b4952f3a",
     "docs/nbcp/figures/tikz/bond-phases.tex": "87f9e0d6047b0d920cd383cdeefeb7b7e1572276667adb0cee35f15cf8d76896",
     "examples/nbcp_research_export.py": "573abdb2b531e262054b45e2cdb4b714cb227e5b30893ae02df61ce534277276"
@@ -49,9 +49,9 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "0fcd572fdc3f275eb66abdda87bc831babe39e7d2f1ff6ce9b0e51d08c6286e3"
+    "research-note.pdf": "acd59cc96b300e453674b4a6b0260f1a8174f92ef89632f842ec9bbd7b3d83b0"
   },
   "latex_review_messages": [],
-  "source_display_equations": 89,
+  "source_display_equations": 91,
   "scope": "PDF preview from canonical TeX; no physics scan rerun"
 }
