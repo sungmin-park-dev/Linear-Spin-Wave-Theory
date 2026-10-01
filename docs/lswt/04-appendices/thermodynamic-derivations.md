@@ -3,27 +3,167 @@ frontmatter-version: 1
 title: "Appendix: Thermodynamic Derivations"
 doc-path: docs/lswt/04-appendices
 status: draft
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-06
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
+source-section: "Thermodynamics in Linear Spin Wave Theory; Number and Spin moment from Correlation Matrix (source pp. 13–16); restructured TeX appendix 'Thermodynamic derivations'"
 ---
 
 # Appendix: Thermodynamic Derivations
 
-## Scope
+The thermodynamic quantities of a harmonic magnon gas and the equal-time correlation matrix of the Holstein–Primakoff bosons both follow from the Gibbs state of the diagonal magnon Hamiltonian. [Thermodynamics](../02-observables/thermodynamics.md) and [Magnon Observables](../02-observables/magnon-observables.md) state the results with short derivations; this appendix gives the intermediate steps: the factorization of the partition function, the entropy and heat-capacity identities, the small-energy expansions behind the zero-mode table, and the correlation-matrix route to the boson number. We assume, as in those documents, that $\mathsf H_{\mathbf k}$ is positive definite at every momentum of the magnetic Brillouin zone (MBZ), so that every magnon energy $\varepsilon_{n\mathbf k}$ is positive, except where the zero-mode limit is discussed.
 
-The appendix is reserved for the longer derivations accompanying the thermodynamic quantities and correlation-matrix expressions.
+## Factorization of the Partition Function
 
-- Entropy derivation.
-- Correlation-matrix expressions for boson number and spin moment.
+The diagonal Hamiltonian $\hat H_{\mathrm{LSWT}}=E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}\hat n_{\mathbf kn}$ of [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md) is diagonal in the Fock basis $|\{m_{\mathbf kn}\}\rangle$ of magnon occupation numbers $m_{\mathbf kn}=0,1,2,\ldots$, with eigenvalues $E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}m_{\mathbf kn}$. The trace is a sum over all occupation configurations, and the exponential of a sum is a product, so
+
+$$
+Z=\exp(-\beta E_{\mathrm{GS}})\prod_{\mathbf k,n}\sum_{m=0}^{\infty}\exp(-\beta\varepsilon_{n\mathbf k}m)
+=\exp(-\beta E_{\mathrm{GS}})\prod_{\mathbf k,n}\frac{1}{1-\exp(-\beta\varepsilon_{n\mathbf k})}.
+$$
+
+Each geometric series converges because $\varepsilon_{n\mathbf k}>0$. The Gibbs state is the product of the single-mode thermal states $\hat\rho_{\mathbf kn}=(1-\exp(-\beta\varepsilon_{n\mathbf k}))\exp(-\beta\varepsilon_{n\mathbf k}\hat n_{\mathbf kn})$. The occupation of one mode follows from the derivative of the corresponding factor, $\langle\hat n_{\mathbf kn}\rangle=-\beta^{-1}\partial\ln Z/\partial\varepsilon_{n\mathbf k}=[\exp(\beta\varepsilon_{n\mathbf k})-1]^{-1}=n_{\mathrm B}(\varepsilon_{n\mathbf k})$.
+
+## Internal Energy and Free Energy
+
+The internal energy is $U=\operatorname{Tr}(\hat\rho\hat H_{\mathrm{LSWT}})=-\partial\ln Z/\partial\beta$. Differentiating the logarithm of each factor gives
+
+$$
+-\frac{\partial}{\partial\beta}\ln\frac{1}{1-\exp(-\beta\varepsilon)}
+=\frac{\varepsilon\exp(-\beta\varepsilon)}{1-\exp(-\beta\varepsilon)}
+=\varepsilon\,n_{\mathrm B}(\varepsilon),
+$$
+
+and the prefactor contributes $E_{\mathrm{GS}}$, which yields $U=E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}n_{\mathrm B}(\varepsilon_{n\mathbf k})$. The free energy $F=-\beta^{-1}\ln Z$ follows by taking the logarithm of the product, $F=E_{\mathrm{GS}}+\beta^{-1}\sum_{\mathbf k,n}\ln(1-\exp(-\beta\varepsilon_{n\mathbf k}))$.
+
+## Entropy
+
+The von Neumann entropy of the Gibbs state uses $\ln\hat\rho=-\beta\hat H_{\mathrm{LSWT}}-\ln Z$:
+
+$$
+\mathcal S=-k_{\mathrm B}\operatorname{Tr}(\hat\rho\ln\hat\rho)
+=k_{\mathrm B}\beta\operatorname{Tr}(\hat\rho\hat H_{\mathrm{LSWT}})+k_{\mathrm B}\ln Z
+=\frac{U-F}{T}.
+$$
+
+The thermodynamic entropy $-\partial F/\partial T$ gives the same result. With $F=-k_{\mathrm B}T\ln Z$ and $\partial\beta/\partial T=-1/(k_{\mathrm B}T^2)$,
+
+$$
+-\frac{\partial F}{\partial T}
+=k_{\mathrm B}\ln Z+k_{\mathrm B}T\,\frac{\partial\ln Z}{\partial\beta}\frac{\partial\beta}{\partial T}
+=k_{\mathrm B}\ln Z+\frac{U}{T}
+=\frac{U-F}{T}.
+$$
+
+For the Gibbs state the von Neumann entropy therefore reduces to the thermodynamic entropy. Inserting the expressions for $U$ and $F$, the constant $E_{\mathrm{GS}}$ cancels in $U-F$, and
+
+$$
+\mathcal S=k_{\mathrm B}\sum_{\mathbf k,n}\Big[\beta\varepsilon_{n\mathbf k}n_{\mathbf kn}-\ln\big(1-\exp(-\beta\varepsilon_{n\mathbf k})\big)\Big],
+\qquad
+n_{\mathbf kn}=n_{\mathrm B}(\varepsilon_{n\mathbf k}).
+$$
+
+The definition $n=[\exp(\beta\varepsilon)-1]^{-1}$ gives $\exp(\beta\varepsilon)=(1+n)/n$ and $1-\exp(-\beta\varepsilon)=1/(1+n)$, so
+
+$$
+\beta\varepsilon=\ln\frac{1+n}{n},
+\qquad
+\ln\big(1-\exp(-\beta\varepsilon)\big)=-\ln(1+n).
+$$
+
+Substituting these relations, the summand becomes $n\ln(1+n)-n\ln n+\ln(1+n)=(1+n)\ln(1+n)-n\ln n$, which is the occupation form of the entropy in [Thermodynamics](../02-observables/thermodynamics.md).
+
+## Heat Capacity
+
+The temperature derivative of the occupation is
+
+$$
+\frac{\partial n_{\mathrm B}(\varepsilon)}{\partial T}
+=\frac{\varepsilon}{k_{\mathrm B}T^2}\,\frac{\exp(\beta\varepsilon)}{\big(\exp(\beta\varepsilon)-1\big)^2}
+=\frac{\varepsilon}{k_{\mathrm B}T^2}\,\frac{1}{4\sinh^2(\beta\varepsilon/2)},
+$$
+
+where the second form uses $\exp(x)/(\exp(x)-1)^2=1/(\exp(x/2)-\exp(-x/2))^2$. Since only the occupations depend on temperature, $C=\partial U/\partial T=\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}\,\partial n_{\mathbf kn}/\partial T$, which gives the expression $k_{\mathrm B}\sum(\beta\varepsilon)^2/[4\sinh^2(\beta\varepsilon/2)]$.
+
+The relation $C=T\,\partial\mathcal S/\partial T$ follows from the occupation form of the entropy. The derivative of the summand with respect to the occupation is $k_{\mathrm B}\ln[(1+n)/n]=k_{\mathrm B}\beta\varepsilon$, so
+
+$$
+T\frac{\partial\mathcal S}{\partial T}
+=T\sum_{\mathbf k,n}k_{\mathrm B}\beta\varepsilon_{n\mathbf k}\,\frac{\partial n_{\mathbf kn}}{\partial T}
+=\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}\frac{\partial n_{\mathbf kn}}{\partial T}
+=\frac{\partial U}{\partial T}.
+$$
+
+## Small-Energy Expansions Behind the Zero-Mode Limits
+
+With $x=\beta\varepsilon\to0^+$, the summands of the thermodynamic quantities have the expansions
+
+$$
+\begin{aligned}
+\varepsilon\,n_{\mathrm B}(\varepsilon)&=k_{\mathrm B}T\left(1-\frac x2+\frac{x^2}{12}+O(x^4)\right),\\
+k_{\mathrm B}T\ln\big(1-\exp(-x)\big)&=k_{\mathrm B}T\left(\ln x-\frac x2+\frac{x^2}{24}+O(x^4)\right),\\
+k_{\mathrm B}\Big[x\,n_{\mathrm B}-\ln\big(1-\exp(-x)\big)\Big]&=k_{\mathrm B}\left(1-\ln x+\frac{x^2}{24}+O(x^4)\right),\\
+k_{\mathrm B}\frac{x^2}{4\sinh^2(x/2)}&=k_{\mathrm B}\left(1-\frac{x^2}{12}+O(x^4)\right).
+\end{aligned}
+$$
+
+They follow from $x/(\exp(x)-1)=1-x/2+x^2/12+O(x^4)$ and $\ln(1-\exp(-x))=\ln x-x/2+x^2/24+O(x^4)$. The energy and heat-capacity summands stay finite, while the free-energy and entropy summands diverge as $\ln x=\ln(\varepsilon/k_{\mathrm B}T)$. Near an isolated zero $\varepsilon_{n\mathbf k}\propto|\mathbf k-\mathbf k_0|^a$ with $a>0$, the divergent part of each summand is proportional to $a\ln|\mathbf k-\mathbf k_0|$, and in two dimensions $\int_{|\mathbf q|<q_0}d^2\mathbf q\,\ln|\mathbf q|=\pi q_0^2(\ln q_0-\frac12)$ is finite. The momentum integrals of $F$ and $\mathcal S$ therefore remain finite in the thermodynamic limit, as stated in [Thermodynamics](../02-observables/thermodynamics.md). Finiteness of these integrals does not imply that the magnon-gas description is controlled; that condition involves the boson number, treated below.
+
+## Correlation Matrix of the Holstein–Primakoff Bosons
+
+The equal-time correlation matrix $\langle\hat\Psi_{\mathbf k}\hat\Psi_{\mathbf k}^\dagger\rangle$ contains every average of two Holstein–Primakoff operators at momentum $\mathbf k$. Its blocks are
+
+$$
+\big\langle\hat\Psi_{\mathbf k}\hat\Psi_{\mathbf k}^\dagger\big\rangle
+=\begin{pmatrix}
+\langle\hat{\mathbf a}_{\mathbf k}\hat{\mathbf a}_{\mathbf k}^\dagger\rangle & \langle\hat{\mathbf a}_{\mathbf k}\hat{\mathbf a}_{-\mathbf k}\rangle\\
+\langle\hat{\mathbf a}_{-\mathbf k}^\dagger\hat{\mathbf a}_{\mathbf k}^\dagger\rangle & \langle\hat{\mathbf a}_{-\mathbf k}^\dagger\hat{\mathbf a}_{-\mathbf k}\rangle
+\end{pmatrix},
+$$
+
+where each block is the $N_{\mathrm{sub}}\times N_{\mathrm{sub}}$ matrix of averages over the sublattice indices. The average is linear, and the Bogoliubov transformation $\hat\Psi_{\mathbf k}=\mathsf T_{\mathbf k}\hat\Phi_{\mathbf k}$ has c-number coefficients, so
+
+$$
+\big\langle\hat\Psi_{\mathbf k}\hat\Psi_{\mathbf k}^\dagger\big\rangle
+=\mathsf T_{\mathbf k}\big\langle\hat\Phi_{\mathbf k}\hat\Phi_{\mathbf k}^\dagger\big\rangle\mathsf T_{\mathbf k}^\dagger.
+$$
+
+The Gibbs state is diagonal in the magnon occupation numbers, so every average of two magnon operators that changes some occupation vanishes. This removes $\langle\hat b\hat b\rangle$, $\langle\hat b^\dagger\hat b^\dagger\rangle$, and the products of different modes. The remaining averages are $\langle\hat b_{\mathbf kn}\hat b_{\mathbf kn}^\dagger\rangle=1+n_{n\mathbf k}$ and $\langle\hat b_{-\mathbf kn}^\dagger\hat b_{-\mathbf kn}\rangle=n_{n,-\mathbf k}$, where $n_{n\mathbf k}=n_{\mathrm B}(\varepsilon_{n\mathbf k})$. Hence
+
+$$
+\big\langle\hat\Phi_{\mathbf k}\hat\Phi_{\mathbf k}^\dagger\big\rangle
+=\operatorname{diag}\big(1+n_{1\mathbf k},\ldots,1+n_{N_{\mathrm{sub}}\mathbf k},\;n_{1,-\mathbf k},\ldots,n_{N_{\mathrm{sub}},-\mathbf k}\big),
+$$
+
+which is the matrix $\mathsf N_{\mathbf k}(0)$ of [Spin Correlations](../02-observables/spin-correlations.md); each hole entry carries the occupation of its own band at $-\mathbf k$. In the magnon vacuum all occupations vanish and $\mathsf N_{\mathbf k}(0)=\operatorname{diag}(\mathsf I_{N_{\mathrm{sub}}},0)$.
+
+## Boson Number and Sublattice Moment
+
+The boson number of sublattice $\mu$ averaged over the $N_{\mathrm{uc}}$ magnetic unit cells is $\langle\hat n_\mu\rangle=N_{\mathrm{uc}}^{-1}\sum_i\langle\hat a_{i\mu}^\dagger\hat a_{i\mu}\rangle$. The Fourier phases $\exp(\pm\mathrm i\mathbf k\cdot\mathbf r_{i\mu})$ of the full-position convention cancel in the product of an operator and its adjoint on the same sublattice, and the sum over cells gives $\sum_i\hat a_{i\mu}^\dagger\hat a_{i\mu}=\sum_{\mathbf k}\hat a_{\mathbf k\mu}^\dagger\hat a_{\mathbf k\mu}$. The diagonal entry $N_{\mathrm{sub}}+\mu$ of the correlation matrix at $\mathbf k$ is $\langle\hat a_{-\mathbf k\mu}^\dagger\hat a_{-\mathbf k\mu}\rangle$. The lower block row of $\mathsf T_{\mathbf k}$ is $(\mathsf Q_{\mathbf k}^*,\mathsf P_{-\mathbf k}^*)$, so
+
+$$
+\Big[\mathsf T_{\mathbf k}\mathsf N_{\mathbf k}(0)\mathsf T_{\mathbf k}^\dagger\Big]_{N_{\mathrm{sub}}+\mu,\,N_{\mathrm{sub}}+\mu}
+=\sum_{n=1}^{N_{\mathrm{sub}}}\Big[\big|(\mathsf Q_{\mathbf k})_{\mu n}\big|^2\big(1+n_{n\mathbf k}\big)+\big|(\mathsf P_{-\mathbf k})_{\mu n}\big|^2n_{n,-\mathbf k}\Big].
+$$
+
+Summing over a momentum set that is closed under inversion and relabeling $-\mathbf k\to\mathbf k$ in the $\mathsf P$ term gives the boson number of [Magnon Observables](../02-observables/magnon-observables.md),
+
+$$
+\langle\hat n_\mu\rangle=\frac{1}{N_{\mathrm{uc}}}\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}\Big[\big|(\mathsf P_{\mathbf k})_{\mu n}\big|^2n_{n\mathbf k}+\big|(\mathsf Q_{\mathbf k})_{\mu n}\big|^2\big(1+n_{n\mathbf k}\big)\Big].
+$$
+
+The same result follows directly from $\hat a_{\mathbf k\mu}=\sum_n[(\mathsf P_{\mathbf k})_{\mu n}\hat b_{\mathbf kn}+(\mathsf Q_{-\mathbf k})_{\mu n}\hat b_{-\mathbf kn}^\dagger]$ and the magnon averages above. The longitudinal spin component in the local frame is $\hat{\widetilde S}_{i\mu}^0=S_\mu-\hat a_{i\mu}^\dagger\hat a_{i\mu}$ to the order of linear spin-wave theory, so the cell-averaged longitudinal moment of sublattice $\mu$ is $S_\mu-\langle\hat n_\mu\rangle$.
 
 ## References
 
 ### Internal Documents
 
-- [Thermodynamics](../02-observables/thermodynamics.md): defines the thermodynamic quantities whose longer derivations will be placed here.
-- [Magnon Observables](../02-observables/magnon-observables.md): supplies the magnon spectrum, occupation, and correlation-matrix inputs.
+- [Thermodynamics](../02-observables/thermodynamics.md): states the thermodynamic quantities and the zero-mode limits derived here.
+- [Magnon Observables](../02-observables/magnon-observables.md): states the correlation matrix, the boson number, and the reduced moment derived here.
+- [Spin Correlations](../02-observables/spin-correlations.md): defines the magnon correlation matrix $\mathsf N_{\mathbf q}(t)$, whose equal-time value is derived here.
+- [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md): supplies the diagonal magnon Hamiltonian and the blocks of $\mathsf T_{\mathbf k}$.
+- [Momentum-Space BdG Hamiltonian](../01-derivation/momentum-space-bdg-hamiltonian.md): defines the full-position Fourier convention and the Nambu spinor.
 - [Notation and Conventions](../00-foundations/notation-and-conventions.md): fixes the thermodynamic and system-size notation.
 
 ### External Sources

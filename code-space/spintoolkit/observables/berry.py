@@ -100,6 +100,10 @@ class BerryCurvature:
 
 
 def _check_result(result) -> None:
+    if getattr(result, "extra", {}).get("frame") == "rotating":
+        raise TopologyError("Berry curvature, Chern numbers and thermal Hall of spiral magnons "
+                            "(rotating-frame LSWT, D34) are not validated; they are not "
+                            "computed rather than reported unchecked")
     if result.hamiltonian_derivatives_at is None:
         raise TopologyError("the result has no Hamiltonian derivatives; use solve_lswt")
     regularization = result.header.settings.get("regularization", "none")

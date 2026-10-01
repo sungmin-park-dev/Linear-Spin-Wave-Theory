@@ -31,6 +31,7 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 | [[GOVERNMENT/Working-Pad/idea-proposals/2026-06-04-general-spin-model-ir\|2026-06-04-general-spin-model-ir]] | General SpinModel IR | draft |
 | [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract\|2026-09-23-spin-model-transfer-contract]] | 모델 간 공통 SpinModel 전달 규약 — 모델·항·상태·요청·결과, 결정 목록, 코드 대응 | in-review |
 | [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-29-toolkit-first-development-plan\|2026-09-29-toolkit-first-development-plan]] | 2D Spin-System Toolkit 1차 개발 계획 — 범위·패키지·벤치마크·구현 단계 | in-review |
+| [2026-10-01-spiral-rotating-frame-lswt](2026-10-01-spiral-rotating-frame-lswt.md) | 단일 Q 나선의 회전틀 LSWT (IncommensurateStructure, D34) | in-review; 구현·검증, 사용자 검토 대기 |
 
 ## 에이전트 지침
 

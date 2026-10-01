@@ -19,7 +19,7 @@ updated: 2026-10-01
 
 | 순위 | 유형 | 내용 | 상태 | 파일 |
 |---|---|---|---|---|
-| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 진행(C): 구현·검증된 부분부터 한 문서씩 작성(topology → 대각화 → 열역학 → structure factor → LT); 기존 다음 묶음: local circular component 및 real-space H2 | in-review; 17개 문서 일괄 문체 교정 반영; 2026-09-30 topology·대각화·열역학·상관함수·structure factor·LT·magnon-observables draft 작성·사용자 물리·수학 검토 대기, 남은 skeleton 3개; LT 진단 1/4 파수 거짓 음성은 수정·검증 완료(Beamer 검토본 43), 사용자 확인 대기 | `issue-notes/open/260809-lswt-documentation-audit.md` |
+| 1 | issue | `docs/lswt/` LSWT 이론 문서 — 진행(C): 구현·검증된 부분부터 한 문서씩 작성(topology → 대각화 → 열역학 → structure factor → LT); 기존 다음 묶음: local circular component 및 real-space H2 | in-review; 17개 문서 일괄 문체 교정 반영; 2026-09-30 topology·대각화·열역학·상관함수·structure factor·LT·magnon-observables draft 작성; 2026-10-01 독립 검산으로 확인된 오류 14건 수정, 남은 skeleton 3개(worked example, 부록 2개) 본문 작성 — 10개 draft 사용자 물리·수학 검토 대기(검토 가이드 `issue-notes/open/261001-lswt-draft-physics-review-guide.md`); LT 진단 1/4 파수 거짓 음성은 수정·검증 완료(Beamer 검토본 43), 사용자 확인 대기 | `issue-notes/open/260809-lswt-documentation-audit.md` |
 | 2 | handoff | 솔버 seam 스파이크 (ED/TN/NQS로 XXZ 풀어 실측 검증) | in-review — 2026-10-01 저장소 안에서 ED와 TeNPy DMRG가 같은 토러스 전개로 6개 모델(1D XX·Heisenberg, 4×4, NBCP 3×3 세 경우)에서 1e-14 일치, S1–S5 결론 작성; 남은 것: NQS, TN 필드 규약 사용자 확인 | `handoff/open/260607-solver-seam-spike.md` |
 | 3 | issue | Thermal Hall 면적·단위·반환 기준 | in-review; 구현 항목은 toolkit 5a–5d(D29)로 해결(`docs/development/verification/stage5*`); NBCP 적용 조건: 최근접 XXZ에서는 대칭(T C2(n))으로 0, J_PD·J_Gamma가 있어야 0이 아님(2026-10-01 확인); 남은 것: J_PD·J_Gamma 크기와 pseudo-Goldstone 갭 결정, 이론 문서 A6/A7/A16 검토(2026-09-30 topology draft에 반영; A7 −π²/3는 양정치에서 동치로 정리, Goldstone 경우만 open) | `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` |
 | 4 | issue | NBCP 연구노트와 arXiv 열적 주장 검토 | in-review; Y angular·smooth-wave와 density wall 164개 local minima 대조 완료; 벽 폭 3–4a, 장력 양수·크기 수렴 및 metastability 확인; 다음: vortex core·wall 결합, 이후 thermal 검증; quantum/thermal matching 미완료 | `issue-notes/open/260810-pseudo-goldstone-gap.md` |
@@ -29,6 +29,7 @@ updated: 2026-10-01
 | 8 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 변위 방향은 D13으로 해결(2026-09-30), 원고 문장 수정 대기; 다음: 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
 | 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D29 결정과 0–5단계 구현 반영 | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
 | 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–6단계(2b, 4d, 5a–5d, 6a–6c 포함) 구현·검증, 7단계(시각화) 밴드·스핀 배치 그림 구현(2026-10-01), NBCP 밴드 그림 다음; Beamer 검토본 42 사용자 검토 대기 | `../../docs/development/README.md` |
+| 11 | idea | 단일 Q 나선의 회전틀 LSWT (`IncommensurateStructure`, D34) | in-review; 구현·검증(테스트 21개, 해석식·초격자 대조), 사용자 물리·수학 검토 대기 | `idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md` |
 
 ## 동기화 규칙
 
