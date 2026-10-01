@@ -179,12 +179,16 @@ def incommensurate():
 def test_lt_and_refinement_find_the_analytic_pitch(incommensurate):
     model, spiral, _ = incommensurate
     q = spiral.wave_vector
-    assert min(q[0], 1 - q[0]) == pytest.approx(Q_EXACT, abs=1e-8)
-    assert q[1] == pytest.approx(0, abs=1e-8) or q[1] == pytest.approx(1, abs=1e-8)
+    # BFGS + Newton on the analytic gradient reaches its round-off (measured
+    # max |grad| 1.7e-16, pitch error 0 on x86-64); 1e-12 leaves 1e4 of margin.
+    assert spiral.provenance["converged"]
+    assert spiral.provenance["max_gradient"] < 1e-12
+    assert min(q[0], 1 - q[0]) == pytest.approx(Q_EXACT, abs=1e-12)
+    assert q[1] == pytest.approx(0, abs=1e-12) or q[1] == pytest.approx(1, abs=1e-12)
     assert spiral_energy(model, spiral) == pytest.approx(
         S ** 2 * (J1 * np.cos(2 * np.pi * Q_EXACT) + J2 * np.cos(4 * np.pi * Q_EXACT) + JY),
         abs=1e-13)
-    assert np.linalg.norm(spiral_energy_gradient(model, spiral)) < 1e-9
+    assert np.linalg.norm(spiral_energy_gradient(model, spiral)) < 1e-12
     assert spiral.commensurate_supercell() is None
 
 
@@ -240,7 +244,7 @@ def test_dm_spiral_pitch_and_supercell():
     start = IncommensurateStructure.planar(model, [0.1, 0.0], Z)
     spiral = refine_spiral(model, start)
     q = spiral.wave_vector[0]
-    assert min(q, 1 - q) == pytest.approx(1 / 6, abs=1e-9)
+    assert min(q, 1 - q) == pytest.approx(1 / 6, abs=1e-12)
     spiral = IncommensurateStructure.planar(model, [round(q * 6) / 6, 0.0], Z)
     supercell = solve_lswt(model, spiral.to_spin_state(model), settings=LSWTSettings(mesh=(4, 12)))
     assert supercell.header.diagnostics["stationary"]
@@ -263,8 +267,8 @@ def test_conical_spiral_in_axial_field():
     start = IncommensurateStructure(model.fingerprint(), [0.3, 0.0], Z,
                                     {"A": [np.sin(1.2), 0, np.cos(1.2)]})
     spiral = refine_spiral(model, start, conditions)
-    assert min(spiral.wave_vector[0], 1 - spiral.wave_vector[0]) == pytest.approx(1 / 3, abs=1e-8)
-    assert np.cos(spiral.cone_angles()["A"]) == pytest.approx(0.4, abs=1e-8)
+    assert min(spiral.wave_vector[0], 1 - spiral.wave_vector[0]) == pytest.approx(1 / 3, abs=1e-12)
+    assert np.cos(spiral.cone_angles()["A"]) == pytest.approx(0.4, abs=1e-12)
     exact = IncommensurateStructure(model.fingerprint(), [1 / 3, 0.0], Z,
                                     {"A": [np.sqrt(1 - 0.16), 0, 0.4]})
     supercell = solve_lswt(model, exact.to_spin_state(model), conditions,
