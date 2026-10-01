@@ -118,7 +118,7 @@ classical_search(model, supercell) ─ 정합 근사 셀의 전역 탐색(기존
 | 경우 | 대조 | 최대 차이 |
 |---|---|---|
 | 삼각 하이젠베르크 120°를 나선($\mathbf Q = K$)으로 | 해석식 $3JS\sqrt{(1-\gamma)(1+2\gamma)}$; 같은 운동량의 √3×√3 초격자 LSWT(에너지, 밴드, 보손 수, $S^{ab}(\mathbf q,\omega)$ 전체 텐서, $t = 0, 0.3$, Bragg) | 9e-15; 2e-16, 5e-15, 1e-12 |
-| 정사각 J1–J2 사슬 + 강자성 Jy (비정합) | LT→refine 피치 $\cos 2\pi q = -J_1/4J_2$; $\omega = S\sqrt{(J_k-J_Q)((J_{k+Q}+J_{k-Q})/2-J_Q)}$ | 9e-11; 6e-15 |
+| 정사각 J1–J2 사슬 + 강자성 Jy (비정합) | LT→refine 피치 $\cos 2\pi q = -J_1/4J_2$; $\omega = S\sqrt{(J_k-J_Q)((J_{k+Q}+J_{k-Q})/2-J_Q)}$ | 반올림 수준(BFGS 뒤 Newton, 최대 기울기 2e-16); 6e-15 |
 | 같은 나선을 2-사이트 셀로 | 같은 데카르트 운동량에서 에너지·$S(\mathbf q,\omega)$ (셀 번호 위상 규약 확인) | 1e-13, 1e-9 이하 |
 | 강자성 + 축 방향 DM | 피치 $\tan 2\pi q = D/|J|$; $q = 1/6$에서 6×1 초격자 | 1e-15; 에너지 0, 밴드 4e-15 |
 | 축 방향 장의 원뿔 나선 | $\cos\theta = h/(S(J_0-J_Q))$; $q=1/3$ 초격자 | 3e-11; 에너지 6e-17, 밴드 1e-15 |

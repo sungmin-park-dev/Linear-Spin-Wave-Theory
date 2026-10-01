@@ -53,7 +53,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from spintoolkit.definitions.defaults import (
-    LSWT_STATIONARITY_TOLERANCE, SPIRAL_SYMMETRY_TOLERANCE)
+    CLASSICAL_REFINE_NEWTON_STEPS, LSWT_STATIONARITY_TOLERANCE, SPIRAL_SYMMETRY_TOLERANCE)
 from spintoolkit.methods.lswt.run import LSWTResult, LSWTSettings, solve_lswt
 from spintoolkit.methods.result import ResultHeader, to_jsonable
 from spintoolkit.states.incommensurate import (
@@ -235,11 +235,19 @@ def spiral_energy_gradient(model: SpinModel, structure: IncommensurateStructure,
 def refine_spiral(model: SpinModel, structure: IncommensurateStructure,
                   conditions: Optional[ExternalConditions] = None,
                   fix_wave_vector: bool = False, gtol: float = 1e-12,
-                  maxiter: int = 2000) -> IncommensurateStructure:
+                  maxiter: int = 2000,
+                  newton_steps: int = CLASSICAL_REFINE_NEWTON_STEPS) -> IncommensurateStructure:
     """Minimize the classical energy over ``q`` and the cones and phases ``d_a``.
 
-    The axis is kept: it is fixed by the symmetry of the model. The returned
-    state records the final energy and gradient in its provenance. A local
+    BFGS with the analytic gradient, then Newton steps on the analytic
+    gradient (Hessian from its central differences; the global phase about
+    the axis is a zero mode and is projected out). BFGS alone stalls on
+    precision loss at ``|grad| ~ 1e-9`` because it works from energy
+    differences, which round-off limits to ``~1e-16 |E|``; Newton on the
+    gradient reaches its own round-off (``~1e-15``). The axis is kept: it is
+    fixed by the symmetry of the model. The returned state records the final
+    energy, the gradients, the Newton steps taken and ``converged``
+    (largest gradient component ``<= gtol``) in its provenance. A local
     minimizer: start from the Luttinger-Tisza spiral
     (:meth:`IncommensurateStructure.from_lt`) or a classical search.
 
@@ -287,14 +295,44 @@ def refine_spiral(model: SpinModel, structure: IncommensurateStructure,
     x0 = angles if fix_wave_vector else np.r_[structure.wave_vector, angles]
     res = minimize(objective, x0, jac=True, method="BFGS",
                    options={"gtol": gtol, "maxiter": maxiter})
-    q, d = unpack(res.x)
+    x, newton_steps = _newton_polish(objective, res.x, newton_steps)
+    full_gradient = objective(x)[1]
+    q, d = unpack(x)
     q = np.mod(q, 1.0)
     energy, gradient = _energy_and_gradient(arrays, h, n, q, d)
     provenance = {**dict(structure.provenance), "refined": True, "energy": energy,
-                  "wave_vector_gradient": gradient.tolist(), "converged": bool(res.success)}
+                  "wave_vector_gradient": gradient.tolist(),
+                  "max_gradient": float(np.max(np.abs(full_gradient))),
+                  "newton_steps": newton_steps,
+                  "converged": bool(np.max(np.abs(full_gradient)) <= gtol)}
     return IncommensurateStructure(structure.model_ref, q, n,
                                    {s: d[i] / np.linalg.norm(d[i])
                                     for i, s in enumerate(model.site_ids)}, provenance)
+
+
+def _newton_polish(objective, x, steps: int, step: float = 1e-5):
+    """Newton steps ``x -= pinv(H) g`` on the analytic gradient ``g``.
+
+    ``H`` is the symmetrized central difference of ``g``; eigenvalues below
+    ``1e-8`` of the largest (zero modes such as the global phase) are dropped.
+    A step is kept only if it lowers the largest gradient component.
+    """
+    gradient = objective(x)[1]
+    taken = 0
+    for _ in range(steps):
+        H = np.empty((len(x), len(x)))
+        for i in range(len(x)):
+            e = np.zeros(len(x))
+            e[i] = step
+            H[:, i] = (objective(x + e)[1] - objective(x - e)[1]) / (2 * step)
+        H = (H + H.T) / 2
+        trial = x - np.linalg.pinv(H, rcond=1e-8, hermitian=True) @ gradient
+        trial_gradient = objective(trial)[1]
+        if np.max(np.abs(trial_gradient)) >= np.max(np.abs(gradient)):
+            break
+        x, gradient = trial, trial_gradient
+        taken += 1
+    return x, taken
 
 
 def spiral_fingerprint(structure: IncommensurateStructure) -> str:
