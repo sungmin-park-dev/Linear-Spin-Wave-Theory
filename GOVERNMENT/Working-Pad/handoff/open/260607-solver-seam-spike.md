@@ -190,6 +190,25 @@ DMRG 두 경우에서 TeNPy가 마지막 정준형 노름 경고(2e-5, 8e-2)를 
 - **S5 결과:** 공통으로 비교 가능한 것은 토러스 총에너지(E0)와 `ResultHeader`(모델 지문, 기하, 조건)다. 관측량 계산은 방법별로
   다르다(ED: 고유벡터, DMRG: MPS). 공통 결과형은 지금의 헤더 + 방법별 본문 구조로 충분하다.
 
-**남은 것.** NQS(NetKet)는 설치·검증하지 않았다(jax 무게). TN 필드 규약(D30의 "TN 필드 규약")은 이 결과로 정할 수 있다: 장은
+**NQS(NetKet 3.22.4) 추가 확인, 2026-10-01.** 같은 토러스 전개를 약 20줄 NetKet 어댑터(`examples/solver_seam_netket_check.py`)가
+읽는다. 결합은 `sum_ab J_ab S^a S^b`(S = sigma/2), 장은 `-h_i . S_i`로 넣는다. 기록은
+`data-space/verification/261001-solver-seam-netket/report.json`에 있다.
+
+| 경우 | NetKet 정확 대각화 - ED | RBM VMC 상대 오차 |
+|---|---|---|
+| NBCP 3x3, 1 T ∥ c | -1e-15 | 1.7e-3 |
+| NBCP 3x3, 1 T ∥ b* | -4e-15 | 1.3e-3 |
+| NBCP 3x3 + J_PD 0.01, 0.5 T ∥ c | 3e-15 | 8.2e-3 |
+| 정사각 4x4 Heisenberg | -4e-14 | (VMC 생략) |
+
+VMC 설정은 복소 RBM alpha 2, SR(diag shift 1e-2), 학습률 0.01, 1500회, 정확한 전체 합(`FullSumState`)이다.
+
+- **seam 판정.** 정확 대각화 일치(1e-14)는 어댑터가 전개를 바르게 읽는다는 뜻이고, 이것이 seam에 대한 판정이다.
+- **VMC 오차는 seam과 별개.** VMC 오차는 ansatz와 최적화의 성질이다. 예를 들어 같은 1 T ∥ c 경우에서 학습률 0.05,
+  diag shift 1e-4로 600회 돌리면 1.1e-6이 나왔다.
+- **NQS에 대한 S1–S5.** DMRG와 같은 결론이다. 수치 교환 행렬, 사이트별 S, 사이트·결합 목록만 읽고, 자기 질서는 쓰지 않는다.
+  어댑터 쪽 차이는 하나다. NetKet `LocalOperator`의 dtype을 처음부터 복소수로 두어야 S^y가 들어간 항을 더할 수 있다.
+
+**남은 것.** NQS 확인은 위에서 마쳤다. TN 필드 규약(D30의 "TN 필드 규약")은 이 결과로 정할 수 있다: 장은
 모델에 넣지 않고 `ExternalConditions`에서 `TorusCluster.fields(conditions)`로 사이트 장을 만들어 `-h_i . S_i`로 넣는다(ED와 같은
 부호, 위 표에서 확인). 사용자 확인 2026-10-01("둘다 동의해"): 이 규약으로 확정한다. 1D Bethe 노트(`bethe-ansatz-xxz.md`)와 원래 계획의 TN-Study 하네스는 하지 않았다.
