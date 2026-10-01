@@ -30,10 +30,21 @@ def test_thermodynamics_imports_without_tqdm():
                    cwd=ROOT / "code-space")
 
 
+# Turn only spintoolkit's own deprecations into errors; third-party packages
+# (pyparsing, older numpy/scipy on Python 3.9) may emit unrelated ones.
+STRICT = ("import warnings; warnings.filterwarnings('error', message='.*removed in spintoolkit', "
+          "category=DeprecationWarning)\n")
+
+
+def _run_strict(code: str) -> None:
+    run = subprocess.run([sys.executable, "-c", STRICT + code], capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr[-3000:]
+
+
 def test_quickstart_runs_without_deprecation_warnings():
     """The README quick start uses only the new API (D43)."""
-    subprocess.run([sys.executable, "-W", "error::DeprecationWarning",
-                    str(ROOT / "examples" / "quickstart.py")], check=True, capture_output=True)
+    script = ROOT / "examples" / "quickstart.py"
+    _run_strict(f"import runpy; runpy.run_path({str(script)!r}, run_name='__main__')")
 
 
 def test_deprecated_api_names_the_removal_version():
@@ -63,5 +74,4 @@ def test_readme_quickstart_block_runs():
     code = re.search(r"```python\n(.*?)```", text, re.S).group(1)
     assert "solve_lswt" in code
     prelude = f"import sys; sys.path.insert(0, {str(ROOT / 'code-space')!r})\n"
-    subprocess.run([sys.executable, "-W", "error::DeprecationWarning", "-c", prelude + code],
-                   check=True, capture_output=True)
+    _run_strict(prelude + code)
