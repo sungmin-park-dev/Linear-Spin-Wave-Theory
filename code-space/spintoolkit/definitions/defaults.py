@@ -62,6 +62,13 @@ SELECTION_ORBIT_POINTS = 36        # equally spaced orbit samples of E_qm
 SELECTION_MAX_HARMONIC = 12        # highest Fourier harmonic fitted along the orbit
 
 # =============================================================================
+# Classical spin dynamics (D38)
+# =============================================================================
+
+DYNAMICS_MIDPOINT_TOL = 1e-13          # change of the midpoint (units of S) ending the fixed-point loop
+DYNAMICS_MIDPOINT_MAX_ITERATIONS = 100
+
+# =============================================================================
 # Exact diagonalization (stage 3)
 # =============================================================================
 
