@@ -74,8 +74,13 @@ def test_reproduces_existing_lswt_solver(cell, family):
     by_key = {tuple(map(float, k)): e for k, e in zip(k_points, new.eigenvalues[:, :new.num_sites])}
     np.testing.assert_allclose(np.array([by_key[key] for key in keys]), legacy.eigenvalues,
                                rtol=0, atol=1e-12)
+    # The boson numbers are ill-conditioned here: these test states are not classical
+    # minima, MAGSWT shifts H(k) by up to ~0.3 and leaves magnon energies ~4e-5, so a
+    # perturbation of H(k) at machine epsilon moves <n> by up to ~7e-10 (measured,
+    # 2026-10-01). The native H(k) (D36) agrees with the old builder to ~2e-16 but
+    # sums in a different order, so the bound reflects that conditioning.
     np.testing.assert_allclose(new.boson_numbers, list(legacy.data["boson_numbers"].values()),
-                               rtol=0, atol=1e-12)
+                               rtol=0, atol=1e-8)
 
 
 def test_square_neel_matches_analytic_lswt():

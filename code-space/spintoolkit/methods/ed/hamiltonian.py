@@ -5,7 +5,9 @@ With ladder operators ``s = (S^+, S^-, S^z)`` and ``S = U s``
 
     S_i^T J S_j = s_i^T (U^T J U) s_j,
 
-and a zeeman term is ``-h^T S_i = -(U^T h) . s_i``. Every product of ladder
+a zeeman term is ``-h^T S_i = -(U^T h) . s_i`` and an onsite term is
+``S_i^T A S_i = s_i^T (U^T A U) s_i`` with the operator product taken on one
+site (the exact operator, without the coherent-state factor of D37). Every product of ladder
 operators changes the total deviation by the sum of its steps
 (``S^+``: -1, ``S^-``: +1, ``S^z``: 0), so the terms that change the
 magnetization along the quantization axis are known before any state is
@@ -32,6 +34,7 @@ class OperatorTerms(NamedTuple):
     pairs: List[Tuple[int, int, int, int, complex]]   # (i, j, alpha, beta, c)
     singles: List[Tuple[int, int, complex]]            # (i, alpha, c)
     dropped: float                                     # largest dropped coefficient
+    onsites: List[Tuple[int, int, int, complex]] = []  # (i, alpha, beta, c): c s_i^alpha s_i^beta
 
 
 def frame_rotation(axis) -> np.ndarray:
@@ -51,7 +54,8 @@ def frame_rotation(axis) -> np.ndarray:
 
 
 def operator_terms(source, target, exchange, fields, rotation=np.eye(3),
-                   conserve: bool = False, tolerance: float = 0.0) -> OperatorTerms:
+                   conserve: bool = False, tolerance: float = 0.0,
+                   onsite=None) -> OperatorTerms:
     """Ladder coefficients of the bonds and fields in the rotated frame.
 
     Parameters
@@ -66,10 +70,14 @@ def operator_terms(source, target, exchange, fields, rotation=np.eye(3),
         Drop coefficients that change the magnetization if their magnitude is
         at most ``tolerance`` times the largest coefficient; larger ones are
         kept, and the basis lookup then reports the broken sector.
+    onsite : (n, 3, 3) array, optional
+        Onsite matrices ``A_i`` (the Hamiltonian contains ``S_i^T A_i S_i``).
     """
     R = np.asarray(rotation, dtype=float)
     pairs, singles = [], []
-    scale = max([np.max(np.abs(J)) for J in exchange] + [np.max(np.abs(fields), initial=0.0)] + [0.0])
+    onsite = np.zeros((len(fields), 3, 3)) if onsite is None else np.asarray(onsite, dtype=float)
+    scale = max([np.max(np.abs(J)) for J in exchange] + [np.max(np.abs(fields), initial=0.0)]
+                + [np.max(np.abs(onsite), initial=0.0)] + [0.0])
     dropped = 0.0
     for i, j, J in zip(source, target, exchange):
         C = LADDER.T @ (R @ J @ R.T) @ LADDER
@@ -94,7 +102,22 @@ def operator_terms(source, target, exchange, fields, rotation=np.eye(3),
                     dropped = max(dropped, abs(c))
                     continue
             singles.append((i, a, complex(c)))
-    return OperatorTerms(pairs, singles, dropped)
+    onsites = []
+    for i, A in enumerate(onsite):
+        if not np.any(A):
+            continue
+        C = LADDER.T @ (R @ A @ R.T) @ LADDER
+        for a in range(3):
+            for b in range(3):
+                c = C[a, b]
+                if c == 0:
+                    continue
+                if conserve and STEP[a] + STEP[b] != 0:
+                    if abs(c) <= tolerance * scale:
+                        dropped = max(dropped, abs(c))
+                        continue
+                onsites.append((i, a, b, complex(c)))
+    return OperatorTerms(pairs, singles, dropped, onsites)
 
 
 def _local_tables(spins: np.ndarray):
@@ -149,6 +172,23 @@ def matrix_elements(terms: OperatorTerms, digits: np.ndarray, codes: np.ndarray,
             continue
         columns.append(rows[keep])
         targets.append(codes[keep] + STEP[a] * weights[i])
+        values.append(amp[keep])
+    dmax = tables.shape[2]
+    for i, a, b, c in terms.onsites:
+        # s^alpha s^beta on one site: beta acts first.
+        d = digits[:, i]
+        middle = d + STEP[b]
+        inside = (middle >= 0) & (middle < dmax)
+        amp = c * tables[i, b][d] * np.where(inside, tables[i, a][np.clip(middle, 0, dmax - 1)], 0)
+        keep = amp != 0
+        if not np.any(keep):
+            continue
+        step = STEP[a] + STEP[b]
+        if step == 0:
+            diagonal[keep] += amp[keep]
+            continue
+        columns.append(rows[keep])
+        targets.append(codes[keep] + step * weights[i])
         values.append(amp[keep])
     columns.append(rows)
     targets.append(codes)

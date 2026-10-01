@@ -425,6 +425,8 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
 def bond_correlations(result, model) -> Dict[str, Any]:
     """Equal-time correlations on every bilinear bond and the energy they imply.
 
+    Onsite terms (D37) enter the energy but are not listed as bonds.
+
     ``<S_i^a S_j^b> = m_i^a m_j^b + <delta S_i^a delta S_j^b>`` (see
     :func:`spin_correlation`). The energy is evaluated to the order of LSWT:
     the product of ordered moments is linearized in the boson numbers, so the
@@ -442,7 +444,7 @@ def bond_correlations(result, model) -> Dict[str, Any]:
 
     require_lab_frame(result, "bond_correlations")
     ns = result.num_sites
-    G, A, supercell, index = _correlator_setup(result)
+    G, A_cell, supercell, index = _correlator_setup(result)
     spins, n_bos = result.spins, result.boson_numbers
     bonds, energy = [], 0.0
     for term in model.terms_of_kind(BILINEAR):
@@ -453,7 +455,7 @@ def bond_correlations(result, model) -> Dict[str, Any]:
             cj = (cell[0] + n2[0], cell[1] + n2[1])
             i = index[(a, reduce_cell(ci, supercell))]
             j = index[(b, reduce_cell(cj, supercell))]
-            fluctuation = np.real(_fluctuation(result, G, A, i, j, model.cartesian_position(a, ci),
+            fluctuation = np.real(_fluctuation(result, G, A_cell, i, j, model.cartesian_position(a, ci),
                                                model.cartesian_position(b, cj)))
             n_i, n_j = result.directions[i], result.directions[j]
             ordered = np.outer((spins[i] - n_bos[i]) * n_i, (spins[j] - n_bos[j]) * n_j)
@@ -463,6 +465,23 @@ def bond_correlations(result, model) -> Dict[str, Any]:
                           "site_j": result.site_keys[j], "offset": (tuple(n1), tuple(n2)),
                           "correlation": ordered + fluctuation})
             energy += np.sum(J * (linear + fluctuation))
+    from spintoolkit.system.model import ONSITE, onsite_renormalization
+    for term in model.terms_of_kind(ONSITE):
+        # Coherent-state onsite energy to the order of LSWT (D37): kappa A on the
+        # on-site correlation, plus (S/2) tr A, minus the normal-ordering constant
+        # kappa (S/2)(tr A - n^T A n) that <delta S delta S> contains and the
+        # constant (S/2) tr A already accounts for.
+        site, A = term.participants[0][0], term.coefficient
+        for i, (s, cell) in enumerate(result.site_keys):
+            if s != site:
+                continue
+            S, n = spins[i], result.directions[i]
+            kappa = onsite_renormalization(S)
+            r = model.cartesian_position(site, cell)
+            fluctuation = np.real(_fluctuation(result, G, A_cell, i, i, r, r))
+            linear = (S * S - 2 * S * n_bos[i]) * np.outer(n, n)
+            energy += kappa * np.sum(A * (linear + fluctuation)) + 0.5 * S * np.trace(A) \
+                - kappa * 0.5 * S * (np.trace(A) - n @ A @ n)
     field_vector = np.asarray(result.header.conditions["field"], dtype=float)
     for term in model.terms_of_kind(ZEEMAN):
         site = term.participants[0][0]

@@ -10,8 +10,16 @@ with the Hermitian ``3 Ns x 3 Ns`` matrix
 
     J(q)_ab = (1/2) [S_a S_b J e^{i q . (r_b - r_a)} + h.c.]   (summed over terms).
 
+Onsite terms (D37) add ``(1 - 1/(2S_a)) S_a^2 A_a`` to the diagonal block of
+site ``a`` at every q (the coherent-state value used by all classical methods)
+and the constant ``c = mean_a (S_a/2) tr A_a`` to the energy. The weak
+constraint still gives a lower bound, but an anisotropic onsite matrix makes
+``J(q)`` depend on the spin direction, so a single-q spiral generally fails
+the strong constraint: for such models LT is a bound and a candidate list,
+not a solution (e.g. easy-plane anisotropy with an out-of-plane spiral).
+
 The weak constraint ``sum |n|^2 = N Ns`` gives the bound ``E / (N Ns) >= lambda_min``
-(energy per site in E0, for any spin lengths). The bound is reached when a
+(energy per site in E0, for any spin lengths; ``lambda_min`` includes ``c``). The bound is reached when a
 state built from the lowest eigenvectors also satisfies the strong constraint
 ``|n_a(R)| = 1``. This diagnostic checks single-q states only:
 
@@ -44,7 +52,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from spintoolkit.states.spin_state import SpinState
-from spintoolkit.system.model import BILINEAR, SpinModel
+from spintoolkit.system.model import BILINEAR, ONSITE, SpinModel, onsite_renormalization
 
 #: Relative tolerance on eigenvalues for minima, degeneracy and the eigenspace.
 LT_TOLERANCE = 1e-9
@@ -107,7 +115,8 @@ class LTReport:
     Attributes
     ----------
     lambda_min : float
-        Lower bound on the classical energy per site (E0), zero field.
+        Lower bound on the classical energy per site (E0), zero field; includes
+        the onsite constant ``diagnostics["onsite_constant"]``.
     minima : list of LTWaveVector
         Distinct minima (``q`` and ``-q`` identified).
     near_minimal_fraction : float
@@ -146,7 +155,17 @@ def lt_matrix(model: SpinModel, q) -> np.ndarray:
         phase = np.exp(1j * q @ d)
         i, j = 3 * index[a], 3 * index[b]
         M[:, i:i + 3, j:j + 3] += phase[:, None, None] * block[None]
+    for term in model.terms_of_kind(ONSITE):
+        a = term.participants[0][0]
+        i = 3 * index[a]
+        M[:, i:i + 3, i:i + 3] += onsite_renormalization(spins[a]) * spins[a] ** 2 * term.coefficient
     return 0.5 * (M + np.conj(np.transpose(M, (0, 2, 1))))
+
+
+def _onsite_constant(model: SpinModel) -> float:
+    """Constant ``mean_a (S_a/2) tr A_a`` of the onsite coherent-state energy, per site."""
+    return sum(0.5 * model.site(t.participants[0][0]).spin * float(np.trace(t.coefficient))
+               for t in model.terms_of_kind(ONSITE)) / model.num_sites
 
 
 def _lowest(model, q):
@@ -311,10 +330,12 @@ def luttinger_tisza(model: SpinModel, mesh: Tuple[int, int] = (48, 48),
             f, k, int(space.shape[1]), fractions is not None,
             None if fractions is None else tuple(str(fr) for fr in fractions),
             cell, bool(strong), float(residual), state, energy, u))
+    constant = _onsite_constant(model)
     diagnostics = {"scale": scale, "tolerance": tolerance, "max_denominator": max_denominator,
-                   "zeeman": "ignored (zero field)",
+                   "zeeman": "ignored (zero field)", "onsite_constant": constant,
                    "single_q_only": "multi-q states and generalized LT are not treated"}
-    return LTReport(float(lambda_min), minima, near_fraction, bool(extended), (n1, n2), diagnostics)
+    return LTReport(float(lambda_min + constant), minima, near_fraction, bool(extended), (n1, n2),
+                    diagnostics)
 
 
 def _state_from_amplitude(model, cell, k, u) -> SpinState:

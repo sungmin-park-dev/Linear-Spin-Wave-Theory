@@ -252,7 +252,8 @@ def solve_ed(model: SpinModel, geometry: CalculationGeometry,
     rotation = np.eye(3) if sector.axis is None else frame_rotation(sector.axis)
     conserve = sector.magnon_number is not None
     terms = operator_terms(cluster.source, cluster.target, cluster.exchange, fields,
-                           rotation, conserve=conserve, tolerance=symmetry_tolerance)
+                           rotation, conserve=conserve, tolerance=symmetry_tolerance,
+                           onsite=cluster.onsite)
     if conserve:
         magnon_numbers = (range(int(np.rint(np.sum(2 * cluster.spins))) + 1)
                           if sector.magnon_number == "all" else [int(sector.magnon_number)])

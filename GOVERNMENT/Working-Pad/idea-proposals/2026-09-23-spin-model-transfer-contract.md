@@ -54,6 +54,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | Berry 곡률·Chern 수(D29; 5a), thermal Hall(D29; 5b) | `observables/berry.py`의 `berry_curvature`, `chern_numbers`, `chern_numbers_fhs`, `thermal_hall`; 기준 모델 `models/honeycomb.py` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
 | 결정 대칭, 대칭 허용 교환·g-텐서, 대칭 궤도 생성, 모델 대칭 검사(D35) | `system/symmetry.py`의 `LayerCrystal`, `CrystalSymmetry`, `find_symmetry` |
+| LSWT 직접 `H(k)`(D36), 단일 이온 항(D37) | `methods/lswt/quadratic.py`의 `QuadraticBoseHamiltonian`; `system/model.py`의 `Term.onsite`, `onsite_renormalization` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
 결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
@@ -110,6 +111,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D33 | 4d 밴드 구조: `high_symmetry_points(lattice)`(`system/high_symmetry.py`; 역격자 Wigner–Seitz 셀의 꼭짓점·변 중점, 육각 Γ·M·K·K′, 정사각·직사각 Γ·X·Y·M, 그 밖은 일반 이름)와 `band_structure(result, path, points, lattice="primitive")`(`observables/bands.py`; 결정 격자 경로 기본, 자기 셀의 밴드는 접힌 채, 영모드는 표시, 불안정은 NaN과 경고)을 LSWT 물리량으로 추가; 밴드·스핀 배치 그림은 LSWT 구현이 끝난 뒤 별도 시각화 단계에서 설계·검토 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D34 | 단일 Q 나선(비정합 포함): `IncommensurateStructure(model_ref, wave_vector, rotation_axis, directions)`(`states/incommensurate.py`; 위상 `2 pi q . (n1, n2)`는 셀 번호만, `d_a`는 원점 셀 스핀, 원뿔 허용, 정합이면 `to_spin_state`)와 회전틀 LSWT `solve_spiral_lswt(...) -> SpiralLSWTResult`(`methods/lswt/spiral.py`; `J' = J R_n(2 pi q . dn)`의 원시 셀 모델을 기존 `solve_lswt`로 풂; 모든 `J`가 축 회전과 교환하고 `g^T b`가 축 방향일 때만, 아니면 `SpiralSymmetryError`로 거부 — 근사값을 내지 않음; 피치 `dE/dq` 진단·경고); 실험실 틀 구조인자 `spiral_structure_factor`(`sum_m R_m S'(k - mQ) R_m^dagger`, `Q`·`2Q`가 역격자 벡터이면 초격자 안내); 회전틀 결과는 실험실 물리량·위상량이 거부(나선 위상량은 미검증); LT 연결 `IncommensurateStructure.from_lt`, `LTWaveVector.amplitude`, `refine_spiral` | Claude 결정 2026-10-01(사용자 위임), 사용자 물리·수학 검토 대기 | 2026-10-01 나선 메모 |
 | D35 | 결정 대칭과 대칭 허용 결합(`system/symmetry.py`): 결정은 리간드까지 포함한 `LayerCrystal`(층 내 분율 좌표·높이·종)로 받고 자기 이온만의 대칭은 상한으로 취급; 연산 `r -> R r + t`, `R = diag(R2, ±1)`, 스핀·장은 축 벡터 `R_s = det(R) R`, `J -> R_s J R_s^T`(결합이 뒤집히면 전치), `g -> R_s g R_s^T`, 시간 반전은 군에 넣지 않음(지원 항이 모두 시간 반전 대칭); `find_symmetry`, `close_group`, `CrystalSymmetry.allowed_exchange`·`allowed_g_tensor`(허용 형태 기저), `bilinear_terms`·`zeeman_terms`(대표 하나에서 궤도 생성), `check_model`; 대칭을 깨는 계수는 금지 성분과 함께 거부하고 임의로 대칭화하지 않음; 기존 API 변경 없음 | Claude 결정 2026-10-01(사용자 위임: 범용 솔버 방향), 사용자 검토 대기 | §2 |
+| D36 | LSWT의 `H(k)`를 `SpinModel`에서 직접 구성(`methods/lswt/quadratic.py`의 `QuadraticBoseHamiltonian`; `solve_lswt`가 사용): 옛 `SpinSystem` 변환 제거, 규약(Nambu 순서·국소 좌표 게이지·D13)은 그대로이고 기존 구성기와 반올림 수준으로 일치; 새 항 종류의 연결점 | Claude 결정 2026-10-01(사용자 위임, 2번 집중 지정), 사용자 검토 대기 | §5 |
+| D37 | 단일 이온 항 `onsite`(`Term.onsite(site, A)`, `S_i^T A S_i`; D30(3)의 같은 사이트 이차항을 다시 엶): `A`는 실수 대칭(반대칭 부분은 비에르미트라 거부), 사이트당 하나; 고전·LSWT·LT는 스핀 결맞음 상태 값 `S(S-1/2) n^T A n + (S/2) tr A`(계수 `1 - 1/(2S)`, `onsite_renormalization`)를 쓰고 LSWT는 횡방향 정규 순서 상수를 더하지 않음; ED는 정확한 연산자. 근거: `S = 1/2`에서 상수, `D (S^z)^2` 단일 이온 갭 `(2S-1)|D|` 정확, 선형항이 정확한 연산자와 같음, 단일 스핀 S ≤ 20 정확 스펙트럼 비교(large-S는 갭 오차 약 0.57, 상수를 더하면 에너지 오차가 S에 비례); LT는 하한·후보로만 의미(이방성이 있으면 단일 q가 강한 제약을 대개 만족하지 못함); `to_spin_system`과 그에 의존하는 기본 영점 에너지 제공자(`LSWTZeroPointEnergy`)는 onsite를 거부 | Claude 결정 2026-10-01(사용자 위임, 2번 집중 지정), 사용자 검토 대기 | §2, §5 |
 
 ## Proposal
 

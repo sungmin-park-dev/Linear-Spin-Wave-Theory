@@ -61,7 +61,7 @@ from spintoolkit.states.incommensurate import (
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
-from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel, Term
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, Term
 
 ROTATING_FRAME = "rotating"
 
@@ -86,7 +86,7 @@ def symmetry_violations(model: SpinModel, axis, conditions: Optional[ExternalCon
 
     A bilinear ``J`` must commute with ``R_n(1 rad)`` (a generic angle: its
     eigenvalues ``1, e^{+-i}`` are distinct, so commuting with it is commuting
-    with every rotation about ``n``). The Zeeman vector ``h_a = g_a^T b`` must
+    with every rotation about ``n``); so must an onsite ``A``. The Zeeman vector ``h_a = g_a^T b`` must
     be parallel to ``n``. Both relative to ``max(1, |.|)``.
     """
     n = np.asarray(axis, dtype=float)
@@ -99,6 +99,13 @@ def symmetry_violations(model: SpinModel, axis, conditions: Optional[ExternalCon
             name = term.label or f"bilinear {index}"
             out.append(f"{name} {term.participants}: |[J, R_n]| = {defect:.3g} (exchange "
                        "anisotropy or DM component not along the axis)")
+    for term in model.terms_of_kind(ONSITE):
+        # S^T A S in the rotating frame is invariant only if A commutes with R_n.
+        A = term.coefficient
+        defect = np.max(np.abs(R @ A - A @ R))
+        if defect > tolerance * max(1.0, np.max(np.abs(A))):
+            out.append(f"onsite {term.participants[0][0]!r}: |[A, R_n]| = {defect:.3g} "
+                       "(single-ion anisotropy not axial about the spiral axis)")
     b = (conditions or ExternalConditions()).field
     for term in model.terms_of_kind(ZEEMAN):
         h = term.coefficient.T @ b

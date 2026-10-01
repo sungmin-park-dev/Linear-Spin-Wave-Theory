@@ -198,6 +198,23 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d36-onsite]{결정 기록 (D36--D37): 직접 $H(\mathbf k)$와 단일 이온 항}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 2번 집중을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    D36 직접 $H(\mathbf k)$ & \texttt{methods/lswt/quadratic.py}의 \texttt{QuadraticBoseHamiltonian}: \texttt{SpinModel}에서 $H(\mathbf k)$와 해석적 $\partial_{\mathbf k}H$를 바로 만든다. \texttt{solve\_lswt}가 사용; 규약(Nambu 순서, 국소 좌표 게이지, D13)은 그대로이며 기존 구성기와 $10^{-16}$ 수준으로 일치 \\
+    D37 항 & \texttt{Term.onsite(site, A)}: $\mathbf S_i^{T}A\mathbf S_i$, $A$는 실수 대칭(반대칭 부분은 비에르미트라 거부), 사이트당 하나 \\
+    D37 규칙 & 고전·LSWT는 스핀 결맞음 상태 값 $S(S-\tfrac12)\mathbf n^{T}A\mathbf n+\tfrac S2\operatorname{tr}A$, 즉 계수 $(1-\tfrac1{2S})A$를 쓰고, 횡방향 정규 순서 상수는 더하지 않는다. ED와 LT는 각각 정확한 연산자와 같은 결맞음 값을 쓴다 \\
+    근거 & $S=\tfrac12$에서 상수 $\operatorname{tr}A/4$; $D(S^z)^2$ 단일 이온 갭 $(2S-1)|D|$ 정확; 선형항이 정확한 연산자와 같음; 단일 스핀 $S\le20$ 정확 스펙트럼과 비교 시 large-S는 갭 오차 $\approx0.57$, 정규 순서 상수를 더하면 에너지 오차가 $S$에 비례 \\
+    검증 & 축 대칭 모델의 1-마그논 LSWT 밴드 = 토러스 ED($10^{-11}$); 결합 상관 에너지 = LSWT 바닥 에너지; LT 하한 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
