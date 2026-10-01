@@ -9,7 +9,11 @@ Ported from modules/LinearSpinWaveTheory/lswt_thermodynamics.py.
 
 import numpy as np
 from typing import Union, Tuple
-from tqdm import tqdm
+try:
+    from tqdm import tqdm
+except ImportError:                     # optional: progress bar only
+    def tqdm(iterable, **kwargs):
+        return iterable
 
 from spintoolkit.observables.bose_statistics import (
     compute_bose_einstein_distribution,

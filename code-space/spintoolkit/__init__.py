@@ -37,7 +37,7 @@ Quick Start
 >>> system = SpinSystem(sites, couplings, lattice_vectors=[[1, 0], [0.5, 0.866]])
 """
 
-__version__ = "0.2.0-dev"
+__version__ = "0.2.0.dev0"   # PEP 440; the single source of the package version
 __author__ = "Sung-Min Park"
 __email__ = "sungmin.park.0226@gmail.com"
 
