@@ -53,6 +53,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | Luttinger–Tisza 진단(D30, D32; 6b) | `methods/luttinger_tisza.py`의 `luttinger_tisza`, `lt_matrix` |
 | Berry 곡률·Chern 수(D29; 5a), thermal Hall(D29; 5b) | `observables/berry.py`의 `berry_curvature`, `chern_numbers`, `chern_numbers_fhs`, `thermal_hall`; 기준 모델 `models/honeycomb.py` |
 | §6 기존 `SpinSystem`과의 변환(D13 변위 규칙, 2단계) | `system/conversion.py`의 `to_spin_system`, `from_spin_system` |
+| 결정 대칭, 대칭 허용 교환·g-텐서, 대칭 궤도 생성, 모델 대칭 검사(D34) | `system/symmetry.py`의 `LayerCrystal`, `CrystalSymmetry`, `find_symmetry` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
 결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
@@ -107,6 +108,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D31 | 위상량 수치 기준 확정: 밴드 간격 `TOPOLOGY_BAND_GAP_CUTOFF = 1e-8` E0(이하이면 그 점의 곡률 판정 불가), FHS 링크 겹침 `TOPOLOGY_MIN_LINK_OVERLAP = 1e-3`(이하이면 격자점 사이 밴드 교차로 판정 불가; 정상 경우 최소 겹침 0.55–0.95, 대칭 보호 교차 1e-15), Kubo–FHS 일치 `TOPOLOGY_CHERN_AGREEMENT = 0.1`(FHS는 갭이 있으면 거친 격자에서도 정확하지만 갭 닫힘을 알아채지 못하고, Kubo는 느리지만 갭 닫힘·격자 부족을 정수에서 벗어남으로 드러내므로 둘이 일치할 때만 채택; 거부되면 격자를 키움), FHS admissibility `TOPOLOGY_PLAQUETTE_PHASE_MARGIN = 1e-6` rad(plaquette 위상이 ±π에 이만큼 붙으면 판정 불가: 밴드 접촉을 둘러싼 plaquette의 Berry 위상 π는 ±π 가지가 반올림으로 정해지므로 FHS 정수가 임의; 2026-10-01 보완, 사용자 승인 — 이전 기록의 "시험한 모델에서 거짓 채택 없음"은 D=0 Haldane 24×24에서 FHS가 0으로 반올림되어 Kubo 0과 일치, [0, 0]을 채택한 사례로 반증됨; 측정 최대 위상 D=0에서 π, D=1e-3에서 π−0.06, D=0.2와 Kitaev에서 1.01 이하); 적응형 적분 기본값 상대 1e-3, 절대 1e-7, 2e5점, 깊이 12 | 사용자 결정 2026-09-30 | §5 |
 | D32 | 6단계 인터페이스: LT 진단 `luttinger_tisza(model, mesh=(N, N)) -> LTReport`(`methods/luttinger_tisza.py`; J(q) 최소 q*, 분수와 후보 초격자, 고유공간 차원, 단일 q 강한 제약 판정과 그 상태, 퇴화 표시; 영장, 선택하지 않음); 전역 고전 탐색 `classical_search(model, supercell, conditions, seed=42, ...) -> ClassicalSearchResult`(`methods/classical.py`; (theta, phi) 차분 진화를 기존 설정대로 한 뒤 `refine_classical`; 각도 고정 없음); 진행 순서 6a(정리) → 6b → 6c, 6b·6c는 검증 뒤 사용자 확인 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
 | D33 | 4d 밴드 구조: `high_symmetry_points(lattice)`(`system/high_symmetry.py`; 역격자 Wigner–Seitz 셀의 꼭짓점·변 중점, 육각 Γ·M·K·K′, 정사각·직사각 Γ·X·Y·M, 그 밖은 일반 이름)와 `band_structure(result, path, points, lattice="primitive")`(`observables/bands.py`; 결정 격자 경로 기본, 자기 셀의 밴드는 접힌 채, 영모드는 표시, 불안정은 NaN과 경고)을 LSWT 물리량으로 추가; 밴드·스핀 배치 그림은 LSWT 구현이 끝난 뒤 별도 시각화 단계에서 설계·검토 | 사용자 결정 2026-09-30 | §5, 개발 계획 |
+| D34 | 결정 대칭과 대칭 허용 결합(`system/symmetry.py`): 결정은 리간드까지 포함한 `LayerCrystal`(층 내 분율 좌표·높이·종)로 받고 자기 이온만의 대칭은 상한으로 취급; 연산 `r -> R r + t`, `R = diag(R2, ±1)`, 스핀·장은 축 벡터 `R_s = det(R) R`, `J -> R_s J R_s^T`(결합이 뒤집히면 전치), `g -> R_s g R_s^T`, 시간 반전은 군에 넣지 않음(지원 항이 모두 시간 반전 대칭); `find_symmetry`, `close_group`, `CrystalSymmetry.allowed_exchange`·`allowed_g_tensor`(허용 형태 기저), `bilinear_terms`·`zeeman_terms`(대표 하나에서 궤도 생성), `check_model`; 대칭을 깨는 계수는 금지 성분과 함께 거부하고 임의로 대칭화하지 않음; 기존 API 변경 없음 | Claude 결정 2026-10-01(사용자 위임: 범용 솔버 방향), 사용자 검토 대기 | §2 |
 
 ## Proposal
 

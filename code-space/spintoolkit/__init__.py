@@ -54,6 +54,7 @@ from spintoolkit.system.model import (
 )
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
+from spintoolkit.system.symmetry import LayerCrystal, CrystalSymmetry, find_symmetry
 from spintoolkit.states.spin_state import SpinState, SpinStateError, validate_spin_state
 
 # Calculation methods
@@ -72,6 +73,7 @@ __all__ = [
     # Common model definition
     'SpinModel', 'Site', 'Term', 'SpinModelError', 'validate_spin_model',
     'ExternalConditions', 'CalculationGeometry',
+    'LayerCrystal', 'CrystalSymmetry', 'find_symmetry',
     'SpinState', 'SpinStateError', 'validate_spin_state',
     'models',
     # Solvers
