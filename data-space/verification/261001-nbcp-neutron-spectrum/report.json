@@ -1,0 +1,62 @@
+{
+ "parameters": {
+  "Jxy": 0.0779,
+  "Jz": 0.1225,
+  "g": [
+   4.2,
+   4.2,
+   4.716
+  ],
+  "S": 0.5
+ },
+ "lattice_constant_A_assumed": 5.3,
+ "form_factor": "Co2 <j0>",
+ "source": "arXiv:2505.06398 Table 1; B || b*",
+ "polarized_3p5T": {
+  "closed_form_checks": [
+   {
+    "Q_z_per_model_length": 0.0,
+    "max_energy_deviation_meV": 6.661338147750939e-16,
+    "max_intensity_deviation": 1.5543122344752192e-15,
+    "max_intensity": 1.4010854419680034
+   },
+   {
+    "Q_z_per_model_length": 0.5,
+    "max_energy_deviation_meV": 6.661338147750939e-16,
+    "max_intensity_deviation": 1.5543122344752192e-15,
+    "max_intensity": 1.3919375234586364
+   },
+   {
+    "Q_z_per_model_length": 1.5,
+    "max_energy_deviation_meV": 6.661338147750939e-16,
+    "max_intensity_deviation": 1.5543122344752192e-15,
+    "max_intensity": 1.330410990262225
+   }
+  ],
+  "W_xx_over_W_zz": {
+   "Gamma": 1.1572467249290936,
+   "K": 0.8662914901767417
+  }
+ },
+ "three_sublattice_1T": {
+  "directions": {
+   "('Co', (0, 0))": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "('Co', (1, 1))": [
+    0.0,
+    0.420033,
+    -0.907509
+   ],
+   "('Co', (2, 2))": [
+    0.0,
+    0.420033,
+    0.907509
+   ]
+  },
+  "C2_b_domain_average_minus_single_relative": 4.305996616340414e-15
+ },
+ "figure": "data-space/verification/261001-nbcp-neutron-spectrum/neutron-intensity.png"
+}

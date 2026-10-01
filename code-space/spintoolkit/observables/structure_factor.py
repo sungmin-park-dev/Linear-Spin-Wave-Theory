@@ -205,9 +205,27 @@ def _zero_mode_decision(result, temperature, zero_modes, gapless):
     return bool(gapless), report.to_dict()
 
 
+def _apply_moment_tensors(A: np.ndarray, tensors: Optional[np.ndarray], nq: int) -> np.ndarray:
+    """Deviation vectors per momentum, ``(nq, 3, 2Ns)``, with site tensors applied.
+
+    ``tensors`` (nq, Ns, 3, 3) maps the spin of site i to the scattering
+    moment at each momentum (the neutron factor ``(g_i / 2) F_i(|Q|)``); None
+    keeps the spin itself.
+    """
+    if tensors is None:
+        return np.broadcast_to(A, (nq,) + A.shape)
+    tensors = np.concatenate([tensors, tensors], axis=1)        # site of each Nambu column
+    return np.einsum("qmab,bm->qam", tensors, A)
+
+
+def _moments(tensors: Optional[np.ndarray], i: int, moments: np.ndarray) -> np.ndarray:
+    return moments if tensors is None else np.einsum("sab,sb->sa", tensors[i], moments)
+
+
 def structure_factor(result, q_points, temperature: float = 0.0,
                      zero_modes: Optional[ZeroModeReport] = None,
-                     gapless: Optional[bool] = None) -> StructureFactor:
+                     gapless: Optional[bool] = None,
+                     moment_tensors: Optional[np.ndarray] = None) -> StructureFactor:
     """Mode-resolved LSWT structure factor at momenta ``q_points``.
 
     Parameters
@@ -219,6 +237,11 @@ def structure_factor(result, q_points, temperature: float = 0.0,
         ``t = k_B T / E0``. At t > 0 the zero-mode decision of D25 applies.
     zero_modes, gapless : optional
         As in :func:`~spintoolkit.observables.thermal.thermal_quantities`.
+    moment_tensors : (nq, Ns, 3, 3) array, optional
+        Site- and momentum-dependent tensors ``M_i(q)`` replacing ``S_i`` by
+        ``M_i(q) S_i`` in both the inelastic and the elastic part (used by
+        :func:`~spintoolkit.observables.neutron.neutron_intensity`). None
+        (default) gives the spin structure factor.
     """
     from spintoolkit.methods.lswt.run import require_lab_frame
 
@@ -237,7 +260,8 @@ def structure_factor(result, q_points, temperature: float = 0.0,
                       "the elastic part is computed", UserWarning, stacklevel=2)
     # H(k) is in the full-position gauge (D13): psi(q) already carries exp(-i q . tau_i),
     # so no further sublattice phase is applied.
-    amplitudes = np.einsum("am,qmn->qan", A, T)                 # (nq, 3, 2Ns)
+    A_q = _apply_moment_tensors(A, _check_tensors(moment_tensors, len(q), ns), len(q))
+    amplitudes = np.einsum("qam,qmn->qan", A_q, T)              # (nq, 3, 2Ns)
     energies = np.concatenate([E[:, :ns], -E[:, ns:]], axis=1)
     factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
     weights = (np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
@@ -248,14 +272,24 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     bragg = np.all(np.abs(fractional - np.rint(fractional)) < 1e-9, axis=1)
     elastic = np.zeros((len(q), 3, 3), dtype=complex)
     for i in np.flatnonzero(bragg):
-        F = np.exp(-1j * result.positions @ q[i]) @ moments
+        F = np.exp(-1j * result.positions @ q[i]) @ _moments(moment_tensors, i, moments)
         elastic[i] = np.outer(F, F.conj()) / ns ** 2
     return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report)
 
 
+def _check_tensors(tensors, nq, ns):
+    if tensors is None:
+        return None
+    tensors = np.asarray(tensors)
+    if tensors.shape != (nq, ns, 3, 3):
+        raise ValueError(f"moment_tensors must have shape {(nq, ns, 3, 3)}, got {tensors.shape}")
+    return tensors
+
+
 def spiral_structure_factor(result, q_points, temperature: float = 0.0,
                             zero_modes: Optional[ZeroModeReport] = None,
-                            gapless: Optional[bool] = None) -> StructureFactor:
+                            gapless: Optional[bool] = None,
+                            moment_tensors: Optional[np.ndarray] = None) -> StructureFactor:
     """Lab-frame structure factor of a single-Q spiral (rotating-frame LSWT, D34).
 
     With ``S_i = R_n(phi_i) S'_i``, ``phi_i = Q . R_i`` (cell vector ``R_i``)
@@ -283,6 +317,10 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
     temperature, zero_modes, gapless
         As in :func:`structure_factor`; the zero-mode scan is of the
         rotating-frame result.
+    moment_tensors : (nq, Ns, 3, 3) array, optional
+        As in :func:`structure_factor`, applied to the lab-frame spins
+        ``R_n(phi_i) S'_i``. The branch cross terms still vanish because the
+        tensors are the same in every cell.
 
     Returns
     -------
@@ -323,6 +361,7 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
     tau = np.asarray(rotating.positions)
     moments = (rotating.spins - rotating.boson_numbers)[:, None] * rotating.directions
 
+    tensors = _check_tensors(moment_tensors, len(q), ns)
     energies, weights, zero = [], [], np.zeros(len(q), dtype=bool)
     elastic = np.zeros((len(q), 3, 3), dtype=complex)
     bragg = np.zeros(len(q), dtype=bool)
@@ -331,8 +370,9 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         _, E, T, zero_m = _diagonalization_at(rotating, shifted)
         zero |= zero_m
         phase = np.exp(-1j * m * tau @ Q)
-        A_m = rotations[m] @ (A * np.r_[phase, phase][None, :])
-        amplitudes = np.einsum("am,qmn->qan", A_m, T)
+        A_m = _apply_moment_tensors(rotations[m] @ (A * np.r_[phase, phase][None, :]),
+                                    tensors, len(q))
+        amplitudes = np.einsum("qam,qmn->qan", A_m, T)
         energies.append(np.concatenate([E[:, :ns], -E[:, ns:]], axis=1))
         factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
         weights.append(np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
@@ -340,7 +380,8 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         fractional = shifted @ lattice.T / (2 * np.pi)
         on_lattice = np.all(np.abs(fractional - np.rint(fractional)) < 1e-9, axis=1)
         for i in np.flatnonzero(on_lattice):
-            F = rotations[m] @ (np.exp(-1j * tau @ q[i]) @ moments)
+            rotated = moments @ rotations[m].T
+            F = np.exp(-1j * tau @ q[i]) @ _moments(tensors, i, rotated)
             elastic[i] += np.outer(F, F.conj()) / ns ** 2
         bragg |= on_lattice
     if np.any(zero):
