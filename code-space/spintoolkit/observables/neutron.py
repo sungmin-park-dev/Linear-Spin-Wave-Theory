@@ -401,3 +401,122 @@ def powder_average(result, Q_magnitudes, omega, fwhm, num_directions: int = 500,
     spectra = neutron_intensity(result, Q, **kwargs).broaden(omega, fwhm, shape)
     spectra = spectra.reshape(len(Q_magnitudes), num_directions, -1)
     return np.nanmean(spectra, axis=1)
+
+
+def _primitive_lattice(result) -> np.ndarray:
+    lattice = getattr(result, "lattice", None)
+    if lattice is None:                                 # SpiralLSWTResult
+        lattice = result.rotating.lattice
+    return np.asarray(lattice, dtype=float)
+
+
+@dataclass(frozen=True)
+class NeutronPath:
+    """Broadened ``I(Q, w)`` along a path of in-plane momenta.
+
+    Attributes
+    ----------
+    Q : (m, 3) array
+        Momentum transfer at each path point (constant ``Q_z``).
+    distance : (m,) array
+        Cumulative in-plane path length.
+    labels : list of str
+    label_distances : (n,) array
+    omega : (nw,) array
+    intensity : (m, nw) array
+        Inelastic intensity per site; NaN where it is undefined (zero mode,
+        ``Q = 0``).
+    """
+
+    Q: np.ndarray
+    distance: np.ndarray
+    labels: list
+    label_distances: np.ndarray
+    omega: np.ndarray
+    intensity: np.ndarray
+
+
+def neutron_path(result, omega, fwhm, path: Sequence[Any] = ("Γ", "K", "M", "Γ"),
+                 points: int = 200, q_z: float = 0.0, shape: str = "gaussian",
+                 **kwargs) -> NeutronPath:
+    """Inelastic ``I(Q, w)`` along a piecewise-straight in-plane path at fixed ``Q_z``.
+
+    Parameters
+    ----------
+    result : LSWTResult or SpiralLSWTResult
+    omega, fwhm, shape
+        As in :meth:`NeutronIntensity.broaden`.
+    path : sequence of str or (2,) array_like
+        Names of the primitive zone (:func:`~spintoolkit.system.high_symmetry.high_symmetry_points`)
+        or Cartesian momenta. The intensity is not periodic in the zone, so
+        explicit momenta beyond the first zone are often wanted.
+    points : int
+    q_z : float
+        Out-of-plane momentum (inverse model length units).
+    **kwargs
+        Passed to :func:`neutron_intensity`.
+    """
+    from spintoolkit.observables.bands import _path_momenta, _vertices
+    from spintoolkit.system.high_symmetry import high_symmetry_points
+
+    labels, vertices = _vertices(path, high_symmetry_points(_primitive_lattice(result)))
+    q, distance, label_distances = _path_momenta(vertices, points)
+    Q = np.column_stack([q, np.full(len(q), float(q_z))])
+    omega = np.asarray(omega, dtype=float)
+    intensity = neutron_intensity(result, Q, **kwargs).broaden(omega, fwhm, shape)
+    return NeutronPath(Q, distance, labels, label_distances, omega, intensity)
+
+
+@dataclass(frozen=True)
+class NeutronSlice:
+    """Broadened ``I(Q, w)`` at one energy on a Cartesian grid of in-plane momenta.
+
+    Attributes
+    ----------
+    q_x, q_y : (nx,), (ny,) arrays
+    energy : float
+    intensity : (ny, nx) array
+        NaN where undefined.
+    lattice : (2, 2) array
+        Primitive lattice, for drawing zone boundaries.
+    """
+
+    q_x: np.ndarray
+    q_y: np.ndarray
+    energy: float
+    intensity: np.ndarray
+    lattice: np.ndarray
+
+
+def neutron_slice(result, energy: float, fwhm, extent: Optional[float] = None,
+                  points: int = 81, q_z: float = 0.0, shape: str = "gaussian",
+                  **kwargs) -> NeutronSlice:
+    """Constant-energy ``I(Q, w = energy)`` on the square ``|Q_x|, |Q_y| <= extent``.
+
+    Parameters
+    ----------
+    result : LSWTResult or SpiralLSWTResult
+    energy : float
+    fwhm, shape
+        As in :meth:`NeutronIntensity.broaden`.
+    extent : float, optional
+        Half width of the square (inverse model length units); default twice
+        the largest corner distance of the primitive zone, which shows the
+        first zone and its neighbours.
+    points : int
+        Grid points per direction.
+    q_z : float
+    **kwargs
+        Passed to :func:`neutron_intensity`.
+    """
+    from spintoolkit.system.high_symmetry import zone_boundary
+
+    lattice = _primitive_lattice(result)
+    if extent is None:
+        extent = 2.0 * float(np.max(np.linalg.norm(zone_boundary(lattice), axis=1)))
+    axis = np.linspace(-extent, extent, int(points))
+    qx, qy = np.meshgrid(axis, axis)
+    Q = np.column_stack([qx.ravel(), qy.ravel(), np.full(qx.size, float(q_z))])
+    intensity = neutron_intensity(result, Q, **kwargs).broaden([float(energy)], fwhm, shape)
+    return NeutronSlice(axis, axis.copy(), float(energy),
+                        intensity[:, 0].reshape(qx.shape), lattice)

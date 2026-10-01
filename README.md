@@ -21,6 +21,7 @@ Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up
 | LSWT | `solve_lswt` for commensurate states (Colpa diagonalization, zero-point energy, stability check); rotating-frame LSWT for single-Q spirals |
 | Observables | Band structures; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
 | Comparison | `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy |
+| Figures | Bands, neutron maps (path, constant energy, powder), Berry curvature, thermal Hall, spin textures with skyrmion density, phase diagrams, thermodynamics, spin configurations |
 | Exact diagonalization | Small clusters, for checking LSWT |
 
 Spin-wave theory is an expansion about an ordered classical state. The package
@@ -81,6 +82,19 @@ To define your own model, build `stk.SpinModel` from `stk.Site` and
 `stk.Term` objects (see `spintoolkit/models/heisenberg.py` for a short
 example) and a `stk.SpinState` for the ordered configuration, or find one with
 `spintoolkit.methods.classical.classical_search`.
+
+## Gallery
+
+Every figure below comes from [`examples/gallery.py`](examples/gallery.py),
+using one call per plot from `spintoolkit.visualization`. Quantities that are
+physically undefined are drawn in grey, never as zero: for example, the
+Goldstone weight at the Bragg vector K, or a phase-diagram point where no
+candidate state is stable.
+
+![Magnon bands and neutron intensity of the triangular antiferromagnet](data-space/gallery/02-bands-and-neutron-path.png)
+![Constant-energy slice and powder average](data-space/gallery/03-neutron-slice-and-powder.png)
+![Berry curvature and thermal Hall conductivity of the honeycomb ferromagnet with DM interaction](data-space/gallery/04-berry-curvature-and-thermal-hall.png)
+![Skyrmion, tetrahedral and 120-degree textures with their solid-angle density](data-space/gallery/05-spin-textures.png)
 
 ## Deprecated API
 

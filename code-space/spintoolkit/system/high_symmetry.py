@@ -59,6 +59,12 @@ def _wigner_seitz(reciprocal: np.ndarray):
     return edges, corners
 
 
+def zone_boundary(lattice) -> np.ndarray:
+    """Corners of the first Brillouin zone of ``lattice`` (rows), counter-clockwise, shape (nc, 2)."""
+    _, corners = _wigner_seitz(reciprocal_lattice(lattice))
+    return np.array(corners)
+
+
 def high_symmetry_points(lattice) -> Dict[str, np.ndarray]:
     """Named high-symmetry points of the first Brillouin zone of ``lattice`` (rows).
 
