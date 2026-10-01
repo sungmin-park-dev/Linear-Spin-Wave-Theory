@@ -215,6 +215,23 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d38-dynamics]{결정 기록 (D38): 고전 스핀 동역학}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 5번 집중을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    계 & \texttt{methods/dynamics.py}의 \texttt{ClassicalTorus}: 유한 토러스(D23), 스핀 길이 $S_i$, 고전 에너지는 D37 결맞음 값. 시간 단위 $\hbar/E_0$ \\
+    운동 방정식 & $\dot{\mathbf s}_i=\mathbf s_i\times\mathbf h_i$, $\mathbf h_i=-\partial E/\partial\mathbf s_i$. 암시적 중점법은 길이와 에너지를 정확히 보존하고 작은 진동 진동수를 $(2/\Delta t)\arctan(\omega\Delta t/2)$로 옮긴다 \\
+    랑주뱅 & $\dot{\mathbf s}=\mathbf s\times(\mathbf h+\boldsymbol\xi)-(\alpha/S)\,\mathbf s\times(\mathbf s\times\mathbf h)$, $\langle\xi\xi\rangle=(2\alpha T/S)\delta$ (Stratonovich, 확률 Heun 후 투영). 감쇠 이동도 $\alpha S$와 구면 확산 $\alpha TS$의 비가 $T$라 정상 분포가 $e^{-E/T}$ \\
+    $S(\mathbf q,\omega)$ & 완전 위치 위상(D13), Hann 창 주기도, 합 규칙 보존. 양자 상세 균형 인자와 형태 인자는 적용하지 않음 \\
+    검증 & 단일 스핀 Langevin 함수; 단일 이온 분포(구적법, large-S 값과 구별); 작은 진동 = LSWT 밴드; 저온 $S(\mathbf q,\omega)$ 정점 = LSWT 분산 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
