@@ -1,0 +1,49 @@
+{
+ "vmc_settings": {
+  "alpha": 2,
+  "learning_rate": 0.01,
+  "diag_shift": 0.01,
+  "iterations": 1500,
+  "seed": 3
+ },
+ "cases": [
+  {
+   "case": "NBCP 3x3, 1 T || c",
+   "sites": 9,
+   "E_ed": -0.7731539405917709,
+   "netket_exact_minus_ed": -9.992007221626409e-16,
+   "netket": "3.22.4",
+   "E_rbm_vmc": -0.7718375845113975,
+   "rbm_relative_error": 0.0017025795398078888,
+   "seconds_vmc": 190.4
+  },
+  {
+   "case": "NBCP 3x3, 1 T || b*",
+   "sites": 9,
+   "E_ed": -0.7686355607438407,
+   "netket_exact_minus_ed": -4.218847493575595e-15,
+   "netket": "3.22.4",
+   "E_rbm_vmc": -0.7676610170395524,
+   "rbm_relative_error": 0.0012678878704820555,
+   "seconds_vmc": 66.2
+  },
+  {
+   "case": "NBCP 3x3 + J_PD 0.01, 0.5 T || c",
+   "sites": 9,
+   "E_ed": -0.5701089032546363,
+   "netket_exact_minus_ed": 2.9976021664879227e-15,
+   "netket": "3.22.4",
+   "E_rbm_vmc": -0.5654429534628316,
+   "rbm_relative_error": 0.008184313146431704,
+   "seconds_vmc": 53.0
+  },
+  {
+   "case": "square 4x4 Heisenberg",
+   "sites": 16,
+   "E_ed": -11.228483208428845,
+   "netket_exact_minus_ed": -3.552713678800501e-14,
+   "netket": "3.22.4",
+   "ed_minus_reference": -8.428845177377298e-09
+  }
+ ]
+}
