@@ -181,6 +181,23 @@
   \slidesource{2026-10-01 나선 메모}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d35-symmetry]{결정 기록 (D35): 결정 대칭과 대칭 허용 결합}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임: 범용 솔버 방향), 사용자 검토 대기. 기존 API 변경 없음.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    위치·입력 & \texttt{system/symmetry.py}; 결정은 \texttt{LayerCrystal(lattice, positions, species, heights)}로 리간드까지 받는다. 자기 이온만의 대칭(\texttt{LayerCrystal.from\_model})은 상한이다 \\
+    연산 & $\mathbf r\to R\mathbf r+\mathbf t$, $R=\mathrm{diag}(R_2,\pm1)$; 스핀·장은 축 벡터 $R_s=\det(R)R$; $J\to R_sJR_s^{T}$, 결합이 뒤집히면 전치; $g\to R_sgR_s^{T}$; 시간 반전은 지원 항을 모두 보존하므로 군에 넣지 않음 \\
+    기능 & \texttt{find\_symmetry}, \texttt{close\_group}; \texttt{CrystalSymmetry.allowed\_exchange}, \texttt{allowed\_g\_tensor}(허용 형태의 기저), \texttt{bilinear\_terms}, \texttt{zeeman\_terms}(궤도 생성), \texttt{check\_model} \\
+    물리 판정 & 대칭을 깨는 계수는 금지 성분을 보여 주며 거부(임의로 대칭화하지 않음) \\
+    검증 & 평평한 삼각격자 XYZ 3개, CdI$_2$형 D$_{3d}$ 삼각격자 $J,\Delta,J_{\pm\pm},J_{z\pm}$ 4개·DM 없음·축 대칭 $g$, 평평한 카고메 $D_z$만·균일 순환; 생성 모델의 LSWT $\omega(C_3\mathbf k)=\omega(\mathbf k)$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
