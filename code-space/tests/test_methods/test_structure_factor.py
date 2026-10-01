@@ -12,6 +12,7 @@
 
 import numpy as np
 import pytest
+from scipy.integrate import trapezoid
 
 from model import nbcp
 from spintoolkit.methods.ed import EDSector, solve_ed
@@ -178,7 +179,7 @@ def test_spectrum_and_json():
     sf = structure_factor(result, [[0.3, 0.2], [1.0, 2.0]])
     omega = np.linspace(-1, 4, 4001)
     spectrum = sf.spectrum(omega, eta=0.02, shape="gaussian")
-    np.testing.assert_allclose(np.trapezoid(spectrum, omega, axis=1), sf.trace().sum(axis=1), rtol=1e-6)
+    np.testing.assert_allclose(trapezoid(spectrum, omega, axis=1), sf.trace().sum(axis=1), rtol=1e-6)
     assert np.all(np.isfinite(sf.neutron()))
     data = sf.to_json_dict()
     assert set(data) >= {"q", "energies", "weights", "elastic", "bragg"}
