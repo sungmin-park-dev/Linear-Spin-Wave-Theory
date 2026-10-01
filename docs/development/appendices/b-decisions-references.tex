@@ -248,6 +248,21 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d40-monte-carlo]{결정 기록 (D40): 고전 몬테카를로와 열 관측량}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 NBCP 우선을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    갱신 & 결합 그래프 색칠로 같은 색을 한꺼번에; Metropolis 제안 $S\,\mathrm{normalize}(\mathbf s/S+\sigma\mathbf g)$(대칭), onsite 포함 정확한 $\Delta E$; 과완화(국소장 반사)는 onsite 없는 사이트만 \\
+    관측량 & 에너지, 비열 $N\,\mathrm{var}(e)/T^2$, $\mathbf m_{\mathbf q}$(D13), 상대 비틀림 강성 $\Upsilon=(\langle E''\rangle-\mathrm{var}(E')/T)/N$, 잭나이프 오차. 축에 대해 U(1)이 아닌 교환은 거부하고, 요청 시 U(1) 대칭 부분 $\bar J$의 강성만 준다 \\
+    검증 & 비틀림 미분 = 유한 차분; $\Upsilon(0)=|J|S^2$; 과완화 에너지 보존; 단일 스핀·단일 이온 분포; 고온 급수; 몬테카를로 = Langevin 에너지 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small

@@ -108,7 +108,19 @@ class ClassicalTorus:
         for i, j, J in zip(cluster.source, cluster.target, cluster.exchange):
             block(i, j, J)
             block(j, i, J.T)
+        # Bond vectors r_target - r_source of the unfolded bonds (twists, D40).
+        bilinear = model.terms_of_kind("bilinear")
+        vectors = []
+        for t in cluster.bond_terms:
+            (a, n1), (b, n2) = bilinear[t].participants
+            vectors.append(model.cartesian_position(b, n2) - model.cartesian_position(a, n1))
+        self.bond_source = np.asarray(cluster.source, dtype=int)
+        self.bond_target = np.asarray(cluster.target, dtype=int)
+        self.bond_exchange = np.asarray(cluster.exchange, dtype=float).reshape(-1, 3, 3)
+        self.bond_vectors = np.array(vectors, dtype=float).reshape(-1, 2)
         kappa = np.array([onsite_renormalization(S) for S in self.lengths])
+        #: (n, 3, 3) renormalized onsite matrices kappa_i A_i of the classical energy.
+        self.onsite = kappa[:, None, None] * cluster.onsite
         for i in range(n):
             if np.any(cluster.onsite[i]):
                 block(i, i, 2 * kappa[i] * cluster.onsite[i])
