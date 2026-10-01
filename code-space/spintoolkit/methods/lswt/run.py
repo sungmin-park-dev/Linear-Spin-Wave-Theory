@@ -1,9 +1,9 @@
 """LSWT on the common model types: ``solve_lswt(model, state, conditions, geometry, settings)``.
 
-The model and state are converted with
-:func:`~spintoolkit.system.conversion.to_spin_system` and the existing
-``LSWTHamiltonian`` builds the bosonic ``H(k)`` of the magnetic cell (Fourier
-convention D13). The result keeps everything the diagonalization produced, so
+:class:`~spintoolkit.methods.lswt.quadratic.QuadraticBoseHamiltonian` builds
+the bosonic ``H(k)`` of the magnetic cell directly from the model and state
+(Fourier convention D13; D36 replaced the conversion to the former
+``SpinSystem``, with identical matrices). The result keeps everything the diagonalization produced, so
 later observables of the same calculation reuse it without diagonalizing again:
 the Hamiltonian actually diagonalized, the Colpa eigenvalues and the
 paraunitary eigenvectors at every k.
@@ -32,13 +32,12 @@ from spintoolkit.definitions.defaults import (
     LSWT_DEFAULT_MESH, LSWT_STATIONARITY_TOLERANCE, LSWT_ZERO_MODE_TOLERANCE)
 from spintoolkit.methods.classical import classical_energy, torques
 from spintoolkit.methods.lswt.diagonalization import Diagonalizer
-from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.result import ResultHeader, to_jsonable
 from spintoolkit.observables.bose_statistics import compute_static_magnon_kernel
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.conversion import to_spin_system
 from spintoolkit.system.geometry import CalculationGeometry
 from spintoolkit.system.model import SpinModel
 
@@ -326,11 +325,9 @@ def solve_lswt(model: SpinModel, state: SpinState,
     validate_spin_state(state, model, geometry)
     k, fractional = _momenta(model, state, geometry, settings)
 
-    system = to_spin_system(model, state, conditions)
-    data = system.to_legacy_dict("simple")
-    hamiltonian = LSWTHamiltonian(data["Spin info"], data["Couplings"])
-    H, linear = hamiltonian.Quadratic_Bose_Hamiltonian(k, angles=system.get_angles_flat())
-    linear_max = float(max((abs(v) for v in linear.values()), default=0.0))
+    hamiltonian = QuadraticBoseHamiltonian(model, state, conditions)
+    H = hamiltonian.at(k)
+    linear_max = float(np.max(np.abs(hamiltonian.linear_terms), initial=0.0))
     H, E, T, shift = _diagonalize(np.asarray(H, dtype=complex), settings.regularization, k,
                                   settings.zero_mode_tolerance)
 
@@ -364,17 +361,8 @@ def solve_lswt(model: SpinModel, state: SpinState,
     header = ResultHeader.build(
         "lswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0); boson numbers per magnetic site", diagnostics)
-    angles = system.get_angles_flat()
-
-    def hamiltonian_at(momenta):
-        return np.asarray(hamiltonian.Quadratic_Bose_Hamiltonian(
-            np.atleast_2d(np.asarray(momenta, dtype=float)), angles=angles)[0])
-
-    def hamiltonian_derivatives_at(momenta):
-        momenta = np.atleast_2d(np.asarray(momenta, dtype=float))
-        hamiltonian.Quadratic_Bose_Hamiltonian(momenta[:1], angles=angles)   # local frames
-        dx, dy = hamiltonian.partial_derivatives_of_Hk(momenta)
-        return np.asarray(dx), np.asarray(dy)
+    hamiltonian_at = hamiltonian.at
+    hamiltonian_derivatives_at = hamiltonian.derivatives_at
 
     result = LSWTResult(header, keys, np.array([model.site(s).spin for s, _ in keys]),
                         np.array([state.direction(s, c) for s, c in keys]), k, fractional, weights,
@@ -382,7 +370,7 @@ def solve_lswt(model: SpinModel, state: SpinState,
                         float(e_cl + zero_point), boson_numbers,
                         np.asarray(model.lattice, dtype=float), state.magnetic_lattice(model),
                         None, np.array([model.cartesian_position(s, c) for s, c in keys]),
-                        np.array(list(hamiltonian.get_rmat_dict(angles=angles).values())),
+                        hamiltonian.local_frames,
                         hamiltonian_at, hamiltonian_derivatives_at=hamiltonian_derivatives_at)
     if conditions.temperature > 0:
         from spintoolkit.observables.thermal import thermal_quantities

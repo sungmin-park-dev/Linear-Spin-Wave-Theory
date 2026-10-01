@@ -277,7 +277,7 @@ def rotation_symmetry(model: SpinModel, conditions: ExternalConditions, axis,
                       tolerance: float) -> Tuple[bool, Dict[str, float]]:
     """Whether every rotation about ``axis`` leaves all terms invariant.
 
-    Bilinear terms need ``[K_n, J] = 0`` with ``K_n`` the generator
+    Bilinear and onsite terms need ``[K_n, J] = 0`` with ``K_n`` the generator
     (``n x``); zeeman terms need ``g^T b`` parallel to ``n``. Norms are
     relative to the largest coefficient, compared with ``tolerance``.
 
@@ -288,7 +288,9 @@ def rotation_symmetry(model: SpinModel, conditions: ExternalConditions, axis,
     """
     axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
     K = _cross_matrix(axis)
+    # Onsite matrices transform like exchange matrices under a global rotation.
     exchange = [t.coefficient for t in model.terms_of_kind(BILINEAR)]
+    exchange += [t.coefficient for t in model.terms_of_kind("onsite")]
     scale = max([np.linalg.norm(J) for J in exchange] + [0.0])
     bilinear = max([np.linalg.norm(K @ J - J @ K) for J in exchange] + [0.0])
     fields = [t.coefficient.T @ conditions.field for t in model.terms_of_kind(ZEEMAN)]

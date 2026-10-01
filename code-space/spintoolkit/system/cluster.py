@@ -16,7 +16,8 @@ Rules (D23), the same for every method:
 - A bond whose two endpoints fold onto the same site is a self-interaction
   ``S_i . J . S_i``, an on-site term that the ``bilinear`` kind does not
   describe consistently for classical spins, spin operators and LSWT. Such a
-  torus is rejected by every method until an on-site quadratic kind exists.
+  torus is rejected by every method; a genuine single-ion term is the
+  ``onsite`` kind (D37), which carries its own operator rules.
 
 Momenta allowed by the torus are ``k = 2 pi inv(A) q`` with ``L q`` integer;
 they are returned both as fractional coordinates ``q`` (in the reciprocal
@@ -33,10 +34,10 @@ import numpy as np
 from spintoolkit.states.spin_state import reduce_cell, supercell_cells
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
-from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel
 
 #: Term kinds that can be expanded on a torus.
-SUPPORTED_KINDS = (BILINEAR, ZEEMAN)
+SUPPORTED_KINDS = (BILINEAR, ZEEMAN, ONSITE)
 
 Key = Tuple[str, Tuple[int, int]]
 
@@ -72,6 +73,8 @@ class TorusCluster:
         Sum of the zeeman ``g`` tensors of each site (zero if none).
     lattice : (2, 2) array
         Primitive lattice ``A`` of the model.
+    onsite : (n, 3, 3) array
+        Onsite matrix ``A`` of each site, ``S_i^T A S_i`` as an operator (zero if none).
     """
 
     model_ref: str
@@ -85,6 +88,11 @@ class TorusCluster:
     bond_terms: np.ndarray
     g_tensors: np.ndarray
     lattice: np.ndarray
+    onsite: Optional[np.ndarray] = None
+
+    def __post_init__(self):
+        if self.onsite is None:
+            object.__setattr__(self, "onsite", np.zeros((len(self.keys), 3, 3)))
 
     @property
     def num_sites(self) -> int:
@@ -156,11 +164,16 @@ def expand_on_torus(model: SpinModel, geometry: CalculationGeometry) -> TorusClu
         site = term.participants[0][0]
         for cell in cells:
             g_tensors[index[(site, cell)]] += term.coefficient
+    onsite = np.zeros((len(keys), 3, 3))
+    for term in model.terms_of_kind(ONSITE):
+        site = term.participants[0][0]
+        for cell in cells:
+            onsite[index[(site, cell)]] += term.coefficient
     return TorusCluster(model.fingerprint(), L, keys, positions, spins,
                         np.array(source, dtype=int), np.array(target, dtype=int),
                         np.array(exchange, dtype=float).reshape(-1, 3, 3),
                         np.array(bond_terms, dtype=int), g_tensors,
-                        np.asarray(model.lattice, dtype=float))
+                        np.asarray(model.lattice, dtype=float), onsite)
 
 
 def allowed_momenta(model: SpinModel, geometry: CalculationGeometry

@@ -168,7 +168,7 @@ def _symmetry_origin(model, state, conditions) -> Dict[str, Any]:
     for axis in np.eye(3):
         K = cross(axis)
         parts = [(K @ t.coefficient - t.coefficient @ K).ravel()
-                 for t in model.terms_of_kind(BILINEAR)]
+                 for t in model.terms if t.kind in (BILINEAR, "onsite")]
         parts += [np.cross(axis, t.coefficient.T @ field_vector)
                   for t in model.terms_of_kind(ZEEMAN)]
         columns.append(np.concatenate(parts) if parts else np.zeros(1))

@@ -5,6 +5,7 @@ lattice. It stores the primitive cell, the spin quantum number of each site,
 and one record per translation orbit of each term:
 
     H = sum_R sum_bilinear S_(R+n1,a)^T J S_(R+n2,b)
+        + sum_R sum_onsite S_(R,a)^T A_a S_(R,a)
         - sum_R sum_a b^T g_a S_(R,a)
 
 Positions are fractional coordinates ``f`` of the lattice matrix ``A`` whose
@@ -43,8 +44,9 @@ SCHEMA_VERSION = 1
 
 BILINEAR = "bilinear"
 ZEEMAN = "zeeman"
-#: Number of participants required by each kind accepted in the 1st scope.
-SUPPORTED_KINDS = {BILINEAR: 2, ZEEMAN: 1}
+ONSITE = "onsite"
+#: Number of participants required by each supported kind.
+SUPPORTED_KINDS = {BILINEAR: 2, ZEEMAN: 1, ONSITE: 1}
 
 #: Relative tolerance for lattice degeneracy and half-integer spin checks.
 LATTICE_TOLERANCE = 1e-10
@@ -170,6 +172,30 @@ class Term:
             Descriptive label.
         """
         return cls(ZEEMAN, ((site, (0, 0)),), g, label)
+
+    @classmethod
+    def onsite(cls, site: str, A: Any, label: Optional[str] = None) -> "Term":
+        """Single-ion quadratic term ``S_site^T A S_site`` (D37).
+
+        Parameters
+        ----------
+        site : str
+            Site identifier.
+        A : array_like, shape (3, 3)
+            Real symmetric anisotropy matrix in the global spin frame, e.g.
+            ``diag(0, 0, D)`` for ``D (S^z)^2``. The antisymmetric part of a
+            same-site product is ``(i/2) eps_abc A_ab S^c``, which is not
+            Hermitian, so it is rejected.
+        label : str, optional
+
+        Notes
+        -----
+        For ``S = 1/2`` the operator is the constant ``tr(A) / 4``. Classical and
+        LSWT methods use the spin-coherent-state value
+        ``S(S - 1/2) n^T A n + (S/2) tr A``, i.e. the coefficient ``A`` scaled
+        by ``1 - 1/(2S)`` (see :func:`onsite_renormalization`).
+        """
+        return cls(ONSITE, ((site, (0, 0)),), A, label)
 
 
 def _freeze_metadata(metadata: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -352,6 +378,7 @@ def _check_terms(terms, site_ids):
     out = []
     bilinear_keys = {}
     zeeman_sites = set()
+    onsite_sites = set()
     for index, term in enumerate(terms):
         name = f"term {index}" + (f" ({term.label})" if term.label else "")
         if not isinstance(term, Term):
@@ -383,7 +410,7 @@ def _check_terms(terms, site_ids):
             (a, n1), (b, n2) = term.participants
             if a == b and n1 == n2:
                 out.append(f"{name}: both participants are the same physical site "
-                           "(same-site terms are outside the 1st scope)")
+                           "(use Term.onsite for a same-site term)")
                 continue
             key, _ = _canonical_term(term)
             if key in bilinear_keys:
@@ -391,11 +418,29 @@ def _check_terms(terms, site_ids):
                            "(same bond up to translation or reversal)")
             else:
                 bilinear_keys[key] = index
-        elif term.kind == ZEEMAN:
+        elif term.kind in (ZEEMAN, ONSITE):
             site, cell = term.participants[0]
             if cell != (0, 0):
-                out.append(f"{name}: zeeman cell offset must be (0, 0), got {cell}")
-            if site in zeeman_sites:
-                out.append(f"{name}: site {site!r} has more than one zeeman term")
-            zeeman_sites.add(site)
+                out.append(f"{name}: {term.kind} cell offset must be (0, 0), got {cell}")
+            seen = zeeman_sites if term.kind == ZEEMAN else onsite_sites
+            if site in seen:
+                out.append(f"{name}: site {site!r} has more than one {term.kind} term")
+            seen.add(site)
+            if term.kind == ONSITE and term.coefficient.shape == (3, 3):
+                A = term.coefficient
+                if np.max(np.abs(A - A.T)) > LATTICE_TOLERANCE * max(1.0, np.max(np.abs(A))):
+                    out.append(f"{name}: onsite matrix must be symmetric (its antisymmetric "
+                               "part gives a non-Hermitian operator)")
     return out
+
+
+def onsite_renormalization(spin: float) -> float:
+    """Factor ``1 - 1/(2S)`` applied to onsite coefficients by classical and LSWT methods (D37).
+
+    In a spin coherent state ``<S^a S^b + S^b S^a>/2 = S(S - 1/2) n_a n_b +
+    (S/2) delta_ab``, so the direction-dependent part of ``S^T A S`` is
+    ``(1 - 1/(2S)) S^2 n^T A n`` and the rest is the constant ``(S/2) tr A``.
+    The same factor makes the LSWT single-ion gap exact (``(2S - 1)|D|`` for
+    ``D (S^z)^2``) and removes any onsite effect at ``S = 1/2``.
+    """
+    return 1.0 - 1.0 / (2.0 * spin)

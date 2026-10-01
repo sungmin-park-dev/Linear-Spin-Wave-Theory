@@ -4,8 +4,10 @@ Reads only the model's terms, so it works for any :class:`SpinModel` without
 model-specific code. Spins are classical vectors ``S n`` of length ``S``:
 
     E = sum_bilinear S_i^T J S_j - sum_zeeman b^T g S_i
+        + sum_onsite [(1 - 1/(2 S_i)) S_i^T A S_i + (S_i/2) tr A]
 
-evaluated over one magnetic supercell and reported per site, dimensionless in
+where the onsite part is the spin-coherent-state value of ``S_i^T A S_i``
+(D37; it vanishes up to the constant ``tr(A)/4`` for ``S = 1/2``), evaluated over one magnetic supercell and reported per site, dimensionless in
 the energy unit E0 of the coefficients (``b`` is ``ExternalConditions.field``). The local field
 ``h_i = -dE/dS_i`` collects every term that contains spin ``i``; the torque
 ``S_i x h_i`` vanishes at a classical stationary point, the condition for the
@@ -19,7 +21,8 @@ coordinates have no spurious zero mode at the poles. In them
     dE/dx_ia        = -S_i e_ia . h_i
     d2E/dx_ia dx_jb = S_i S_j e_ia . K_ij e_jb + delta_ij delta_ab S_i n_i . h_i
 
-where ``K_ij = d2E/dS_i dS_j`` collects the exchange matrices. Both are
+where ``K_ij = d2E/dS_i dS_j`` collects the exchange matrices (and ``2 (1 - 1/(2S_i)) A_i``
+on the diagonal). Both are
 reported per site, like the energy.
 """
 
@@ -42,10 +45,10 @@ from spintoolkit.definitions.defaults import (
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
-from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, onsite_renormalization
 
 #: Term kinds this consumer understands.
-SUPPORTED_KINDS = (BILINEAR, ZEEMAN)
+SUPPORTED_KINDS = (BILINEAR, ZEEMAN, ONSITE)
 
 Key = Tuple[str, Tuple[int, int]]
 
@@ -71,6 +74,17 @@ def _prepare(model: SpinModel, state: SpinState,
 
 def _shift(cell, offset):
     return (cell[0] + offset[0], cell[1] + offset[1])
+
+
+def _onsite(model: SpinModel):
+    """``(site_id, kappa A, (S/2) tr A)`` of every onsite term (D37 coherent-state value)."""
+    out = []
+    for term in model.terms_of_kind(ONSITE):
+        site = term.participants[0][0]
+        S = model.site(site).spin
+        out.append((site, onsite_renormalization(S) * term.coefficient,
+                    0.5 * S * float(np.trace(term.coefficient))))
+    return out
 
 
 def classical_energy(model: SpinModel, state: SpinState,
@@ -107,6 +121,9 @@ def classical_energy(model: SpinModel, state: SpinState,
         site = term.participants[0][0]
         for cell in state.cells:
             energy -= field @ term.coefficient @ spins[(site, cell)]
+    for site, A, constant in _onsite(model):
+        for cell in state.cells:
+            energy += spins[(site, cell)] @ A @ spins[(site, cell)] + constant
     return float(energy / (model.num_sites * state.num_cells))
 
 
@@ -121,6 +138,9 @@ def _torus_energy(model, state, conditions, geometry) -> float:
     energy = np.einsum("ma,mab,mb->", spins[cluster.source], cluster.exchange,
                        spins[cluster.target])
     energy -= np.sum(cluster.fields(conditions) * spins)
+    kappa = np.array([onsite_renormalization(S) for S in cluster.spins])
+    energy += np.einsum("i,ia,iab,ib->", kappa, spins, cluster.onsite, spins)
+    energy += 0.5 * np.sum(cluster.spins * np.trace(cluster.onsite, axis1=1, axis2=2))
     return float(energy / cluster.num_sites)
 
 
@@ -147,6 +167,9 @@ def local_fields(model: SpinModel, state: SpinState,
         site = term.participants[0][0]
         for cell in state.cells:
             fields[(site, cell)] += term.coefficient.T @ field
+    for site, A, _ in _onsite(model):
+        for cell in state.cells:
+            fields[(site, cell)] -= 2 * A @ spins[(site, cell)]
     return fields
 
 
@@ -174,6 +197,7 @@ class _Compiled(NamedTuple):
     target: np.ndarray         # (m,) spin index of each bond target
     exchange: np.ndarray       # (m, 3, 3) exchange matrix of each bond
     zeeman: np.ndarray         # (n, 3) g_i^T b of each spin
+    constant: float = 0.0      # onsite (S/2) tr A, summed; onsite kappa A are self-bonds
 
 
 def _compile(model: SpinModel, state: SpinState,
@@ -193,10 +217,19 @@ def _compile(model: SpinModel, state: SpinState,
         site = term.participants[0][0]
         for cell in state.cells:
             zeeman[index[(site, cell)]] += term.coefficient.T @ field
+    constant = 0.0
+    for site, A, c in _onsite(model):
+        # S^T (kappa A) S as a bond from a spin to itself: the energy, the field
+        # 2 kappa A S and the Hessian block 2 kappa A follow from the bond formulas.
+        for cell in state.cells:
+            source.append(index[(site, cell)])
+            target.append(index[(site, cell)])
+            exchange.append(A)
+            constant += c
     return _Compiled(keys, np.array([model.site(k[0]).spin for k in keys]),
                      np.array([state.direction(*k) for k in keys]),
                      np.array(source, dtype=int), np.array(target, dtype=int),
-                     np.array(exchange, dtype=float).reshape(-1, 3, 3), zeeman)
+                     np.array(exchange, dtype=float).reshape(-1, 3, 3), zeeman, constant)
 
 
 def _energy_and_fields(compiled: _Compiled, directions: np.ndarray):
@@ -205,7 +238,7 @@ def _energy_and_fields(compiled: _Compiled, directions: np.ndarray):
     s_i, s_j = spins[compiled.source], spins[compiled.target]
     j_sj = np.einsum("mab,mb->ma", compiled.exchange, s_j)
     jt_si = np.einsum("mba,mb->ma", compiled.exchange, s_i)
-    energy = np.sum(s_i * j_sj) - np.sum(compiled.zeeman * spins)
+    energy = np.sum(s_i * j_sj) - np.sum(compiled.zeeman * spins) + compiled.constant
     fields = compiled.zeeman.copy()
     np.subtract.at(fields, compiled.source, j_sj)
     np.subtract.at(fields, compiled.target, jt_si)
