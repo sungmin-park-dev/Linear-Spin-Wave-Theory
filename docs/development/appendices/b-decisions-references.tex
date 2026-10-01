@@ -232,6 +232,22 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d39-free-energy]{결정 기록 (D39): 유한 온도 각도 자유 에너지}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 NBCP 우선을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    식 & $f(\phi,T)=E_{\rm cl}+E_{\rm zp}+\frac{T}{N}\sum_{\mathbf k n}\ln(1-e^{-\varepsilon_{\mathbf k n}/T})$, \texttt{LSWTHarmonicFreeEnergy}; 제한 상태와 영점 처리는 D28 그대로. 1/S 조화 차수 \\
+    부드러운 모드 & $|\mathbf k|<\Lambda$의 가장 낮은 모드는 위상 이론(clock RG)에 남기고 열항에서 뺀다. $\Lambda=0$은 전체 조화 자유 에너지. $\Lambda$와 뺀 모드 수를 기록 \\
+    정의되지 않음 & 불안정 모드 쌍이나 0 에너지 모드가 남으면 \texttt{nan}과 횟수 기록 \\
+    검증 & 편극 정사각 반강자성체 닫힌 식; $-\partial F/\partial T$ = Bose 엔트로피; 차단 모드 차이; NBCP Y·V 메쉬 수렴 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small

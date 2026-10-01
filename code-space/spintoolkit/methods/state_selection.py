@@ -874,16 +874,21 @@ class LSWTZeroPointEnergy:
             Q = q[:, 1:ns]                                      # orthonormal complement of u
             zero = np.zeros_like(Q)
             reduce = np.block([[Q, zero], [zero, Q.conj()]])
-        total, unstable = 0.0, 0
+        total, unstable, frequencies = 0.0, 0, []
         for Hk, at_centre in zip(H, centre):
             if at_centre:
                 Hk = reduce.conj().T @ Hk @ reduce
-            energy, bad = _harmonic_zero_point(Hk)
+            energy, bad, omega = _harmonic_modes(Hk)
             total += energy
             unstable += bad
+            frequencies.append(omega)
         self.unstable_pairs.append(unstable)
         self.zone_centre.append("excluded (no axis)" if axis is None else "soft pair projected")
-        return float(total / len(H) / ns)
+        return float(total / len(H) / ns) + self._thermal(k, frequencies, unstable, len(H) * ns)
+
+    def _thermal(self, k, frequencies, unstable, num_modes) -> float:
+        """Thermal part of the harmonic free energy per site (zero for the zero-point provider)."""
+        return 0.0
 
     def describe(self) -> Dict[str, Any]:
         out = {"provider": "LSWT zero-point energy via to_spin_system", "method": self.method,
@@ -898,6 +903,82 @@ class LSWTZeroPointEnergy:
                         "regularization": "none; real part where H(k) is not positive definite",
                         "calls": len(self.unstable_pairs),
                         "max_unstable_pairs": max(self.unstable_pairs, default=0)})
+        return out
+
+
+class LSWTHarmonicFreeEnergy(LSWTZeroPointEnergy):
+    """Harmonic (one-loop) free energy per site at temperature ``T`` (D39).
+
+    ``F_qm(T) = E_zp + (T / (N_k N_s)) sum_{k,n} ln(1 - exp(-eps_kn / T))`` with
+    the zero-point energy and the zone-centre treatment of the constrained
+    :class:`LSWTZeroPointEnergy` and the LSWT energies ``eps_kn`` of the same
+    constrained state; ``T`` is in the energy unit of the model (``k_B = 1``).
+    Added to ``E_cl`` it is the angular free energy ``f(phi, T)`` along the
+    orbit. It is the harmonic part of a 1/S expansion: it requires stable
+    modes and small boson occupations, and is not a classical Monte Carlo
+    free energy.
+
+    ``soft_cutoff`` separates the retained phase field from the modes that
+    are integrated out: at every mesh momentum with ``|k| < soft_cutoff`` the
+    lowest mode is left out of the thermal sum (at the zone centre the soft
+    pair is already projected out). Its thermal occupation belongs to the
+    phase theory that the angular potential feeds (clock RG), and counting it
+    here as well would count it twice. ``soft_cutoff = 0`` keeps every mode
+    except the projected zone-centre pair, i.e. the full harmonic free
+    energy. The cutoff and the number of modes left out are recorded.
+
+    The thermal term is undefined, and ``nan`` is returned, when ``H(k)`` has
+    an unstable mode pair or a mode with zero energy is kept: the harmonic
+    free energy of such a state does not exist. The count of such calls is
+    recorded.
+
+    Parameters
+    ----------
+    bz_type, N
+        As in :class:`LSWTZeroPointEnergy` (constrained method only).
+    temperature : float
+        ``T > 0`` in the model energy unit.
+    soft_cutoff : float
+        Momentum radius in the units of the mesh (Cartesian, inverse lattice
+        units of the model).
+    """
+
+    def __init__(self, bz_type: str, N: int, temperature: float, soft_cutoff: float = 0.0):
+        if not temperature > 0:
+            raise ValueError("temperature must be positive; use LSWTZeroPointEnergy for T = 0")
+        if soft_cutoff < 0:
+            raise ValueError("soft_cutoff must be non-negative")
+        super().__init__(bz_type, N, method="constrained")
+        self.temperature = float(temperature)
+        self.soft_cutoff = float(soft_cutoff)
+        self.left_out: list = []
+        self.undefined = 0
+
+    def _thermal(self, k, frequencies, unstable, num_modes) -> float:
+        T = self.temperature
+        if unstable:
+            self.undefined += 1
+            return float("nan")
+        total, left_out = 0.0, 0
+        scale = max((float(np.max(w)) for w in frequencies if len(w)), default=1.0)
+        for momentum, omega in zip(k, frequencies):
+            omega = np.sort(omega)
+            if len(omega) and np.linalg.norm(momentum) < self.soft_cutoff:
+                omega = omega[1:]
+                left_out += 1
+            if np.any(omega <= 1e-12 * scale):
+                self.undefined += 1
+                return float("nan")
+            total += np.sum(np.log1p(-np.exp(-omega / T)))
+        self.left_out.append(left_out)
+        return float(T * total / num_modes)
+
+    def describe(self) -> Dict[str, Any]:
+        out = super().describe()
+        out.update({"provider": "LSWT harmonic free energy via to_spin_system",
+                    "temperature": self.temperature, "soft_cutoff": self.soft_cutoff,
+                    "soft_modes_left_out": sorted(set(self.left_out)),
+                    "undefined_calls": self.undefined})
         return out
 
 
@@ -921,6 +1002,12 @@ def _soft_boson_line(spin_info, angles, axis) -> np.ndarray:
 
 def _harmonic_zero_point(Hk: np.ndarray) -> Tuple[float, int]:
     """``sum(omega) / 2 - Tr H / 4`` of one BdG block and the number of unstable mode pairs."""
+    energy, unstable, _ = _harmonic_modes(Hk)
+    return energy, unstable
+
+
+def _harmonic_modes(Hk: np.ndarray) -> Tuple[float, int, np.ndarray]:
+    """Zero-point energy, unstable pair count and the stable positive frequencies of one block."""
     from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 
     n = Hk.shape[0] // 2
@@ -933,7 +1020,7 @@ def _harmonic_zero_point(Hk: np.ndarray) -> Tuple[float, int]:
         stable = np.abs(w.imag) <= 1e-10 * np.max(np.abs(w))
         unstable = int(np.sum(~stable)) // 2
         energies = w.real[stable & (w.real > 0)]
-    return float(np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4), unstable
+    return float(np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4), unstable, np.sort(energies)
 
 
 def lswt_zero_point_energy(bz_type: str, N: int, method: str = "constrained",

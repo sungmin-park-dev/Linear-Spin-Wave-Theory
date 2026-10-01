@@ -1,0 +1,489 @@
+{
+ "model": {
+  "J": 0.075,
+  "Jz": 0.125,
+  "JPD": 0.01,
+  "g_z": 4.645
+ },
+ "mesh_N": 24,
+ "orbit_points": 36,
+ "units": "meV per spin; T in meV",
+ "cases": [
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.0,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.4372052891663202e-06,
+   "sixfold_minimum_phi": 0.7471975512355467,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 9.627240951103235e-13,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": null
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.0025,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.4149569833312328e-06,
+   "sixfold_minimum_phi": 0.7471975513134466,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 8.505054961467859e-13,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.005,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.2979058415930211e-06,
+   "sixfold_minimum_phi": 0.7471975514633872,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 5.6596688659069845e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.01,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 9.749446357128706e-07,
+   "sixfold_minimum_phi": 0.7471975519123764,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 1.3768941323564541e-11,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.015,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 9.023201962025156e-07,
+   "sixfold_minimum_phi": 0.7471975523574357,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 2.0737807908782812e-11,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.02,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.0249408341373096e-06,
+   "sixfold_minimum_phi": 0.7471975525596231,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 2.7652251652205072e-11,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.0025,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.4321721375907598e-06,
+   "sixfold_minimum_phi": 0.7471975512549813,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 3.068683655232528e-13,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.005,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.360880376394824e-06,
+   "sixfold_minimum_phi": 0.7471975513063895,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 2.464200866337383e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.01,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.1366934748892574e-06,
+   "sixfold_minimum_phi": 0.7471975514342462,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 6.492995501032653e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.015,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.1634994715517933e-06,
+   "sixfold_minimum_phi": 0.7471975515312892,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 9.381371775137789e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.02,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.3856018318426427e-06,
+   "sixfold_minimum_phi": 0.7471975515634934,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 1.221533116113562e-11,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.0025,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.4372055609693829e-06,
+   "sixfold_minimum_phi": 0.7471975512355691,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 9.627848529953882e-13,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.005,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.4385818023663025e-06,
+   "sixfold_minimum_phi": 0.7471975512346241,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 1.0675382044759356e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.01,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.5737136535998837e-06,
+   "sixfold_minimum_phi": 0.7471975512214517,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 3.5085660764794477e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.015,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 2.0706496676409773e-06,
+   "sixfold_minimum_phi": 0.747197551207281,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 7.114918820019811e-12,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "Y",
+   "field_T": 0.2,
+   "T_meV": 0.02,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 2.789093378996371e-06,
+   "sixfold_minimum_phi": 0.7471975511983417,
+   "E_cl_span": 6.938893903907228e-18,
+   "fit_residual": 1.0775822861396647e-11,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.0,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.0241586256462263e-05,
+   "sixfold_minimum_phi": 0.747197546294287,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 5.882299104630246e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": null
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.0025,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.015364896641168e-05,
+   "sixfold_minimum_phi": 0.7471975482519844,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 5.430114251975103e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.005,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 9.94647089366947e-06,
+   "sixfold_minimum_phi": 0.74719754942494,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 5.277340318317672e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.01,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.0856983024072666e-05,
+   "sixfold_minimum_phi": 0.7471975484210036,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 8.615525112044354e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.015,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.3919266560878915e-05,
+   "sixfold_minimum_phi": 0.7471975479494837,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.289157842832345e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.02,
+   "soft_cutoff": 0.0,
+   "sixfold_amplitude": 1.7904627695020408e-05,
+   "sixfold_minimum_phi": 0.7471975478308175,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.7188306599490275e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    0
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.0025,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.0221432189436836e-05,
+   "sixfold_minimum_phi": 0.7471975463696275,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 5.817344183221097e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.005,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.0156054460449436e-05,
+   "sixfold_minimum_phi": 0.7471975451323523,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 6.214528194992293e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.01,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.135935921062043e-05,
+   "sixfold_minimum_phi": 0.7471975403550839,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.0652686909837325e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.015,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.4714885848835888e-05,
+   "sixfold_minimum_phi": 0.7471975384702405,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.6028714646747043e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.02,
+   "soft_cutoff": 0.25,
+   "sixfold_amplitude": 1.899345331143822e-05,
+   "sixfold_minimum_phi": 0.747197537961283,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 2.1425417463635023e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    31
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.0025,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.0241626891596516e-05,
+   "sixfold_minimum_phi": 0.747197546275767,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 5.885066384663976e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.005,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.0275573014068722e-05,
+   "sixfold_minimum_phi": 0.7471975449550012,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 6.383304162586336e-10,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.01,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.1594264444245437e-05,
+   "sixfold_minimum_phi": 0.7471975401045915,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.097808701239485e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.015,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.5008967109275854e-05,
+   "sixfold_minimum_phi": 0.7471975381639515,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 1.6507582873049085e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  },
+  {
+   "phase": "V",
+   "field_T": 1.4,
+   "T_meV": 0.02,
+   "soft_cutoff": 1.0,
+   "sixfold_amplitude": 1.9330486281581933e-05,
+   "sixfold_minimum_phi": 0.7471975376121327,
+   "E_cl_span": 1.3877787807814457e-17,
+   "fit_residual": 2.205502575456827e-09,
+   "undefined_calls": 0,
+   "max_unstable_pairs": 0,
+   "soft_modes_left_out": [
+    475
+   ]
+  }
+ ]
+}

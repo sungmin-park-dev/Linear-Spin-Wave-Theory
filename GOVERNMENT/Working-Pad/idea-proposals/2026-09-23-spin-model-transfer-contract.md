@@ -56,6 +56,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | 결정 대칭, 대칭 허용 교환·g-텐서, 대칭 궤도 생성, 모델 대칭 검사(D35) | `system/symmetry.py`의 `LayerCrystal`, `CrystalSymmetry`, `find_symmetry` |
 | LSWT 직접 `H(k)`(D36), 단일 이온 항(D37) | `methods/lswt/quadratic.py`의 `QuadraticBoseHamiltonian`; `system/model.py`의 `Term.onsite`, `onsite_renormalization` |
 | 고전 스핀 동역학(D38) | `methods/dynamics.py`의 `ClassicalTorus`, `ImplicitMidpoint`, `Langevin`, `thermal_samples`, `classical_structure_factor` |
+| 조화 자유 에너지 궤도(D39) | `methods/state_selection.py`의 `LSWTHarmonicFreeEnergy`; `examples/nbcp_angular_free_energy.py` |
 | NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
 
 결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
@@ -115,6 +116,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D36 | LSWT의 `H(k)`를 `SpinModel`에서 직접 구성(`methods/lswt/quadratic.py`의 `QuadraticBoseHamiltonian`; `solve_lswt`가 사용): 옛 `SpinSystem` 변환 제거, 규약(Nambu 순서·국소 좌표 게이지·D13)은 그대로이고 기존 구성기와 반올림 수준으로 일치; 새 항 종류의 연결점 | Claude 결정 2026-10-01(사용자 위임, 2번 집중 지정), 사용자 검토 대기 | §5 |
 | D37 | 단일 이온 항 `onsite`(`Term.onsite(site, A)`, `S_i^T A S_i`; D30(3)의 같은 사이트 이차항을 다시 엶): `A`는 실수 대칭(반대칭 부분은 비에르미트라 거부), 사이트당 하나; 고전·LSWT·LT는 스핀 결맞음 상태 값 `S(S-1/2) n^T A n + (S/2) tr A`(계수 `1 - 1/(2S)`, `onsite_renormalization`)를 쓰고 LSWT는 횡방향 정규 순서 상수를 더하지 않음; ED는 정확한 연산자. 근거: `S = 1/2`에서 상수, `D (S^z)^2` 단일 이온 갭 `(2S-1)|D|` 정확, 선형항이 정확한 연산자와 같음, 단일 스핀 S ≤ 20 정확 스펙트럼 비교(large-S는 갭 오차 약 0.57, 상수를 더하면 에너지 오차가 S에 비례); LT는 하한·후보로만 의미(이방성이 있으면 단일 q가 강한 제약을 대개 만족하지 못함); `to_spin_system`과 그에 의존하는 기본 영점 에너지 제공자(`LSWTZeroPointEnergy`)는 onsite를 거부 | Claude 결정 2026-10-01(사용자 위임, 2번 집중 지정), 사용자 검토 대기 | §2, §5 |
 | D38 | 유한 토러스의 고전 스핀 동역학(`methods/dynamics.py`): 스핀 길이 `S_i`, 고전 에너지는 D37 결맞음 값(onsite 계수 `1 - 1/(2S)`), 토러스 전개는 D23; 운동 방정식 `ds_i/dt = s_i × h_i`(`ħ = 1`, 시간 단위 `ħ/E0`); 결정론적 적분은 암시적 중점법(에너지가 스핀의 이차식이라 길이와 에너지를 정확히 보존, 작은 진동 진동수를 `(2/dt) arctan(ω dt/2)`로 옮김); 랑주뱅은 무차원 Gilbert 감쇠 `α`로 `ds/dt = s × (h + ξ) − (α/S) s × (s × h)`, `⟨ξξ⟩ = (2αT/S) δ`(Stratonovich, 확률 Heun 후 구면 투영) — 감쇠 이동도 `αS`와 구면 확산 `αTS`의 비가 `T`라 정상 분포가 `exp(−E/T)`; `S(q, ω)`는 완전 위치 위상(D13)의 창 주기도(Hann)로 합 규칙 `Σ S dω/2π = ⟨|s_q|²⟩/N`(창 가중); 양자 상세 균형 인자·형태 인자는 적용하지 않음. 근거: 단일 스핀 Langevin 함수, 단일 이온 분포(구적법; large-S 값과 구별), 작은 진동 진동수 = 같은 고전 에너지의 LSWT 밴드, 저온 `S(q, ω)` 정점 = LSWT 분산 | Claude 결정 2026-10-01(사용자 위임, 5번 집중 지정), 사용자 검토 대기 | §5 |
+| D39 | 유한 온도 각도 자유 에너지 `f(φ, T) = E_cl + E_zp + (T/N) Σ ln(1 − e^{−ε/T})`(`LSWTHarmonicFreeEnergy`, 제한 상태와 영점 처리는 D28 그대로): 1/S 조화 차수; `soft_cutoff` Λ 안의 가장 낮은 모드는 위상 이론(clock RG)에 남겨 열항에서 뺀다(이중 계산 방지, Λ = 0은 전체 조화 자유 에너지) — Λ는 대응 선택이므로 값과 뺀 모드 수를 기록; 불안정 모드 쌍이나 0 에너지 모드가 남으면 열항이 정의되지 않으므로 `nan`을 돌려주고 횟수를 기록. 근거: 편극 정사각 반강자성체의 닫힌 식과 열항 일치, −∂F/∂T = Bose 엔트로피, 차단 모드 차이 일치, 불안정 상태 `nan`; NBCP Y·V 육중 진폭의 메쉬 수렴(N = 24 → 36에서 ≤ 0.6 %) | Claude 결정 2026-10-01(사용자 위임, NBCP 우선 지정), 사용자 검토 대기 | §5 |
 
 ## Proposal
 
