@@ -328,18 +328,18 @@ let all five internal coordinates relax. Take \(\epsilon\to0\) first,
 then \(\mathbf k\to0\). This defines a local gradient coefficient
 without sampling the whole angular orbit in space.
 
-There is also a sign convention to resolve before attaching laboratory
-directions to this calculation. In the current NBCP builder, the stored
-vectors \(\mathbf d\) match \(\mathbf r_i-\mathbf r_j\) modulo magnetic
-translations, whereas the {\small\texttt{\nolinkurl{SpinSystem}}}
-interface documents the opposite displacement. The diagnostic uses the
-existing Fourier factor \(e^{-\mathrm i\mathbf k\cdot\mathbf d}\) and
-the compatible real-space embedding
-\(\mathbf r_j=\mathbf r_i-\mathbf d\). Thus the formulas below refer to
-the current code's momentum coordinates. Reversing every displacement
-leaves the even stiffness unchanged and reverses the odd dispersion
-term. The production convention is left as an open issue; no API or
-Hamiltonian change is made here.
+The momentum sign follows the toolkit bond convention. A stored
+displacement is \(\mathbf d=\mathbf r_i-\mathbf r_j\), so the partner
+sits at \(\mathbf r_j=\mathbf r_i-\mathbf d\) and the Fourier factor is
+\(e^{-\mathrm i\mathbf k\cdot\mathbf d}\). The toolkit has compared this
+construction element by element with the NBCP builders and has matched
+its particle block to Bloch states rebuilt from exact one-magnon
+eigenstates. The \(\mathbf k\) below is therefore the physical Bloch
+momentum. Reversing every displacement would leave the even stiffness
+unchanged and reverse the odd dispersion term. A laboratory direction
+for that odd term additionally requires the orientation of the model
+\(x\) axis, along \(\boldsymbol\delta_1\), relative to the crystal axes;
+this is a material input that is not fixed here.
 
 Write \(p=J_{\rm PD}\) and \(\Gamma=J_\Gamma\) in the following
 formulas, with the exchange matrices defined in
@@ -478,7 +478,24 @@ Solving the quadratic equation for the positive low-energy branch gives
 
 The coefficient \(\mathbf v\) has units of energy times length. A
 nonzero \(\Gamma\) makes the two signed slopes different at
-\(\phi_0=0\). The product, however, eliminates this drift at leading
+\(\phi_0=0\).
+
+Symmetry explains why the drift is odd in \(\Gamma\) and absent for
+pure PD. Site-centered inversion \(\mathcal I\) leaves axial spins
+unchanged, reverses \(\mathbf k\) and exchanges the A and B sublattices.
+For Y this exchange is equivalent to \(\phi_0\mapsto\phi_0+\pi\), which
+the spin rotation \(U_\pi\) undoes. At \(J_\Gamma=0\) the product
+\(U_\pi\mathcal I\) is therefore a symmetry of the Hamiltonian and of
+every Y background on the orbit, and it enforces
+\(\varepsilon(\mathbf k)=\varepsilon(-\mathbf k)\) for all \(\phi_0\).
+Since \(U_\pi\) maps \(J_\Gamma\) to \(-J_\Gamma\), the same operation
+relates the spectrum at \(J_\Gamma\) to the reversed spectrum at
+\(-J_\Gamma\), \(\varepsilon_{J_\Gamma}(\mathbf k)=\varepsilon_{-J_\Gamma}(-\mathbf k)\),
+so \(\mathbf v\) must change sign with \(J_\Gamma\). The coefficient
+\(\mathbf v|_{\phi_0=0}\) above is linear in \(\Gamma\) and independent
+of \(p\), consistent with this rule. Only \(\phi_0=0\) is tabulated; the
+vanishing drift for pure PD at other background angles follows from the
+symmetry argument and has not been listed separately. The product, however, eliminates this drift at leading
 order:
 
 \begin{equation}\phantomsection\label{eq-nbcp-y-soc-paired-estimator}{
