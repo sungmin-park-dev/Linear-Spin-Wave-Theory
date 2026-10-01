@@ -113,7 +113,6 @@ def select_zero_point(ground, N=20):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    from spintoolkit.system.conversion import to_spin_system
     from spintoolkit.visualization.spin_plotter import plot_spin_configuration
 
     print("Classical search per candidate cell:")
@@ -125,9 +124,8 @@ if __name__ == "__main__":
     print(f"Zero-point selection on the classical manifold: {selection.verdict}")
     print(f"  {selection.message}")
 
-    system = to_spin_system(ground["model"], ground["result"].state, ground["conditions"])
     fig, ax = plot_spin_configuration(
-        system, n_repeat=1, figsize=(8, 8),
+        ground["model"], ground["result"].state, n_repeat=1, figsize=(8, 8),
         title=f"NBCP {ground['phase_name']} Classical Ground State "
               f"(E_cl = {ground['result'].energy:.6f})",
     )

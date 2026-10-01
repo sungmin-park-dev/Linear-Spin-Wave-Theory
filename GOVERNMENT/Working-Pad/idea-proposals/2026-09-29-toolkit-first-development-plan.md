@@ -292,9 +292,12 @@ ED/TN 실행 가능성은 별도 검증이다.
 영모드, Four MSL은 갭 0.0746 meV. 그림은 아래 시각화 단계에서 다룬다(495 통과). 기록은
 `docs/development/verification/stage4d-band-structure-2026-09-30.json`.
 
-**7단계(계획): 시각화.** LSWT 구현이 끝난 뒤 마그논 밴드 그림, 스핀 배치 그림(기존 `spin_plotter.py`는 옛 `SpinSystem`을 받음)
-등 시각화를 새 자료형 위에서 설계하고 Beamer로 검토한다(인터페이스, 그림에 담을 정보, 양식). NBCP 밴드 그림은 이 단계 뒤에
-만든다(D33).
+**7단계(진행): 시각화.** 2026-10-01 사용자가 설계를 승인했다(그림은 observable이 계산한 수치만 그린다). 첫 부분을
+구현했다: `plot_bands(bands)`는 `BandStructure`의 에너지를 그대로 그리고(E0, 표시 단위는 명시한 환산 계수와 축 이름으로만),
+불안정 k는 음영 빈칸, 영모드는 E=0 표시, 자기 셀 밴드는 접힌 채로 둔다. `plot_spin_configuration(model, state)`는
+`to_spin_system`을 거쳐 기존 그리기를 쓰고 `SpinSystem` 입력은 사용 중단 경고를 낸다. 정사각 Néel·삼각 120°에서 그린 선이
+저장된 에너지와 정확히 같고, 포화 아래 편극 상태에서 NaN 구간이 해석식의 음수 구간과 일치한다(502 통과). 기록은
+`docs/development/verification/stage7-visualization-2026-10-01.json`. 다음: NBCP 밴드 그림(arXiv:2505.06398 대조), 극좌표 패널 검토.
 
 **D30의 남은 일.** 사용 중단한 공개 진입점(`LSWTSolver`, SI Hall API, `SpinOptimizer`, `EnergyFunction`)의 삭제는 공개 배포
 정리 때 한다. 이전 단계의 검증 스크립트(2b, D17 궤도 확인, 회귀 스냅샷)는 기록 재현을 위해 기존 클래스를 계속 쓴다.
