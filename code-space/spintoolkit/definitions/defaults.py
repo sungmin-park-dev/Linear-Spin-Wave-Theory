@@ -79,6 +79,7 @@ LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below t
 # Topology (D29, confirmed as D31 on 2026-09-30)
 TOPOLOGY_BAND_GAP_CUTOFF = 1e-8    # E0; signed BdG separation at or below this leaves a band's curvature undefined
 TOPOLOGY_MIN_LINK_OVERLAP = 1e-3   # FHS: |u^+ eta u'| at or below this marks a band crossing or an unresolved mesh
+TOPOLOGY_PLAQUETTE_PHASE_MARGIN = 1e-6  # FHS: a plaquette phase within this of +-pi (rad) is not admissible
 TOPOLOGY_CHERN_AGREEMENT = 0.1     # Kubo integral within this of the FHS integer accepts the Chern number
 TOPOLOGY_ADAPTIVE_RELATIVE = 1e-3   # adaptive k integration: relative tolerance of kappa_xy / T
 TOPOLOGY_ADAPTIVE_ABSOLUTE = 1e-7   # adaptive k integration: absolute tolerance (units of k_B^2 / hbar)

@@ -281,6 +281,9 @@ def luttinger_tisza(model: SpinModel, mesh: Tuple[int, int] = (48, 48),
             f = _wrap_fraction(np.array([float(x) for x in snapped]))
         if not any(_same_star(f, g) for g in distinct):
             distinct.append(f)
+    # q and -q are one minimum; report the lexicographically smaller representative so the
+    # choice does not depend on round-off in the ordering of degenerate eigenvalues.
+    distinct = [min(f, _wrap_fraction(-f), key=tuple) for f in distinct]
     near_fraction = float(np.mean(values <= threshold))
     extended = near_fraction * n1 * n2 > 2 * max(1, len(distinct)) + 2
 
