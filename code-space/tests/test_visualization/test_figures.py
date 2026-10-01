@@ -69,7 +69,9 @@ def test_slice_and_powder_draw_their_arrays(triangle):
     np.testing.assert_array_equal(np.ma.filled(ax.collections[0].get_array(), np.nan).ravel(),
                                   cut.intensity.ravel())
     ax = plot_powder(Q, omega, powder)
-    assert ax.collections[0].get_array().shape == powder.T.shape
+    # Older matplotlib stores the mesh array flattened; compare values.
+    np.testing.assert_array_equal(np.ma.filled(ax.collections[0].get_array(), np.nan).ravel(),
+                                  powder.T.ravel())
 
 
 def test_energy_scale_needs_a_label(triangle):
