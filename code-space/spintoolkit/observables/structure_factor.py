@@ -220,6 +220,9 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     zero_modes, gapless : optional
         As in :func:`~spintoolkit.observables.thermal.thermal_quantities`.
     """
+    from spintoolkit.methods.lswt.run import require_lab_frame
+
+    require_lab_frame(result, "structure_factor")
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     t = float(temperature)
     if not np.isfinite(t) or t < 0:
@@ -248,6 +251,104 @@ def structure_factor(result, q_points, temperature: float = 0.0,
         F = np.exp(-1j * result.positions @ q[i]) @ moments
         elastic[i] = np.outer(F, F.conj()) / ns ** 2
     return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report)
+
+
+def spiral_structure_factor(result, q_points, temperature: float = 0.0,
+                            zero_modes: Optional[ZeroModeReport] = None,
+                            gapless: Optional[bool] = None) -> StructureFactor:
+    """Lab-frame structure factor of a single-Q spiral (rotating-frame LSWT, D34).
+
+    With ``S_i = R_n(phi_i) S'_i``, ``phi_i = Q . R_i`` (cell vector ``R_i``)
+    and ``R_n(phi) = R_0 + e^{i phi} R_+ + e^{-i phi} R_-``,
+    ``R_0 = n n^T``, ``R_+- = (1 - n n^T -+ i [n]_x) / 2``, the lab-frame
+    Fourier component (full positions, per site, D13) is
+
+        S(k) = sum_m R_m sum_i exp(-i m Q . tau_i) delta S'_i(k - m Q),   m = 0, +1, -1,
+
+    with ``tau_i`` the site offset in the cell. The rotating-frame correlations
+    are translation invariant, so the cross terms between different ``m``
+    vanish when neither ``Q`` nor ``2Q`` is a reciprocal vector, and
+
+        S^{ab}(k, w) = sum_m [R_m S'(k - m Q, w) R_m^dagger]^{ab}
+
+    (Toth and Lake 2015): each lab momentum carries the magnons
+    ``omega(k)``, ``omega(k - Q)`` and ``omega(k + Q)``. The elastic part sits
+    at ``k = G + m Q`` with ``F = R_m sum_i exp(-i k . tau_i) m_i``.
+
+    Parameters
+    ----------
+    result : SpiralLSWTResult
+    q_points : (nq, 2) array_like
+        Cartesian lab-frame momenta.
+    temperature, zero_modes, gapless
+        As in :func:`structure_factor`; the zero-mode scan is of the
+        rotating-frame result.
+
+    Returns
+    -------
+    StructureFactor
+        Lab frame, with ``3 x 2 Ns`` modes per momentum ordered
+        ``m = 0, +1, -1``. ``zero_mode`` marks momenta where any of the three
+        branches has a zero mode (e.g. ``k = 0, +-Q`` of a Heisenberg spiral);
+        only that branch is NaN.
+
+    Raises
+    ------
+    NotImplementedError
+        If ``Q`` or ``2Q`` is a reciprocal vector: umklapp terms between the
+        branches then survive; use the commensurate supercell with
+        :func:`structure_factor`.
+    """
+    rotating = result.rotating
+    Q = np.asarray(result.wave_vector, dtype=float)
+    lattice = np.asarray(rotating.lattice)
+    for multiple in (1, 2):
+        f = multiple * Q @ lattice.T / (2 * np.pi)
+        if np.all(np.abs(f - np.rint(f)) < 1e-9):
+            raise NotImplementedError(
+                f"{multiple}Q is a reciprocal lattice vector: branches m and m' with "
+                f"(m - m') Q in G interfere. Use the commensurate supercell "
+                "(IncommensurateStructure.to_spin_state, solve_lswt, structure_factor).")
+    q = np.atleast_2d(np.asarray(q_points, dtype=float))
+    t = float(temperature)
+    if not np.isfinite(t) or t < 0:
+        raise ValueError("temperature must be finite and non-negative")
+    gapless, report = _zero_mode_decision(rotating, t, zero_modes, gapless)
+    ns = rotating.num_sites
+    n = np.asarray(result.structure.rotation_axis, dtype=float)
+    K = np.array([[0, -n[2], n[1]], [n[2], 0, -n[0]], [-n[1], n[0], 0]])
+    P = np.eye(3) - np.outer(n, n)
+    rotations = {0: np.outer(n, n).astype(complex), 1: (P - 1j * K) / 2, -1: (P + 1j * K) / 2}
+    A = _deviation_vectors(rotating)                              # (3, 2Ns), rotating frame
+    tau = np.asarray(rotating.positions)
+    moments = (rotating.spins - rotating.boson_numbers)[:, None] * rotating.directions
+
+    energies, weights, zero = [], [], np.zeros(len(q), dtype=bool)
+    elastic = np.zeros((len(q), 3, 3), dtype=complex)
+    bragg = np.zeros(len(q), dtype=bool)
+    for m in (0, 1, -1):
+        shifted = q - m * Q
+        _, E, T, zero_m = _diagonalization_at(rotating, shifted)
+        zero |= zero_m
+        phase = np.exp(-1j * m * tau @ Q)
+        A_m = rotations[m] @ (A * np.r_[phase, phase][None, :])
+        amplitudes = np.einsum("am,qmn->qan", A_m, T)
+        energies.append(np.concatenate([E[:, :ns], -E[:, ns:]], axis=1))
+        factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
+        weights.append(np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
+                       * factors[:, :, None, None])
+        fractional = shifted @ lattice.T / (2 * np.pi)
+        on_lattice = np.all(np.abs(fractional - np.rint(fractional)) < 1e-9, axis=1)
+        for i in np.flatnonzero(on_lattice):
+            F = rotations[m] @ (np.exp(-1j * tau @ q[i]) @ moments)
+            elastic[i] += np.outer(F, F.conj()) / ns ** 2
+        bragg |= on_lattice
+    if np.any(zero):
+        warnings.warn(f"H(k) has a zero mode in some branch at {int(zero.sum())} of {len(q)} "
+                      "momenta (e.g. Goldstone modes at k = 0, +-Q): those weights are NaN",
+                      UserWarning, stacklevel=2)
+    return StructureFactor(q, np.concatenate(energies, axis=1), np.concatenate(weights, axis=1),
+                           elastic, bragg, zero, t, gapless, report)
 
 
 #: Ladder basis (S^+, S^-, S^z) from Cartesian components: S^mu = sum_a LADDER[mu, a] S^a.
@@ -306,8 +407,10 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
         is the harmonic ``<delta S_i^a delta S_i^b>``, not the exact
         ``S(S+1)`` identity.
     """
+    from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.states.spin_state import reduce_cell
 
+    require_lab_frame(result, "spin_correlation")
     G, A, supercell, index = _correlator_setup(result)
     (a, ca), (b, cb) = first, second
     i = index[(a, reduce_cell(ca, supercell))]
@@ -333,9 +436,11 @@ def bond_correlations(result, model) -> Dict[str, Any]:
         ``bonds``: list of per-term dicts (``label``, ``site_i``, ``site_j``,
         ``offset``, ``correlation`` (3, 3)); ``energy``: per site, E0.
     """
+    from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.system.model import BILINEAR, ZEEMAN
     from spintoolkit.states.spin_state import reduce_cell
 
+    require_lab_frame(result, "bond_correlations")
     ns = result.num_sites
     G, A, supercell, index = _correlator_setup(result)
     spins, n_bos = result.spins, result.boson_numbers

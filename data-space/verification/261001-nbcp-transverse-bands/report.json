@@ -1,0 +1,54 @@
+{
+ "parameters": {
+  "Jxy": 0.0779,
+  "Jz": 0.1225,
+  "g_ab": 4.2,
+  "S": 0.5
+ },
+ "source": "arXiv:2505.06398 Table 1, Eq. (5), Figs. 4 and 6 (path M-K'-Γ-K-M)",
+ "critical_field": {
+  "analytic_T": 1.717109556246455,
+  "paper_classical_T": 1.72,
+  "toolkit_first_stable_T": 1.7171096801757812,
+  "paper_measured_T": 1.65
+ },
+ "cases": [
+  {
+   "field_T": 3.5,
+   "max_deviation_from_eq5_meV": 7.771561172376096e-16,
+   "unstable_points": 0,
+   "points": 301,
+   "nan_exactly_where_eq5_imaginary": true,
+   "energy_at_K_meV": 0.46569233871419813,
+   "energy_at_Gamma_meV": 0.9153506298663738,
+   "minimum_on_path_meV": 0.46569233871419813,
+   "warnings": [],
+   "paper_gap_meV": 0.46
+  },
+  {
+   "field_T": 1.7409999999999999,
+   "max_deviation_from_eq5_meV": 2.220446049250313e-16,
+   "unstable_points": 0,
+   "points": 301,
+   "nan_exactly_where_eq5_imaginary": true,
+   "energy_at_K_meV": 0.02054975271658329,
+   "energy_at_Gamma_meV": 0.4855711156063182,
+   "minimum_on_path_meV": 0.02054975271658329,
+   "warnings": []
+  },
+  {
+   "field_T": 1.7,
+   "max_deviation_from_eq5_meV": 9.06826697066876e-16,
+   "unstable_points": 28,
+   "points": 301,
+   "nan_exactly_where_eq5_imaginary": true,
+   "energy_at_K_meV": null,
+   "energy_at_Gamma_meV": 0.475507380369471,
+   "minimum_on_path_meV": 0.002574751281590309,
+   "warnings": [
+    "H(k) is not positive semidefinite at 28 path points (unstable reference state); their ener"
+   ]
+  }
+ ],
+ "figure": "data-space/verification/261001-nbcp-transverse-bands/transverse-polarized-bands.png"
+}

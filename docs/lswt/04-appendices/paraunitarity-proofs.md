@@ -3,25 +3,115 @@ frontmatter-version: 1
 title: "Appendix: Paraunitarity Proofs"
 doc-path: docs/lswt/04-appendices
 status: draft
-last-edited-by: codex
+last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-06
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
+source-section: "Paraunitary Diagonalization (source pp. 10–11); restructured TeX appendix 'Para-unitarity proofs'"
 ---
 
 # Appendix: Paraunitarity Proofs
 
-## Scope
+The diagonalization of a bosonic Bogoliubov–de Gennes (BdG) matrix rests on a few algebraic facts about the indefinite metric $\Sigma_3=\sigma_3\otimes\mathsf I_{N_{\mathrm{sub}}}$: paraunitary matrices form a group, the eigenvectors of $\Sigma_3\mathsf H$ are orthogonal with respect to $\Sigma_3$, and positive definiteness of $\mathsf H$ fixes both the reality of the spectrum and the sign of each eigenvector's $\Sigma_3$-norm. This appendix proves these facts and the properties of the transformation $\mathsf T_{\mathbf k}$ used in [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md). Throughout, $\mathsf H$ is a Hermitian $2N_{\mathrm{sub}}\times2N_{\mathrm{sub}}$ matrix, and the momentum index is suppressed where only one momentum enters.
 
-The appendix is reserved for the metric-preservation proofs supporting [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md). The Nambu ordering and metric notation are defined in [Notation and Conventions](../00-foundations/notation-and-conventions.md).
+## Paraunitary Matrices Form a Group
+
+A matrix $\mathsf T$ is paraunitary when $\mathsf T\Sigma_3\mathsf T^\dagger=\Sigma_3$. Taking determinants gives $|\det\mathsf T|^2=1$, so $\mathsf T$ is invertible. Multiplying the condition by $\Sigma_3$ on the right gives $\mathsf T(\Sigma_3\mathsf T^\dagger\Sigma_3)=\mathsf I$, so
+
+$$
+\mathsf T^{-1}=\Sigma_3\mathsf T^\dagger\Sigma_3.
+$$
+
+Inserting this inverse into $\mathsf T^{-1}\mathsf T=\mathsf I$ gives $\Sigma_3\mathsf T^\dagger\Sigma_3\mathsf T=\mathsf I$, which is the second form $\mathsf T^\dagger\Sigma_3\mathsf T=\Sigma_3$. The argument runs equally in the other direction, so the two forms of the paraunitary condition are equivalent. If $\mathsf T_1$ and $\mathsf T_2$ are paraunitary, then $\mathsf T_1\mathsf T_2\Sigma_3\mathsf T_2^\dagger\mathsf T_1^\dagger=\mathsf T_1\Sigma_3\mathsf T_1^\dagger=\Sigma_3$, and the inverse $\Sigma_3\mathsf T_1^\dagger\Sigma_3$ satisfies the second form of the condition. Paraunitary matrices therefore form a group, the pseudo-unitary group $\mathrm U(N_{\mathrm{sub}},N_{\mathrm{sub}})$. A paraunitary matrix that is also unitary commutes with $\Sigma_3$ and is block diagonal in the particle and hole components.
+
+## Metric Orthogonality of Eigenvectors
+
+Let $\Sigma_3\mathsf H\mathbf v=\lambda\mathbf v$ and $\Sigma_3\mathsf H\mathbf w=\mu\mathbf w$. Multiplying the first relation by $\mathbf w^\dagger\Sigma_3$ and the conjugate of the second by $\mathbf v$, and using $\Sigma_3^2=\mathsf I$ and $\mathsf H^\dagger=\mathsf H$, gives
+
+$$
+\mathbf w^\dagger\mathsf H\mathbf v=\lambda\,\mathbf w^\dagger\Sigma_3\mathbf v=\mu^*\,\mathbf w^\dagger\Sigma_3\mathbf v,
+\qquad
+(\lambda-\mu^*)\,\mathbf w^\dagger\Sigma_3\mathbf v=0.
+$$ {#eq-lswt-metric-orthogonality}
+
+Eigenvectors whose eigenvalues satisfy $\lambda\ne\mu^*$ are therefore orthogonal in the indefinite inner product $\mathbf w^\dagger\Sigma_3\mathbf v$. For $\mathbf w=\mathbf v$ the relation reads $\mathbf v^\dagger\mathsf H\mathbf v=\lambda\,\mathbf v^\dagger\Sigma_3\mathbf v$, and an eigenvector with a nonreal eigenvalue has $\mathbf v^\dagger\Sigma_3\mathbf v=0$.
+
+## Consequences of Positive Definiteness
+
+Assume that $\mathsf H$ is positive definite. Three properties of $\Sigma_3\mathsf H$ follow.
+
+**Real, nonzero eigenvalues with a fixed metric sign.** For an eigenvector $\mathbf v$, the relation $\mathbf v^\dagger\mathsf H\mathbf v=\lambda\,\mathbf v^\dagger\Sigma_3\mathbf v$ has a positive left-hand side. If $\lambda$ were not real, the previous section would give $\mathbf v^\dagger\Sigma_3\mathbf v=0$ and hence $\mathbf v^\dagger\mathsf H\mathbf v=0$, a contradiction. Therefore $\lambda$ is real and nonzero, $\mathbf v^\dagger\Sigma_3\mathbf v\ne0$, and
+
+$$
+\operatorname{sign}\lambda=\operatorname{sign}\big(\mathbf v^\dagger\Sigma_3\mathbf v\big).
+$$ {#eq-lswt-metric-sign-rule}
+
+Eigenvectors with positive eigenvalues have a positive $\Sigma_3$-norm and become particle columns of $\mathsf T$; eigenvectors with negative eigenvalues have a negative $\Sigma_3$-norm and become hole columns. For an indefinite $\mathsf H$ this link fails: an eigenvector with a positive eigenvalue can have a negative $\Sigma_3$-norm, which is the negative-energy mode of the indefinite case in [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md).
+
+**Diagonalizability.** The Cholesky factorization $\mathsf H=\mathsf K\mathsf K^\dagger$ makes $\Sigma_3\mathsf H=\Sigma_3\mathsf K\mathsf K^\dagger$ similar, through $\mathsf K^\dagger$, to the Hermitian matrix $\mathsf K^\dagger\Sigma_3\mathsf K$:
+
+$$
+\mathsf K^\dagger\big(\Sigma_3\mathsf H\big)(\mathsf K^\dagger)^{-1}=\mathsf K^\dagger\Sigma_3\mathsf K.
+$$
+
+A Hermitian matrix is diagonalizable with real eigenvalues, so $\Sigma_3\mathsf H$ is diagonalizable with the same eigenvalues. Jordan blocks, such as the one of the antiferromagnetic Goldstone mode, can occur only when $\mathsf H$ is singular.
+
+**Equal numbers of positive and negative eigenvalues.** The matrix $\mathsf K^\dagger\Sigma_3\mathsf K$ is congruent to $\Sigma_3$ through the invertible matrix $\mathsf K$. By Sylvester's law of inertia, congruent Hermitian matrices have the same numbers of positive and negative eigenvalues, so $\Sigma_3\mathsf H$ has $N_{\mathrm{sub}}$ positive and $N_{\mathrm{sub}}$ negative eigenvalues.
+
+## Existence of the Paraunitary Transformation
+
+The three properties construct $\mathsf T$ directly from eigenvectors. Within an eigenspace of $\Sigma_3\mathsf H$ with eigenvalue $\lambda$, the form $\mathbf w^\dagger\Sigma_3\mathbf v$ is definite with the sign of $\lambda$, because @eq-lswt-metric-sign-rule holds for every vector of the eigenspace. Gram–Schmidt orthogonalization with respect to this definite form gives a basis with $\mathbf v^\dagger\Sigma_3\mathbf v=\operatorname{sign}\lambda$. Eigenvectors of different eigenvalues are already $\Sigma_3$-orthogonal by @eq-lswt-metric-orthogonality, since all eigenvalues are real. Collecting the $N_{\mathrm{sub}}$ vectors of positive eigenvalues first and the $N_{\mathrm{sub}}$ vectors of negative eigenvalues second gives a matrix $\mathsf T$ with $\mathsf T^\dagger\Sigma_3\mathsf T=\Sigma_3$. The eigenvalue equation $\Sigma_3\mathsf H\mathsf T=\mathsf T\,\Sigma_3\mathsf D$, with $\mathsf D$ the diagonal matrix of the absolute values of the eigenvalues, then gives $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T^\dagger\Sigma_3\mathsf T\,\Sigma_3\mathsf D=\mathsf D$, a diagonal matrix with positive entries.
+
+Conversely, if a paraunitary $\mathsf T$ with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf D$ positive and diagonal exists, then $\mathsf H=(\mathsf T^{-1})^\dagger\mathsf D\,\mathsf T^{-1}$ is congruent to a positive diagonal matrix and is positive definite. A paraunitary transformation to a diagonal form with positive entries therefore exists if and only if $\mathsf H$ is positive definite.
+
+## Colpa's Transformation Satisfies Both Conditions
+
+Colpa's construction, $\mathsf T=(\mathsf K^\dagger)^{-1}\mathsf V(\Lambda\Sigma_3)^{1/2}$ with $\mathsf V\Lambda\mathsf V^\dagger=\mathsf K^\dagger\Sigma_3\mathsf K$, is verified in [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md) through $\mathsf T\Sigma_3\mathsf T^\dagger=\Sigma_3$ and $\mathsf T^\dagger\mathsf H\mathsf T=\Lambda\Sigma_3$. The second form of the paraunitary condition can also be checked directly. The matrix $\mathsf K^\dagger\Sigma_3\mathsf K$ is invertible, so $\Lambda$ is invertible, and $\Sigma_3^{-1}=\Sigma_3$ gives $\mathsf K^{-1}\Sigma_3(\mathsf K^\dagger)^{-1}=(\mathsf K^\dagger\Sigma_3\mathsf K)^{-1}=\mathsf V\Lambda^{-1}\mathsf V^\dagger$. Hence
+
+$$
+\mathsf T^\dagger\Sigma_3\mathsf T
+=(\Lambda\Sigma_3)^{1/2}\mathsf V^\dagger\,\mathsf K^{-1}\Sigma_3(\mathsf K^\dagger)^{-1}\,\mathsf V(\Lambda\Sigma_3)^{1/2}
+=(\Lambda\Sigma_3)^{1/2}\Lambda^{-1}(\Lambda\Sigma_3)^{1/2}
+=\Sigma_3,
+$$
+
+where the last step uses that the diagonal matrices commute and $\Lambda\Sigma_3\Lambda^{-1}=\Sigma_3$. This is the check left in commented form in the restructured TeX appendix; by the first section it is equivalent to $\mathsf T\Sigma_3\mathsf T^\dagger=\Sigma_3$.
+
+## Freedom in the Transformation
+
+Let $\mathsf T$ and $\mathsf T'$ both be paraunitary with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T'^\dagger\mathsf H\mathsf T'=\mathsf D$, with the same ordering of the diagonal entries. The matrix $\mathsf U=\mathsf T^{-1}\mathsf T'$ is paraunitary by the group property. From $\Sigma_3\mathsf H\mathsf T=\mathsf T\Sigma_3\mathsf D$ and the same relation for $\mathsf T'$,
+
+$$
+\mathsf U\,\Sigma_3\mathsf D=\mathsf T^{-1}\Sigma_3\mathsf H\mathsf T'=\Sigma_3\mathsf D\,\mathsf U,
+$$
+
+so $\mathsf U$ commutes with the diagonal matrix $\Sigma_3\mathsf D$ of signed energies and is block diagonal in its eigenspaces. When $\mathsf H$ is positive definite, each eigenspace contains only particle columns or only hole columns, because their signed energies have opposite signs. On such a block $\Sigma_3$ is $+\mathsf I$ or $-\mathsf I$, and the paraunitary condition restricted to the block is unitarity. The transformation is therefore unique up to a phase for each nondegenerate column and a unitary mixing within each degenerate set of columns.
+
+## Particle–Hole Structure of the Transformation
+
+The Bogoliubov transformation has the block form $\mathsf T_{\mathbf k}=\begin{pmatrix}\mathsf P_{\mathbf k}&\mathsf Q_{-\mathbf k}\\ \mathsf Q_{\mathbf k}^*&\mathsf P_{-\mathbf k}^*\end{pmatrix}$, so that the lower components of $\hat\Psi_{\mathbf k}$ are the adjoints of the upper components of $\hat\Psi_{-\mathbf k}$. With $\Sigma_1=\sigma_1\otimes\mathsf I_{N_{\mathrm{sub}}}$, which exchanges the two block rows when applied on the left and the two block columns when applied on the right, the block form is equivalent to
+
+$$
+\mathsf T_{\mathbf k}=\Sigma_1\mathsf T_{-\mathbf k}^*\Sigma_1.
+$$ {#eq-lswt-transformation-particle-hole}
+
+A transformation of this form can always be chosen. Let $\mathbf t$ be a particle column of $\mathsf T_{-\mathbf k}$ with $\Sigma_3\mathsf H_{-\mathbf k}\mathbf t=\varepsilon\,\mathbf t$ and $\mathbf t^\dagger\Sigma_3\mathbf t=1$. The particle–hole relation $\Sigma_1\mathsf H_{-\mathbf k}^*\Sigma_1=\mathsf H_{\mathbf k}$ and $\Sigma_3\Sigma_1=-\Sigma_1\Sigma_3$ give $\Sigma_3\mathsf H_{\mathbf k}(\Sigma_1\mathbf t^*)=-\varepsilon\,\Sigma_1\mathbf t^*$, and
+
+$$
+(\Sigma_1\mathbf t^*)^\dagger\Sigma_3(\Sigma_1\mathbf t^*)=\mathbf t^{\mathsf T}\Sigma_1\Sigma_3\Sigma_1\mathbf t^*=-\big(\mathbf t^\dagger\Sigma_3\mathbf t\big)^*=-1.
+$$
+
+The vector $\Sigma_1\mathbf t^*$ is therefore a correctly normalized hole column of $\mathsf T_{\mathbf k}$ with signed energy $-\varepsilon$, which is $-\varepsilon_{n,-\mathbf k}$ for the band of $\mathbf t$. Building the hole columns of $\mathsf T_{\mathbf k}$ in this way from the particle columns of $\mathsf T_{-\mathbf k}$, and doing the same with $\mathbf k$ and $-\mathbf k$ exchanged, yields @eq-lswt-transformation-particle-hole. The resulting columns are $\Sigma_3$-orthogonal to the particle columns of $\mathsf T_{\mathbf k}$ by @eq-lswt-metric-orthogonality, since their signed energies have the opposite sign. A transformation computed independently at $\mathbf k$, such as Colpa's, has hole columns that agree with these up to the freedom of the previous section. At a momentum with $-\mathbf k\equiv\mathbf k$ modulo a reciprocal-lattice vector, the relation constrains $\mathsf T_{\mathbf k}$ itself and fixes part of that freedom.
 
 ## References
 
 ### Internal Documents
 
-- [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md): defines the main diagonalization procedure whose proofs will be expanded here.
-- [Notation and Conventions](../00-foundations/notation-and-conventions.md): defines the Nambu metric and paraunitary-matrix notation.
+- [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md): states the paraunitary condition, the particle–hole structure of the spectrum, Colpa's construction, and the gauge freedom proved here.
+- [Momentum-Space BdG Hamiltonian](../01-derivation/momentum-space-bdg-hamiltonian.md): defines the BdG blocks and the block relations behind the particle–hole relation.
+- [Notation and Conventions](../00-foundations/notation-and-conventions.md): defines the Nambu metric and the paraunitary-matrix notation.
+- [Worked Example](../03-examples/worked-example.md): evaluates these statements for a single sublattice.
 
 ### External Sources
 
-- J. H. P. Colpa, "Diagonalization of the Quadratic Boson Hamiltonian," *Physica A* **93**, 327-353 (1978), [doi:10.1016/0378-4371(78)90160-7](https://doi.org/10.1016/0378-4371(78)90160-7): supports the metric-preserving quadratic-boson diagonalization framework whose proofs will be developed here.
+- J. H. P. Colpa, "Diagonalization of the Quadratic Boson Hamiltonian," *Physica A* **93**, 327–353 (1978), [doi:10.1016/0378-4371(78)90160-7](https://doi.org/10.1016/0378-4371(78)90160-7): metric-preserving diagonalization of a positive-definite quadratic boson Hamiltonian through the Cholesky factorization.

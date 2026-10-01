@@ -211,3 +211,19 @@ def test_result_normalizations():
     assert result.excitations(zero)[0] == pytest.approx(0.0, abs=1e-14)
     with pytest.raises(ValueError, match="needs an axis"):
         EDSector(magnon_number=1)
+
+
+def test_xx_ring_matches_jordan_wigner_free_fermions():
+    """J sum (SxSx + SySy) on a PBC ring of 8 sites, exact for finite L.
+
+    Jordan-Wigner fermions have eps_k = J cos k with periodic (odd fermion
+    number) or antiperiodic (even) boundary conditions.
+    """
+    L = 8
+    chain = SpinModel(np.eye(2), [Site("A", (0.0, 0.0), 0.5)],
+                      [Term.bilinear(("A", (0, 0)), ("A", (1, 0)), np.diag([1.0, 1.0, 0.0]))],
+                      {"model_id": "xx_chain"})
+    ground = solve_ed(chain, torus([[L, 0], [0, 1]])).energies()[0]
+    exact = min(np.sort(np.cos(2 * np.pi * np.arange(L) / L + (0.0 if n % 2 else np.pi / L)))[:n].sum()
+                for n in range(L + 1))
+    assert ground == pytest.approx(exact, abs=1e-12)

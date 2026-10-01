@@ -6,12 +6,24 @@ paraunitary eigenvectors are reused, and only ``dH/dk`` is evaluated
 
 Conventions (D29):
 
-- Gauge: ``H(k)`` is the Bloch Hamiltonian of the Fourier convention D13 (full
+- Bloch basis: ``H(k)`` is the Bloch Hamiltonian of the Fourier convention D13 (full
   positions), i.e. the matrix of the one-magnon states
   ``a_k^dagger = N^-1/2 sum_r exp(i k . r) a_r^dagger``. The curvature
-  ``Omega_n(k)`` is reported in this gauge. Pointwise values depend on the
-  gauge (a cell gauge adds a curl of the sublattice-weighted positions);
-  Chern numbers and the thermal Hall conductivity do not.
+  ``Omega_n(k)`` is reported in this convention, and so is the thermal Hall
+  conductivity. The cell convention ``exp(i k . R)`` (sites placed at their
+  cell origin) is not a gauge choice of the same system: ``D(k) = diag
+  exp(i s k . tau_a)`` is a phase per sublattice, not per band, and shifts the
+  connection by ``s sum_a tau_a w_na(k)`` (``w_na = |u_na|^2 - |v_na|^2``).
+  Chern numbers are unchanged (the shift is periodic), but kappa shifts by
+  ``(s / A) sum_a z . (J_a x tau_a)`` with
+  ``J_a = < sum_n c2'(E_n) w_na grad E_n >_k``: the cell-convention value
+  depends on which cell a sublattice is assigned to, so it is not a property
+  of the system. The Hall response is defined with the position operator
+  ``sum_i r_i n_i`` of the actual site positions (energy magnetization,
+  Matsumoto and Murakami), whose Bloch states are those of the full-position
+  convention; that is the value returned. ``J_a = 0`` when a rotation of the
+  model maps each sublattice to itself (e.g. C3 on the honeycomb), and the two
+  values then coincide.
 - Sign: ``Omega_n = dA_y/dk_x - dA_x/dk_y`` with ``A_n = i <u_n| eta grad |u_n>``;
   in Kubo form (Shindou et al., PRB 87, 174427 (2013); Matsumoto and
   Murakami, PRB 84, 184406 (2011))
@@ -100,6 +112,10 @@ class BerryCurvature:
 
 
 def _check_result(result) -> None:
+    if getattr(result, "extra", {}).get("frame") == "rotating":
+        raise TopologyError("Berry curvature, Chern numbers and thermal Hall of spiral magnons "
+                            "(rotating-frame LSWT, D34) are not validated; they are not "
+                            "computed rather than reported unchecked")
     if result.hamiltonian_derivatives_at is None:
         raise TopologyError("the result has no Hamiltonian derivatives; use solve_lswt")
     regularization = result.header.settings.get("regularization", "none")

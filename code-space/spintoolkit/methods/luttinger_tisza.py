@@ -81,6 +81,10 @@ class LTWaveVector:
     state_energy : float or None
         Its classical energy per site (bilinear terms, zero field); equals
         ``lambda_min`` up to round-off.
+    amplitude : (Ns, 3) complex array or None
+        Cell amplitude ``u_a`` of the best strong-constraint fit (spins
+        ``Re[u_a exp(i q* . R)]``); for an incommensurate spiral it builds an
+        :class:`~spintoolkit.states.incommensurate.IncommensurateStructure`.
     """
 
     fractional: np.ndarray
@@ -93,6 +97,7 @@ class LTWaveVector:
     strong_residual: float
     state: Optional[SpinState] = field(default=None, repr=False)
     state_energy: Optional[float] = None
+    amplitude: Optional[np.ndarray] = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -305,7 +310,7 @@ def luttinger_tisza(model: SpinModel, mesh: Tuple[int, int] = (48, 48),
         minima.append(LTWaveVector(
             f, k, int(space.shape[1]), fractions is not None,
             None if fractions is None else tuple(str(fr) for fr in fractions),
-            cell, bool(strong), float(residual), state, energy))
+            cell, bool(strong), float(residual), state, energy, u))
     diagnostics = {"scale": scale, "tolerance": tolerance, "max_denominator": max_denominator,
                    "zeeman": "ignored (zero field)",
                    "single_q_only": "multi-q states and generalized LT are not treated"}

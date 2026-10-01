@@ -5,7 +5,7 @@ doc-path: docs/lswt/02-observables
 status: draft
 last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-30
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 source-section: "Physical Quantities in Linear Spin Wave Theory (source p. 12, Table I); Number and Spin moment from Correlation Matrix (source pp. 15–16)"
 ---
@@ -50,7 +50,7 @@ $$
 \Big[\big|(\mathsf P_{\mathbf k})_{\mu n}\big|^2n_{n\mathbf k}+\big|(\mathsf Q_{\mathbf k})_{\mu n}\big|^2\big(1+n_{n\mathbf k}\big)\Big].
 $$ {#eq-lswt-boson-number}
 
-The second form uses the blocks of the Bogoliubov transformation $\hat a_{\mathbf k\mu}=\sum_n[(\mathsf P_{\mathbf k})_{\mu n}\hat b_{\mathbf kn}+(\mathsf Q_{-\mathbf k})_{\mu n}\hat b_{-\mathbf kn}^\dagger]$ of [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md) and relabels $-\mathbf k\to\mathbf k$ in the hole-column terms. The $\mathsf Q$ term survives at zero temperature: the quantum reduction $N_{\mathrm{uc}}^{-1}\sum_{\mathbf k,n}|(\mathsf Q_{\mathbf k})_{\mu n}|^2$ arises only from the mixing of creation and annihilation operators and vanishes when $\mathsf B_{\mathbf k}=0$, as for a collinear ferromagnet. The $\mathsf P$ and $\mathsf Q$ terms proportional to $n_{n\mathbf k}$ give the thermal reduction.
+The second form uses the blocks of the Bogoliubov transformation $\hat a_{\mathbf k\mu}=\sum_n[(\mathsf P_{\mathbf k})_{\mu n}\hat b_{\mathbf kn}+(\mathsf Q_{-\mathbf k})_{\mu n}\hat b_{-\mathbf kn}^\dagger]$ of [Paraunitary Diagonalization](../01-derivation/paraunitary-diagonalization.md) and relabels $-\mathbf k\to\mathbf k$ in the hole-column terms. The $\mathsf Q$ term survives at zero temperature: the quantum reduction $N_{\mathrm{uc}}^{-1}\sum_{\mathbf k,n}|(\mathsf Q_{\mathbf k})_{\mu n}|^2$ arises only from the mixing of creation and annihilation operators and vanishes when $\mathsf B_{\mathbf k}=0$, as for a collinear ferromagnet whose Hamiltonian conserves the total spin component along the ordered moment. Exchange anisotropy transverse to the moment, such as $J^{xx}\ne J^{yy}$ in the local frame or Kitaev and off-diagonal couplings, produces $\mathsf B_{\mathbf k}\ne0$ and a quantum reduction even in a collinear ferromagnet. The $\mathsf P$ and $\mathsf Q$ terms proportional to $n_{n\mathbf k}$ give the thermal reduction.
 
 The boson number reduces the ordered moment. With $\hat{\widetilde S}_I^0=S_I-\hat n_I$ and the local longitudinal direction $\mathbf n_\mu$ of [Classical Order and Local Frame](../00-foundations/classical-order-and-local-frame.md), the average spin of sublattice $\mu$ is
 
@@ -58,7 +58,7 @@ $$
 \mathbf m_\mu=\big(S_\mu-\langle\hat n_\mu\rangle\big)\,\mathbf n_\mu,
 $$ {#eq-lswt-reduced-moment}
 
-since the transverse components average to zero. The magnetization per site is $N_{\mathrm{sub}}^{-1}\sum_\mu\mathbf m_\mu$. These moments enter the elastic Bragg scattering of [Spin Correlations](spin-correlations.md). The reduction $\langle\hat n_\mu\rangle$ is of order $S^0$, compared with $S_\mu$, so the expansion is controlled only while $\langle\hat n_\mu\rangle\ll S_\mu$. A value $\langle\hat n_\mu\rangle\ge S_\mu$ would reverse the moment and signals that LSWT about the chosen reference configuration no longer applies.
+since the transverse components average to zero. The magnetization per site is $N_{\mathrm{sub}}^{-1}\sum_\mu\mathbf m_\mu$. These moments enter the elastic Bragg scattering of [Spin Correlations](spin-correlations.md). The reduction $\langle\hat n_\mu\rangle$ is of order $S^0$, compared with $S_\mu$, so the expansion is controlled only while $\langle\hat n_\mu\rangle\ll S_\mu$. A value $\langle\hat n_\mu\rangle\ge S_\mu$ would remove or reverse the moment and signals that LSWT about the chosen reference configuration no longer applies.
 
 ### Zero Modes
 

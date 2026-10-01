@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-01",
+  "status": "passed (awaiting user physics review)",
+  "baseline_commit": "f16a93a",
+  "scope": "D34: single-Q spirals (IncommensurateStructure) and rotating-frame LSWT (Toth and Lake 2015).",
+  "api": "IncommensurateStructure(model_ref, wave_vector, rotation_axis, directions) with planar(), from_lt(), to_spin_state(); solve_spiral_lswt(model, structure, conditions, geometry, settings) -> SpiralLSWTResult (rotating: LSWTResult with extra['frame'] = 'rotating'); spiral_structure_factor(result, q, temperature); spiral_energy, spiral_energy_gradient, refine_spiral, rotating_frame_model, symmetry_violations; LTWaveVector.amplitude.",
+  "method": "Rotating-frame exchange J'(dn) = J R_n(2 pi q . dn) is translation invariant when every J commutes with rotations about n and h_a = g_a^T b is along n; the rotating-frame model on the primitive cell with state d_a is solved by solve_lswt. Models without that U(1) symmetry are rejected (single-Q spiral not stationary, k mixes with k +- 2Q). Lab-frame S(k, w) = sum_m R_m S'(k - m Q, w) R_m^dagger with the site phase exp(-i m Q . tau_i) of the cell-index convention; Q or 2Q in G raises NotImplementedError.",
+  "added": {
+    "code-space/spintoolkit/states/incommensurate.py": "IncommensurateStructure (replaces the stub), rotation_matrix, validate_spiral",
+    "code-space/spintoolkit/methods/lswt/spiral.py": "solve_spiral_lswt, SpiralLSWTResult, rotating_frame_model, refine_spiral, spiral_energy(_gradient), symmetry_violations",
+    "code-space/spintoolkit/observables/structure_factor.py": "spiral_structure_factor; lab-frame guards",
+    "code-space/tests/test_methods/test_spiral_lswt.py": "21 tests",
+    "examples/spiral_lswt_check.py": "this record"
+  },
+  "findings": [
+    "Triangular 120 deg as a spiral (Q = K): omega(k) equals 3JS sqrt((1 - g)(1 + 2g)) to 9e-15; on the same momenta the ground-state energy (2e-16), bands (5e-15), boson numbers and the full lab-frame S^{ab}(q, w) at t = 0 and 0.3 (1e-12) equal ordinary LSWT on the sqrt3 x sqrt3 supercell; Bragg intensities agree.",
+    "Incommensurate J1-J2 chains (J2/J1 = 0.4, Jy = -0.5): LT + refine_spiral give the analytic pitch to round-off (BFGS + Newton on the analytic gradient, max |grad| 1.7e-16; BFGS alone stalled at 9e-10 on precision loss) and omega(k) equals the Heisenberg spiral formula to 6e-15; the same spiral on a two-site cell gives the same energy and S(q, w).",
+    "DM spiral (FM J, D along the axis) and a cone in an axial field: analytic pitch and cone angle reproduced, and energies, bands and S(q, w) equal the 6 x 1 and 3 x 1 supercells to round-off.",
+    "Refusals: non-U(1) exchange and off-axis field (SpiralSymmetryError listing the terms), a pitch off the minimum (dE/dq warning and negative modes), lab-frame observables and topology given the rotating-frame result, collinear LT minima."
+  ],
+  "report": {
+    "date": "2026-10-01",
+    "cases": [
+      {
+        "model": "triangular Heisenberg (120 deg as a spiral, Q = K)",
+        "supercell_sites": 3,
+        "num_k_spiral": 192,
+        "ground_state_energy": -0.5386565502680493,
+        "energy_difference": 2.220446049250313e-16,
+        "band_difference": 4.690692279041286e-15,
+        "static_structure_factor_difference": 1.213251721310371e-12,
+        "spectrum_difference": 1.1461054327810416e-11,
+        "analytic_dispersion_deviation": 9.381384558082573e-15,
+        "ground_state_energy_24x24": -0.538780330067334,
+        "reference_energy": -0.5388090000000001
+      },
+      {
+        "model": "square J1-J2 chains (J1 = 1, J2 = 0.4) with Jy = -0.5: incommensurate",
+        "lt_pitch": [
+          0.35745051935864525,
+          0.0
+        ],
+        "refined_pitch": [
+          0.35745052070413735,
+          1.1153727242842638e-31
+        ],
+        "analytic_pitch": 0.35745052070413735,
+        "pitch_error": 0.0,
+        "wave_vector_gradient": [
+          -1.743934249004316e-16,
+          0.0
+        ],
+        "analytic_dispersion_deviation": 4.191091917959966e-15,
+        "ground_state_energy_24x24": -0.3928189392325421,
+        "classical_energy": -0.303125
+      },
+      {
+        "model": "ferromagnetic J = -1 with DM D = sqrt(3) along z (x bonds), Jy = -1",
+        "refined_pitch": [
+          0.8333333333333321,
+          0.0
+        ],
+        "analytic_pitch": 0.16666666666666666,
+        "pitch_error": 1.1934897514720433e-15,
+        "supercell_sites": 6,
+        "num_k_spiral": 288,
+        "ground_state_energy": -0.7665896032716034,
+        "energy_difference": 0.0,
+        "band_difference": 4.440892098500626e-15,
+        "static_structure_factor_difference": 6.106226635438361e-16,
+        "spectrum_difference": 5.129230373768223e-14
+      },
+      {
+        "model": "J1-J2 chains (J2 = 0.5, q = 1/3) in a field along the axis: cone",
+        "field": 0.9,
+        "refined_pitch": [
+          0.3333333333333333,
+          1.0
+        ],
+        "cos_cone_angle": 0.4000000000000001,
+        "analytic_cos_cone_angle": 0.4,
+        "supercell_sites": 3,
+        "num_k_spiral": 192,
+        "ground_state_energy": -0.46051015151378516,
+        "energy_difference": 5.551115123125783e-17,
+        "band_difference": 1.3322676295501878e-15,
+        "static_structure_factor_difference": 2.26615546335826e-14,
+        "spectrum_difference": 3.028688411177427e-13
+      }
+    ],
+    "seconds": 0.7
+  },
+  "revisions": [
+    "2026-10-01: refine_spiral adds Newton steps after BFGS; the earlier record had pitch error 9e-11 and |dE/dq| 9e-10 (BFGS stopped on precision loss), which made a 1e-9 test tolerance fail on one CI platform."
+  ]
+}

@@ -161,7 +161,27 @@
   \end{tabularx}
 \end{frame}
 
-\begin{frame}[label=decisions-d34]{결정 기록 (D34): 결정 대칭과 대칭 허용 결합}
+\begin{frame}[label=decisions-d34]{결정 기록 (D34): 단일 Q 나선의 회전틀 LSWT}
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임), 사용자 물리·수학 검토 대기. Toth--Lake (2015).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    상태 & \texttt{IncommensurateStructure(model\_ref, wave\_vector, rotation\_axis, directions)}: $\mathbf n_a(\mathbf R)=R_{\mathbf n}(2\pi\,\mathbf q\cdot(n_1,n_2))\,\mathbf d_a$, 위상은 셀 번호만, 원뿔 허용, 정합이면 \texttt{to\_spin\_state} \\
+    LSWT & \texttt{solve\_spiral\_lswt}: $J'=J R_{\mathbf n}(2\pi\,\mathbf q\cdot\Delta\mathbf n)$인 원시 셀 모델을 \texttt{solve\_lswt}로 풂; 밴드는 회전틀 운동량의 $\omega(\mathbf k)$ \\
+    적용 조건 & 모든 $J$가 축 회전과 교환(축 XXZ, 축 방향 DM), $g^T\mathbf b\parallel\mathbf n$; 아니면 근사값 대신 \texttt{SpiralSymmetryError} \\
+    구조인자 & \texttt{spiral\_structure\_factor}: $S=\sum_m R_m S'(\mathbf k-m\mathbf Q)R_m^\dagger$; $\mathbf Q$ 또는 $2\mathbf Q\in G$이면 초격자 안내 \\
+    안전장치 & 회전틀 결과는 실험실 상관·위상량이 거부(나선 위상량 미검증); 피치 $\partial E/\partial\mathbf q$ 진단 \\
+    LT 연결 & \texttt{IncommensurateStructure.from\_lt}, \texttt{LTWaveVector.amplitude}, \texttt{refine\_spiral} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{검증: 삼각 $120^\circ$·DM·원뿔 나선이 같은 운동량의 초격자 LSWT와 에너지·밴드·$S^{ab}(\mathbf q,\omega)$에서 반올림 수준 일치, 비정합 J1--J2 사슬의 피치와 $\omega(\mathbf k)$가 해석식과 $10^{-14}$ 수준 일치 (\texttt{verification/spiral-rotating-frame-2026-10-01.json}).}
+  \slidesource{2026-10-01 나선 메모}{contract}
+\end{frame}
+
+\begin{frame}[label=decisions-d35-symmetry]{결정 기록 (D35): 결정 대칭과 대칭 허용 결합}
   \framesubtitle{2026-10-01 Claude 결정(사용자 위임: 범용 솔버 방향), 사용자 검토 대기. 기존 API 변경 없음.}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}

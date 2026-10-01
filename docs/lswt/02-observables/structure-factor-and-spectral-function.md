@@ -5,7 +5,7 @@ doc-path: docs/lswt/02-observables
 status: draft
 last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-30
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 source-section: "Structure Factor; Spectral Function (source pp. 19–23)"
 ---
@@ -165,7 +165,7 @@ $$ {#eq-lswt-spectral-sum-rule}
 
 where $\epsilon^{\alpha\beta\gamma}$ is the Levi-Civita symbol. The last step uses $\mathbf e_\mu^-\times\mathbf e_\mu^+=\mathrm i\,\mathbf n_\mu$. The result is the spin commutation relation $[\hat S_I^\alpha,\hat S_I^\beta]=\mathrm i\sum_\gamma\epsilon^{\alpha\beta\gamma}\hat S_I^\gamma$, averaged over the sites, at leading order in $S$. It holds for every $\mathbf q$ and provides a check of the normalization of $\mathsf T_{\mathbf q}$.
 
-For Cartesian components, the conjugation relation $[\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(-\mathbf q,-t)$ of [Spin Correlations](spin-correlations.md) turns the commutator into $2\mathrm i\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)$, so the retarded function can also be written as $G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)=2\int_0^\infty dt\,\exp(\mathrm i(\omega+\mathrm i0^+)t)\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)$. For complex combinations of components, the conjugation relation exchanges the components with their complex conjugates, and the commutator must be written out explicitly.
+For Cartesian components, the conjugation relation $[\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(\mathbf q,-t)$ of [Spin Correlations](spin-correlations.md) and stationarity give $\langle\hat S_{-\mathbf q}^\beta\hat S_{\mathbf q}^\alpha(t)\rangle=[\mathcal C^{\alpha\beta}(-\mathbf q,t)]^*$, so the commutator is $\mathcal C^{\alpha\beta}(\mathbf q,t)-[\mathcal C^{\alpha\beta}(-\mathbf q,t)]^*$. It reduces to $2\mathrm i\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)$ only when $\mathcal C^{\alpha\beta}(-\mathbf q,t)=\mathcal C^{\alpha\beta}(\mathbf q,t)$, for example when a symmetry maps $\mathbf q$ to $-\mathbf q$; then the retarded function can also be written as $G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)=2\int_0^\infty dt\,\exp(\mathrm i(\omega+\mathrm i0^+)t)\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)$. For a nonreciprocal spectrum, $\varepsilon_{n\mathbf q}\ne\varepsilon_{n,-\mathbf q}$, the commutator must be kept in the general form. For complex combinations of components, the conjugation relation exchanges the components with their complex conjugates, and the commutator must be written out explicitly.
 
 ## References
 

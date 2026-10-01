@@ -36,7 +36,7 @@ NBCP band-plot 예제의 선행 작업 중 classical ground-state 최적화와 s
 | Band plotter와 interactive exchange viewer 포팅 | 미구현 | visualization backlog |
 | 공개 배포 정리 | `.gitignore`, README 등이 미완료로 기록 | theory/code 검증과 별도 상태로 관리 |
 | Real-space BdG solver | 장기 과제 | `AbstractSolver` 인터페이스 검토 |
-| `IncommensurateStructure` | 장기 과제 | 물리적 표현과 API 검토 |
+| `IncommensurateStructure` | 2026-10-01 단일 Q 나선과 회전틀 LSWT 구현(D34); 다중 Q·비 U(1) 모델·나선 위상량은 후속 | `idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md`, 사용자 물리 검토 |
 
 2026-09-30 정리(사용자 승인): toolkit 0–5단계로 끝난 항목을 표에서 뺐다. `EnergyFunction`의 입력 형식과
 observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `LSWTResult`를 쓰는 물리량)로 대체되었고,

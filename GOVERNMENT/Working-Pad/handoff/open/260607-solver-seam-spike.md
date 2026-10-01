@@ -6,7 +6,7 @@ status: draft
 execution-status: pending
 last-edited-by: claude
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-10-01
 branch: main
 cross-repo: ~/GitHub/Tensor-Network-Study
 ---
@@ -155,3 +155,41 @@ TN-study는 이미 publishable 학습 리포. 그 톤으로 작성:
 
 - 프로덕션 ED/TN/NQS 솔버 / LSWT `lswt` 패키지 리팩터 — 안 함. 과도한 일반화 금지.
 - seam 결론은 Phase 0 재구성 plan 입력. (코드는 TN-study 자산으로 보존)
+
+## 2026-10-01 저장소 안 실측 — ED와 DMRG(TeNPy)가 같은 토러스 전개를 읽는다
+
+사용자 위임(2026-10-01)으로, 별도 저장소 대신 이 저장소의 공통 자료형 위에서 seam을 실측했다. 모델을
+`expand_on_torus`(D23, 모든 방법이 공유하는 규칙)로 한 번 전개하고, 같은 사이트·결합(3 x 3 교환 행렬)·사이트 장을
+toolkit ED와 TeNPy 1.1.1 유한 DMRG 어댑터(약 40줄, `examples/solver_seam_tenpy_check.py`)에 넘겼다. TeNPy는 이 검사의
+선택 의존성이고 패키지는 쓰지 않는다. 기록: `data-space/verification/261001-solver-seam-tenpy/report.json`.
+
+| 경우 | 사이트 | DMRG - ED | 정확한 기준 |
+|---|---|---|---|
+| XX 고리 L=12 | 12 | 1.6e-14 | Jordan-Wigner 유한 L 닫힌형: ED - 기준 1.2e-14 |
+| Heisenberg 고리 L=12 | 12 | 2.5e-14 | (E0 = -5.38739092) |
+| 정사각 4x4 Heisenberg | 16 | 3.4e-14 | E0/N = -0.70178020(문헌): 차이 8e-9(기준값 자릿수) |
+| NBCP 3x3, 1 T ∥ c | 9 | 7e-16 | — |
+| NBCP 3x3, 1 T ∥ b*(U(1) 없음) | 9 | 2.9e-15 | — |
+| NBCP 3x3 + J_PD 0.01, 0.5 T ∥ c(복소 S^y 곱) | 9 | 3.1e-15 | — |
+
+XX 고리의 정확해는 새 회귀 테스트(`test_ed.py::test_xx_ring_matches_jordan_wigner_free_fermions`, L=8)로 고정했다.
+DMRG 두 경우에서 TeNPy가 마지막 정준형 노름 경고(2e-5, 8e-2)를 냈으나 에너지는 ED와 1e-14 안에서 같다.
+
+**Seam 결론(S1–S5).**
+
+- **S1 항의 연산자 내용:** 수치 3 x 3 교환 행렬이면 충분하다. 어댑터는 각 결합을 `sum_ab J_ab S^a S^b`로 이름 붙은 연산자
+  Sx, Sy, Sz에 그대로 옮긴다. 이름 붙은 항(XXZ, PD 등)은 필요 없다. 다만 U(1) 보존을 쓰려면 S+S-·SzSz 형태로 바꿀 축 판정이
+  필요하다. ED의 `EDSector(axis=...)` 판정 규칙(`symmetry_tolerance`)을 그대로 재사용하면 된다.
+- **S2 LocalSpace:** 필요한 것은 사이트마다 S뿐이다(`SpinSite(S)`; 이 어댑터는 S가 한 종류인 토러스만 받는다). 보존 charge는
+  모델이 아니라 솔버 설정이다(장 ∥ b*에서는 `conserve='None'`이 필수).
+- **S3 기하:** 솔버가 읽는 기하는 토러스 사이트 순서와 결합 목록뿐이다. 2D 토러스는 MPS 순서(여기서는 토러스 순서 그대로)에서
+  최대 8–12 사이트 떨어진 결합이 된다. 4x4에서 DMRG 시간(129 s, chi 256)의 대부분이 이 장거리 결합 때문이다. 순서 최적화(snake 등)는
+  어댑터 쪽 선택이며 `TorusCluster`는 바꿀 필요가 없다.
+- **S4 자기 질서:** ED와 DMRG 모두 `SpinState`, 고전 상태, 국소 좌표계를 쓰지 않는다. 자기 질서는 LSWT 단계의 입력이라는 현재
+  분리(D30)가 맞다.
+- **S5 결과:** 공통으로 비교 가능한 것은 토러스 총에너지(E0)와 `ResultHeader`(모델 지문, 기하, 조건)다. 관측량 계산은 방법별로
+  다르다(ED: 고유벡터, DMRG: MPS). 공통 결과형은 지금의 헤더 + 방법별 본문 구조로 충분하다.
+
+**남은 것.** NQS(NetKet)는 설치·검증하지 않았다(jax 무게). TN 필드 규약(D30의 "TN 필드 규약")은 이 결과로 정할 수 있다: 장은
+모델에 넣지 않고 `ExternalConditions`에서 `TorusCluster.fields(conditions)`로 사이트 장을 만들어 `-h_i . S_i`로 넣는다(ED와 같은
+부호, 위 표에서 확인). 이 결정은 사용자 확인 대상이다. 1D Bethe 노트(`bethe-ansatz-xxz.md`)와 원래 계획의 TN-Study 하네스는 하지 않았다.

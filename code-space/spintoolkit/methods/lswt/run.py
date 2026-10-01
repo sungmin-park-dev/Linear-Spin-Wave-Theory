@@ -49,6 +49,25 @@ class LSWTError(ValueError):
     """The LSWT Hamiltonian cannot be diagonalized as requested."""
 
 
+def require_lab_frame(result, observable: str) -> None:
+    """Refuse a rotating-frame spiral result for an observable that assumes lab-frame spins.
+
+    The rotating-frame result of a spiral (D34) has the right energies and
+    magnon bands, but its spins are the rotating-frame spins: lab-frame
+    correlations mix ``k`` with ``k +- Q``.
+
+    Raises
+    ------
+    ValueError
+        If ``result.extra["frame"]`` is ``"rotating"``.
+    """
+    if getattr(result, "extra", {}).get("frame") == "rotating":
+        raise ValueError(f"{observable} needs lab-frame spins, but this LSWT result is in the "
+                         "rotating frame of a spiral (D34); use spiral_structure_factor for "
+                         "the spin structure factor. Other lab-frame observables of spirals "
+                         "are not implemented.")
+
+
 @dataclass(frozen=True)
 class LSWTSettings:
     """Method settings of :func:`solve_lswt`.
