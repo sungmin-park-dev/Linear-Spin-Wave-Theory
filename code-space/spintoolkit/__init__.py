@@ -55,6 +55,7 @@ from spintoolkit.system.model import (
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
 from spintoolkit.states.spin_state import SpinState, SpinStateError, validate_spin_state
+from spintoolkit.states.incommensurate import IncommensurateStructure
 
 # Calculation methods
 from spintoolkit.methods.base import AbstractSolver, SolverResult
@@ -72,7 +73,7 @@ __all__ = [
     # Common model definition
     'SpinModel', 'Site', 'Term', 'SpinModelError', 'validate_spin_model',
     'ExternalConditions', 'CalculationGeometry',
-    'SpinState', 'SpinStateError', 'validate_spin_state',
+    'SpinState', 'SpinStateError', 'validate_spin_state', 'IncommensurateStructure',
     'models',
     # Solvers
     'AbstractSolver', 'SolverResult',

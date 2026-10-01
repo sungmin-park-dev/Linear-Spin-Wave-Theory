@@ -91,7 +91,9 @@ python -m pytest code-space/tests -q
 
 ## 알려진 제한사항
 
-- 비정합(incommensurate) 자기 구조는 미구현 상태입니다.
+- 비정합(incommensurate) 자기 구조는 단일 Q 나선(평면·원뿔)만 지원합니다(`solve_spiral_lswt`, 회전틀 LSWT).
+  해밀토니안이 나선 축 둘레 회전에 대해 대칭(축 방향 XXZ·DM, 축 방향 장)이어야 하며, 그렇지 않으면 근사값 대신
+  오류로 거부합니다. 다중 Q 구조와 나선 마그논의 위상량은 지원하지 않습니다.
 - 작은 회피 교차 근처에 곡률이 몰린 모델(NBCP 등)의 thermal Hall은 균일 격자로 수렴이 느려
   적응형 적분(`AdaptiveIntegration`)과 수렴 확인이 필요합니다.
 - 비균일 pseudo-Goldstone soft mode 처리는 지원하지 않습니다.

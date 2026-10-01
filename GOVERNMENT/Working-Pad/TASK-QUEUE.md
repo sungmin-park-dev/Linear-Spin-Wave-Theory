@@ -5,7 +5,7 @@ section: working-pad
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Task Queue
@@ -29,6 +29,7 @@ updated: 2026-09-30
 | 8 | issue | NBCP 문서 구조와 코드 물리 구현 검토 | in-review; 9장·4부록 LaTeX 원본 전환 및 claim-to-code 대응 작성; 변위 방향은 D13으로 해결(2026-09-30), 원고 문장 수정 대기; 다음: 독립 bond-count 검토 | `issue-notes/open/260918-nbcp-physics-code-review.md` |
 | 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D29 결정과 0–5단계 구현 반영 | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
 | 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–6단계(2b, 4d, 5a–5d, 6a–6c 포함) 구현·검증, 7단계(시각화) 계획; Beamer 검토본 42 사용자 검토 대기 | `../../docs/development/README.md` |
+| 11 | idea | 단일 Q 나선의 회전틀 LSWT (`IncommensurateStructure`, D34) | in-review; 구현·검증(테스트 21개, 해석식·초격자 대조), 사용자 물리·수학 검토 대기 | `idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md` |
 
 ## 동기화 규칙
 

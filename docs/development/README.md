@@ -46,6 +46,7 @@ Beamer PDF다. 구현·검증 기록은 설계를 뒷받침하는 부록으로 �
 - `verification/state-selection-2026-09-29.json`: `quantum` 경로 수정의 테스트·수치 기록과 D17 궤도 축 수치 확인.
 - `verification/state-selection-criteria-2026-09-29.json`: D17 판정 기준 자료(영공간 판정 규칙 비교, 선택의 mesh 의존성)와 J_Gamma 해석 정정.
 - `verification/d28-implementation-2026-09-30.json`: D28 구현의 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행, 검토 기록 정정.
+- `verification/spiral-rotating-frame-2026-10-01.json`: D34 단일 Q 나선 회전틀 LSWT의 해석식·초격자 대조와 거부 사례 기록(`examples/spiral_lswt_check.py`).
 - `build/`: 빌드 중간 파일. 생성 PDF와 함께 기본 Git 추적에서 제외한다.
 
 ## 근거 문서
