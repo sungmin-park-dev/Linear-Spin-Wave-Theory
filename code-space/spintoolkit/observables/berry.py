@@ -32,7 +32,10 @@ JPSJ 74, 1674 (2005)), with the paraunitary inner product. Neither is proof
 on its own: a gap that closes between mesh points (e.g. Dirac points) passes
 the mesh checks, the FHS sum is then still an integer but may be wrong, and
 the Kubo sum is not an integer on a coarse mesh. :func:`chern_numbers`
-accepts a Chern number only when the two agree.
+accepts a Chern number only when the two agree. A plaquette that encloses a
+band touching (e.g. a Dirac point at D = 0) has phase exactly pi, where the
+branch -pi or +pi is set by round-off; FHS returns NaN for such inadmissible
+plaquettes instead of an arbitrary integer.
 """
 
 from __future__ import annotations
@@ -47,7 +50,7 @@ import warnings
 from spintoolkit.definitions.defaults import (
     TOPOLOGY_ADAPTIVE_ABSOLUTE, TOPOLOGY_ADAPTIVE_MAX_DEPTH, TOPOLOGY_ADAPTIVE_MAX_POINTS,
     TOPOLOGY_ADAPTIVE_RELATIVE, TOPOLOGY_BAND_GAP_CUTOFF, TOPOLOGY_CHERN_AGREEMENT,
-    TOPOLOGY_MIN_LINK_OVERLAP)
+    TOPOLOGY_MIN_LINK_OVERLAP, TOPOLOGY_PLAQUETTE_PHASE_MARGIN)
 from spintoolkit.observables.topology import (
     c2_weight, c2_weight_derivative, compute_berry_curvature, curvature_pair_terms,
     weighted_curvature_sum)
@@ -194,7 +197,8 @@ def _gauge_matrix(positions, G, sign) -> np.ndarray:
 
 
 def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
-                      min_link_overlap: float = TOPOLOGY_MIN_LINK_OVERLAP) -> np.ndarray:
+                      min_link_overlap: float = TOPOLOGY_MIN_LINK_OVERLAP,
+                      plaquette_phase_margin: float = TOPOLOGY_PLAQUETTE_PHASE_MARGIN) -> np.ndarray:
     """Chern numbers from lattice link variables of the stored eigenvectors.
 
     The momenta must form a complete uniform mesh; links that cross the zone
@@ -208,6 +212,12 @@ def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
     band between mesh points or the mesh does not resolve it. The mesh check
     of ``band_gap_cutoff`` alone cannot see such a crossing, and the Kubo sum
     of :meth:`BerryCurvature.chern_numbers` does not detect it either.
+
+    The integer is independent of the branch of each plaquette phase only
+    when every plaquette phase satisfies ``|F| < pi`` (FHS admissibility). A plaquette phase within ``plaquette_phase_margin`` of
+    ``+-pi`` gives NaN with a warning: the plaquette encloses a band touching
+    (e.g. a Dirac point, Berry phase pi) or the mesh does not resolve the
+    curvature, and the branch, hence the integer, would be set by round-off.
 
     Returns
     -------
@@ -255,7 +265,7 @@ def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
     for band in range(ns):
         if np.any(spacing[:, band] <= band_gap_cutoff):
             continue
-        total, weakest = 0.0, np.inf
+        total, weakest, largest = 0.0, np.inf, 0.0
         for i in range(n1):
             for j in range(n2):
                 u00 = vector(i, j, band)
@@ -265,12 +275,20 @@ def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
                 links = (np.vdot(u00, eta * u10), np.vdot(u10, eta * u11),
                          np.vdot(u11, eta * u01), np.vdot(u01, eta * u00))
                 weakest = min(weakest, min(abs(x) for x in links))
-                total += np.angle(np.prod(links))
+                phase = np.angle(np.prod(links))
+                largest = max(largest, abs(phase))
+                total += phase
         if weakest <= min_link_overlap:
             warnings.warn(f"band {band}: smallest link overlap {weakest:.3g} <= {min_link_overlap}; "
                           "the band crosses another band between mesh points or the mesh does not "
                           "resolve it, so its Chern number is undefined here (NaN)",
                           UserWarning, stacklevel=2)
+            continue
+        if largest >= np.pi - plaquette_phase_margin:
+            warnings.warn(f"band {band}: a plaquette phase is {largest:.12g}, within "
+                          f"{plaquette_phase_margin} of pi (FHS admissibility); the plaquette "
+                          "encloses a band touching or the mesh does not resolve the curvature, "
+                          "so its Chern number is undefined here (NaN)", UserWarning, stacklevel=2)
             continue
         chern[band] = -orientation * total / (2 * np.pi)
     return chern

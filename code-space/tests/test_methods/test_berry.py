@@ -11,9 +11,9 @@
    (pairing terms), sum over particle bands zero, cell gauge = full-position
    gauge, Kubo converges to the FHS integers.
 4. Null cases: D = 0, triangular-lattice Heisenberg; band crossings and
-   degeneracies give NaN instead of a number, and a gap that closes between
-   mesh points (where FHS alone returns a wrong integer) is rejected by the
-   Kubo-FHS agreement.
+   degeneracies give NaN instead of a number, a band touching inside a
+   plaquette (phase pi) is not FHS-admissible (NaN), and a gap that nearly
+   closes between mesh points is rejected by the Kubo-FHS agreement.
 5. Thermal Hall (5b): the Haldane value from an independent two-band
    curvature and a quadrature c2; pair form = band sum for separated bands;
    limits t -> 0 and t -> infinity; time reversal; zero for coplanar
@@ -163,15 +163,28 @@ def test_haldane_chern_numbers_flip_with_d_and_vanish_without_it():
     assert np.max(np.abs(flat.curvature)) < 1e-12
 
 
+@pytest.mark.parametrize("mesh", [(12, 12), (24, 24)])
+def test_dirac_touching_inside_a_plaquette_is_not_admissible(mesh):
+    """D = 0: the bands touch at Dirac points K, K' between mesh points, so the band Chern
+    numbers are undefined. Each Dirac plaquette has Berry phase pi, whose branch (+-pi) is
+    set by round-off; FHS returns NaN instead of an arbitrary integer, while the Kubo sum is 0."""
+    result = haldane(0.0, mesh)[2]
+    with pytest.warns(UserWarning, match="admissibility"):
+        assert np.all(np.isnan(chern_numbers_fhs(result)))
+    assert np.allclose(berry_curvature(result).chern_numbers(), 0, atol=1e-10)
+    with pytest.warns(UserWarning, match="admissibility"):
+        assert np.all(np.isnan(chern_numbers(result)))
+
+
 def test_gap_closing_between_mesh_points_is_caught_by_kubo_and_fhs_disagreeing():
-    """D = 0: Dirac points between the 12 x 12 mesh points. FHS still returns an integer (-1),
-    the Kubo sum is 0; chern_numbers rejects the pair, and a finer mesh gives 0 in both."""
-    coarse = haldane(0.0, (12, 12))[2]
-    assert np.allclose(chern_numbers_fhs(coarse), [-1, 1], atol=1e-10)
-    assert np.allclose(berry_curvature(coarse).chern_numbers(), 0, atol=1e-10)
+    """D = 1e-3: a nearly closed gap at the Dirac points between the 12 x 12 mesh points.
+    FHS returns the integer (plaquette phases stay below pi), the Kubo sum is far from it;
+    chern_numbers rejects the pair, and a gapped case on a finer mesh is accepted."""
+    coarse = haldane(1e-3, (12, 12))[2]
+    assert np.allclose(chern_numbers_fhs(coarse), [1, -1], atol=1e-10)
+    assert np.all(np.abs(berry_curvature(coarse).chern_numbers()) < 0.1)
     with pytest.warns(UserWarning, match="disagree"):
         assert np.all(np.isnan(chern_numbers(coarse)))
-    assert np.allclose(chern_numbers(haldane(0.0, (24, 24))[2]), 0)
     assert np.array_equal(chern_numbers(haldane(0.2, (24, 24))[2]), [1, -1])
 
 

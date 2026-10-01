@@ -310,6 +310,8 @@ def _generators(expansion) -> np.ndarray:
 # ---------------------------------------------------------------------------
 
 def _null_count_by_gap(values: np.ndarray, gap_ratio: float) -> int:
+    # Values at round-off level carry no ratio information (0 / 1e-17 is not a gap).
+    values = np.maximum(values, EPS * (values.max() if len(values) else 0.0))
     for k in range(len(values) - 1):
         if values[k + 1] > 0 and values[k] / values[k + 1] < gap_ratio:
             return k + 1
