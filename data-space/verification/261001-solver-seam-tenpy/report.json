@@ -1,0 +1,86 @@
+{
+ "cases": [
+  {
+   "case": "XX chain L=12",
+   "sites": 12,
+   "bonds": 12,
+   "max_mps_bond_range": 11,
+   "E_ed": -3.8637033051562866,
+   "E_dmrg": -3.8637033051562706,
+   "dmrg_minus_ed": 1.5987211554602254e-14,
+   "chi": 64,
+   "seconds_ed": 0.05,
+   "seconds_dmrg": 9.72,
+   "tenpy": "1.1.1",
+   "E_reference": -3.863703305156274,
+   "ed_minus_reference": -1.2434497875801753e-14
+  },
+  {
+   "case": "Heisenberg chain L=12",
+   "sites": 12,
+   "bonds": 12,
+   "max_mps_bond_range": 11,
+   "E_ed": -5.3873909174451935,
+   "E_dmrg": -5.387390917445218,
+   "dmrg_minus_ed": -2.4868995751603507e-14,
+   "chi": 64,
+   "seconds_ed": 0.11,
+   "seconds_dmrg": 13.07,
+   "tenpy": "1.1.1"
+  },
+  {
+   "case": "square 4x4 Heisenberg",
+   "sites": 16,
+   "bonds": 32,
+   "max_mps_bond_range": 12,
+   "E_ed": -11.228483208428823,
+   "E_dmrg": -11.228483208428857,
+   "dmrg_minus_ed": -3.375077994860476e-14,
+   "chi": 256,
+   "seconds_ed": 1.26,
+   "seconds_dmrg": 128.94,
+   "tenpy": "1.1.1",
+   "E_reference": -11.2284832,
+   "ed_minus_reference": -8.428823861095225e-09
+  },
+  {
+   "case": "NBCP 3x3, 1 T || c",
+   "sites": 9,
+   "bonds": 27,
+   "max_mps_bond_range": 8,
+   "E_ed": -0.7731539405917708,
+   "E_dmrg": -0.7731539405917701,
+   "dmrg_minus_ed": 6.661338147750939e-16,
+   "chi": 8,
+   "seconds_ed": 0.04,
+   "seconds_dmrg": 8.01,
+   "tenpy": "1.1.1"
+  },
+  {
+   "case": "NBCP 3x3, 1 T || b*",
+   "sites": 9,
+   "bonds": 27,
+   "max_mps_bond_range": 8,
+   "E_ed": -0.768635560743841,
+   "E_dmrg": -0.7686355607438439,
+   "dmrg_minus_ed": -2.886579864025407e-15,
+   "chi": 12,
+   "seconds_ed": 0.08,
+   "seconds_dmrg": 49.11,
+   "tenpy": "1.1.1"
+  },
+  {
+   "case": "NBCP 3x3 + J_PD 0.01, 0.5 T || c",
+   "sites": 9,
+   "bonds": 27,
+   "max_mps_bond_range": 8,
+   "E_ed": -0.5701089032546377,
+   "E_dmrg": -0.5701089032546346,
+   "dmrg_minus_ed": 3.1086244689504383e-15,
+   "chi": 16,
+   "seconds_ed": 0.03,
+   "seconds_dmrg": 3.63,
+   "tenpy": "1.1.1"
+  }
+ ]
+}
