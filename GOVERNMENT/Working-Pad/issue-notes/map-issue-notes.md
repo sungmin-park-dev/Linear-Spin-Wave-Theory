@@ -6,7 +6,7 @@ section: issue-notes
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-30
+updated: 2026-10-01
 must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 ---
 
@@ -31,6 +31,7 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260810-pseudo-goldstone-gap\|260810-pseudo-goldstone-gap]] | problem | SOC Y/V gap 및 PD-only V의 6회 이방성; 위상 강성·열적 주장 검토와 패키지 설계 대기 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog\|260810-lswt-implementation-backlog]] | review | NBCP band plot 작성과 남은 LSWT 구현 backlog(시각화 포팅, 공개 배포, BdG, 비정합 구조) | draft |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260918-nbcp-physics-code-review\|260918-nbcp-physics-code-review]] | review | NBCP 9장 구조, claim-to-code 대응과 독립 물리 구현 검토 | in-review |
+| [[GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide\|261001-lswt-draft-physics-review-guide]] | review | `docs/lswt/` draft 10개의 독립 검산 결과, 고친 오류와 문서별 물리·수학 검토 포인트 | in-review |
 
 ### `closed/` — 종결 이슈
 

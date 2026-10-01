@@ -5,7 +5,7 @@ doc-path: docs/lswt/04-appendices
 status: draft
 last-edited-by: claude
 created: 2026-06-07
-updated: 2026-09-30
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 source-section: "None in the primary note; the restructured TeX contains only an empty TODO section (app:luttinger-tisza). Content follows Luttinger and Tisza (1946) and Lyons and Kaplan (1960)."
 ---
@@ -92,7 +92,7 @@ where $\mathbf u_a\cdot\mathbf u_a=\sum_\gamma(u_a^\gamma)^2$ carries no complex
 - If $4\mathbf Q$ is a reciprocal-lattice vector but $2\mathbf Q$ is not, the phases $\exp(2\mathrm i\mathbf Q\cdot\mathbf R_i)$ take only the values $\pm1$. The condition is $\operatorname{Re}(\mathbf u_a\cdot\mathbf u_a)=0$ and $|\mathbf u_a|^2=2$. Writing $\mathbf u_a=\mathbf x_a+\mathrm i\mathbf y_a$, this requires $|\mathbf x_a|=|\mathbf y_a|=1$ but leaves the angle between $\mathbf x_a$ and $\mathbf y_a$ free. The configuration cycles through $\mathbf x_a,-\mathbf y_a,-\mathbf x_a,\mathbf y_a$; for $\mathbf y_a=\pm\mathbf x_a$ it is the collinear up-up-down-down pattern.
 - Otherwise the phases take at least three values that are not confined to $\pm1$, and the condition is $\mathbf u_a\cdot\mathbf u_a=0$ and $|\mathbf u_a|^2=2$. Then $\mathbf x_a$ and $\mathbf y_a$ are orthonormal, and each sublattice forms a planar spiral in the plane spanned by $\mathbf x_a$ and $\mathbf y_a$.
 
-When the eigenspace of $\lambda_{\mathrm{LT}}$ at $\mathbf Q$ has more than one dimension, $\mathbf w$ may be any vector in it, and the conditions become equations for its coefficients. For a Bravais lattice ($N_s=1$) with isotropic Heisenberg exchange, $\mathsf L_{\mathbf q}=S^2J(\mathbf q)\,\mathsf I_3$ with $J(\mathbf q)=\frac12\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\exp(\mathrm i\mathbf q\cdot\boldsymbol\Delta)$, where $\boldsymbol\Delta$ runs over all neighbor vectors. Every complex vector is then an eigenvector, a planar spiral always satisfies the strong constraint, and the ground state is a spiral with wave vector $\mathbf Q$, as shown by Lyons and Kaplan. For the triangular-lattice antiferromagnet with nearest-neighbor exchange $J>0$, $J(\mathbf q)=J\sum_{m=1}^{3}\cos(\mathbf q\cdot\mathbf a_m)$ over the three bond directions has its minimum $-\frac32J$ at the zone corner, and the spiral at that wave vector is the $120^\circ$ state with energy $-\frac32JS^2$ per site.
+When the eigenspace of $\lambda_{\mathrm{LT}}$ at $\mathbf Q$ has more than one dimension, $\mathbf w$ may be any vector in it, and the conditions become equations for its coefficients. For a Bravais lattice ($N_s=1$) with isotropic Heisenberg exchange, $\mathsf L_{\mathbf q}=S^2J(\mathbf q)\,\mathsf I_3$ with $J(\mathbf q)=\frac12\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\exp(\mathrm i\mathbf q\cdot\boldsymbol\Delta)$, where $\boldsymbol\Delta$ runs over all neighbor vectors. Every complex vector is then an eigenvector, a planar spiral always satisfies the strong constraint, and a spiral with wave vector $\mathbf Q$ is a ground state, as shown by Lyons and Kaplan. When several inequivalent wave vectors minimize $J(\mathbf q)$, other ground states, including multiple-wave-vector states, can have the same energy. For the triangular-lattice antiferromagnet with nearest-neighbor exchange $J>0$, $J(\mathbf q)=J\sum_{m=1}^{3}\cos(\mathbf q\cdot\mathbf a_m)$ over the three bond directions has its minimum $-\frac32J$ at the zone corner, and the spiral at that wave vector is the $120^\circ$ state with energy $-\frac32JS^2$ per site.
 
 ## Inequivalent Sublattices and the Generalized Method
 
@@ -112,7 +112,7 @@ If $\mathsf L_{\mathbf q}-\Lambda$ is positive semidefinite at every $\mathbf q$
 
 - **Zeeman field.** The Zeeman term is linear in the spin vectors, so the energy is no longer a homogeneous quadratic form, and the bound above does not include it.
 - **Multiple wave vectors.** When no single-wave-vector configuration satisfies the strong constraint, a combination of several minimizing wave vectors may still do so. Failure of the single-wave-vector construction therefore does not show that the bound is unattainable.
-- **Degenerate minima.** A minimum of $\lambda_{\min}(\mathbf q)$ on a line or an extended region, or a degenerate eigenspace, signals a degenerate manifold of classical ground states. The choice among them is not made by the classical energy.
+- **Degenerate minima.** When the bound is attained, a minimum of $\lambda_{\min}(\mathbf q)$ on a line or an extended region, or a degenerate eigenspace beyond that required by a global spin-rotation symmetry, signals a degenerate manifold of classical ground states, and the choice among them is not made by the classical energy. The threefold degeneracy of $\mathsf L_{\mathbf q}$ for isotropic exchange reflects only the global rotation of all spins. When the bound is not attained, the degeneracy of the LT minimum does not determine the degeneracy of the true ground states.
 
 ## Relation to Linear Spin-Wave Theory
 
