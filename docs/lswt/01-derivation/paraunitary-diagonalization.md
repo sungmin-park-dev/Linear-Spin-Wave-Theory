@@ -5,7 +5,7 @@ doc-path: docs/lswt/01-derivation
 status: draft
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-30
+updated: 2026-10-01
 source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 source-section: "Diagonalization of Quadratic Boson Hamiltonian; Paraunitary Diagonalization (source pp. 9–11, Eqs. (48)–(60))"
 ---
@@ -65,7 +65,7 @@ $$
 \Sigma_1\mathsf H_{-\mathbf k}^*\Sigma_1=\mathsf H_{\mathbf k}.
 $$ {#eq-lswt-bdg-particle-hole-symmetry}
 
-Since $\Sigma_3\Sigma_1=-\Sigma_1\Sigma_3$, an eigenvector $\mathbf v$ of $\Sigma_3\mathsf H_{-\mathbf k}$ with eigenvalue $\lambda$ yields the eigenvector $\Sigma_1\mathbf v^*$ of $\Sigma_3\mathsf H_{\mathbf k}$ with eigenvalue $-\lambda^*$. For a positive-definite $\mathsf H_{\mathbf k}$, the section on Colpa's construction shows that the eigenvalues are real, $N_{\mathrm{sub}}$ of them positive and $N_{\mathrm{sub}}$ negative. We denote the positive eigenvalues at $\mathbf k$ by the magnon energies $\varepsilon_{n\mathbf k}$; the negative eigenvalues at $\mathbf k$ are then $-\varepsilon_{n,-\mathbf k}$. Ordering the positive eigenvalues first, the diagonal form is
+Since $\Sigma_3\Sigma_1=-\Sigma_1\Sigma_3$, an eigenvector $\mathbf v$ of $\Sigma_3\mathsf H_{-\mathbf k}$ with eigenvalue $\lambda$ yields the eigenvector $\Sigma_1\mathbf v^*$ of $\Sigma_3\mathsf H_{\mathbf k}$ with eigenvalue $-\lambda^*$. For a positive-definite $\mathsf H_{\mathbf k}$, the section on Colpa's construction shows that the eigenvalues are real, $N_{\mathrm{sub}}$ of them positive and $N_{\mathrm{sub}}$ negative. We denote the positive eigenvalues at $\mathbf k$ by the magnon energies $\varepsilon_{n\mathbf k}$; the negative eigenvalues at $\mathbf k$ are then $-\varepsilon_{n,-\mathbf k}$. Ordering the positive eigenvalues first, and the negative eigenvalues in the band order at $-\mathbf k$, the diagonal form is
 
 $$
 \mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}
@@ -107,7 +107,7 @@ E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}},
 N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}.
 $$ {#eq-lswt-zero-point-correction}
 
-The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon vacuum relative to the classical energy $E_{\mathrm{cl}}$; it combines the zero-point energies $\frac12\varepsilon_{n\mathbf k}$ of the oscillators with the constant produced by normal ordering the Holstein–Primakoff Hamiltonian. That constant is the trace subtraction in $\hat H_2$, whose normalization is still provisional in [Momentum-Space BdG Hamiltonian](momentum-space-bdg-hamiltonian.md); $\Delta E_{\mathrm{zp}}$ inherits that condition. Because $\operatorname{Tr}\mathsf A_{\mathbf k}$ is real and the momentum set is closed under inversion, $\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{\mathbf k}=\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$, so the correction can equally be written as $\frac12\sum_{\mathbf k}\sum_n\varepsilon_{n\mathbf k}-\frac14\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$. The two forms agree after the momentum sum; their summands need not agree at a single momentum.
+The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon vacuum relative to the classical energy $E_{\mathrm{cl}}$; it combines the zero-point energies $\frac12\varepsilon_{n\mathbf k}$ of the oscillators with the trace subtraction in $\hat H_2$. The trace subtraction removes the constant $\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{-\mathbf k}$ that appears when the normal-ordered quadratic Hamiltonian is rewritten in the symmetric Nambu form, which commutes the hole components $\hat a_{-\mathbf k}\hat a_{-\mathbf k}^\dagger$; replacing $\mathsf A_{-\mathbf k}$ by $\mathsf A_{\mathbf k}$ in this constant uses the same inversion closure as above. The normalization of the subtraction relative to the real-space construction, including any constant from Holstein–Primakoff terms that are not normal ordered, is still provisional in [Momentum-Space BdG Hamiltonian](momentum-space-bdg-hamiltonian.md); $\Delta E_{\mathrm{zp}}$ inherits that condition. Because $\operatorname{Tr}\mathsf A_{\mathbf k}$ is real and the momentum set is closed under inversion, $\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{\mathbf k}=\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$, so the correction can equally be written as $\frac12\sum_{\mathbf k}\sum_n\varepsilon_{n\mathbf k}-\frac14\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$. The two forms agree after the momentum sum; their summands need not agree at a single momentum.
 
 ## Colpa's Construction for a Positive-Definite BdG Matrix
 
@@ -147,7 +147,7 @@ The construction fixes $\mathsf T_{\mathbf k}$ only up to $\mathsf T_{\mathbf k}
 
 ## Positive-Semidefinite and Indefinite BdG Matrices
 
-The quadratic form $\hat\Psi_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\hat\Psi_{\mathbf k}$ is the harmonic energy of the spin fluctuations about the classical reference configuration of [Classical Order and Local Frame](../00-foundations/classical-order-and-local-frame.md). Positive definiteness of $\mathsf H_{\mathbf k}$ at every momentum means that every harmonic fluctuation raises the energy. If $\mathsf H_{\mathbf k}$ is indefinite at some momentum, a fluctuation lowers the energy, the reference configuration is not a local minimum, and LSWT about it does not describe stable magnons. The Cholesky factorization then fails, and $\Sigma_3\mathsf H_{\mathbf k}$ may have complex eigenvalues.
+The quadratic form $\hat\Psi_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\hat\Psi_{\mathbf k}$ is the harmonic energy of the spin fluctuations about the classical reference configuration of [Classical Order and Local Frame](../00-foundations/classical-order-and-local-frame.md). Positive definiteness of $\mathsf H_{\mathbf k}$ at every momentum means that every harmonic fluctuation raises the energy. If $\mathsf H_{\mathbf k}$ is indefinite at some momentum, a fluctuation lowers the energy, the reference configuration is not a local minimum, and the magnon vacuum is not the ground state of $\hat H_2$. The Cholesky factorization then fails. The matrix $\Sigma_3\mathsf H_{\mathbf k}$ may have complex eigenvalues, which signal a dynamical instability, or real eigenvalues with a mode of negative energy, as for a ferromagnet polarized against the field; in either case the harmonic expansion does not describe the equilibrium state.
 
 A positive-semidefinite $\mathsf H_{\mathbf k}$ has zero modes, for example Goldstone modes of a broken continuous symmetry. Its Cholesky factor is singular, and Colpa's construction does not apply. A single mode with real blocks $\mathsf A=A$ and $\mathsf B=B$, for which $\varepsilon=\sqrt{A^2-B^2}$, shows the two possible behaviors at $\varepsilon=0$:
 

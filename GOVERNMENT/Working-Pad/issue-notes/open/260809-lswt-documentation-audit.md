@@ -6,7 +6,7 @@ issue-type: review
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Current LSWT Theory Documentation Audit
@@ -280,6 +280,17 @@ Matsumoto–Shindou–Murakami, PRB 89, 054420 (2014)은 초록만 확인해 −
 
 Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경고가 없었고, equation ID 6개가 한 번씩 출력됐으며, display 식 9개의 delimiter와 brace가 균형을 이뤘다. 브라우저 pane이 local-file URL을 열지 못해 화면 시각 검토는 사용자 preview로 넘긴다. 이 검사는 출력 구조 검증이며 물리·수학 acceptance가 아니다. Notation 문서에서 Fourier gauge와 thermal-Hall 단위가 "not yet fixed"인 상태는 바꾸지 않았다.
 
+## Independent Check and Skeleton Drafts — 2026-10-01
+
+프로젝트 coordinator 경유 사용자 위임("최고의 spin model 범용 솔빙 패키지", 2026-10-01)에 따라, 2026-09-30 draft 7개를 문서별 독립 검산자가 다시 유도·수치 확인했고, 남은 skeleton 3개를 본문 draft로 작성했다. 결과와 문서별 검토 포인트는 [LSWT draft 물리·수학 검토 가이드](261001-lswt-draft-physics-review-guide.md)가 소유한다. 이 audit에는 요약만 둔다.
+
+- 확인된 오류 14건을 고쳤다. 핵심은 topology 문서의 "thermal Hall 전도도가 Fourier gauge에 무관" 진술(Chern 수만 불변; C3를 깬 모델에서 두 gauge의 κ/T가 0.0266 대 0.0354), c2 가중치의 고온 극한 진술, spin-correlations의 켤레 관계 \([\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(\mathbf q,-t)\), SF의 교환자=2i Im C 진술(상반 경우에만 성립)이다.
+- 정정: 위 Luttinger–Tisza 검토 묶음의 "stage 6b `lt_matrix`(D32)와 같은 정의"는 on-site 항이 없을 때만 맞다. 코드 `lt_matrix`는 bilinear 항만 더한다.
+- 정정: 위 Correlations and Structure Factor 검증의 "1차 moment 합 규칙"은 스펙트럼 함수의 0차 moment(동시각 교환자)다. 문서 본문 표현은 맞다.
+- 원문 worked example의 μ 전개 계수 두 개(부호·인수), ω→0 보손 수의 1/2 누락, Nambu 식의 −½ΣA 상수 누락, 안정 조건 |A|≥|B|를 draft에서 바로잡았다. 원자료는 수정하지 않았다.
+- 코드 발견(문서 범위 밖, 수정하지 않음): `berry.py` docstring의 κ gauge 불변 주장과 이를 시험하지 않는 회귀 시험, 사용자 지정 `k_points`의 반전 닫힘 미확인.
+- 10개 문서 모두 `status: draft`다. 독립 검산은 Human Physics and Mathematics Review를 대체하지 않는다.
+
 ## Active Workspace Inventory
 
 ### Draft Content
@@ -300,16 +311,15 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 | `docs/lswt/02-observables/structure-factor-and-spectral-function.md` | one-magnon weight, 정적·동적 structure factor, detailed balance, broadening, 중성자 투영, retarded 함수·스펙트럼 함수·FDT·합 규칙 | `draft` (2026-09-30 본문 작성) | 같은 검토 묶음 |
 | `docs/lswt/02-observables/thermodynamics.md` | Magnon-gas validity, partition function, U, F, entropy, heat capacity, normalization, zero-mode limits | `draft` (2026-09-30 본문 작성) | 아래 Thermodynamics Draft 검토 묶음의 사용자 물리·수학 검토 |
 | `docs/lswt/02-observables/topological-magnon-quantities.md` | Lattice skyrmion number, BdG Berry curvature, Chern number (Kubo, FHS), per-layer magnon thermal Hall | `draft` (2026-09-30 본문 작성) | 아래 Topology Draft 검토 묶음의 사용자 물리·수학 검토 |
+| `docs/lswt/03-examples/worked-example.md` | 단일 부격자 BdG(비상반 A_k^± 포함), 안정 조건, Bogoliubov 변환, ΔE_zp, 보손 수·이상 평균, μ 응답(Hellmann–Feynman), 영모드 극한 | `draft` (2026-10-01 본문 작성) | 아래 2026-10-01 검토 가이드 |
+| `docs/lswt/04-appendices/paraunitarity-proofs.md` | 군 구조, Σ3 직교성, 양정치에서 부호 규칙·대각화 가능성·관성, 존재 증명, Colpa의 T†Σ3T, gauge 자유도, T_k=Σ1T*_{−k}Σ1 | `draft` (2026-10-01 본문 작성) | 같은 가이드 |
+| `docs/lswt/04-appendices/thermodynamic-derivations.md` | Z 인수분해, U·F, 엔트로피 두 경로, C=T∂S/∂T, 영모드 작은 x 전개, 상관행렬과 P·Q 보손 수 | `draft` (2026-10-01 본문 작성) | 같은 가이드 |
 
 ### Draft Skeletons
 
-| File | Intended coverage | Lifecycle |
-|---|---|---|
-| `docs/lswt/03-examples/worked-example.md` | Single-mode quadratic-boson example | `draft` skeleton |
-| `docs/lswt/04-appendices/paraunitarity-proofs.md` | Paraunitarity proof material | `draft` skeleton |
-| `docs/lswt/04-appendices/thermodynamic-derivations.md` | Entropy and correlation-matrix derivations | `draft` skeleton |
+2026-10-01에 남은 skeleton 3개(`03-examples/worked-example.md`, `04-appendices/paraunitarity-proofs.md`, `04-appendices/thermodynamic-derivations.md`)를 본문 draft로 작성했다. 남은 skeleton은 없다.
 
-현재 합계는 일부 본문이 작성된 draft 14개, skeleton 3개, accepted 0개다.
+현재 합계는 본문이 작성된 draft 17개, skeleton 0개, accepted 0개다.
 
 ## Source and Legacy Retention
 
