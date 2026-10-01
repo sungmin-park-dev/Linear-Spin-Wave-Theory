@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-01T03:21:08.700597+00:00",
+  "generated_utc": "2026-10-01T04:58:36.438179+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -18,7 +18,7 @@
     "docs/nbcp/chapters/08-y-phase.tex": "8912aad046dc67f78b60ccb1875ec52da5253f764dcbdea556dba175a5a90a0c",
     "docs/nbcp/chapters/09-v-phase.tex": "145b1ce59497662d74c654ca62b23f7e43b0b7e088e20c62aa06f83dafa0837f",
     "docs/nbcp/chapters/10-discussion.tex": "a14fee3666569d4d497f562a4d8a4fa7cd0d113b783faff86a88e4d476a967d4",
-    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "b6f60f8f4db37162d082a8c8f60e114b25e046742727c795ed98b35991177e08",
+    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "a72a356faff6f29f1241b709503db0f2b144172777a783b02de13dc1aa2e20ae",
     "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
     "docs/nbcp/appendices/c-y-stiffness.tex": "77030a5a1477dcd300c1a4024ebc63e0746758f90772766237d484ca4aca8dfa",
     "docs/nbcp/appendices/d-numerical-verification.tex": "a7106a5950d4ec802079e7ed3434b3ff5e0afbc09aef83821db1922087ea0151",
@@ -49,7 +49,7 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "f5a045aefe8fcc3f3435351d76db2efeadcd234eac0e268c06c0c3b195053ed8"
+    "research-note.pdf": "6cf7f63fec8ace046414095633f2180ac4c2ef964047d336ee744b70b8e9a2f0"
   },
   "latex_review_messages": [],
   "source_display_equations": 92,
