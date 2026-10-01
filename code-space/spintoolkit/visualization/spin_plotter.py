@@ -1,12 +1,19 @@
-"""Spin configuration plotter for SpinSystem objects.
+"""Spin configuration plotter.
+
+Takes a ``SpinModel`` and a ``SpinState`` (stage 7); the state is drawn on its
+magnetic cell through :func:`~spintoolkit.system.conversion.to_spin_system`,
+so the directions shown are exactly those of the state. Passing a
+``SpinSystem`` still works but is deprecated (D30).
 
 Visualizes spin arrangements on a 2D lattice:
 - Gray circle at each site (size = spin magnitude S)
 - Spin marker fill color = Sz component (coolwarm colormap)
 - Black quiver arrow = Sxy projection (in-plane spin direction)
 - Pure z-spin (no xy component) = colored dot (red=up, blue=down)
-- Optional polar subplot showing angular distribution of spins
+- Optional polar subplot: every spin seen from +z (azimuth phi, length sin theta)
 """
+
+import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +21,11 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 from matplotlib.colors import Normalize
 from itertools import product
+
+from spintoolkit.states.spin_state import SpinState
+from spintoolkit.system.conversion import to_spin_system
+from spintoolkit.system.model import SpinModel
+from spintoolkit.system.spin_system import SpinSystem
 
 
 # Bond colors / linestyles for distinct exchange matrices
@@ -126,11 +138,11 @@ def _line_in_bounds(x0, y0, x1, y1, bounds, margin=0.5):
 # Main plot function
 # ======================================================================
 
-def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
+def plot_spin_configuration(model, state=None, n_repeat=1, figsize=(8, 8),
                             show_couplings=True, show_unit_cell=True,
                             show_polar=True, arrow_scale=None,
                             title=None, ax=None):
-    """Plot spin configuration from a SpinSystem object.
+    """Plot the spin configuration of a state.
 
     Visual encoding:
     - Gray circle: lattice site (size proportional to spin magnitude S)
@@ -139,13 +151,16 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
     - Pure z-spin: colored dot (red=up, blue=down), no arrow
 
     If show_polar=True and ax is None, creates a two-panel figure with
-    the spin configuration on the left and a polar angle distribution
+    the spin configuration on the left and the spin directions seen from +z
     on the right.
 
     Parameters
     ----------
-    system : SpinSystem
-        The spin system to visualize.
+    model : SpinModel
+        The model; a ``SpinSystem`` is also accepted (deprecated, D30),
+        in which case ``state`` must be omitted.
+    state : SpinState
+        The configuration to draw; repetitions are of its magnetic cell.
     n_repeat : int, optional
         Number of unit cell repetitions in each direction (default: 1).
     figsize : tuple, optional
@@ -156,7 +171,7 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
     show_unit_cell : bool, optional
         Draw unit cell boundary (default: True).
     show_polar : bool, optional
-        Show polar angle distribution subplot (default: True).
+        Show the spin directions seen from +z (default: True).
     arrow_scale : float or None, optional
         Quiver scale factor. If None, auto-computed from inter-site distance.
     title : str, optional
@@ -171,6 +186,7 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
         Single axes if show_polar=False or ax provided,
         (ax_xy, ax_polar) tuple if show_polar=True.
     """
+    system = _as_spin_system(model, state)
     # Create figure layout
     if ax is not None:
         fig = ax.get_figure()
@@ -196,6 +212,19 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
     if ax_polar is not None:
         return fig, (ax_xy, ax_polar)
     return fig, ax_xy
+
+
+def _as_spin_system(model, state):
+    """SpinSystem of the magnetic cell to draw."""
+    if isinstance(model, SpinSystem):
+        if state is not None:
+            raise TypeError("a SpinSystem already holds its configuration; omit state")
+        warnings.warn("plot_spin_configuration(SpinSystem) is deprecated (D30); "
+                      "pass a SpinModel and a SpinState", DeprecationWarning, stacklevel=3)
+        return model
+    if not isinstance(model, SpinModel) or not isinstance(state, SpinState):
+        raise TypeError("plot_spin_configuration needs a SpinModel and a SpinState")
+    return to_spin_system(model, state)
 
 
 # ======================================================================
@@ -386,36 +415,40 @@ def _draw_spin_lattice(ax, system, n_repeat, show_couplings,
 # ======================================================================
 
 def _draw_polar_angles(ax, system):
-    """Draw polar angle distribution of spins.
+    """Draw the direction of every magnetic site on the unit sphere, seen from +z.
 
-    Each sublattice is shown as a colored arrow from origin to the unit
-    circle at angle theta. The arrow color uses coolwarm for Sz.
+    Each site is an arrow at the azimuth phi (measured from +x,
+    counterclockwise, as the in-plane arrows of the lattice panel) with
+    length sin(theta), the in-plane part of the unit spin; its colour is Sz.
+    Coplanar states such as 120 degrees therefore show their full angular
+    pattern, and the two hemispheres are told apart by colour. A spin along
+    +-z (no in-plane part) is a dot at the centre.
     """
     sz_cmap = plt.cm.coolwarm
     sz_norm = Normalize(vmin=-1, vmax=1)
 
-    ax.set_title("Spin Angles", pad=15, fontsize=11, fontweight='bold')
+    ax.set_title("Spin directions (view from +z)", pad=15, fontsize=11,
+                 fontweight='bold')
     ax.plot(np.linspace(-np.pi, np.pi, 200), np.ones(200),
             '--', color='gray', alpha=0.4, linewidth=0.8)
     ax.set_rticks([])
     ax.set_rlim(0, 1.3)
-    ax.set_theta_offset(np.pi / 2)  # 0 at top
 
     for i, site in enumerate(system.sites):
         theta, phi_angle = site.angles
-        spin_vec = _spin_direction(theta, phi_angle)
-        sz = spin_vec[2]
+        sx, sy, sz = _spin_direction(theta, phi_angle)
+        sxy = np.hypot(sx, sy)
         sz_color = sz_cmap(sz_norm(sz))
         sub_color = SUBLATTICE_COLORS[i % len(SUBLATTICE_COLORS)]
 
-        # Normalize theta to [0, 2*pi)
-        theta_plot = np.mod(theta, 2 * np.pi)
-
-        # Arrow from center to unit circle
-        ax.annotate('', xy=(theta_plot, 1.0), xytext=(theta_plot, 0),
-                    arrowprops=dict(arrowstyle='->', color=sz_color,
-                                    lw=2.5, mutation_scale=15))
-
-        # Sublattice label near arrow tip
-        ax.text(theta_plot, 1.15, site.label, ha='center', va='center',
-                fontsize=9, fontweight='bold', color=sub_color)
+        if sxy > 1e-3:
+            azimuth = np.arctan2(sy, sx)
+            ax.annotate('', xy=(azimuth, sxy), xytext=(azimuth, 0),
+                        arrowprops=dict(arrowstyle='->', color=sz_color,
+                                        lw=2.5, mutation_scale=15))
+            ax.text(azimuth, sxy + 0.15, site.label, ha='center', va='center',
+                    fontsize=9, fontweight='bold', color=sub_color)
+        else:
+            ax.scatter([0], [0], c=[sz_color], s=60, zorder=3)
+            ax.text(0, 0.15, site.label, ha='center', va='center',
+                    fontsize=9, fontweight='bold', color=sub_color)
