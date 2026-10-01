@@ -1,0 +1,408 @@
+{
+ "parameters": {
+  "Jxy": 0.0779,
+  "Jz": 0.1225,
+  "g_ab": 4.2,
+  "S": 0.5
+ },
+ "source": "arXiv:2505.06398 Table 1; fields of Fig. 6 (0.7, 1.0, 1.4 T || b*)",
+ "classical_critical_field_T": 1.717109556246455,
+ "scan": [
+  {
+   "field_T": 0.25,
+   "ground": {
+    "S_y": [
+     1.0,
+     -0.186534,
+     -0.186534
+    ],
+    "S_z": [
+     -0.0,
+     -0.982449,
+     0.982449
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": -0.18653356965069862
+   },
+   "analytic_cos_beta": -0.1865335696506986,
+   "hessian_min_eigenvalue": 0.001717073470101525,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.0372925401276449,
+   "other_stationary_states": []
+  },
+  {
+   "field_T": 0.7,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.177407,
+     0.177407
+    ],
+    "S_z": [
+     0.0,
+     -0.984138,
+     0.984138
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.1774066037804393
+   },
+   "analytic_cos_beta": 0.1774066037804392,
+   "hessian_min_eigenvalue": 0.004732818704002996,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.04063850415812475,
+   "other_stationary_states": []
+  },
+  {
+   "field_T": 1.0,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.420033,
+     0.420033
+    ],
+    "S_z": [
+     -0.0,
+     -0.907509,
+     0.907509
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.42003338606786467
+   },
+   "analytic_cos_beta": 0.4200333860678644,
+   "hessian_min_eigenvalue": 0.003762884922878816,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.031069637024308892,
+   "other_stationary_states": []
+  },
+  {
+   "field_T": 1.4,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.743536,
+     0.743536
+    ],
+    "S_z": [
+     0.0,
+     -0.668696,
+     0.668696
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.7435357624510964
+   },
+   "analytic_cos_beta": 0.743535762451098,
+   "hessian_min_eigenvalue": 0.0006304954999855963,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.014532732311366295,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 3.6947349999996715e-05,
+     "S_y": [
+      0.919904,
+      0.656357,
+      0.919904
+     ],
+     "S_z": [
+      0.392144,
+      -0.754451,
+      0.392144
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 21
+    }
+   ]
+  },
+  {
+   "field_T": 1.5,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.824411,
+     0.824411
+    ],
+    "S_z": [
+     0.0,
+     -0.565991,
+     0.565991
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.824411356546903
+   },
+   "analytic_cos_beta": 0.8244113565469063,
+   "hessian_min_eigenvalue": 0.00028394189305941354,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.010046353809308005,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 1.127492999999924e-05,
+     "S_y": [
+      0.943941,
+      0.943941,
+      0.764923
+     ],
+     "S_z": [
+      0.330113,
+      0.330113,
+      -0.644121
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 15
+    }
+   ]
+  },
+  {
+   "field_T": 1.6,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.905287,
+     0.905287
+    ],
+    "S_z": [
+     -0.0,
+     -0.424801,
+     0.424801
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.9052869506427155
+   },
+   "analytic_cos_beta": 0.9052869506427148,
+   "hessian_min_eigenvalue": 7.936834353342213e-05,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.0054654888234869055,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 1.6850400000045784e-06,
+     "S_y": [
+      0.969131,
+      0.969131,
+      0.873398
+     ],
+     "S_z": [
+      0.246548,
+      0.246548,
+      -0.487007
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 9
+    }
+   ]
+  },
+  {
+   "field_T": 1.65,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.945725,
+     0.945725
+    ],
+    "S_z": [
+     0.0,
+     -0.324969,
+     0.324969
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.945724747690615
+   },
+   "analytic_cos_beta": 0.945724747690619,
+   "hessian_min_eigenvalue": 2.5548297630136662e-05,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.003144266755250642,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 3.0959999999802257e-07,
+     "S_y": [
+      0.982136,
+      0.982136,
+      0.927523
+     ],
+     "S_z": [
+      0.188174,
+      0.188174,
+      -0.373766
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 3
+    }
+   ]
+  },
+  {
+   "field_T": 1.68,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.969987,
+     0.969987
+    ],
+    "S_z": [
+     0.0,
+     -0.243155,
+     0.243155
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.9699874259193502
+   },
+   "analytic_cos_beta": 0.9699874259193615,
+   "hessian_min_eigenvalue": 7.718230740133885e-06,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.001742589929940398,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 5.16099999958719e-08,
+     "S_y": [
+      0.990065,
+      0.959949,
+      0.990065
+     ],
+     "S_z": [
+      -0.140612,
+      0.280176,
+      -0.140612
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 3
+    }
+   ]
+  },
+  {
+   "field_T": 1.7,
+   "ground": {
+    "S_y": [
+     1.0,
+     0.986163,
+     0.986163
+    ],
+    "S_z": [
+     0.0,
+     -0.165781,
+     0.165781
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.9861625447385107
+   },
+   "analytic_cos_beta": 0.9861625447385232,
+   "hessian_min_eigenvalue": 1.62598268776893e-06,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.0008046004400676038,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 5.0099999981956245e-09,
+     "S_y": [
+      0.995402,
+      0.981543,
+      0.995402
+     ],
+     "S_z": [
+      -0.095784,
+      0.191244,
+      -0.095784
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 3
+    }
+   ]
+  },
+  {
+   "field_T": 1.71,
+   "ground": {
+    "S_y": [
+     0.99425,
+     0.99425,
+     1.0
+    ],
+    "S_z": [
+     0.107083,
+     -0.107083,
+     0.0
+    ],
+    "type": "I (one spin along B)",
+    "cos_beta": 0.9942501041481535
+   },
+   "analytic_cos_beta": 0.994250104148104,
+   "hessian_min_eigenvalue": 2.7900397407127064e-07,
+   "unstable_points": 0,
+   "lowest_energy_on_path_meV": 0.0003345761432639285,
+   "other_stationary_states": [
+    {
+     "energy_above_ground_meV_per_cell": 3.5000000120355423e-10,
+     "S_y": [
+      0.998086,
+      0.992332,
+      0.998086
+     ],
+     "S_z": [
+      -0.061843,
+      0.1236,
+      -0.061843
+     ],
+     "type": "other",
+     "cos_beta": null,
+     "lswt_unstable_points": 3
+    }
+   ]
+  }
+ ],
+ "bands": [
+  {
+   "field_T": 0.7,
+   "Gamma_meV": [
+    0.04063850415812477,
+    0.13956078063385222,
+    0.23045074836263002
+   ],
+   "K_meV": [
+    0.04063850415812475,
+    0.13956078063385233,
+    0.23045074836263002
+   ],
+   "M_meV": [
+    0.10619721516982435,
+    0.18151933180040647,
+    0.19691081501219504
+   ]
+  },
+  {
+   "field_T": 1.0,
+   "Gamma_meV": [
+    0.031069637024308892,
+    0.12869400649154444,
+    0.30359833976253203
+   ],
+   "K_meV": [
+    0.03106963702430893,
+    0.1286940064915445,
+    0.303598339762532
+   ],
+   "M_meV": [
+    0.10914864820668602,
+    0.19022058426064137,
+    0.2068636965143982
+   ]
+  },
+  {
+   "field_T": 1.4,
+   "Gamma_meV": [
+    0.014532732311366295,
+    0.09482795475734077,
+    0.4018279607843603
+   ],
+   "K_meV": [
+    0.014532732311366339,
+    0.0948279547573406,
+    0.40182796078436017
+   ],
+   "M_meV": [
+    0.10122260093182861,
+    0.2111479373863929,
+    0.22097100250103227
+   ]
+  }
+ ],
+ "figure": "data-space/verification/261001-nbcp-three-sublattice-bands/three-sublattice-bands.png"
+}

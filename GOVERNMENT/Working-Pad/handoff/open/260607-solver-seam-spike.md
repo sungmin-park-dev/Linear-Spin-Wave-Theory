@@ -192,4 +192,4 @@ DMRG 두 경우에서 TeNPy가 마지막 정준형 노름 경고(2e-5, 8e-2)를 
 
 **남은 것.** NQS(NetKet)는 설치·검증하지 않았다(jax 무게). TN 필드 규약(D30의 "TN 필드 규약")은 이 결과로 정할 수 있다: 장은
 모델에 넣지 않고 `ExternalConditions`에서 `TorusCluster.fields(conditions)`로 사이트 장을 만들어 `-h_i . S_i`로 넣는다(ED와 같은
-부호, 위 표에서 확인). 이 결정은 사용자 확인 대상이다. 1D Bethe 노트(`bethe-ansatz-xxz.md`)와 원래 계획의 TN-Study 하네스는 하지 않았다.
+부호, 위 표에서 확인). 사용자 확인 2026-10-01("둘다 동의해"): 이 규약으로 확정한다. 1D Bethe 노트(`bethe-ansatz-xxz.md`)와 원래 계획의 TN-Study 하네스는 하지 않았다.
