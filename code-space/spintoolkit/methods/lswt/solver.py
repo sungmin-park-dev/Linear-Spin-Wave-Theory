@@ -19,9 +19,11 @@ from spintoolkit.observables.bose_statistics import compute_static_magnon_kernel
 from spintoolkit.methods.base import AbstractSolver, SolverResult
 from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
-# TODO: Uncomment once observables modules are connected
-# from spintoolkit.observables.thermodynamics import Thermodynamics
-# from spintoolkit.observables.topology import Topology
+# Observables are not attached to this deprecated solver (D30). They act on the
+# LSWTResult of solve_lswt: observables.thermal.thermal_quantities,
+# observables.berry (berry_curvature, chern_numbers, thermal_hall),
+# observables.structure_factor, observables.bands.band_structure and
+# observables.zero_modes.scan_zero_modes.
 
 
 class LSWTSolver(AbstractSolver):
@@ -200,10 +202,6 @@ class LSWTSolver(AbstractSolver):
         )
         self.regularization = regularization
         self.magswt_onsite = chem_pot_magswt
-
-        # TODO: Initialize physics modules once connected
-        # self.ther = Thermodynamics(self)
-        # self.topo = Topology(self)
 
         return k_data, bz_data, full_k_points
 
