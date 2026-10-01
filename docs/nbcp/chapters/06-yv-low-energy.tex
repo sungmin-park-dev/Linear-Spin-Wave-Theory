@@ -49,9 +49,61 @@ the Berry term; Section~\ref{sec-nbcp-verification-appendix} and its
 linked code review retain the legacy comparison. The current
 representative gaps at nonzero coupling 0.010 meV are 0.00686217 meV
 (Y/PD), \(7.2960\times10^{-6}\) meV (Y/Gamma), 0.0156468 meV (V/PD) and
-0.00203898 meV (V/Gamma). They describe the leading local pinning
+0.00203898 meV (V/Gamma), for \(B=0.2\) T in Y, \(B=1.4\) T in V and
+base mesh \(N=48\). They describe the leading local pinning
 calculation at \(T=0\), not a finite-temperature transition or an
 all-orders prediction for \(S=1/2\).
+
+\subsection{Order of the angular harmonics in the SOC
+couplings}\label{sec-nbcp-yv-selection-rule}
+
+A common spin rotation \(U_\alpha=\exp(-i\alpha\sum_j\hat S_j^z)\) does not
+leave the SOC terms invariant, but it maps the Hamiltonian family into
+itself. With \(\hat S^\pm\to e^{\mp i\alpha}\hat S^\pm\), the PD bracket
+\(\hat S^\pm_i\hat S^\pm_j\) and the Gamma bracket
+\(\hat S^\pm_i\hat S^z_j\) acquire phases \(e^{\mp2i\alpha}\) and
+\(e^{\mp i\alpha}\). In complex form,
+\begin{equation}\label{eq-nbcp-soc-charge}
+U_\alpha\hat H(J_{\rm PD},J_\Gamma)U_\alpha^\dagger
+=\hat H\bigl(J_{\rm PD}e^{-2i\alpha},J_\Gamma e^{-i\alpha}\bigr),
+\end{equation}
+where the complex couplings multiply the raising parts and their
+conjugates the lowering parts, with the bond phases unchanged. PD
+therefore carries spin-rotation charge \(\pm2\) and Gamma charge
+\(\pm1\). A rotated background \(\phi\) in the original Hamiltonian is
+equivalent to the fixed background \(\phi=0\) in the rotated Hamiltonian.
+Any analytic angular energy is then a sum of monomials
+\(J_{\rm PD}^{a_+}\bar J_{\rm PD}^{a_-}J_\Gamma^{b_+}\bar J_\Gamma^{b_-}\)
+multiplying \(e^{in\phi}\), with
+\begin{equation}\label{eq-nbcp-soc-selection}
+n=2(a_+-a_-)+(b_+-b_-).
+\end{equation}
+Real couplings give \(\bar J=J\). The spin-only \(U_\pi\) reverses
+\(J_\Gamma\) and shifts \(\phi\) by \(\pi\), so a harmonic with odd
+\(n\) is odd in \(J_\Gamma\) and one with even \(n\) is even. This
+counting holds at every order of the spin-wave expansion; the lattice
+symmetry then restricts which \(n\) survive for each phase.
+
+The lowest monomials follow directly. A sixfold term requires one of
+\(J_{\rm PD}^3\), \(J_{\rm PD}^2J_\Gamma^2\), \(J_{\rm PD}J_\Gamma^4\) or
+\(J_\Gamma^6\). A threefold term requires \(J_{\rm PD}J_\Gamma\) or
+\(J_\Gamma^3\). The existing scans test the first statement. For
+pure-Gamma Y, doubling \(J_\Gamma\) from 0.005 to 0.010 meV multiplies
+\(\lambda_6\) by 65.7, an effective power of 6.04, which explains the
+very small Y/Gamma gap. For pure-PD Y the same doubling gives 12.1, an
+effective power of 3.60 instead of 3; the next allowed term,
+\(J_{\rm PD}^5\), is therefore not negligible at 0.010 meV, and these
+points lie outside the asymptotic weak-SOC regime. The mixed-SOC excess
+of the Y sixth harmonic over the sum of the pure-axis values
+(Section~\ref{sec-nbcp-y-angular-matching}) is consistent with the
+\(J_{\rm PD}^2J_\Gamma^2\) cross term; its separate scaling has not been
+fitted.
+
+For V the rule gives a prediction not yet tested numerically. Near the
+PD axis, the leading threefold coefficient is \(J_{\rm PD}J_\Gamma\), linear
+in \(J_\Gamma\), rather than the \(J_\Gamma^3\) behavior that dominates on
+the pure-Gamma axis. Extrapolating the pure-Gamma V harmonic would
+therefore underestimate the threefold pinning at small mixed SOC.
 
 \subsection{Canonical response and interpretation of the
 gap}\label{canonical-response-and-interpretation-of-the-gap}
