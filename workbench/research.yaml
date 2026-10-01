@@ -1,3 +1,16 @@
 title: NBCP spin supersolid
 question: NBCP의 Y·V 상이 유한온도에서 spin supersolid인지, vortex와 thermal matching으로 판정한다
 started: 2026-09-30
+agent-status: true
+sources:
+  canon:
+    - docs/nbcp/main.tex — NBCP 연구 원고 (내용 원본, chapters/·appendices/ 포함)
+    - docs/lswt — LSWT 일반 이론 Markdown 정본 (사용자 승인 본문만)
+  tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md
+  bib: [docs/nbcp/references.bib]
+  materials:
+    - GOVERNMENT/Working-Pad/project-review
+    - data-space/verification/261001-nbcp-harmonic-phase-diagram
+    - docs/nbcp/output
+    - docs/lswt/sources/02-reference-papers
+  reviews: [docs/lswt]
