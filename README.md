@@ -19,9 +19,9 @@ Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up
 | Model | Sites, bilinear exchange (any 3×3 matrix), single-ion terms, Zeeman coupling with a g-tensor; symmetry detection on the layer group |
 | Classical states | Energy, torques, global search on a magnetic supercell, Luttinger–Tisza, Monte Carlo, Landau–Lifshitz and Langevin dynamics |
 | LSWT | `solve_lswt` for commensurate states (Colpa diagonalization, zero-point energy, stability check); rotating-frame LSWT for single-Q spirals |
-| Observables | Band structures; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
+| Observables | Band structures and density of states; magnetization curve M(h) with the 1/S correction and moment reduction; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
 | Comparison | `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy |
-| Figures | Bands, neutron maps (path, constant energy, powder), Berry curvature, thermal Hall, spin textures with skyrmion density, phase diagrams, thermodynamics, spin configurations |
+| Figures | Bands and density of states, neutron maps (path, constant energy, powder, energy-integrated with Bragg peaks, single spin components), magnetization curves, Berry curvature, thermal Hall, spin textures with skyrmion density, phase diagrams, thermodynamics, spin configurations |
 | Exact diagonalization | Small clusters, for checking LSWT |
 
 Spin-wave theory is an expansion about an ordered classical state. The package
@@ -94,6 +94,8 @@ candidate state is stable.
 ![Magnon bands and neutron intensity of the triangular antiferromagnet](data-space/gallery/02-bands-and-neutron-path.png)
 ![Constant-energy slice and powder average](data-space/gallery/03-neutron-slice-and-powder.png)
 ![Berry curvature and thermal Hall conductivity of the honeycomb ferromagnet with DM interaction](data-space/gallery/04-berry-curvature-and-thermal-hall.png)
+![Bands beside the density of states, and the energy-integrated intensity with Bragg peaks](data-space/gallery/08-bands-dos-and-static-structure-factor.png)
+![Magnetization curve of the square-lattice antiferromagnet at classical and harmonic order](data-space/gallery/10-magnetization-curve.png)
 ![Skyrmion, tetrahedral and 120-degree textures with their solid-angle density](data-space/gallery/05-spin-textures.png)
 
 ## Deprecated API

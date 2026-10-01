@@ -19,6 +19,14 @@ constants. Every figure is computed from scratch.
    E_cl + E_zp among the LSWT-stable candidates. Around J2 = J1 / 2 neither
    state is stable at harmonic order (the classical degeneracy gives soft
    lines), so the winner is "undefined" there rather than either state.
+6. Triangular 120 degree state again: bands beside the magnon density of
+   states, the energy-integrated neutron intensity (diffuse part in colour,
+   Bragg peaks at K and K' as circles), and the spin components S^xx and S^zz
+   along the path (spins lie in the xy plane, so S^zz is purely transverse).
+7. Square Heisenberg antiferromagnet (S = 1/2) in a field along z: M(h) at
+   classical order (h / 8J up to saturation h = 8JS) and with the 1/S
+   correction -dE_zp/dh, and the ordered moment S - <n>, which reaches S at
+   saturation.
 
 Usage
 -----
@@ -39,16 +47,20 @@ import numpy as np
 
 import spintoolkit as stk
 from spintoolkit.methods.phase_competition import compare_states
-from spintoolkit.models import (honeycomb_ferromagnet, polarized_state, state_120,
-                                triangular_heisenberg)
-from spintoolkit.observables.bands import band_structure
+from spintoolkit.models import (honeycomb_ferromagnet, neel_state, polarized_state,
+                                square_heisenberg, state_120, triangular_heisenberg)
+from spintoolkit.methods.magnetization import magnetization_curve
+from spintoolkit.observables.bands import band_structure, density_of_states
 from spintoolkit.observables.berry import berry_curvature, thermal_hall
-from spintoolkit.observables.neutron import neutron_path, neutron_slice, powder_average
+from spintoolkit.observables.neutron import (correlation_path, neutron_path, neutron_slice,
+                                             powder_average, static_slice)
 from spintoolkit.observables.thermal import thermal_quantities
-from spintoolkit.visualization import (plot_bands, plot_berry_curvature, plot_intensity_path,
-                                       plot_intensity_slice, plot_phase_diagram, plot_powder,
+from spintoolkit.visualization import (plot_bands, plot_berry_curvature, plot_density_of_states,
+                                       plot_intensity_path, plot_intensity_slice,
+                                       plot_magnetization_curve, plot_phase_diagram, plot_powder,
                                        plot_spin_configuration, plot_spin_texture,
-                                       plot_thermal_hall, plot_thermodynamics)
+                                       plot_static_structure_factor, plot_thermal_hall,
+                                       plot_thermodynamics)
 
 OUT = ROOT / 'data-space/gallery'
 
@@ -181,6 +193,42 @@ def j1j2_phase_diagram():
     save(fig, '07-phase-diagram')
 
 
+def triangular_static_and_components():
+    model = triangular_heisenberg(J=1.0, S=0.5)
+    result = stk.solve_lswt(model, state_120(model), settings=stk.LSWTSettings(mesh=(24, 24)))
+    fig, axes = plt.subplots(1, 3, figsize=(16, 4.4),
+                             gridspec_kw={'width_ratios': [3, 1, 3]})
+    plot_bands(band_structure(result, ('Γ', 'K', 'M', 'Γ')), axes[0])
+    omega = np.linspace(0, 2, 401)
+    fine = stk.solve_lswt(model, state_120(model), settings=stk.LSWTSettings(mesh=(90, 90)))
+    plot_density_of_states(density_of_states(fine, omega, 0.03), axes[1], vertical=True)
+    axes[1].set_ylim(axes[0].get_ylim())
+    axes[1].set_title('density of states', fontsize=9)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')               # Goldstone weight at K is NaN
+        plot_static_structure_factor(static_slice(result, points=161, g=2.0), axes[2])
+    save(fig, '08-bands-dos-and-static-structure-factor')
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), sharey=True)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        for ax, component in zip(axes, ('xx', 'zz')):
+            path = correlation_path(result, omega, 0.04, component, points=300)
+            plot_intensity_path(path, ax, intensity_label=rf'$S^{{{component}}}$ (per site)')
+            ax.set_title(rf'$S^{{{component}}}(\mathbf{{q}},\omega)$, spins in the xy plane',
+                         fontsize=9)
+    save(fig, '09-spin-components')
+
+
+def square_magnetization():
+    model = square_heisenberg(J=1.0, S=0.5)
+    curve = magnetization_curve(model, neel_state(model, (1, 0, 0)), np.linspace(0, 4.4, 45),
+                                k_density=48)
+    axes = plot_magnetization_curve(curve)
+    axes[0].set_title('square Heisenberg AFM, S = 1/2: saturation at h = 8JS', fontsize=9)
+    save(axes[0].figure, '10-magnetization-curve')
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     triangular_spectra()
@@ -188,6 +236,8 @@ def main():
     textures()
     thermodynamics()
     j1j2_phase_diagram()
+    triangular_static_and_components()
+    square_magnetization()
 
 
 if __name__ == '__main__':

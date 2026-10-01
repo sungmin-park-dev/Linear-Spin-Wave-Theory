@@ -126,3 +126,28 @@ def test_thermodynamics_shades_where_lswt_breaks_down():
     assert axes[0].patches                                             # shaded interval
     with pytest.raises(ValueError, match="unknown"):
         plot_thermodynamics(thermal, ("heat",))
+
+
+def test_dos_static_and_magnetization_plots_draw_their_data(triangle):
+    from spintoolkit.methods.magnetization import magnetization_curve
+    from spintoolkit.models import neel_state, square_heisenberg
+    from spintoolkit.observables.bands import density_of_states
+    from spintoolkit.observables.neutron import static_slice
+    from spintoolkit.visualization import (plot_density_of_states, plot_magnetization_curve,
+                                           plot_static_structure_factor)
+
+    _, result = triangle
+    omega = np.linspace(0, 2, 51)
+    dos = density_of_states(result, omega, 0.1)
+    ax = plot_density_of_states(dos, vertical=True)
+    np.testing.assert_array_equal(ax.get_lines()[0].get_xdata(), dos.dos)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        cut = static_slice(result, points=9, g=2.0)
+    ax = plot_static_structure_factor(cut)
+    peaks = cut.bragg_intensity
+    assert len(ax.collections[-1].get_offsets()) == int(np.sum(peaks > 1e-9 * np.nanmax(peaks)))
+    model = square_heisenberg()
+    curve = magnetization_curve(model, neel_state(model, (1, 0, 0)), [0.0, 2.0], k_density=8)
+    axes = plot_magnetization_curve(curve)
+    np.testing.assert_array_equal(axes[0].get_lines()[1].get_ydata(), curve.harmonic)
