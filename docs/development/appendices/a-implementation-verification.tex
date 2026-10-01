@@ -785,6 +785,30 @@ save_json(r, "lswt.json")  # 머리부 + 요약
   \slidesource{4d 검증 기록}{stage4d}
 \end{frame}
 
+\begin{frame}[label=stage7]{7단계: 그림은 계산된 수치만 그리고 불안정을 숨기지 않는다}
+  \framesubtitle{2026-10-01 · \texttt{plot\_bands(bands)}, \texttt{plot\_spin\_configuration(model, state)}; 설계는 2026-10-01 사용자 승인.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    확인 & 결과 \\
+    \midrule
+    선 = 저장된 수치 & 정사각 Néel(2밴드), 삼각 120°(접힌 3밴드): 그린 선이 \texttt{BandStructure.energies}와 정확히 같음; 영모드 표시 3점은 Goldstone 꼭짓점의 $E=0$ \\
+    불안정 & 정사각 반강자성을 포화 아래 장으로 편극($h=3<h_{\mathrm{sat}}=4$): $\omega=h-2(1-\gamma_k)<0$인 M 주변 85/301점이 NaN, 그림은 음영 빈칸; 안정 구간은 식과 $1.3\times10^{-15}$ \\
+    단위 & 계산은 $E_0$(D20); 표시 단위는 \texttt{energy\_scale}과 맞는 \texttt{energy\_label}을 함께 줄 때만 \\
+    스핀 배치 & \texttt{to\_spin\_system}을 거쳐 기존 그리기 그대로; \texttt{SpinSystem} 입력은 사용 중단 경고(D30) \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{검토할 것: 극좌표 패널은 극각 $\theta$만 보여 공면 상태(120°)가 한 방향으로 겹친다.}
+  \slidesource{7단계 검증 기록}{stage7}
+\end{frame}
+
+\begin{frame}[label=stage7-figure]{7단계: 밴드 그림 예}
+  \framesubtitle{왼쪽부터 정사각 Néel, 삼각 120°(접힘), 포화 아래 편극 상태(불안정 구간은 음영 빈칸). 세로축 $E/E_0$.}
+  \centering\includegraphics[width=\textwidth]{figures/stage7-bands.png}
+  \slidesource{7단계 검증 기록}{stage7}
+\end{frame}
+
 \begin{frame}[label=quantum-fix]{\texttt{quantum} 경로의 결함 수정}
   \framesubtitle{2026-09-29 · 커밋 \texttt{d43d8d4} · classical·MAGSWT 경로와 snapshot 수치는 그대로다.}
   \small

@@ -1,4 +1,9 @@
-"""Spin configuration plotter for SpinSystem objects.
+"""Spin configuration plotter.
+
+Takes a ``SpinModel`` and a ``SpinState`` (stage 7); the state is drawn on its
+magnetic cell through :func:`~spintoolkit.system.conversion.to_spin_system`,
+so the directions shown are exactly those of the state. Passing a
+``SpinSystem`` still works but is deprecated (D30).
 
 Visualizes spin arrangements on a 2D lattice:
 - Gray circle at each site (size = spin magnitude S)
@@ -8,12 +13,19 @@ Visualizes spin arrangements on a 2D lattice:
 - Optional polar subplot showing angular distribution of spins
 """
 
+import warnings
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 from matplotlib.colors import Normalize
 from itertools import product
+
+from spintoolkit.states.spin_state import SpinState
+from spintoolkit.system.conversion import to_spin_system
+from spintoolkit.system.model import SpinModel
+from spintoolkit.system.spin_system import SpinSystem
 
 
 # Bond colors / linestyles for distinct exchange matrices
@@ -126,11 +138,11 @@ def _line_in_bounds(x0, y0, x1, y1, bounds, margin=0.5):
 # Main plot function
 # ======================================================================
 
-def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
+def plot_spin_configuration(model, state=None, n_repeat=1, figsize=(8, 8),
                             show_couplings=True, show_unit_cell=True,
                             show_polar=True, arrow_scale=None,
                             title=None, ax=None):
-    """Plot spin configuration from a SpinSystem object.
+    """Plot the spin configuration of a state.
 
     Visual encoding:
     - Gray circle: lattice site (size proportional to spin magnitude S)
@@ -144,8 +156,11 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
 
     Parameters
     ----------
-    system : SpinSystem
-        The spin system to visualize.
+    model : SpinModel
+        The model; a ``SpinSystem`` is also accepted (deprecated, D30),
+        in which case ``state`` must be omitted.
+    state : SpinState
+        The configuration to draw; repetitions are of its magnetic cell.
     n_repeat : int, optional
         Number of unit cell repetitions in each direction (default: 1).
     figsize : tuple, optional
@@ -171,6 +186,7 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
         Single axes if show_polar=False or ax provided,
         (ax_xy, ax_polar) tuple if show_polar=True.
     """
+    system = _as_spin_system(model, state)
     # Create figure layout
     if ax is not None:
         fig = ax.get_figure()
@@ -196,6 +212,19 @@ def plot_spin_configuration(system, n_repeat=1, figsize=(8, 8),
     if ax_polar is not None:
         return fig, (ax_xy, ax_polar)
     return fig, ax_xy
+
+
+def _as_spin_system(model, state):
+    """SpinSystem of the magnetic cell to draw."""
+    if isinstance(model, SpinSystem):
+        if state is not None:
+            raise TypeError("a SpinSystem already holds its configuration; omit state")
+        warnings.warn("plot_spin_configuration(SpinSystem) is deprecated (D30); "
+                      "pass a SpinModel and a SpinState", DeprecationWarning, stacklevel=3)
+        return model
+    if not isinstance(model, SpinModel) or not isinstance(state, SpinState):
+        raise TypeError("plot_spin_configuration needs a SpinModel and a SpinState")
+    return to_spin_system(model, state)
 
 
 # ======================================================================

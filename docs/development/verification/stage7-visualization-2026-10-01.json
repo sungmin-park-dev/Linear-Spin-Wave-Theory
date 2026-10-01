@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-01",
+  "status": "passed (awaiting user confirmation)",
+  "baseline_commit": "f16a93a",
+  "scope": "Stage 7 (visualization), first part: magnon band figure and spin-configuration figure on the common model types. Design approved by the user on 2026-10-01 (proposal: figures draw only what an observable computed).",
+  "api": "spintoolkit.visualization.plot_bands(bands, ax=None, *, energy_scale=1.0, energy_label='E / E0', mark_zero_modes=True, color='C0', linewidth=1.4) -> Axes; spintoolkit.visualization.plot_spin_configuration(model, state, n_repeat=1, ...) -> (fig, axes); a SpinSystem as first argument still works with a DeprecationWarning (D30).",
+  "rules": [
+    "Lines are the stored BandStructure energies times the display scale; nothing is recomputed.",
+    "Energies stay in E0 (D20); a display unit needs an explicit energy_scale with a matching energy_label (a scale other than one with the default label raises).",
+    "Unstable momenta (NaN) stay gaps and are shaded; never interpolated.",
+    "Zero modes are marked at E = 0; Goldstone or accidental is not decided by the figure.",
+    "Magnetic-cell bands are drawn folded, as band_structure returns them."
+  ],
+  "added": {
+    "code-space/spintoolkit/visualization/bands.py": "plot_bands",
+    "code-space/spintoolkit/visualization/spin_plotter.py": "(SpinModel, SpinState) input through to_spin_system; drawing unchanged",
+    "code-space/tests/test_visualization/test_plots.py": "4 tests",
+    "examples/visualization_stage7_check.py": "this record",
+    "docs/development/figures/stage7-bands.png": "benchmark figure",
+    "docs/development/figures/stage7-spin-configuration.png": "benchmark figure"
+  },
+  "findings": [
+    "Square Neel (2 bands of the 2-site magnetic cell) and triangular 120 degrees (3 folded bands): every plotted line equals BandStructure.energies exactly; zero-mode markers at the 3 marked momenta (Goldstone vertices) at E = 0.",
+    "Square antiferromagnet polarized below saturation (h = 3 < h_sat = 2zJS = 4): the dispersion h - 2(1 - gamma_k) is negative around M; band_structure gives NaN exactly where the formula is negative (85 of 301 points), the figure leaves that interval as a shaded gap, and the stable part matches the formula within 1.3e-15.",
+    "Spin-configuration drawing is the existing one; open for review: the polar panel shows only the polar angle theta, so a coplanar state (all theta = 90 degrees, e.g. 120 degrees) collapses to one direction there."
+  ],
+  "report": {
+    "square_neel": {
+      "lines_equal_stored_energies": true,
+      "bands": 2,
+      "zero_mode_markers": 3,
+      "markers_at_marked_momenta": true,
+      "unstable_points": 0,
+      "shaded_intervals": 0
+    },
+    "triangular_120": {
+      "lines_equal_stored_energies": true,
+      "bands": 3,
+      "zero_mode_markers": 3,
+      "markers_at_marked_momenta": true,
+      "unstable_points": 0,
+      "shaded_intervals": 0
+    },
+    "polarized_below_saturation_h3": {
+      "lines_equal_stored_energies": true,
+      "bands": 1,
+      "zero_mode_markers": 0,
+      "markers_at_marked_momenta": true,
+      "unstable_points": 85,
+      "shaded_intervals": 1,
+      "max_deviation_from_formula_where_stable": 1.3322676295501878e-15,
+      "nan_exactly_where_formula_negative": true,
+      "warnings": [
+        "H(k) is not positive semidefinite at 85 path points (unstable reference state); "
+      ]
+    },
+    "figures": [
+      "docs/development/figures/stage7-bands.png",
+      "docs/development/figures/stage7-spin-configuration.png"
+    ]
+  }
+}
