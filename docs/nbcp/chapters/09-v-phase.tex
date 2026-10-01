@@ -197,6 +197,100 @@ microscopic-model reconstruction or a finite-temperature calculation.
 Finite angular sampling can alias higher harmonics, so the table alone
 is not an all-orders Fourier theorem.
 
+\subsection{Higher harmonics and threefold pinning near the PD
+axis}\label{sec-nbcp-v-mixed-soc}
+
+\textbf{Twelfth harmonic on the PD axis.} The saved \(N=48\) V scan at
+\(J_{\rm PD}=0.010\) meV has \(\lambda_{12}/\lambda_6=7.31\times10^{-3}\)
+and \(\lambda_{18}/\lambda_6=9.0\times10^{-5}\). Because the curvature
+weights the \(n\)th amplitude by \(n^2\), the resolved minimum curvature
+exceeds \(36\lambda_6\) by 3.0\%, compared with 1.14\% for Y at the same
+coupling (Section~\ref{sec-nbcp-y-angular-matching}). The V/PD gap in
+Section~\ref{sec-results} already uses the resolved curvature; a
+sixth-only clock potential would underestimate it by about 1.5\%.
+
+\textbf{Mixed couplings.} The selection rule of
+Section~\ref{sec-nbcp-yv-selection-rule} allows a threefold V harmonic at
+order \(J_{\rm PD}J_\Gamma\). To test it, the vacuum energy is evaluated on
+the fixed classical V orbit at \(B=1.4\) T for \(J_{\rm PD}=0\), 0.005 and
+0.010 meV and \(J_\Gamma=0.00025\)--0.002 meV, with 72 angles and base
+mesh \(N=24\). On the pure axes, \(N=24\) and \(N=48\) gaps differ by less
+than \(10^{-4}\) relatively (Section~\ref{sec-convergence}). The Fourier
+amplitudes are extracted without imposing a selection rule.
+
+\begin{longtable}[]{@{}rrrrrrr@{}}
+\toprule\noalign{}
+\(J_{\rm PD}\) & \(J_\Gamma\) & \(\lambda_3\) & \(\lambda_6\) &
+\(\lambda_3/(J_{\rm PD}J_\Gamma)\) & \(r\) & \(\Delta_{\rm PG}\) \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\(J_{\rm PD}\) & \(J_\Gamma\) & \(\lambda_3\) & \(\lambda_6\) &
+\(\lambda_3/(J_{\rm PD}J_\Gamma)\) & \(r\) & \(\Delta_{\rm PG}\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\caption{Threefold and sixfold V harmonics near the PD axis at 1.4 T.
+Couplings and gaps in meV, amplitudes in meV/spin, the ratio in
+meV\(^{-1}\); \(r=\lambda_3/(4\lambda_6)\).}\label{tab-nbcp-v-mixed-soc}\\
+\endlastfoot
+0.005 & 0.00025 & \(1.712\times10^{-6}\) & \(7.297\times10^{-7}\) & 1.3692 & 0.586 & 0.00334 \\
+0.005 & 0.00050 & \(3.423\times10^{-6}\) & \(7.292\times10^{-7}\) & 1.3693 & 1.174 & 0.00171 \\
+0.005 & 0.00100 & \(6.848\times10^{-6}\) & \(7.272\times10^{-7}\) & 1.3696 & 2.354 & 0.00477 \\
+0.005 & 0.00200 & \(1.371\times10^{-5}\) & \(7.193\times10^{-7}\) & 1.3706 & 4.764 & 0.00792 \\
+0.010 & 0.00025 & \(4.574\times10^{-6}\) & \(1.024\times10^{-5}\) & 1.8295 & 0.112 & 0.01554 \\
+0.010 & 0.00050 & \(9.148\times10^{-6}\) & \(1.023\times10^{-5}\) & 1.8296 & 0.224 & 0.01523 \\
+0.010 & 0.00100 & \(1.830\times10^{-5}\) & \(1.021\times10^{-5}\) & 1.8302 & 0.448 & 0.01392 \\
+0.010 & 0.00200 & \(3.665\times10^{-5}\) & \(1.013\times10^{-5}\) & 1.8326 & 0.905 & 0.00666 \\
+\end{longtable}
+
+At fixed \(J_{\rm PD}\), a log-log fit of \(\lambda_3\) against
+\(J_\Gamma\) gives slopes 1.0005 and 1.0008, while the pure-Gamma points
+give 3.0004. Reversing \(J_\Gamma\) at \(J_{\rm PD}=0.010\) meV leaves
+\(\lambda_3\) unchanged and shifts its phase by \(\pi\), so the coefficient
+is odd in \(J_\Gamma\) as required. The ratio
+\(\lambda_3/(J_{\rm PD}J_\Gamma)\) is 1.369 meV\(^{-1}\) at
+\(J_{\rm PD}=0.005\) meV and 1.830 meV\(^{-1}\) at 0.010 meV. Its
+dependence on \(J_{\rm PD}\) shows a sizable \(J_{\rm PD}^2J_\Gamma\)
+contribution, which the rule also allows; as for the sixfold harmonic,
+these points are not in the asymptotic weak-SOC regime.
+
+\textbf{Competition and leading-order gap closing.} The fitted phases
+place the threefold minima exactly at maxima of the sixfold term. The
+calculated energy is also symmetric under reflection of the angle about
+\(\phi=\pi/6\) to within \(2\times10^{-17}\) meV/spin. This is consistent
+with an antiunitary symmetry, a twofold rotation about an in-plane axis
+combined with time reversal, which preserves the longitudinal field and
+reverses the azimuth; that identification is inferred, not separately
+derived here. With these phases and only the two harmonics,
+\begin{equation}\label{eq-nbcp-v-mixed-curvature}
+C_\phi=\begin{cases}
+36\lambda_6(1-r^2), & r<1,\\
+9\lambda_3-36\lambda_6, & r>1,
+\end{cases}
+\qquad r=\frac{\lambda_3}{4\lambda_6}.
+\end{equation}
+For \(r<1\), six degenerate minima related by the threefold operation and
+the reflection move away from the sixfold minima. At \(r=1\), pairs of
+them merge at the three threefold minima. This expression reproduces the
+resolved curvatures within the size of the higher harmonics. The
+leading-order gap therefore first decreases and then reopens as
+\(J_\Gamma\) grows. Extrapolating the smallest-\(J_\Gamma\) slopes, \(r=1\)
+occurs near \(J_\Gamma\approx0.0004\) meV for \(J_{\rm PD}=0.005\) meV and
+near 0.0022 meV for \(J_{\rm PD}=0.010\) meV, that is at
+\(J_\Gamma/J_{\rm PD}\approx0.09\) and 0.22. At that point the quadratic
+pinning vanishes and the leading-order gap is zero; the actual gap is set
+by quartic angular terms and higher-order corrections not computed here.
+It is therefore not assigned a physical value.
+
+For the thermal argument, the threefold amplitude is a relevant
+perturbation at the Gaussian line throughout the sixfold window, since
+its eigenvalue \(2-9/(4\pi K)\) is positive for every \(K>2/\pi\). The
+selection rule makes that amplitude linear in \(J_\Gamma\) near the PD
+axis, so the pure-PD sixfold scenario is not protected against a small
+Gamma coupling. Which finite-temperature sequence of phases follows when
+six degenerate minima carry unequal barriers has not been analyzed.
+
 \subsection{Local gap and missing spatial
 matching}\label{local-gap-and-missing-spatial-matching}
 
