@@ -13,7 +13,6 @@ Visualizes spin arrangements on a 2D lattice:
 - Optional polar subplot: every spin seen from +z (azimuth phi, length sin theta)
 """
 
-import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,6 +21,7 @@ from matplotlib.patches import Polygon
 from matplotlib.colors import Normalize
 from itertools import product
 
+from spintoolkit._deprecation import warn_deprecated
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conversion import to_spin_system
 from spintoolkit.system.model import SpinModel
@@ -219,8 +219,8 @@ def _as_spin_system(model, state):
     if isinstance(model, SpinSystem):
         if state is not None:
             raise TypeError("a SpinSystem already holds its configuration; omit state")
-        warnings.warn("plot_spin_configuration(SpinSystem) is deprecated (D30); "
-                      "pass a SpinModel and a SpinState", DeprecationWarning, stacklevel=3)
+        warn_deprecated("plot_spin_configuration(SpinSystem)",
+                        "pass a SpinModel and a SpinState", stacklevel=4)
         return model
     if not isinstance(model, SpinModel) or not isinstance(state, SpinState):
         raise TypeError("plot_spin_configuration needs a SpinModel and a SpinState")

@@ -1,123 +1,144 @@
-# Linear Spin Wave Theory
+# spin-toolkit
 
-> **개발 상태:** Alpha · 연구용 · 공개 배포 전 검증 중
+> **Status:** alpha (0.2.0.dev0). Research code under validation; not yet on PyPI.
 
-2차원 양자 스핀 모델의 선형 스핀파 이론
-(Linear Spin Wave Theory, LSWT) 계산을 위한 Python 라이브러리입니다.
+`spintoolkit` is a Python package for two-dimensional spin models. You write
+the Hamiltonian once as a `SpinModel`, find classical ordered states, and
+compute linear spin-wave theory (LSWT) and its observables from the same
+definition. All quantities are dimensionless: energies are in the unit E0 of
+your coupling constants, fields are `μ_B B / E0` and temperatures `k_B T / E0`.
 
-격자, 자기 사이트, 교환 상호작용을 정의하고 LSWT 해밀토니안을 구성·대각화하여
-마그논 스펙트럼과 양자 보정을 계산하는 재사용 가능한 도구를 목표로 합니다.
+The package grew out of work on the triangular-lattice antiferromagnet
+Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up in
+[`model/nbcp/`](model/nbcp/README.md).
 
-- 현재는 2차원 LSWT를 중심으로 개발하고 있습니다.
+## Features
 
-## 프로젝트 목표
-- 물리적 의미가 드러나는 스핀 시스템 정의
-- 시스템 정의, solver, 관측량, 시각화의 역할 분리
-- 이론 문서와 코드 구현의 단계별 대조 검증
-- 코드를 통해 예제 적용
-   - NBCP(Na₂BaCo(PO₄)₂) 관련 계산의 재현
-   - 기타 예제 탐색 필요
-- `AbstractSolver`와 `SolverResult`를 이용한 solver 확장
-
-## 현재 지원 범위
-
-| 구성요소 | 현재 상태 |
+| Area | What is available |
 |---|---|
-| `SpinSystem` | 사이트, 격자 벡터, 교환 결합 정의 구현 |
-| Exchange matrix | Heisenberg, XXZ, SOC, DM, Kitaev 및 NBCP용 교환행렬 지원 |
-| `LSWTSolver` | Brillouin zone 계산과 LSWT 대각화 흐름 구현 |
-| `SpinOptimizer` | 고전 바닥상태 최적화 구현 |
-| `SolverResult` | solver 공통 결과 인터페이스 구현 |
-| Observables | 열역학·위상·상관함수 모듈은 있으나 고수준 solver 연결 미완료 |
-| Visualization | 스핀 배열 시각화 구현 |
-| Legacy compatibility | 기존 dictionary 입력 형식과 호환 유지 |
+| Model | Sites, bilinear exchange (any 3×3 matrix), single-ion terms, Zeeman coupling with a g-tensor; symmetry detection on the layer group |
+| Classical states | Energy, torques, global search on a magnetic supercell, Luttinger–Tisza, Monte Carlo, Landau–Lifshitz and Langevin dynamics |
+| LSWT | `solve_lswt` for commensurate states (Colpa diagonalization, zero-point energy, stability check); rotating-frame LSWT for single-Q spirals |
+| Observables | Band structures; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
+| Comparison | `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy |
+| Exact diagonalization | Small clusters, for checking LSWT |
 
-구현된 모듈이 모두 검증 완료되었거나 안정적인 공개 API라는 뜻은 아닙니다.
-현재 저장소는 이론–코드 대응과 수치 검증을 진행 중입니다.
+Spin-wave theory is an expansion about an ordered classical state. The package
+reports physically undefined quantities as undefined (NaN or an error), for
+example a Chern number at a band touching or the inelastic weight of a
+Goldstone mode at a Bragg vector, instead of returning an arbitrary value.
 
-## 기본 구조
+## Installation
 
-```text
-SpinSystem
-    └── LSWTSolver.solve()
-            └── SolverResult
+Python 3.9 or newer. From a clone of this repository:
+
+```bash
+pip install .            # numpy, scipy, matplotlib
+pip install ".[dev]"     # adds pytest and tqdm
 ```
 
-`SpinSystem`은 solver에 독립적인 시스템 정의를 담당합니다. LSWT 고유 계산은
-solver 계층에 두고, 관측량과 시각화는 별도 모듈로 분리합니다.
+## Quick start
 
-## NBCP 검증 사례
+The spin-1/2 Heisenberg antiferromagnet on the triangular lattice, in units
+of J. The script is [`examples/quickstart.py`](examples/quickstart.py).
 
-이 프로젝트는 Na₂BaCo(PO₄)₂(NBCP)의 삼각격자 스핀 모델을 주요 검증 사례로
-사용합니다.
+```python
+import numpy as np
 
-관련 연구:
+import spintoolkit as stk
+from spintoolkit.models import polarized_state, state_120, triangular_heisenberg
+from spintoolkit.observables.bands import band_structure, high_symmetry_points
+from spintoolkit.observables.neutron import neutron_intensity
+from spintoolkit.observables.thermal import thermal_quantities
 
-- Woodland et al., [“From continuum excitations to sharp magnons via transverse magnetic field in the spin-1/2 Ising-like triangular lattice antiferromagnet Na₂BaCo(PO₄)₂”](https://arxiv.org/abs/2505.06398), Phys. Rev. B 112, 104413 (2025)
-- Gao et al., [“Spin supersolidity in nearly ideal easy-axis triangular quantum antiferromagnet Na₂BaCo(PO₄)₂”](https://doi.org/10.1038/s41535-022-00500-3), npj Quantum Materials 7, 89 (2022)
+# Model (J = 1, S = 1/2) and the 120-degree state on its three-site magnetic cell.
+model = triangular_heisenberg(J=1.0, S=0.5)
+state = state_120(model)
 
-현재 저장소에는 다음 개발용 검증 스크립트가 있습니다.
+# Linear spin-wave theory on a 24 x 24 mesh of the magnetic zone.
+result = stk.solve_lswt(model, state, settings=stk.LSWTSettings(mesh=(24, 24)))
+print(result.ground_state_energy)            # -0.5388 J per spin (E_cl + E_zp)
 
-- `examples/nbcp_ground_state.py`
-- `examples/nbcp_hamiltonian_check.py`
+# Magnon bands along Gamma-K-M-Gamma.
+bands = band_structure(result, ("Γ", "K", "M", "Γ"))
 
-NBCP의 LSWT 해밀토니안, Colpa 대각화, 밴드 구조, 열역학·위상 관측량을
-포함한 end-to-end 재현은 아직 완료되지 않았습니다.
+# Neutron intensity at M (g = 2), broadened with FWHM 0.05 J.
+M = high_symmetry_points(model.lattice)["M"]
+spectrum = neutron_intensity(result, [[M[0], M[1], 0.0]], g=2.0)
+line = spectrum.broaden(np.linspace(0.0, 3.0, 301), fwhm=0.05)   # peak at 1.0 J
 
-## 문서 안내
+# Thermodynamics of the ferromagnet (J = -1) in a field h = 0.5 along z.
+ferro = triangular_heisenberg(J=-1.0, S=0.5)
+gapped = stk.solve_lswt(ferro, polarized_state(ferro),
+                        stk.ExternalConditions(field=(0.0, 0.0, 0.5)))
+thermo = thermal_quantities(gapped, [0.1, 0.5])
+```
 
-- [개발 설계와 Beamer](docs/development/README.md) — 2D Spin-System Toolkit의 목표·계산 흐름·공통 규약·폴더 구성
-- [개발 설계 PDF](docs/development/output/pdf/development-log.pdf) — 로컬 검토용 생성 문서
-- [패키지 폴더 안내](code-space/spintoolkit/README.md) — 기능별 모듈의 책임과 옛 이름 `lswt` 호환
-- [NBCP 모델 작업 공간](model/nbcp/README.md) — 모델 고유 정의와 계산 구성
+The energy −0.5388 J agrees with the spin-wave result of Chubukov, Sachdev and
+Senthil, J. Phys.: Condens. Matter 6, 8891 (1994).
 
-- [문서 안내](docs/README.md) — LSWT·NBCP와 본문·참고자료·아카이브·출력물 구분
-- [LSWT 일반 이론](docs/lswt/README.md) — 개념별 이론 문서와 읽는 순서
-- [NBCP 연구 노트](docs/nbcp/README.md) — 모델별 유도·계산·비교 기록
-- `GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md` — 문서 coverage와 열린 검토 항목
-- `examples/` — 실행 예제와 검증 스크립트
-- `code-space/spintoolkit/` — Python 패키지 구현(옛 이름 `lswt`는 `code-space/lswt/` 호환 패키지)
-- `legacy/` — 과거 코드와 연구 노트 보존 영역
+To define your own model, build `stk.SpinModel` from `stk.Site` and
+`stk.Term` objects (see `spintoolkit/models/heisenberg.py` for a short
+example) and a `stk.SpinState` for the ordered configuration, or find one with
+`spintoolkit.methods.classical.classical_search`.
 
-## 테스트
+## Deprecated API
+
+The first API, built on `SpinSystem` (`SpinSite`, `Coupling`), `LSWTSolver`,
+`SpinOptimizer`, `EnergyFunction` and `Topology.compute_thermal_Hall`, still
+works in 0.2 and emits a `DeprecationWarning`. It will be removed in 0.3. The
+old package name `import lswt` follows the same schedule. New code should use
+`SpinModel`, `SpinState` and `solve_lswt`.
+
+## Validation
 
 ```bash
 python -m pytest code-space/tests -q
 ```
 
-자동 테스트는 공통 모델·상태, 고전 에너지와 상태 선택, 정확 대각화, LSWT와
-물리량(열역학·구조인자·위상량), 모델 구성과 옛 import 호환성을 포함합니다. 단계별 검증
-기록은 `docs/development/verification/`에서 관리합니다.
+The tests compare against closed-form results (ferromagnet and Néel magnons,
+triangular-lattice zero-point energy, free-spin powder averages), exact
+diagonalization of small clusters, and the earlier implementation in
+`legacy/`. The NBCP checks live in `examples/nbcp_*.py`, with their outputs in
+`data-space/verification/`.
 
-## 알려진 제한사항
+## Known limitations
 
-- 비정합(incommensurate) 자기 구조는 단일 Q 나선(평면·원뿔)만 지원합니다(`solve_spiral_lswt`, 회전틀 LSWT).
-  해밀토니안이 나선 축 둘레 회전에 대해 대칭(축 방향 XXZ·DM, 축 방향 장)이어야 하며, 그렇지 않으면 근사값 대신
-  오류로 거부합니다. 다중 Q 구조와 나선 마그논의 위상량은 지원하지 않습니다.
-- 작은 회피 교차 근처에 곡률이 몰린 모델(NBCP 등)의 thermal Hall은 균일 격자로 수렴이 느려
-  적응형 적분(`AdaptiveIntegration`)과 수렴 확인이 필요합니다.
-- 비균일 pseudo-Goldstone soft mode 처리는 지원하지 않습니다.
-- LSWT는 질서화된 준고전적 상태를 중심으로 사용하는 근사입니다.
+- Two-dimensional lattices only.
+- Incommensurate order is supported only as a single-Q spiral (planar or
+  conical) in the rotating frame. The Hamiltonian must be invariant under
+  rotations about the spiral axis; otherwise the solver raises an error rather
+  than returning an approximation. Multi-Q structures and topology of spiral
+  magnons are not supported.
+- LSWT is a harmonic expansion about an ordered state. Interactions between
+  magnons (1/S corrections beyond the zero-point energy) are not included.
+- Thermal Hall integrals in models whose Berry curvature concentrates near
+  small avoided crossings (NBCP, for example) converge slowly on a uniform
+  mesh; use `AdaptiveIntegration` and check convergence.
 
-연구 결과에 사용하기 전에는 모델 정의, 부호와 단위 convention, 수렴성 및
-수치 결과를 독립적으로 검증해야 합니다.
+Check model conventions, signs and convergence independently before using
+results in research.
 
-## 향후 작업
+## Documentation
 
-1. LSWT Hamiltonian과 Colpa 대각화 검증
-2. NBCP 밴드 구조 예제 완성
-3. 관측량 모듈과 `LSWTSolver` 연결
-4. 자동화된 수치 회귀 테스트 확대
-5. 밴드 및 Berry curvature 시각화
-6. ED와 real-space BdG solver 확장
+Most design notes are currently in Korean. English tutorials are planned for
+the 0.2 release.
 
-## 라이선스
+- [Package layout](code-space/spintoolkit/README.md)
+- [Development design and decision log](docs/development/README.md)
+- [LSWT theory notes](docs/lswt/README.md)
+- [NBCP research notes](docs/nbcp/README.md)
+- [Documentation index](docs/README.md)
 
-패키지 메타데이터에는 MIT 라이선스가 지정되어 있지만, 저장소의 정식
-`LICENSE` 파일은 아직 추가되지 않았습니다. 공개 배포 전에 라이선스 문서를
-확정할 예정입니다.
+## Related work on NBCP
 
-## 저자
+- Woodland et al., [Phys. Rev. B 112, 104413 (2025)](https://arxiv.org/abs/2505.06398)
+- Gao et al., [npj Quantum Materials 7, 89 (2022)](https://doi.org/10.1038/s41535-022-00500-3)
 
-- Sung-Min Park
-- Email: sungmin.park.0226@gmail.com
+## License
+
+MIT, see [LICENSE](LICENSE).
+
+## Author
+
+Sung-Min Park (sungmin.park.0226@gmail.com)

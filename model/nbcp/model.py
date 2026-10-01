@@ -21,6 +21,7 @@ from typing import Any, Dict, Mapping, Optional, Sequence
 
 import numpy as np
 
+from spintoolkit._deprecation import internal_use
 from spintoolkit.states.spin_state import SpinState, reduce_cell
 from spintoolkit.system.model import Site, SpinModel, Term
 
@@ -137,7 +138,8 @@ def legacy_cells(cell: str) -> Dict[str, tuple]:
     """
     supercell = SUPERCELLS[cell]
     num_angles = 2 * abs(round(np.linalg.det(supercell)))
-    legacy = getattr(unit_cells, cell)({"h": (0.0, 0.0, 0.0)}, angles=np.zeros(num_angles))
+    with internal_use():
+        legacy = getattr(unit_cells, cell)({"h": (0.0, 0.0, 0.0)}, angles=np.zeros(num_angles))
     if not np.allclose(legacy.lattice_vectors, supercell @ LATTICE):
         raise RuntimeError(f"{cell}: supercell does not match the legacy lattice vectors")
     inverse = np.linalg.inv(LATTICE)

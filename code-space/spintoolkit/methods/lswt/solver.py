@@ -8,11 +8,11 @@ observables.
 Ported from: modules/LinearSpinWaveTheory/linear_spin_wave_theory.py
 """
 
-import warnings
 
 import numpy as np
 from typing import Tuple, List, Dict, Optional, Union
 
+from spintoolkit._deprecation import internal_use, warn_deprecated
 from spintoolkit.system.spin_system import SpinSystem
 from spintoolkit.system.brillouin_zone import BrillouinZone
 from spintoolkit.observables.bose_statistics import compute_static_magnon_kernel
@@ -60,11 +60,11 @@ class LSWTSolver(AbstractSolver):
 
     def __init__(self, system: Union[SpinSystem, dict],
                  bz_type: str = "Hex_60"):
-        warnings.warn("LSWTSolver is deprecated (D30); use spintoolkit.methods.lswt.solve_lswt "
-                      "with SpinModel/SpinState", DeprecationWarning, stacklevel=2)
+        warn_deprecated("LSWTSolver", "use spintoolkit.solve_lswt with SpinModel/SpinState")
         # Accept both SpinSystem and legacy dict
         if isinstance(system, dict):
-            self._system = SpinSystem.from_legacy_dict(system)
+            with internal_use():
+                self._system = SpinSystem.from_legacy_dict(system)
             self._legacy_data = system
             # Extract bz_type from legacy dict if present
             if "Lattice/BZ setting" in system:

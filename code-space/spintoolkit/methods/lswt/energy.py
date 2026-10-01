@@ -6,10 +6,10 @@ optimization. It wraps the Brillouin zone sampling and LSWT Hamiltonian
 to provide callable energy functions of spin angles.
 """
 
-import warnings
 
 import numpy as np
 
+from spintoolkit._deprecation import warn_deprecated
 from spintoolkit.system.brillouin_zone import BrillouinZone
 from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
 
@@ -57,8 +57,8 @@ class EnergyFunction:
     """
 
     def __init__(self, spin_sys_data, N, update_args=False):
-        warnings.warn("EnergyFunction is deprecated (D30); use classical_energy/classical_search "
-                      "and solve_lswt on SpinModel/SpinState", DeprecationWarning, stacklevel=2)
+        warn_deprecated("EnergyFunction", "use classical_energy/classical_search "
+                        "and solve_lswt on SpinModel/SpinState")
         self._info_cache = None
         self.angle_args = None
         self.classical_energy_density = None

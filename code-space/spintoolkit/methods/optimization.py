@@ -16,11 +16,12 @@ its grid and finds lower energies between grid points, and
 energies along the classical orbit on any angle grid.
 """
 
-import warnings
 
 import numpy as np
 from typing import List, Union
 from scipy.optimize import differential_evolution
+
+from spintoolkit._deprecation import warn_deprecated
 
 
 # Optimization method name constants
@@ -63,9 +64,8 @@ class SpinOptimizer:
     """
 
     def __init__(self):
-        warnings.warn("SpinOptimizer is deprecated (D30); use "
-                      "spintoolkit.methods.classical.classical_search with SpinModel",
-                      DeprecationWarning, stacklevel=2)
+        warn_deprecated("SpinOptimizer",
+                        "use spintoolkit.methods.classical.classical_search with SpinModel")
         self.num_trials = 0
 
     def wrapping_by_angles(self, cef_obj, angles_setting, verbose=False):

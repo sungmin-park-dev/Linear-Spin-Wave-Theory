@@ -14,6 +14,8 @@ import numpy as np
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Dict, Union
 
+from spintoolkit._deprecation import warn_deprecated
+
 
 class SpinSystem:
     """Solver-agnostic spin system definition.
@@ -151,6 +153,8 @@ class SpinSystem:
 
     def __init__(self, sites=None, couplings=None, lattice_vectors=None,
                  label: Optional[str] = None):
+        warn_deprecated("SpinSystem", "define the model with SpinModel and the "
+                        "configuration with SpinState")
         if lattice_vectors is None:
             raise ValueError("lattice_vectors is required")
         self.lattice_vectors = np.asarray(lattice_vectors, dtype=float)

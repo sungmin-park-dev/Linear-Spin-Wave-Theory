@@ -296,6 +296,22 @@
   \slidesource{2026-10-01 결정}{contract}
 \end{frame}
 
+\begin{frame}[label=decisions-d43-api]{결정 기록 (D43): 0.2 공개 API와 옛 API 삭제 일정}
+  \framesubtitle{2026-10-01 사용자 결정(결정 카드 A: 경고 후 다음 판 삭제).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    공개 API & \texttt{SpinModel}, \texttt{SpinState}, \texttt{solve\_lswt}, \texttt{LSWTSettings}, \texttt{LSWTResult}; README·docstring·예제는 이것만 쓴다 \\
+    옛 API & \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, SI Hall 메서드, \texttt{lswt} 이름: 0.2에서 동작, 경고에 삭제 판 0.3 명시 \\
+    내부 경로 & 새 API가 내부에서 만드는 \texttt{SpinSystem}은 \texttt{internal\_use()}로 경고하지 않음 \\
+    검증 & README 빠른 시작을 \texttt{-W error::DeprecationWarning}으로 실행; $E=-0.5388J$, M점 $\omega=1.0J$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\end{frame}
+
 \begin{frame}[label=detail-rules]{세부 규칙: 2026-09-29 결정}
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
   \small
