@@ -574,13 +574,92 @@ chooses a different physical deformation. The old hard-curvature change
 diagnoses an unspecified deformation rule, not a failure of the
 classical energy's coordinate invariance.
 
+\subsubsection{Validity checks}\label{sec-nbcp-gap-validity}
+
+The checks below test the assumptions of
+Eq.~\eqref{eq-lswt-yv-pg-gap} for \(J_{PD}\le0.010\) meV on the PD axis
+and \(J_\Gamma=0.010\) meV on the \(\Gamma\) axis, with the uniform
+sector at \(N=24\) and thermal sums at \(N=48\). The stability margin
+also scans larger \(J_{PD}\).
+
+\textbf{Orbit versus linear local coordinates.} Along the straight
+tangent line of linear local coordinates, the parametrization of Rau et
+al.~\cite{rau2018}, the background leaves the classical manifold at
+second order. The zero-point curvature there is 13 to 35 times
+\(C_\phi\) in the five Y and V cases checked. The excess equals the
+zero-point gradient times the polar bending
+\(\tfrac12\phi^2\sin\vartheta_\alpha\cos\vartheta_\alpha\) of the orbit
+to \(2\times10^{-8}\) meV per spin. Adding the vacuum shift that this gradient
+produces at order \(1/S\), through the classical third derivative,
+restores \(C_\phi\) to within 0.1–0.4\%. This is the tadpole term of
+Lin and Shi~\cite{lin2025}. Equation~\eqref{eq-lswt-yv-pg-gap} avoids it
+by taking \(C_\phi\) along the exact orbit. Second derivatives of the
+zero-point energy off the orbit are not used. They double with each
+doubling of \(N\), because the gapless branch near \(\Gamma\) softens as
+soon as the background leaves the classical manifold.
+
+\textbf{Single-mode reduction.} The six-dimensional classical dynamics of
+the uniform sector reproduces the \(\Gamma\)-point spin-wave frequencies
+to \(2\times10^{-8}\) meV and has exactly one zero mode. With the
+leading-order pinning \(C_\phi\) added along the orbit, its lowest
+frequency equals \(\sqrt{C_\phi/\chi_z}\) to within 0.1\%, even for V at
+\(J_{PD}=0.010\) meV, where the gap is 0.46 of the lowest hard
+\(\Gamma\) mode.
+
+\textbf{Stability margin.} The background at the selected angle stays
+stable up to at least \(J_{PD}=0.014\) meV (Y) and 0.0115 meV (V). The
+orbit fails first at the angular maxima \(\phi=\pi/6\bmod\pi/3\): for Y
+at \(J_{PD}=0.014\) meV near \(|\mathbf k|\approx0.08\), and for V at
+0.0115 meV near \(|\mathbf k|\approx0.19\). Above these couplings the
+angular potential has no spin-wave value at its barriers, so neither the
+harmonic fit nor the clock model applies, although the local gap at the
+minimum is still defined. For V at \(J_{PD}=0.010\) meV the lowest
+finite-momentum mode, 0.0144 meV, already lies below the uniform gap,
+0.0156 meV, and the gap rises to 0.0232 meV at 0.0115 meV. These are
+leading-order values close to an instability, where the next order is
+expected to be large (inferred).
+
+\textbf{V near \(r=1\).} The leading-order curvature
+\(C_\phi=36\lambda_6(1-r^2)\) of Section~\ref{sec-nbcp-v-mixed-soc}
+vanishes where each \(C_2'\mathcal T\)-symmetric minimum splits into two
+minima related by \(C_2'\mathcal T\). The zero is therefore the soft mode
+of a \(C_2'\mathcal T\)-breaking transition, not a failure of
+Eq.~\eqref{eq-lswt-yv-pg-gap}. Higher orders shift where it occurs, and
+near that point the leading-order value is not quantitative.
+
+\textbf{Finite temperature.} At finite \(T\) the gap is set by the
+curvature of the free energy~\cite{lin2025}. In the harmonic free energy
+\(f=e_{\rm sw}+T\sum\ln(1-e^{-\omega/T})\) per spin along the exact
+orbit, the ratio \(\Delta(T)/\Delta(0)=\sqrt{C_\phi(T)/C_\phi(0)}\) is
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\(T\) (meV) & 0.0025 & 0.005 & 0.010 & 0.015\\
+\midrule
+Y, \(J_{PD}=0.010\) & 0.992 (0.998) & 0.951 (0.974) & 0.829 (0.893) & 0.802 (0.907)\\
+V, \(J_{PD}=0.010\) & 0.996 (0.999) & 0.987 (0.997) & 1.037 (1.059) & 1.178 (1.208)\\
+V, \(J_\Gamma=0.010\) & 1.000 (1.000) & 1.001 (1.000) & 1.020 (1.020) & 1.102 (1.102)\\
+V, \(J_{PD}=0.010\), \(J_\Gamma=0.005\) & 1.060 (1.011) & 1.170 (1.059) & 1.392 (1.180) & 1.586 (1.294)\\
+\bottomrule
+\end{tabular}
+\end{center}
+Values in parentheses remove the lowest branch with
+\(|\mathbf k|<0.25\) from the thermal sum, since those modes are the
+phase field of the clock model. Thermal fluctuations weaken the Y
+pinning and strengthen the V pinning. In Y the change stays below 5\%
+up to 0.005 meV. These values assume a locked angle and non-interacting
+magnons. The thermal correction to \(\chi_z\) is of higher order in
+\(1/S\).
+
 \subsubsection{Limits of the comparison}\label{limits-of-the-comparison}
 
 This verifies the classical orbit, current quadratic Hamiltonian
 coefficients, canonical normalization and numerical curvature
 calculation. It is not an independent full one-loop self-energy
 calculation, an all-orders prediction for S=1/2, or proof of global
-phase stability. No finite-temperature gap is calculated. The
+phase stability. The finite-temperature gaps of
+Section~\ref{sec-nbcp-gap-validity} are harmonic estimates. The
 field-induced internal XXZ branch and the zero-field internal
 pseudo-Goldstone mode are different modes and are not plotted here.
 
