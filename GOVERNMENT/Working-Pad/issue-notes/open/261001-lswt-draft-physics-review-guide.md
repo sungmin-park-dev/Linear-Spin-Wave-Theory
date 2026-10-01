@@ -24,7 +24,7 @@ related:
 
 1. [Paraunitary Diagonalization](../../../../docs/lswt/01-derivation/paraunitary-diagonalization.md) → [Appendix: Paraunitarity Proofs](../../../../docs/lswt/04-appendices/paraunitarity-proofs.md) → [Worked Example](../../../../docs/lswt/03-examples/worked-example.md). 뒤의 모든 observable이 여기 정의(T, Σ3, 입자–홀 구조, ΔE_zp)를 쓴다. Worked example은 일반 식을 한 band 닫힌 식으로 확인하는 용도다.
 2. [Magnon Observables](../../../../docs/lswt/02-observables/magnon-observables.md), [Thermodynamics](../../../../docs/lswt/02-observables/thermodynamics.md), [Appendix: Thermodynamic Derivations](../../../../docs/lswt/04-appendices/thermodynamic-derivations.md).
-3. [Topological Magnon Quantities](../../../../docs/lswt/02-observables/topological-magnon-quantities.md). 오늘 고친 gauge 문단은 코드 문서와도 연결된다.
+3. [Topological Magnon Quantities](../../../../docs/lswt/02-observables/topological-magnon-quantities.md). Bloch 규약 문단은 코드·이슈 260802(PR #14)의 결론과 맞췄다.
 4. [Spin Correlations](../../../../docs/lswt/02-observables/spin-correlations.md), [Structure Factor and Spectral Function](../../../../docs/lswt/02-observables/structure-factor-and-spectral-function.md).
 5. [Appendix: Luttinger–Tisza Method](../../../../docs/lswt/04-appendices/luttinger-tisza-method.md).
 
@@ -34,7 +34,7 @@ related:
 
 | 문서 | 오류 | 수정 | 확인 방법 |
 |---|---|---|---|
-| topology, gauge 문단 | "Chern 수와 thermal Hall 전도도는 Fourier gauge에 무관"이라 썼다. Chern 수만 불변이다. κ는 곡률에 c2(ε)를 곱해 적분하므로 부분적분 뒤 ∇c2 × (주기 벡터장) 항이 남는다. | κ는 gauge에 의존하며 full-position gauge에서 계산한다고 고쳤다. full-position이 물리적 gauge라는 판단은 위치 연산자와의 대응에서 추론한 것이라고 본문에 명시했다. | C3을 깬 boson honeycomb(최근접 hopping 1, 0.6, 0.3), 120² mesh, T=2: full-position κ/T=0.02662, cell gauge 0.03536, Chern 수는 두 gauge에서 같다. C3을 보존하면 두 값이 1e-11까지 같다. |
+| topology, Bloch 규약 문단 | "Chern 수와 thermal Hall 전도도는 Fourier gauge에 무관"이라 썼다. 두 규약 모두에서 같은 것은 Chern 수뿐이다. κ는 곡률에 c2(ε)를 곱해 적분하므로 부분적분 뒤 ∇c2 × (주기 벡터장) 항이 남는다. | 2026-10-01 첫 수정은 이를 "gauge 의존"으로 적었으나 사용자가 반려했다. full-position 규약과 cell 규약의 차이는 gauge 변환(밴드별 위상)이 아니라 위치 연산자의 차이다. full-position 규약이 물리적이라는 것은 유도된 결과다(부격자를 다른 cell로 다시 적으면 cell 규약 값만 바뀐다; 이슈 260802, PR #14). 문서를 이 결론으로 다시 고쳤다. | C3를 깬 boson honeycomb(최근접 hopping 1, 0.6, 0.3), 120² mesh, T=2: full-position κ/T=0.02662, cell 규약 0.03536, Chern 수는 두 규약에서 같다. C3를 보존하면 두 값이 1e-11까지 같다. |
 | topology, −π²/3 문단 | c2 가중치가 "고온에서 κ/T→0을 직접 준다"고 썼다. 반대다. c2→π²/3이라 κ/T→−(π/6)ΣC_n이고, 0이 되는 것은 Chern 합 규칙 덕분이다. 직접 0으로 가는 것은 원문의 c2−π²/3 가중치다. | 문장을 고쳤다. | c2 적분 정의와 닫힌 식의 수치 비교, 극한 확인 |
 | topology, 곡률 발산 조건 | 입자–홀 분모를 2ε_nk로 썼다. 비상반 스펙트럼에서는 ε_nk+ε_{m,−k}다. 띠 접촉에서 "발산"도 과한 표현이다. | "정의되지 않으며 일반적으로 발산"으로 바꾸고 분모를 일반형으로 고쳤다. | 유도 |
 | topology, skyrmion 수 | 예외 배치를 "분자가 0"으로만 썼다. 삼중곱이 0이고 실수부가 양수가 아니면(한 대원 위에서 반원에 담기지 않는 세 방향) χ=±2π로 가지가 모호해 Q_sk가 1만큼 뛴다. | 예외 조건을 정확히 적고, 그 배치에서 Q_sk는 정의되지 않는다고 썼다. | 120° 동평면 근방에서 χ→2π, Van Oosterom–Strackee 입체각과 기계 정밀도 일치 |
@@ -76,7 +76,7 @@ related:
 ### Topological Magnon Quantities
 
 - BdG Kubo 곡률의 부호와 Σ3 가중(무작위 BdG에서 작은 plaquette paraunitary Berry 위상과 1e-7 상대 오차로 일치). A=iη⟨t|Σ3∇t⟩를 물리적 Bloch 상태(ED)로 고정한 D29와 같다.
-- **오늘 고친 gauge 문단.** κ가 gauge에 의존하므로 어느 gauge가 물리적인지는 사용자 결정 항목이다. 문서는 full-position gauge(D13, D29와 같음)를 채택하고 이 판단이 추론임을 밝혔다.
+- **Bloch 규약 문단.** full-position 규약과 cell 규약의 차이는 gauge 변환이 아니라 위치 연산자의 차이이고, full-position 규약이 물리적이라는 것은 유도된 결과다(이슈 260802의 2026-10-01 절, PR #14). 문서는 이 결론을 따른다. 남는 근사는 마그논 위치 연산자를 사이트 위치에서 대각으로 두는 tight-binding 가정이다.
 - −π²/3 문단: 변형 H_λ=(1−λ)H+λ1로 Chern 합 0을 보이는 논증. Shindou et al. 2013 식 (29) 인용은 검산자가 원문을 열어 보지 못했다(이전 audit는 대조 완료로 기록). Goldstone(양반정치) 경우는 open.
 - FHS·Kubo와 D31의 정합성: 문서는 "띠 접촉에서 Chern 수는 정의되지 않음, 정수 값만으로 고립을 증명하지 못함"으로 D31과 일치한다. 접촉을 둘러싼 plaquette의 위상이 π라서 FHS 정수가 반올림으로 정해진다는 D31 admissibility 이유를 본문에 넣을지는 선택 사항이다(현재는 코드 계약으로만 둠).
 - κ 부호와 정규화 1/(N_k A_uc)→∫d²k/(2π)², 단위 k_B²T/ħ. notation 문서는 thermal Hall 단위를 아직 "not yet fixed"로 두지만 D29가 층당 k_B²/ħ로 정했다. notation 갱신이 필요하다.
@@ -126,7 +126,7 @@ related:
 
 이 thread는 `docs/lswt`만 고쳤다. 아래는 다른 소유자에게 넘길 항목이다.
 
-- **코드 docstring과 시험(topology):** `code-space/spintoolkit` 의 `berry.py` 모듈 docstring이 κ의 gauge 불변을 주장한다. D29는 "Chern 수와 kappa의 게이지 불변을 시험"한다고 적었지만, 실제 시험(`test_cell_gauge_gives_the_same_chern_numbers`)은 C3 대칭 Kitaev 모델에서 FHS Chern 수만 본다. 코드는 full-position gauge로 계산하므로 반환값은 문서가 채택한 정의와 같다. 고칠 것은 docstring과 D29 문구, 그리고 C3를 깬 모델에서 두 gauge의 κ가 다르다는 회귀 시험이다.
+- **코드 docstring과 시험(topology):** PR #14에서 해결했다. `berry.py` docstring과 D29 문구를 "gauge 불변"에서 Bloch 규약 설명으로 고쳤고, C3를 깬 모델에서 cell 규약 값이 계의 성질이 아님을 보이는 회귀 시험을 추가했다.
 - **LT on-site 항:** 문서의 L_q는 S_a²D_a를 포함하지만 `lt_matrix`는 bilinear 항만 더한다(모델이 BILINEAR와 ZEEMAN만 받음, D30). audit의 "stage 6b `lt_matrix`와 같은 정의"는 on-site 항이 없을 때만 맞다.
 - **영에너지 mesh 점:** 열역학 루틴 세 개가 영점을 서로 다르게 처리한다(−inf, 항 제거, k_B). audit에 이미 기록됨.
 - **운동량 집합 반전 닫힘:** 사용자 지정 `k_points`에서 확인하지 않고 ΔE_zp와 ⟨n⟩ 식을 적용한다.

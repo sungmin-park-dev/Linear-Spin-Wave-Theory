@@ -287,6 +287,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 - 확인된 오류 14건을 고쳤다. 핵심은 topology 문서의 "thermal Hall 전도도가 Fourier gauge에 무관" 진술(Chern 수만 불변; C3를 깬 모델에서 두 gauge의 κ/T가 0.0266 대 0.0354), c2 가중치의 고온 극한 진술, spin-correlations의 켤레 관계 \([\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(\mathbf q,-t)\), SF의 교환자=2i Im C 진술(상반 경우에만 성립)이다.
 - 정정: 위 Luttinger–Tisza 검토 묶음의 "stage 6b `lt_matrix`(D32)와 같은 정의"는 on-site 항이 없을 때만 맞다. 코드 `lt_matrix`는 bilinear 항만 더한다.
 - 정정: 위 Correlations and Structure Factor 검증의 "1차 moment 합 규칙"은 스펙트럼 함수의 0차 moment(동시각 교환자)다. 문서 본문 표현은 맞다.
+- 정정(같은 날): topology 문서의 첫 수정은 κ의 차이를 "Fourier gauge 의존"으로 적었다. 사용자가 반려했고, 이슈 260802(PR #14)에 따라 "Bloch 규약(위치 연산자)의 차이이며 full-position 규약만 물리적"으로 다시 고쳤다.
 - 원문 worked example의 μ 전개 계수 두 개(부호·인수), ω→0 보손 수의 1/2 누락, Nambu 식의 −½ΣA 상수 누락, 안정 조건 |A|≥|B|를 draft에서 바로잡았다. 원자료는 수정하지 않았다.
 - 코드 발견(문서 범위 밖, 수정하지 않음): `berry.py` docstring의 κ gauge 불변 주장과 이를 시험하지 않는 회귀 시험, 사용자 지정 `k_points`의 반전 닫힘 미확인.
 - 10개 문서 모두 `status: draft`다. 독립 검산은 Human Physics and Mathematics Review를 대체하지 않는다.
