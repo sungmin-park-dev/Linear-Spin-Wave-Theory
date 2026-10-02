@@ -260,7 +260,7 @@ An inferred algebraic regime should survive changes of matching cutoff
 and truncation rather than appearing only for a particular initial
 guess.
 
-\phantomsection\label{sec-nbcp-matching-results}\textbf{First matching results.} Two
+\phantomsection\label{sec-nbcp-matching-results}\textbf{First matching results.} Three
 of these steps have been carried out for Y at 0.2 T,
 \(J_{PD}=0.010\) meV and \(J_\Gamma=0\).
 
@@ -297,30 +297,99 @@ give \(E_v(R)=E_{\rm core}+\kappa\ln R\). At \(J_{PD}=0\),
 \(\kappa=0.01189\) meV against \(\pi\sqrt{\det\rho}=0.01201\) meV, and
 \(E_{\rm core}=0.0071\)--0.0076 meV for both windings. At
 \(J_{PD}=0.010\) meV, the winding \(m=-1\) gives \(\kappa=0.00719\)
-against \(0.00763\) meV and \(E_{\rm core}=0.0036\)--0.0053 meV. The
-ranges compare the fitted constant with the constant at the predicted
-\(\kappa\). The vortex energy thus confirms independently that
-\(J_{PD}=0.010\) meV lowers \(\sqrt{\det\rho}\) by about 37\%, which
-lowers the bare upper window edge \(\pi\rho/2\) from 0.0060 to
-0.0038 meV. With \(J_{PD}\neq0\) the two windings are inequivalent,
+against \(0.00763\) meV. The ranges compare the fitted constant with
+the constant at the predicted \(\kappa\). The vortex energy thus
+confirms independently that \(J_{PD}=0.010\) meV lowers
+\(\sqrt{\det\rho}\) by about 37\%, which lowers the bare upper window
+edge \(\pi\rho/2\) from 0.0060 to 0.0038 meV. The constant
+\(E_{\rm core}\) still contains the shape of the fixed boundary: the
+conformal radius of a regular hexagon is 0.90 of its circumradius,
+which shifts the constant by \(\kappa\ln0.90\approx-0.0013\) meV. The
+energy depends on the core position only through the finite cluster,
+as \(R^{-2}\); the remainder is of order \(10^{-6}\) meV. The classical
+core therefore has no lattice (Peierls--Nabarro) barrier at the
+temperatures of interest, and its position is a continuous collective
+coordinate. With \(J_{PD}\neq0\) the two windings are inequivalent,
 because the spin-only reflection that maps \(m\to-m\) at
-\(J_{PD}=0\) is broken. The \(m=+1\) energy contains a term linear in
-\(R\) whose sign follows the far-field angle. It is the boundary value
-of a total-derivative gradient term, which vanishes for a uniform twist
-but not for a co-rotating winding. In a neutral pair it acts only near
-the cores, so its division between core and boundary is a convention;
-only pair energies are free of it, and they are not yet available. Near
-the window, \(E_{\rm core}/k_BT\approx1\)--2 for \(m=-1\), so
-\(y_{v,0}\approx0.1\)--0.3. The vortex fugacity is not small, and a
-weak-coupling flow from the bare stiffness overestimates the transition
-temperature. This is consistent with the classical Monte Carlo
-\(T_{\rm BKT}\approx0.0024\) meV of the roadmap calculation, which lies a
-factor 1.6 below the reduced bare edge; for the lattice XY model the
-corresponding factor is 1.76. That Monte Carlo stiffness estimator
-omits the \(J_{PD}\) part of the exchange, so the comparison is
-qualitative. These are classical cores; the quantum
-\(S=1/2\) cores and the temperature dependence of \(E_{\rm core}\) are
-not computed.
+\(J_{PD}=0\) is broken. On these open clusters the \(m=+1\) energy also
+contains a term that grows with \(R\) and whose sign follows the
+far-field angle, and the energy of a uniform twist grows faster than
+the cluster area. Both are boundary values of a total-derivative
+gradient term on the lattice boundary; they vanish on a torus, where
+the pair energies below are computed.
+
+\emph{Vortex pairs.} A vortex and an antivortex are held at separation
+\(d\) on \(L\times L\) tori, \(L=96\) and 144. The spins within 1.6
+bond lengths of each core are fixed to the relaxed isolated core, and at
+\(J_{PD}\neq0\) a penalty holds the mean far-field angle at \(\phi_0\),
+because the classical energy of uniform states does not fix it. The
+energies follow \(E(d)=2\mu+2\kappa_{\rm pair}\ln d\) up to
+finite-size terms, with \(d\) and \(a_0\) in bond lengths. At
+\(J_{PD}=0\), \(\kappa_{\rm pair}=0.01209\) meV and
+\(2\mu=0.0162\) meV at \(\kappa=\pi\sqrt{\det\rho}\), so
+\(\mu=0.0081\) meV per core. Holding only the central spin of each
+core changes \(2\mu\) by 0.0002 meV, and the single-vortex constant,
+corrected for the boundary shape, agrees to within 0.001 meV. At
+\(J_{PD}=0.010\) meV the pair coefficient depends on the orientation
+of the pair. The anisotropic part of the relaxed stiffness turns with
+the spin angle. Around an \(m=+1\) vortex it co-rotates with the phase
+gradient and does not average out; around \(m=-1\) it does.
+Minimizing the continuum energy over angular distortions of the phase
+gives \(\kappa_{+1}(\alpha)=0.0061\)--0.0093 meV, depending on the
+far-field angle \(\alpha\) of the \(+1\) vortex, and
+\(\kappa_{-1}=0.0076\) meV for every \(\alpha\). The tori give
+\(\kappa_{\rm pair}=0.00679\) meV for the soft orientation (continuum
+0.00682) and 0.00825 meV for the stiff one (continuum 0.00842), with
+\(2\mu=0.016\) and 0.018--0.019 meV. Intermediate orientations lie
+between and drift toward the soft value as \(d\) grows, because the
+far-field angle of the \(+1\) vortex can relax logarithmically. At
+large separation the soft orientation therefore sets the classical
+pair interaction, \(\kappa_{\rm pair}=0.0068\) meV, 11\% below
+\(\pi\sqrt{\det\rho}\). The stiff orientation is a maximum; the
+continuum estimate makes it unstable only beyond \(d\sim10^2\)
+(inferred, not computed).
+
+\emph{Thermal corrections.} The classical harmonic free energy of the
+held pair, \(E+\tfrac12k_BT\,\Delta\ln\det H\), changes the pair
+coefficient at the rate \(d\kappa_{\rm pair}/dT\). At \(J_{PD}=0\) the
+rate is \(-1.37\), within 1\% of the softening of a uniform twist,
+\(-1.38\). The harmonic spin-wave edge
+\(k_BT^*=\kappa/(2-d\kappa/dT)\) is then 0.0036 meV instead of the
+bare 0.0060 meV. At \(J_{PD}=0.010\) meV the log-determinant of a
+uniform state also depends on its angle, as \(b_6\cos6\phi\) per spin
+with \(b_6=-9.3\times10^{-5}\); this is the harmonic thermal part of
+the clock term. The dipolar far field of a pair samples it over an area
+that grows like \(d^2\ln(L/d)\), which made the raw rates depend on
+\(L\). That part belongs to \(\lambda_6(T)\), not to the stiffness, so
+the local sum is removed before the fit; the rates then agree between
+\(L=96\) and 144 to within 0.04 and the fit residuals drop by a factor of
+three to nine. The remaining rate depends on the orientation:
+\(-0.21\) to \(-0.26\) for the soft orientation, \(-0.25\) and \(-0.44\)
+between, and \(-0.95\) to \(-1.08\) for the stiff one, the ranges
+spanning the joint and per-size fits. Above about 0.002 meV the
+harmonic free energy prefers the stiff orientation, an
+order-by-disorder selection of the vortex orientation. The edges
+\(k_BT^*\) are 0.0027--0.0028 meV (stiff), 0.0030--0.0031 meV (soft)
+and 0.0029--0.0031 meV between, against the bare 0.0038 meV. The
+classical Monte Carlo \(T_{\rm BKT}\approx0.0024\) meV of the roadmap
+calculation lies 10--25\% lower. The linear correction reaches about a
+third of \(\kappa\) for the stiff orientation and a tenth for the soft
+one, and that Monte Carlo stiffness estimator omits the \(J_{PD}\) part
+of the exchange, so this is a consistency check, not a derivation. It
+replaces the earlier reading that the gap between the bare edge and the
+Monte Carlo value requires a large vortex fugacity: the harmonic
+softening accounts for most of it.
+
+The core free energy itself is not a sharp classical quantity. Without
+a lattice barrier, the entropy assigned to a held core depends on how
+its position is fixed: at \(J_{PD}=0\) it changes by 2.9 between
+holding the 12 central spins and holding only the central spin, a
+factor of about 17 in the fugacity. The prefactor \(A_{\rm core}\) in
+Eq.~\eqref{eq-nbcp-matching-rg-inputs} carries this convention. With
+\(\mu\approx0.008\) meV, \(e^{-\mu/k_BT}\approx0.04\) at
+\(T=0.0024\) meV, and the held-core entropy multiplies it by a factor
+between about 0.7 and 12 depending on the convention. These are
+classical results; the quantum \(S=1/2\) cores are not computed.
 
 Finally test the thermal theory on increasing sizes. The target
 observations are transverse correlations
