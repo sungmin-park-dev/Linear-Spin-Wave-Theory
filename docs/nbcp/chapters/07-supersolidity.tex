@@ -260,6 +260,68 @@ An inferred algebraic regime should survive changes of matching cutoff
 and truncation rather than appearing only for a particular initial
 guess.
 
+\phantomsection\label{sec-nbcp-matching-results}\textbf{First matching results.} Two
+of these steps have been carried out for Y at 0.2 T,
+\(J_{PD}=0.010\) meV and \(J_\Gamma=0\).
+
+\emph{Matching cutoff.} Along the exact orbit the relaxed classical
+susceptibility \(\chi\) is independent of \(\phi\) to \(10^{-15}\),
+while the relaxed stiffness varies: \(\sqrt{\det\rho}=0.00238\) meV
+with a 2.0\% \(\cos6\phi\) component. A phase theory with these
+coefficients has the soft frequency
+\(\varepsilon=k\,[\hat{\mathbf k}\cdot\rho(\phi)\cdot\hat{\mathbf k}/\chi]^{1/2}\).
+Its sixfold harmonic of \(\langle\ln\varepsilon\rangle\) is 0.005034;
+the LSWT soft branch extrapolated to \(k\to0\) gives 0.005022. Removing
+the modes with \(|\mathbf k|<\Lambda\) from the harmonic thermal free
+energy changes \(\lambda_6\); the phase theory reproduces that change
+to 6--7\% at \(\Lambda=0.25\) for \(T=0.0025\)--\(0.02\) meV, and
+misses it by 25--30\% at \(\Lambda=0.5\), outside its range. The
+dependence on the matching cutoff is therefore not an ambiguity. Pinning
+removed from the matching is generated again, at the same order, when
+the phase theory integrates its own modes with the angle-dependent
+stiffness. A matching with a cutoff must keep \(\rho(\phi)\); one with
+a constant stiffness must keep all modes in \(f_>\). Both give the same
+long-wavelength coefficient at \(O(T)\), which for Y is
+\(\lambda_6(T)/\lambda_6(0)=0.90\), 0.67 and 0.62 at \(T=0.005\),
+0.010 and 0.015 meV. The order-by-disorder entropy of the anisotropic
+stiffness opposes the zero-point selection. A larger cutoff, such as
+\(\Lambda=1\), removes modes the phase theory cannot represent, and its
+change of sign is an artefact of that split. Not included are the
+Debye--Waller suppression by the phase fluctuations themselves, which
+is the RG eigenvalue and is of relative order \(T/S\) beyond this,
+anharmonic terms and defects.
+
+\emph{Vortex cores.} Relaxed classical vortices in hexagonal clusters
+of up to 6\,937 spins, with two outer rings fixed to the winding,
+give \(E_v(R)=E_{\rm core}+\kappa\ln R\). At \(J_{PD}=0\),
+\(\kappa=0.01189\) meV against \(\pi\sqrt{\det\rho}=0.01201\) meV, and
+\(E_{\rm core}=0.0071\)--0.0076 meV for both windings. At
+\(J_{PD}=0.010\) meV, the winding \(m=-1\) gives \(\kappa=0.00719\)
+against \(0.00763\) meV and \(E_{\rm core}=0.0036\)--0.0053 meV. The
+ranges compare the fitted constant with the constant at the predicted
+\(\kappa\). The vortex energy thus confirms independently that
+\(J_{PD}=0.010\) meV lowers \(\sqrt{\det\rho}\) by about 37\%, which
+lowers the bare upper window edge \(\pi\rho/2\) from 0.0060 to
+0.0038 meV. With \(J_{PD}\neq0\) the two windings are inequivalent,
+because the spin-only reflection that maps \(m\to-m\) at
+\(J_{PD}=0\) is broken. The \(m=+1\) energy contains a term linear in
+\(R\) whose sign follows the far-field angle. It is the boundary value
+of a total-derivative gradient term, which vanishes for a uniform twist
+but not for a co-rotating winding. In a neutral pair it acts only near
+the cores, so its division between core and boundary is a convention;
+only pair energies are free of it, and they are not yet available. Near
+the window, \(E_{\rm core}/k_BT\approx1\)--2 for \(m=-1\), so
+\(y_{v,0}\approx0.1\)--0.3. The vortex fugacity is not small, and a
+weak-coupling flow from the bare stiffness overestimates the transition
+temperature. This is consistent with the classical Monte Carlo
+\(T_{\rm BKT}\approx0.0024\) meV of the roadmap calculation, which lies a
+factor 1.6 below the reduced bare edge; for the lattice XY model the
+corresponding factor is 1.76. That Monte Carlo stiffness estimator
+omits the \(J_{PD}\) part of the exchange, so the comparison is
+qualitative. These are classical cores; the quantum
+\(S=1/2\) cores and the temperature dependence of \(E_{\rm core}\) are
+not computed.
+
 Finally test the thermal theory on increasing sizes. The target
 observations are transverse correlations
 \(G_\perp(r)\propto r^{-\eta}\), loss of sixfold locking in the
