@@ -162,3 +162,47 @@ def plot_thermodynamics(thermal, quantities: Sequence[str] = ("specific_heat", "
         ax.set_xlabel(temperature_label)
         ax.set_ylabel(_THERMAL_LABELS[quantity])
     return axes
+
+
+def plot_magnetization_curve(curve, axes=None, *, field_scale: float = 1.0,
+                             field_label: str = r"$h = \mu_B B / E_0$"):
+    """Draw M(h) at classical and harmonic order, and the ordered moment per site.
+
+    Parameters
+    ----------
+    curve : MagnetizationCurve
+        Output of :func:`~spintoolkit.methods.magnetization.magnetization_curve`.
+    axes : two matplotlib.axes.Axes, optional
+        Panels for M(h) and for ``S_i - <n_i>``; a single Axes draws only M(h).
+    field_scale, field_label
+        Display conversion of ``h``; a scale other than one needs its label.
+
+    Returns
+    -------
+    list of matplotlib.axes.Axes
+    """
+    scale = float(field_scale)
+    if not np.isfinite(scale) or scale <= 0:
+        raise ValueError("field_scale must be finite and positive")
+    if scale != 1.0 and field_label == r"$h = \mu_B B / E_0$":
+        raise ValueError("field_scale converts away from mu_B B / E0; give the matching "
+                         "field_label")
+    if axes is None:
+        _, axes = plt.subplots(1, 2, figsize=(9.6, 3.6))
+    axes = list(np.atleast_1d(axes))
+    h = np.asarray(curve.fields) * scale
+    axes[0].plot(h, curve.classical, color="0.4", ls="--", label="classical")
+    axes[0].plot(h, curve.harmonic, color="C0", marker="o", ms=3, label="harmonic (1/S)")
+    axes[0].set_xlabel(field_label)
+    axes[0].set_ylabel(r"$M$ per site $(\mu_B)$")
+    axes[0].legend(fontsize=8, frameon=False)
+    if len(axes) > 1:
+        moments = curve.ordered_moments
+        for i in range(moments.shape[1]):
+            axes[1].plot(h, moments[:, i], marker="o", ms=3, label=f"site {i}")
+        axes[1].axhline(float(np.max(curve.spins)), color="0.6", lw=0.6, ls=":")
+        axes[1].set_xlabel(field_label)
+        axes[1].set_ylabel(r"ordered moment $S_i - \langle n_i\rangle$")
+        if moments.shape[1] <= 6:
+            axes[1].legend(fontsize=7, frameon=False)
+    return axes

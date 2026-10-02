@@ -146,3 +146,59 @@ def band_structure(result, path: Sequence[PathPoint] = ("Γ", "K", "M", "Γ"), p
                       stacklevel=2)
     return BandStructure(k, distance, np.array(energies), labels, label_distances,
                          np.array(zero), lattice)
+
+
+@dataclass(frozen=True)
+class DensityOfStates:
+    """Magnon density of states per magnetic site.
+
+    Attributes
+    ----------
+    omega : (nw,) array
+        Energies (E0).
+    dos : (nw,) array
+        ``g(w) = (1 / Ns) sum_n <delta(w - w_n(k))>_k``; integrates to one
+        over all energies (one mode per site).
+    num_k : int
+        Momenta of the mesh.
+    num_bands : int
+    """
+
+    omega: np.ndarray
+    dos: np.ndarray
+    num_k: int
+    num_bands: int
+
+
+def density_of_states(result, omega: Sequence[float], fwhm: float,
+                      shape: str = "gaussian") -> DensityOfStates:
+    """Broadened magnon density of states from the mesh of an LSWT result.
+
+    Parameters
+    ----------
+    result : LSWTResult or SpiralLSWTResult
+        Its momenta must sample the whole (magnetic) zone, i.e. a mesh from
+        ``LSWTSettings.mesh``; explicit k-points give a weighted sum over
+        those points only.
+    omega : array_like
+    fwhm : float
+        Full width at half maximum of the broadening; it should exceed the
+        level spacing of the mesh, about ``bandwidth / mesh``.
+    shape : {"gaussian", "lorentzian"}
+
+    Raises
+    ------
+    ValueError
+        If some band energy is not finite (unstable state).
+    """
+    from spintoolkit.observables.neutron import broaden_modes
+
+    lab = getattr(result, "rotating", result)
+    bands = np.asarray(lab.bands(), dtype=float)                 # (nk, Ns)
+    if not np.all(np.isfinite(bands)):
+        raise ValueError("band energies are not all finite (unstable reference state)")
+    weights = np.asarray(lab.weights, dtype=float)
+    ns = bands.shape[1]
+    g = broaden_modes(bands.reshape(1, -1), np.repeat(weights, ns)[None] / ns,
+                      omega, fwhm, shape)[0]
+    return DensityOfStates(np.asarray(omega, dtype=float), g, len(weights), ns)

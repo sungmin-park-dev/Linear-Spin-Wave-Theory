@@ -66,7 +66,8 @@ def _edges(centres: np.ndarray) -> np.ndarray:
 def plot_intensity_path(spectrum, ax: Optional[plt.Axes] = None, *, energy_scale: float = 1.0,
                         energy_label: str = DEFAULT_ENERGY_LABEL, cmap=DEFAULT_CMAP,
                         vmax: Optional[float] = None, log: bool = False,
-                        undefined_color=UNDEFINED_COLOR, colorbar: bool = True) -> plt.Axes:
+                        undefined_color=UNDEFINED_COLOR, colorbar: bool = True,
+                        intensity_label: str = r"$I(\mathbf{Q},\omega)$ (per site)") -> plt.Axes:
     """Draw ``I(Q, w)`` along a momentum path.
 
     Parameters
@@ -84,6 +85,9 @@ def plot_intensity_path(spectrum, ax: Optional[plt.Axes] = None, *, energy_scale
     undefined_color : colour
         Colour of NaN cells.
     colorbar : bool
+    intensity_label : str
+        Colour-bar label, e.g. for a spin component from
+        :func:`~spintoolkit.observables.neutron.correlation_path`.
 
     Returns
     -------
@@ -103,7 +107,7 @@ def plot_intensity_path(spectrum, ax: Optional[plt.Axes] = None, *, energy_scale
     ax.set_xlim(spectrum.distance[0], spectrum.distance[-1])
     ax.set_ylabel(energy_label)
     if colorbar:
-        ax.figure.colorbar(mesh, ax=ax, label=r"$I(\mathbf{Q},\omega)$ (per site)")
+        ax.figure.colorbar(mesh, ax=ax, label=intensity_label)
     return ax
 
 
@@ -175,4 +179,79 @@ def plot_powder(Q_magnitudes, omega, intensity, ax: Optional[plt.Axes] = None, *
     ax.set_ylabel(energy_label)
     if colorbar:
         ax.figure.colorbar(mesh, ax=ax, label=r"$I(|\mathbf{Q}|,\omega)$ (per site)")
+    return ax
+
+
+def plot_density_of_states(dos, ax: Optional[plt.Axes] = None, *, vertical: bool = False,
+                           energy_scale: float = 1.0, energy_label: str = DEFAULT_ENERGY_LABEL,
+                           **line) -> plt.Axes:
+    """Draw the magnon density of states.
+
+    Parameters
+    ----------
+    dos : DensityOfStates
+        Output of :func:`~spintoolkit.observables.bands.density_of_states`.
+    vertical : bool
+        Energy on the vertical axis, to sit beside :func:`plot_bands` with a
+        shared energy axis.
+    energy_scale, energy_label
+        As in :func:`~spintoolkit.visualization.bands.plot_bands`; the density
+        is divided by the scale so that it still integrates to one.
+    **line
+        Passed to ``Axes.plot``.
+    """
+    scale = _check_scale(energy_scale, energy_label)
+    if ax is None:
+        _, ax = plt.subplots(figsize=(2.6, 4.2) if vertical else (5.2, 3.4))
+    omega = np.asarray(dos.omega) * scale
+    g = np.asarray(dos.dos) / scale
+    line.setdefault("color", "C0")
+    if vertical:
+        ax.plot(g, omega, **line)
+        ax.fill_betweenx(omega, 0, g, color=line["color"], alpha=0.2, lw=0)
+        ax.set_xlabel(r"$g(\omega)$")
+        ax.set_ylabel(energy_label)
+        ax.set_xlim(left=0)
+    else:
+        ax.plot(omega, g, **line)
+        ax.fill_between(omega, 0, g, color=line["color"], alpha=0.2, lw=0)
+        ax.set_xlabel(energy_label)
+        ax.set_ylabel(r"$g(\omega)$ per site")
+        ax.set_ylim(bottom=0)
+    return ax
+
+
+def plot_static_structure_factor(spectrum, ax: Optional[plt.Axes] = None, *, cmap=DEFAULT_CMAP,
+                                 vmax: Optional[float] = None, log: bool = False,
+                                 undefined_color=UNDEFINED_COLOR, zones: bool = True,
+                                 bragg_scale: float = 200.0, colorbar: bool = True) -> plt.Axes:
+    """Draw the energy-integrated intensity with the Bragg peaks as circles.
+
+    Parameters
+    ----------
+    spectrum : StaticSlice
+        Output of :func:`~spintoolkit.observables.neutron.static_slice`.
+    bragg_scale : float
+        Marker area (points^2) of the strongest Bragg peak; area is
+        proportional to the elastic intensity. Peaks below 1e-9 of the
+        strongest (forbidden by symmetry or the polarization factor) are not drawn.
+    Other parameters as in :func:`plot_intensity_slice`.
+    """
+    from types import SimpleNamespace
+
+    diffuse = SimpleNamespace(q_x=spectrum.q_x, q_y=spectrum.q_y, intensity=spectrum.intensity,
+                              lattice=spectrum.lattice, energy=0.0)
+    ax = plot_intensity_slice(diffuse, ax, cmap=cmap, vmax=vmax, log=log,
+                              undefined_color=undefined_color, zones=zones, colorbar=colorbar)
+    if colorbar:
+        ax.figure.axes[-1].set_ylabel(r"diffuse $\int I\,d\omega$ (per site)")
+    peaks = np.asarray(spectrum.bragg_intensity, dtype=float)
+    if peaks.size and np.nanmax(peaks) > 0:
+        keep = peaks > 1e-9 * np.nanmax(peaks)
+        sizes = bragg_scale * peaks[keep] / np.nanmax(peaks)
+        ax.scatter(spectrum.bragg_Q[keep, 0], spectrum.bragg_Q[keep, 1], s=sizes,
+                   facecolors="none", edgecolors="r", linewidths=1.2, zorder=4,
+                   label="Bragg (area ∝ intensity)")
+        ax.legend(loc="upper right", fontsize=7, framealpha=0.8)
+    ax.set_title("energy-integrated: diffuse (colour) and Bragg (circles)", fontsize=9)
     return ax

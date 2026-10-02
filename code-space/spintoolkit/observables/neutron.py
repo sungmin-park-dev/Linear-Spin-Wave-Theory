@@ -200,6 +200,32 @@ def _as_3d(Q: Any) -> np.ndarray:
     return Q
 
 
+def broaden_modes(energies: np.ndarray, weights: np.ndarray, omega: Sequence[float],
+                  fwhm: Union[float, Callable[[np.ndarray], Any]],
+                  shape: str = "gaussian") -> np.ndarray:
+    """Broaden mode weights ``(nq, nmodes)`` at ``energies`` onto ``omega``, shape (nq, nw).
+
+    ``fwhm`` is the full width at half maximum, or a function of ``|w_n|``;
+    ``shape`` is "gaussian" or "lorentzian". Each profile has unit area.
+    """
+    omega = np.asarray(omega, dtype=float)
+    width = fwhm(np.abs(energies)) if callable(fwhm) else fwhm
+    width = np.broadcast_to(np.asarray(width, dtype=float), energies.shape)
+    if np.any(~(width > 0)):
+        raise ValueError("fwhm must be positive")
+    x = omega[None, None, :] - energies[:, :, None]
+    w = width[:, :, None]
+    if shape == "gaussian":
+        sigma = w / (2 * np.sqrt(2 * np.log(2)))
+        profile = np.exp(-0.5 * (x / sigma) ** 2) / (sigma * np.sqrt(2 * np.pi))
+    elif shape == "lorentzian":
+        eta = w / 2
+        profile = eta / np.pi / (x ** 2 + eta ** 2)
+    else:
+        raise ValueError("shape must be 'gaussian' or 'lorentzian'")
+    return np.einsum("qn,qnw->qw", weights, profile)
+
+
 @dataclass(frozen=True)
 class NeutronIntensity:
     """Mode-resolved unpolarized neutron intensity ``I(Q, w)``.
@@ -240,22 +266,11 @@ class NeutronIntensity:
             evaluated at ``|w_n|``).
         shape : {"gaussian", "lorentzian"}
         """
-        omega = np.asarray(omega, dtype=float)
-        width = fwhm(np.abs(self.energies)) if callable(fwhm) else fwhm
-        width = np.broadcast_to(np.asarray(width, dtype=float), self.energies.shape)
-        if np.any(~(width > 0)):
-            raise ValueError("fwhm must be positive")
-        x = omega[None, None, :] - self.energies[:, :, None]
-        w = width[:, :, None]
-        if shape == "gaussian":
-            sigma = w / (2 * np.sqrt(2 * np.log(2)))
-            profile = np.exp(-0.5 * (x / sigma) ** 2) / (sigma * np.sqrt(2 * np.pi))
-        elif shape == "lorentzian":
-            eta = w / 2
-            profile = eta / np.pi / (x ** 2 + eta ** 2)
-        else:
-            raise ValueError("shape must be 'gaussian' or 'lorentzian'")
-        return np.einsum("qn,qnw->qw", self.intensities, profile)
+        return broaden_modes(self.energies, self.intensities, omega, fwhm, shape)
+
+    def integrated(self) -> np.ndarray:
+        """Energy-integrated inelastic intensity ``sum_n I_n(Q)``, shape (nq,); NaN where undefined."""
+        return self.intensities.sum(axis=1)
 
 
 def neutron_intensity(result, Q, temperature: float = 0.0, *, g: SiteValue = None,
@@ -520,3 +535,131 @@ def neutron_slice(result, energy: float, fwhm, extent: Optional[float] = None,
     intensity = neutron_intensity(result, Q, **kwargs).broaden([float(energy)], fwhm, shape)
     return NeutronSlice(axis, axis.copy(), float(energy),
                         intensity[:, 0].reshape(qx.shape), lattice)
+
+
+_COMPONENTS = {c: ("xyz".index(c[0]), "xyz".index(c[1]))
+               for c in ("xx", "yy", "zz", "xy", "yx", "xz", "zx", "yz", "zy")}
+
+
+def correlation_path(result, omega, fwhm, component: str = "zz",
+                     path: Sequence[Any] = ("Γ", "K", "M", "Γ"), points: int = 200,
+                     temperature: float = 0.0, shape: str = "gaussian",
+                     zero_modes=None, gapless: Optional[bool] = None) -> NeutronPath:
+    """One Cartesian component ``S^{ab}(q, w)`` of the spin structure factor along a path.
+
+    The components are those of the global spin frame (``z`` normal to the
+    layer), per site, without g-factor, form factor or polarization factor:
+    the quantity a polarized neutron experiment separates, e.g. ``zz``
+    (fluctuations along the normal) against ``xx`` and ``yy``. For an
+    off-diagonal component the real part is returned. ``Q_z`` is zero.
+
+    Parameters
+    ----------
+    result : LSWTResult or SpiralLSWTResult
+    omega, fwhm, shape
+        As in :meth:`NeutronIntensity.broaden`.
+    component : str
+        Two of x, y, z, e.g. "zz".
+    path, points
+        As in :func:`neutron_path`.
+    temperature, zero_modes, gapless
+        As in :func:`~spintoolkit.observables.structure_factor.structure_factor`.
+    """
+    from spintoolkit.observables.bands import _path_momenta, _vertices
+    from spintoolkit.system.high_symmetry import high_symmetry_points
+
+    if component not in _COMPONENTS:
+        raise ValueError(f"component must be one of {sorted(_COMPONENTS)}")
+    a, b = _COMPONENTS[component]
+    labels, vertices = _vertices(path, high_symmetry_points(_primitive_lattice(result)))
+    q, distance, label_distances = _path_momenta(vertices, points)
+    solver = spiral_structure_factor if hasattr(result, "rotating") else structure_factor
+    sf = solver(result, q, temperature, zero_modes, gapless)
+    weights = np.real(sf.weights[:, :, a, b])
+    weights[sf.zero_mode] = np.nan
+    omega = np.asarray(omega, dtype=float)
+    intensity = broaden_modes(sf.energies, weights, omega, fwhm, shape)
+    Q = np.column_stack([q, np.zeros(len(q))])
+    return NeutronPath(Q, distance, labels, label_distances, omega, intensity)
+
+
+@dataclass(frozen=True)
+class StaticSlice:
+    """Energy-integrated neutron intensity on a Cartesian grid, with the Bragg peaks.
+
+    Attributes
+    ----------
+    q_x, q_y : (nx,), (ny,) arrays
+    intensity : (ny, nx) array
+        Inelastic part ``sum_n I_n(Q)`` (equal-time fluctuations), per site;
+        NaN where undefined.
+    bragg_Q : (m, 2) array
+        Magnetic reciprocal vectors inside the window.
+    bragg_intensity : (m,) array
+        Elastic intensity at each, the coefficient of ``N delta_{Q, G}``
+        (the ordered moment squared times the polarization factor); NaN at
+        ``Q = 0``, where the polarization factor is undefined.
+    lattice : (2, 2) array
+        Primitive lattice.
+    """
+
+    q_x: np.ndarray
+    q_y: np.ndarray
+    intensity: np.ndarray
+    bragg_Q: np.ndarray
+    bragg_intensity: np.ndarray
+    lattice: np.ndarray
+
+
+def static_slice(result, extent: Optional[float] = None, points: int = 81, q_z: float = 0.0,
+                 temperature: float = 0.0, **kwargs) -> StaticSlice:
+    """Energy-integrated ``S(Q)`` as seen by unpolarized neutrons (diffraction).
+
+    The integral over energy splits into the elastic Bragg peaks of the
+    ordered moment, on the magnetic reciprocal lattice, and the diffuse
+    inelastic part (equal-time fluctuations). They are returned separately:
+    a Bragg peak is a delta function and has no value on a grid.
+
+    Parameters
+    ----------
+    result : LSWTResult or SpiralLSWTResult
+    extent, points, q_z
+        As in :func:`neutron_slice`.
+    temperature : float
+    **kwargs
+        Passed to :func:`neutron_intensity` (g, form factor, zero-mode options).
+    """
+    from spintoolkit.system.high_symmetry import reciprocal_lattice, zone_boundary
+
+    lattice = _primitive_lattice(result)
+    if extent is None:
+        extent = 2.0 * float(np.max(np.linalg.norm(zone_boundary(lattice), axis=1)))
+    axis = np.linspace(-extent, extent, int(points))
+    qx, qy = np.meshgrid(axis, axis)
+    Q = np.column_stack([qx.ravel(), qy.ravel(), np.full(qx.size, float(q_z))])
+    diffuse = neutron_intensity(result, Q, temperature, **kwargs).integrated().reshape(qx.shape)
+
+    if hasattr(result, "rotating"):
+        bragg = _spiral_bragg_vectors(result, lattice, extent)
+    else:
+        G = reciprocal_lattice(np.asarray(result.magnetic_lattice, dtype=float))
+        n = int(np.ceil(extent / min(np.linalg.norm(G, axis=1)))) + 1
+        bragg = np.array([i * G[0] + j * G[1] for i in range(-n, n + 1) for j in range(-n, n + 1)])
+    inside = np.all(np.abs(bragg) <= extent + 1e-9, axis=1)
+    bragg = bragg[inside]
+    peaks = np.zeros(0)
+    if len(bragg):
+        Qb = np.column_stack([bragg, np.full(len(bragg), float(q_z))])
+        peaks = neutron_intensity(result, Qb, temperature, **kwargs).elastic
+    return StaticSlice(axis, axis.copy(), diffuse, bragg, peaks, lattice)
+
+
+def _spiral_bragg_vectors(result, lattice: np.ndarray, extent: float) -> np.ndarray:
+    """Primitive reciprocal vectors G and G +- Q of a single-Q spiral within ``extent``."""
+    from spintoolkit.system.high_symmetry import reciprocal_lattice
+
+    b = reciprocal_lattice(lattice)
+    n = int(np.ceil(extent / min(np.linalg.norm(b, axis=1)))) + 2
+    G = np.array([i * b[0] + j * b[1] for i in range(-n, n + 1) for j in range(-n, n + 1)])
+    k = np.asarray(result.wave_vector, dtype=float)
+    return np.vstack([G, G + k, G - k])
