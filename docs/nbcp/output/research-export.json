@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-01T06:21:17.633255+00:00",
+  "generated_utc": "2026-10-02T14:20:17.666327+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -14,14 +14,14 @@
     "docs/nbcp/chapters/04-phase-characterization.tex": "96f71d8a5fd8d8c2169560bf6cbc98afcc5f4f5a23f4cba7b932499df626f545",
     "docs/nbcp/chapters/05-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
     "docs/nbcp/chapters/06-yv-low-energy.tex": "c43966a3db1ecc5dea4b80b86071925dd475b0636bf0b98677341fd37d017d86",
-    "docs/nbcp/chapters/07-supersolidity.tex": "dac7dd624fb2cfd55ad503c8039d5f16557e7340a6b1de065c7650ba7b824922",
-    "docs/nbcp/chapters/08-y-phase.tex": "8912aad046dc67f78b60ccb1875ec52da5253f764dcbdea556dba175a5a90a0c",
+    "docs/nbcp/chapters/07-supersolidity.tex": "76b2443a1c37ca011d9f190b764ac7948ee459f7f2b81a707c800c13382bf693",
+    "docs/nbcp/chapters/08-y-phase.tex": "14629e8d897ec58c9f61eee851d358d4adda347c84b2c0c3e1ae649a857e9941",
     "docs/nbcp/chapters/09-v-phase.tex": "145b1ce59497662d74c654ca62b23f7e43b0b7e088e20c62aa06f83dafa0837f",
     "docs/nbcp/chapters/10-discussion.tex": "a14fee3666569d4d497f562a4d8a4fa7cd0d113b783faff86a88e4d476a967d4",
-    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "d8cc414e3f2a10db55076cb7afb83a3834e37026f46281ce474028a39d6980b5",
+    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "ab8d6289fdaf3072e5c71f38f685d77a0178883f5e4cdb642ad2f2adf1f9e0f9",
     "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
     "docs/nbcp/appendices/c-y-stiffness.tex": "77030a5a1477dcd300c1a4024ebc63e0746758f90772766237d484ca4aca8dfa",
-    "docs/nbcp/appendices/d-numerical-verification.tex": "7699faa6cea5ea91d2cc6dde722efdc2afdfeb30528e7e4dda5767364c146d15",
+    "docs/nbcp/appendices/d-numerical-verification.tex": "6abfe25b1937ebd0b9f18ffe90e94e6f94cb8ad6b52c3d212899d6fc5ec35c6e",
     "docs/nbcp/appendices/e-model-derivation.tex": "e57143a3f77508ba209f60d4499ff18969c4e473a409f0229108c4404f58a3bf",
     "docs/nbcp/references.tex": "fd339a135cc065ef0d0e91891e2028bbed387ef5aa1a019dff9b76fb082ad9a8",
     "docs/nbcp/references.bib": "3a016aef2204b1adf5ced2fbd9c064d5c1c04a07386f22e07c4383c790524e94",
@@ -49,7 +49,7 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "11f12f52b7f7eb46ef92ff889062184eb0b12f9b89d592eb1f3b3ffd89fa8378"
+    "research-note.pdf": "a1b6ea6b37b6f002258ec95f33ca5eccf0ca51802a64970eca9554e91c07d704"
   },
   "latex_review_messages": [],
   "source_display_equations": 92,

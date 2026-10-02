@@ -1,0 +1,60 @@
+{
+ "created_utc": "2026-10-02T14:13:30.794950+00:00",
+ "scope": "Y (0.2 T), J_PD = 0.010 meV, J_Gamma = 0; phase theory with relaxed rho(phi), chi(phi) against the harmonic LSWT cutoff split. T in meV; momenta in inverse bond lengths; a6 per spin with f = f0 - a6 cos(6 phi).",
+ "chi_span_per_cell": 8.881784197001252e-16,
+ "sqrt_det_rho_meV": {
+  "mean": 0.002378914527919874,
+  "cos6_relative": 0.020410011904322765
+ },
+ "b6_phase_theory": 0.005034224622267336,
+ "b6_lswt_k_to_0": 0.005022479838710464,
+ "b6_lswt_k2_slope": 0.012136297232121895,
+ "temperatures": [
+  {
+   "T_meV": 0.0025,
+   "a6_ratio_cutoff_0": 0.9828891864993008,
+   "delta_a6_phase_theory_0.25": 2.0311265211828856e-08,
+   "delta_a6_lswt_0.25": 1.9120589080554522e-08,
+   "delta_a6_phase_theory_0.5": 2.7831852696402312e-08,
+   "delta_a6_lswt_0.5": 2.441200473515351e-08
+  },
+  {
+   "T_meV": 0.005,
+   "a6_ratio_cutoff_0": 0.8994954631750335,
+   "delta_a6_phase_theory_0.25": 7.04260282383739e-08,
+   "delta_a6_lswt_0.25": 6.571685357572777e-08,
+   "delta_a6_phase_theory_0.5": 1.627470498393276e-07,
+   "delta_a6_lswt_0.5": 1.2964061633278712e-07
+  },
+  {
+   "T_meV": 0.01,
+   "a6_ratio_cutoff_0": 0.6708619018056863,
+   "delta_a6_phase_theory_0.25": 1.7805695642686733e-07,
+   "delta_a6_lswt_0.25": 1.6560432831812967e-07,
+   "delta_a6_phase_theory_0.5": 5.620133450974897e-07,
+   "delta_a6_lswt_0.5": 4.299219625873381e-07
+  },
+  {
+   "T_meV": 0.015,
+   "a6_ratio_cutoff_0": 0.6164635884814318,
+   "delta_a6_phase_theory_0.25": 2.864027390404123e-07,
+   "delta_a6_lswt_0.25": 2.660985183374607e-07,
+   "delta_a6_phase_theory_0.5": 9.88460455480646e-07,
+   "delta_a6_lswt_0.5": 7.480755557844982e-07
+  },
+  {
+   "T_meV": 0.02,
+   "a6_ratio_cutoff_0": 0.697956518736801,
+   "delta_a6_phase_theory_0.25": 3.9481770048863304e-07,
+   "delta_a6_lswt_0.25": 3.666410720629637e-07,
+   "delta_a6_phase_theory_0.5": 1.4185167885812408e-06,
+   "delta_a6_lswt_0.5": 1.0682374247573224e-06
+  }
+ ],
+ "inputs_sha256": {
+  "examples/nbcp_matching_cutoff_check.py": "5259c04dd324769318a61eeb885d7737ca9cb64e16036813dd3843a93a019a55",
+  "data-space/verification/261001-angular-thermal-split/angular-thermal-split.json": "08ca1747438b9d25a626e6228cd3046e05a04a882eefe43b8eccbfb5a159817e",
+  "examples/nbcp_y_soc_conditions.py": "8e30d0cf09e1b97087e43be5f4ceb56da463e2032770093c5d959b9c5e9dde34"
+ },
+ "seconds": 0.16693873500003065
+}
