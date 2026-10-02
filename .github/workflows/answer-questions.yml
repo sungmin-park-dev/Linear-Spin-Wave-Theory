@@ -1,0 +1,115 @@
+name: Answer questions
+
+# Questions left in the workbench comment files (from the phone/iPad reader or the
+# Mac app) get an answer from Claude, appended under the question in the same file.
+# Claude may only read the repository and edit files under workbench/comments/;
+# the "Check what changed" step refuses to commit anything else or any removed line.
+
+on:
+  push:
+    branches: [main]
+    paths: ['workbench/comments/**']
+  workflow_dispatch:
+
+concurrency:
+  group: answer-questions
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  answer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find open questions
+        id: find
+        run: |
+          python3 - <<'PY' > "$RUNNER_TEMP/questions.md"
+          import pathlib, re
+          head = re.compile(r'^## (c-[\w-]+) · (\S+) · (.*)$')
+          state = re.compile(r'^- 상태: (\S+)\s*$')
+          answer = re.compile(r'^### 답 · ')
+          for f in sorted(pathlib.Path('workbench/comments').rglob('*.md')):
+              cur = None
+              items = []
+              for line in f.read_text(encoding='utf-8').splitlines():
+                  m = head.match(line)
+                  if m:
+                      cur = {'id': m[1], 'kind': m[2], 'where': m[3], 'state': '대기' if m[2] == '질문' else None, 'answered': False}
+                      items.append(cur)
+                  elif cur and answer.match(line):
+                      cur['answered'] = True
+                  elif cur and (s := state.match(line)):
+                      cur['state'] = s[1]
+              for c in items:
+                  if c['kind'] == '질문' and c['state'] == '대기' and not c['answered']:
+                      print(f"- `{f}` · {c['id']} · {c['where']}")
+          PY
+          cat "$RUNNER_TEMP/questions.md"
+          if [ -s "$RUNNER_TEMP/questions.md" ]; then echo "open=true" >> "$GITHUB_OUTPUT"; else echo "open=false" >> "$GITHUB_OUTPUT"; fi
+          { echo "list<<RW_QUESTIONS_END"; cat "$RUNNER_TEMP/questions.md"; echo "RW_QUESTIONS_END"; } >> "$GITHUB_OUTPUT"
+          echo "now=$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')" >> "$GITHUB_OUTPUT"
+
+      - name: Answer with Claude
+        if: steps.find.outputs.open == 'true'
+        uses: anthropics/claude-code-action/base-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --allowedTools "Read,Glob,Grep,Edit(workbench/comments/**)"
+            --disallowedTools "Bash,Write,NotebookEdit,WebFetch"
+            --max-turns 60
+          prompt: |
+            You answer research questions the owner of this repository left in comment files.
+            Read the repository's AGENTS.md / CLAUDE.md / README.md first for context and conventions.
+
+            Open questions (file · id · where):
+            ${{ steps.find.outputs.list }}
+
+            For each question:
+            1. Read its section in the file: the heading `## <id> · 질문 · <where>`, an optional quote line
+               starting with `> "` (text the owner selected), and the question body.
+            2. Find what it refers to. The file's `# 코멘트 · ...` title and `<!-- rw-source: ... -->` line name the
+               target: `자료 <name>.pdf` is a PDF in the repository (read it, or its LaTeX source if one exists),
+               `작업노트 결과 <title>` is `workbench/blocks/<id>.tex`, `일지 <date>` is `workbench/log/<date>.md`.
+               `p.N` is the page. Look at the surrounding documents as needed.
+            3. Answer in Korean, concisely, with LaTeX math in $...$ where useful. Say what you checked
+               (file and section) and mark anything you inferred rather than found. If the question cannot be
+               answered from the repository, say so and say what would be needed.
+            4. Append the answer directly under that question's section, before the next `## ` heading
+               (or at the end of the file), exactly in this form:
+
+               ### 답 · claude · ${{ steps.find.outputs.now }}
+               <answer>
+               - 상태: 답함
+
+            Rules: only append lines. Never change or delete existing lines, never touch other questions'
+            sections, and never edit any file outside workbench/comments/. Do not start a line of your answer
+            with `#`, `## `, `- 상태:` or `<!--`.
+
+      - name: Check what changed
+        if: steps.find.outputs.open == 'true'
+        run: |
+          git status --porcelain
+          bad=$(git status --porcelain | awk '{print $2}' | grep -v '^workbench/comments/' || true)
+          if [ -n "$bad" ]; then echo "::error::Changed files outside workbench/comments/: $bad"; exit 1; fi
+          if [ -n "$(git status --porcelain | grep -v '^ M ')" ]; then echo "::error::Only edits to existing comment files are allowed"; exit 1; fi
+          removed=$(git diff --numstat | awk '{s+=$2} END {print s+0}')
+          if [ "$removed" != "0" ]; then echo "::error::$removed existing lines were changed or removed"; git diff; exit 1; fi
+
+      - name: Commit answers
+        if: steps.find.outputs.open == 'true'
+        run: |
+          git diff --quiet && { echo "No answers written"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Answer open questions in workbench comments"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
