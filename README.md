@@ -83,6 +83,14 @@ To define your own model, build `stk.SpinModel` from `stk.Site` and
 example) and a `stk.SpinState` for the ordered configuration, or find one with
 `spintoolkit.methods.classical.classical_search`.
 
+## Tutorials
+
+Five tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
+first calculation to neutron spectra, the magnetization curve at 1/S order
+(checked against exact diagonalization) and magnon topology. Every number in
+them is printed by a script in `examples/tutorials/` and checked by the test
+suite.
+
 ## Gallery
 
 Every figure below comes from [`examples/gallery.py`](examples/gallery.py),

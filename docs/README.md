@@ -16,6 +16,7 @@ Toolkit 개발 설계, LSWT 일반 이론과 NBCP 연구 노트를 주제별로 
 |---|---|---|
 | Toolkit 개발 설계 | [development/](development/README.md) | 개발 목표·구조·공통 자료구조·폴더 역할을 설명하는 Beamer |
 | 개발 설계 PDF | [development/output/pdf/](development/output/pdf/development-log.pdf) | 로컬 검토용 생성 PDF |
+| 패키지 사용법(영어 튜토리얼) | [tutorials/](tutorials/README.md) | 첫 계산부터 중성자·M(h)·위상까지 5편. 각 수치는 해석해·문헌·ED와 대조하고 테스트로 확인한다. |
 | LSWT 일반 이론 | [lswt/](lswt/README.md) | 정의·가정·일반 유도·관측량 설명. 번호 폴더는 읽는 순서다. |
 | NBCP 연구 | [nbcp/](nbcp/README.md) | 모델별 질문·유도·수치 결과·기존 계산과의 비교 |
 | LSWT 원자료 | [lswt/sources/](lswt/sources/README.md) | 원본 노트·TeX 전사본·외부 논문·검증 근거 |
