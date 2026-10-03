@@ -420,7 +420,9 @@ def pseudo_goldstone_gap(model: SpinModel, state: SpinState, axis=(0.0, 0.0, 1.0
     # inverse propagator onto x; the one-loop matrix already supplies U1 + schur_1 of it,
     # so the two-loop 1PI element is U2 - schur_1 (otherwise the static mixing of x with
     # the other modes is counted twice and B does not vanish at the symmetric point).
-    _, schur_1 = _static_curvature(ref.H0, M0, w, settings.t_values)
+    # (with pinning, H(0) has no zero mode and the order separation does not apply)
+    schur_1 = (_static_curvature(ref.H0, M0, w, settings.t_values)[1]
+               if settings.pinning == 0 else float("nan"))
     sigma2_xx = U2 - schur_1
     extra = sigma2_xx * np.outer(w.conj(), w)
     flat = 1e-9 * max(abs(zero_point[0]), abs(order_s0[0]), 1e-300)
