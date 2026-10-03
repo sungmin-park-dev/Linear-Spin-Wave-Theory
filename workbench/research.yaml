@@ -4,8 +4,8 @@ started: 2026-09-30
 agent-status: true
 sources:
   manuscript:
-    - docs/nbcp/main.tex — NBCP 연구노트
-    - docs/development/main.tex — LSWT 개발 노트
+    - docs/nbcp/main.tex — Spin Supersolidity in Na₂BaCo(PO₄)₂
+    - docs/development/main.tex — Spin Wave Theory
   canon:
     - docs/nbcp/main.tex — NBCP 연구 원고 (내용 원본, chapters/·appendices/ 포함)
     - docs/lswt — LSWT 일반 이론 Markdown 정본 (사용자 승인 본문만)
