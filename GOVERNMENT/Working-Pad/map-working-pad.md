@@ -27,7 +27,7 @@ LSWT 프로젝트의 진행 중 작업, 제안, 이슈, 검토 대기 문서를 
 | `issue-notes/` | 미해결/종결 이슈와 논의 기록 |
 | `vault-staging/` | 정본 승격 전 사용자 승인 대기 문서 |
 | `inbox/` | 아직 분류하지 않은 임시 캡처 |
-| `project-review/` | Claude 프로젝트 공유 폴더에서 옮긴 2026-10-01 검토·계획 문서 사본 (연구 작업대 자료) |
+| `project-review/` | Claude 프로젝트 공유 폴더에서 옮긴 2026-10-01–02 검토·계획 문서 사본 (연구 작업대 자료) |
 | [[GOVERNMENT/Working-Pad/roadmap\|roadmap]] | 범용 2D 스핀 solver 최종 목표까지의 단계별 로드맵 |
 | [[GOVERNMENT/Working-Pad/TASK-QUEUE\|TASK-QUEUE]] | 활성 작업 큐. 새 open 항목 추가/종결 시 함께 갱신 |
 | [[GOVERNMENT/Working-Pad/map-working-pad\|map-working-pad]] | 이 navigation 파일 |
