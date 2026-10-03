@@ -20,3 +20,20 @@ sources:
     - docs/nbcp/output
     - docs/lswt/sources/02-reference-papers
   reviews: [docs/lswt]
+topics:
+  - id: nbcp-phase-diagram
+    title: NBCP phase diagram
+    parts:
+      - docs/nbcp/chapters/02-model-hamiltonian.tex
+      - docs/nbcp/chapters/03-phase-diagram.tex
+      - docs/nbcp/chapters/04-phase-characterization.tex
+  - id: skyrmion-phase
+    title: Skyrmion phase
+    parts: [docs/nbcp/chapters/05-skyrmion-phase.tex]
+  - id: y-v-phase-supersolidity
+    title: Y, V phase supersolidity
+    parts:
+      - docs/nbcp/chapters/06-yv-low-energy.tex
+      - docs/nbcp/chapters/07-supersolidity.tex
+      - docs/nbcp/chapters/08-y-phase.tex
+      - docs/nbcp/chapters/09-v-phase.tex
