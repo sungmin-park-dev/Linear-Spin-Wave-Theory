@@ -664,9 +664,20 @@ not implemented here, and \(\chi_z\) at one loop. The latter is
 Y at 0.2 T (37\%), and \(+0.029\) to \(1.551\) of V at 1.4 T (2\%), at
 \(J_{PD}=0.010\) meV. By itself the Y correction would lower the gap by
 about 15\%. The two-loop \(C_\phi\) is unknown, so this is not a
-next-order gap. It indicates that the leading Y gap carries a
-next-order uncertainty of tens of percent, while the V series is well
-controlled.
+next-order gap. The two-loop term of \(\chi_z\), from the nonlinear
+spin-wave solver of the package roadmap
+(\href{../../../data-space/verification/261003-nbcp-nonlinear-spin-waves/nbcp-nonlinear-spin-waves.json}{two-loop
+check}, reproduced by
+\href{../../../examples/nbcp_nonlinear_spin_waves.py}{the solver
+example}), is \(-24\%\) of the classical
+value for Y and \(-54\%\) for V; the V magnetization changes by
+\(-0.040\) at one loop and \(-0.048\) at two loops. The V series is
+therefore not controlled at 1.4 T, where V lies close to its classical
+stability edge; soft modes there are the likely cause (inferred). The
+leading Y gap carries a next-order uncertainty of tens of percent. The
+relation \(\Delta^2=C_\phi/\chi_z\) itself holds only at leading order
+in \(1/S\), so the next-order gap needs a separate two-loop dynamical
+calculation, which has not been done.
 
 \subsubsection{Limits of the comparison}\label{limits-of-the-comparison}
 
