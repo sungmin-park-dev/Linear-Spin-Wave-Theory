@@ -163,15 +163,25 @@ class Contractions:
             self._cache[key] = complex(np.mean(phase * table[:, s, t]))
         return self._cache[key]
 
+    def _pair(self, s, t, displacement):
+        """``<a_s(r) a_t(r + d)>``, symmetrized so that ``<a_s a_t> = <a_t a_s>`` exactly.
+
+        The identity needs the momentum set to be closed under ``k -> -k``; a
+        mesh offset by 1/3 of a step is not, and violates it at order 1/N^2
+        (which would make the static self-energy non-Hermitian).
+        """
+        return 0.5 * (self._avg(self._m, s, t, displacement, -1)
+                      + self._avg(self._m, t, s, -np.asarray(displacement), -1))
+
     def __call__(self, A, B) -> complex:
         (s, ds, r), (t, dt, rp) = A, B
         r, rp = np.asarray(r, dtype=float), np.asarray(rp, dtype=float)
         if ds and not dt:                                    # <a_s^+(r) a_t(r')>
             return self._avg(self._n, s, t, rp - r, +1)
         if not ds and not dt:                                # <a_s(r) a_t(r')>
-            return self._avg(self._m, s, t, rp - r, -1)
+            return self._pair(s, t, rp - r)
         if ds and dt:                                        # <a_s^+(r) a_t^+(r')>
-            return np.conj(self._avg(self._m, t, s, r - rp, -1))
+            return np.conj(self._pair(t, s, r - rp))
         same = s == t and np.allclose(r, rp)                 # <a_s(r) a_t^+(r')>
         return (1.0 if same else 0.0) + self._avg(self._n, t, s, r - rp, +1)
 
@@ -327,14 +337,18 @@ class NonlinearSpinWaves:
             self._tadpole = (shift, energy, zeta)
         return self._tadpole
 
-    def static_quadratic_terms(self) -> List[Tuple[complex, Monomial]]:
-        """Order-S^0 quadratic monomials: Hartree-Fock of ``H_4`` and ``H_3`` on the condensate."""
+    def static_quadratic_terms(self, condensate: Optional[np.ndarray] = None
+                               ) -> List[Tuple[complex, Monomial]]:
+        """Order-S^0 quadratic monomials: Hartree-Fock of ``H_4`` and ``H_3`` on the condensate.
+
+        ``condensate`` (``<psi>`` at q = 0) defaults to :meth:`tadpole`.
+        """
         out: List[Tuple[complex, Monomial]] = []
         for c, m in self.expansion.orders[4]:
             for i, j in ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)):
                 rest = tuple(m[x] for x in range(4) if x not in (i, j))
                 out.append((c * self.contract(m[i], m[j]), rest))
-        shift, _, _ = self.tadpole()
+        shift = self.tadpole()[0] if condensate is None else np.asarray(condensate)
         ns = self.ns
         for c, m in self.expansion.orders[3]:
             for x in range(3):
@@ -344,9 +358,10 @@ class NonlinearSpinWaves:
                     out.append((c * value, tuple(m[y] for y in range(3) if y != x)))
         return out
 
-    def static_hamiltonian(self, momenta) -> np.ndarray:
+    def static_hamiltonian(self, momenta, condensate: Optional[np.ndarray] = None) -> np.ndarray:
         """``dH(k)`` (Nambu) of the order-S^0 static terms (Hartree-Fock + tadpole)."""
-        return nambu_matrices(self.static_quadratic_terms(), np.atleast_2d(momenta), self.ns)
+        return nambu_matrices(self.static_quadratic_terms(condensate), np.atleast_2d(momenta),
+                              self.ns)
 
     # ---- cubic vertices --------------------------------------------------------------
     def _cubic_groups(self):
@@ -458,6 +473,73 @@ class NonlinearSpinWaves:
         S = self._source([kk, q1, q2s], [Tkk, T1, T2s])[:, n]
         source = np.sum(-18 * np.abs(S) ** 2 / (omega + E1[:, :, None] + E2s[:, None, :]))
         return complex((decay + source) / nk)
+
+    def _pair_amplitudes(self, k):
+        """Two-magnon amplitudes of ``j_a = [psi_a(k), H_3]`` in the original Nambu basis.
+
+        ``psi = (a_s(k), a_s^+(-k))``. Returns ``X`` (pairs annihilated by
+        ``j_a``, ``q1 + q2 = k``), ``Y`` (pairs created, ``q1 + q2 = -k``),
+        each (nk, 2Ns, Ns, Ns), and their pair energies (nk, Ns, Ns); one
+        pair member runs over the mesh, so the sums are exact on a finite
+        torus. N^{1/2} factors are stripped as in :meth:`_decay`.
+        """
+        key = tuple(np.round(np.asarray(k, dtype=float).reshape(2), 12))
+        cache = self.__dict__.setdefault("_pairs", {})
+        if key in cache:
+            return cache[key]
+        ns, mesh = self.ns, self.mesh
+        k = np.asarray(k, dtype=float).reshape(1, 2)
+        q1, E1, T1 = mesh.k, mesh.energies, mesh.vectors
+        qx, qy = k - q1, -k - q1
+        Ex, Tx = self._bogoliubov(qx)
+        Ey, Ty = self._bogoliubov(qy)
+        m = len(q1)
+        X = np.zeros((m, 2 * ns, ns, ns), dtype=complex)
+        Y = np.zeros((m, 2 * ns, ns, ns), dtype=complex)
+        memo: Dict = {}
+
+        def amp(op, label, q, T, create):
+            if (op, label) not in memo:
+                memo[(op, label)] = _vectors(T, op, q, create, ns)
+            return memo[(op, label)]
+
+        for c, mono in self.expansion.orders[3]:
+            for x in range(3):
+                s, dagger, r = mono[x]
+                y, z = [mono[i] for i in range(3) if i != x]
+                # [a_s(k), a_s^+(r)] = e^{-ik.r};  [a_s^+(-k), a_s(r)] = -e^{-ik.r}  (N^{-1/2} stripped)
+                a, sign = (s, 1.0) if dagger else (ns + s, -1.0)
+                f = sign * c * np.exp(-1j * k[0] @ np.asarray(r, dtype=float))
+                X[:, a] += f * (amp(y, 1, q1, T1, False)[:, :, None] * amp(z, 2, qx, Tx, False)[:, None, :]
+                                + amp(z, 1, q1, T1, False)[:, :, None] * amp(y, 2, qx, Tx, False)[:, None, :])
+                Y[:, a] += f * (amp(y, 3, q1, T1, True)[:, :, None] * amp(z, 4, qy, Ty, True)[:, None, :]
+                                + amp(z, 3, q1, T1, True)[:, :, None] * amp(y, 4, qy, Ty, True)[:, None, :])
+        out = (X, E1[:, :, None] + Ex[:, None, :], Y, E1[:, :, None] + Ey[:, None, :])
+        cache[key] = out
+        return out
+
+    def cubic_self_energy_matrix(self, k, omega: complex, derivative: int = 0) -> np.ndarray:
+        """Cubic one-loop self-energy ``Sigma_3(k, omega)`` (or an omega derivative), Nambu basis.
+
+        ``G^{-1}(k, w) = w sigma_3 - H(k) - dH(k) - Sigma_3(k, w)`` in the
+        original basis ``psi = (a_s(k), a_s^+(-k))``, with
+        ``Sigma_3 = sigma_3 Pi sigma_3`` and the bubble
+        ``Pi_ab = 1/2 sum [X_a X_b^* / (w - E) - Y_a Y_b^* / (w + E)]``
+        of ``j = [psi, H_3]``. In the Bogoliubov basis,
+        ``T^+ Sigma_3 T`` has :meth:`cubic_self_energy` on its diagonal. No
+        Bogoliubov transformation at ``k`` is needed, so ``k`` may carry a
+        zero mode (the pseudo-Goldstone mode at k = 0).
+        """
+        X, EX, Y, EY = self._pair_amplitudes(k)
+        m, n2 = X.shape[:2]
+        factor = float(np.prod(np.arange(1, derivative + 1))) * (-1) ** derivative
+        wx = (factor / (omega - EX) ** (derivative + 1)).reshape(m, -1)
+        wy = (factor / (omega + EY) ** (derivative + 1)).reshape(m, -1)
+        Xf, Yf = X.reshape(m, n2, -1), Y.reshape(m, n2, -1)
+        pi = 0.5 * (np.einsum("man,mn,mbn->ab", Xf, wx, Xf.conj())
+                    - np.einsum("man,mn,mbn->ab", Yf, wy, Yf.conj())) / m
+        s3 = np.r_[np.ones(n2 // 2), -np.ones(n2 // 2)]
+        return s3[:, None] * pi * s3[None, :]
 
     def magnon_energies(self, momenta, broadening: float = 0.0):
         """Magnon energies through order S^0 at ``momenta`` (on-shell 1/S correction).
