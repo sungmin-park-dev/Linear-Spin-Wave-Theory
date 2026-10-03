@@ -673,11 +673,41 @@ example}), is \(-24\%\) of the classical
 value for Y and \(-54\%\) for V; the V magnetization changes by
 \(-0.040\) at one loop and \(-0.048\) at two loops. The V series is
 therefore not controlled at 1.4 T, where V lies close to its classical
-stability edge; soft modes there are the likely cause (inferred). The
-leading Y gap carries a next-order uncertainty of tens of percent. The
-relation \(\Delta^2=C_\phi/\chi_z\) itself holds only at leading order
-in \(1/S\), so the next-order gap needs a separate two-loop dynamical
-calculation, which has not been done.
+stability edge; soft modes there are the likely cause (inferred).
+
+\textbf{Next-order gap.} The relation \(\Delta^2=C_\phi/\chi_z\) holds
+only at leading order in \(1/S\). The package's next-order calculation
+(\href{../../../data-space/verification/261003-nbcp-two-loop-gap/nbcp-two-loop-gap.json}{two-loop
+gap}, reproduced by
+\href{../../../examples/nbcp_pseudo_goldstone_two_loop.py}{the gap
+example}) solves the \(\mathbf k=0\) pole equation with the one-loop
+Nambu self-energy and the static two-loop element, and writes
+\(\Delta^2=A+B\). Here \(A\) is the leading order and \(B\) the next
+order, both evaluated at \(S=1/2\); \(A\) reproduces \(C_\phi/\chi_z\) to
+0.04\%. At \(J_{PD}=0.010\) meV and mesh \(N=36\), Y at 0.2 T has
+\(A=4.709\times10^{-5}\) meV\(^2\) and \(B=-1.326\times10^{-3}\)
+meV\(^2\), so \(B/A=-28.2\). V at 1.4 T has \(A=2.447\times10^{-4}\)
+meV\(^2\) and \(B=-4.95\times10^{-3}\) meV\(^2\), so \(B/A=-20.2\).
+Between \(N=24\) and 36, \(B/A\) changes by 1.0\% (Y) and 0.4\% (V).
+Most of \(B\) comes from the angular energy: along the common rotation,
+the curvature of the order-\(S^0\) energy is \(-27\) (Y) and \(-19\) (V)
+times the zero-point curvature \(C_\phi\). Both curvatures scale as
+\(J_{PD}^3\), as the selection rule of
+Section~\ref{sec-nbcp-yv-selection-rule} requires. Their ratio stays
+between \(-23\) and \(-11\) down to \(J_{PD}=0.0025\) meV, so it does not
+arise from a particular coupling strength. A small pinning field that
+gaps the soft branch changes the ratio by 10--17\%, so the infrared end
+of the soft branch alone does not produce it (inferred).
+
+At \(S=1/2\) the next order is thus more than an order of magnitude
+larger than the leading one. The \(1/S\) series determines neither the
+gap nor the sign of the angular curvature, and so not the orientation
+that the quantum potential selects. The expansion is uncontrolled; a
+negative \(\Delta^2\) at this order is not a prediction of an
+instability or of a reversed orientation. Small clusters cannot resolve
+\(\phi\), so exact diagonalization does not test this. The gaps of this
+appendix, and those compared with Fig.~4(b), are leading-order values
+whose size at \(S=1/2\) the expansion does not fix.
 
 \subsubsection{Limits of the comparison}\label{limits-of-the-comparison}
 
