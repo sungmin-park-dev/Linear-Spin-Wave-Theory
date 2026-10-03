@@ -27,6 +27,7 @@ topics:
       - docs/nbcp/chapters/02-model-hamiltonian.tex
       - docs/nbcp/chapters/03-phase-diagram.tex
       - docs/nbcp/chapters/04-phase-characterization.tex
+      - docs/nbcp/appendices/e-model-derivation.tex
   - id: skyrmion-phase
     title: Skyrmion phase
     parts: [docs/nbcp/chapters/05-skyrmion-phase.tex]
@@ -37,3 +38,16 @@ topics:
       - docs/nbcp/chapters/07-supersolidity.tex
       - docs/nbcp/chapters/08-y-phase.tex
       - docs/nbcp/chapters/09-v-phase.tex
+      - docs/nbcp/appendices/a-pseudo-goldstone-gap.tex
+      - docs/nbcp/appendices/b-clock-rg.tex
+      - docs/nbcp/appendices/c-y-stiffness.tex
+  - id: spin-wave-theory
+    title: Spin Wave Theory
+    parts:
+      - docs/development/sections/01-overview.tex
+      - docs/development/sections/02-system-workflow.tex
+      - docs/development/sections/03-data-contract.tex
+      - docs/development/sections/04-module-layout.tex
+      - docs/development/sections/05-development-plan.tex
+      - docs/development/appendices/a-implementation-verification.tex
+      - docs/development/appendices/b-decisions-references.tex
