@@ -234,3 +234,6 @@ The user asked for a second check in case we were wrong. Two classifications in 
 - `data-space/verification/261001-c2t-reflection/`
 - `GOVERNMENT/Working-Pad/issue-notes/open/260918-nbcp-physics-code-review.md` (legacy gap code)
 - `/mnt/project-files/nbcp-thermal/` (f(φ,T) and classical MC from the roadmap thread; cutoff split)
+
+## Update 2026-10-02 18:3xZ: classical vortex pairs (PR #30)
+Pair energies on tori: mu = 0.0081 meV per core (J_PD=0); at J_PD=0.010 the pair coefficient is orientation-dependent (0.0068 soft, 0.0083 stiff); no lattice barrier. Harmonic edges T* 0.0027-0.0031 meV vs MC 0.0024 (10-25%); core free energy convention-dependent (~17x). Earlier large-fugacity reading withdrawn. Details: /mnt/project-files/nbcp-thermal/vortex-pair/2026-10-02-vortex-pair-summary.md
