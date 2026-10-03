@@ -770,7 +770,107 @@ in a broad twist before relaxation lowers it to 0.013516 meV/\(a\). The
 lower \(\Delta\phi=0\) branch is 0.013461 meV/\(a\). Therefore the
 direct phase-offset curve includes metastability and finite-length twist
 costs. It does not determine a unique intrinsic phase jump or a
-fractional vortex charge bound to a wall.
+fractional vortex charge bound to a wall; the periodic strips and
+networks below do.
+
+\textbf{Forward and backward walls.} The two interfaces of this
+construction are not equivalent. Label the domains by \(d=0,1,2\), the
+number of cyclic sublattice permutations of the reference Y state. With
+the strip axis fixed, one interface takes \(d\) to \(d+1\) when crossed
+along the axis and the other takes \(d\) to \(d-1\); call them forward
+and backward. A periodic strip without fixed slabs that contains three
+walls of one kind, in the order \(0,1,2\) or \(0,2,1\), has three walls
+related by translation, so its excess energy divided by three wall
+lengths is the tension of that wall. Both strip axes give the same
+values. At \(J_{PD}=0\), \(\sigma_{\rm f}=0.01420\) and
+\(\sigma_{\rm b}=0.02081\) meV/\(a\); at \(J_{PD}=0.010\) meV,
+\(\sigma_{\rm f}=0.011005\) and \(\sigma_{\rm b}=0.015900\) meV/\(a\).
+Their means, 0.01750 and 0.01345 meV/\(a\), reproduce the corresponding
+rows of Table~\ref{tab-nbcp-07-y-phase-5}, which therefore lists the
+average of two different walls rather than an elementary tension.
+Because \(\sigma_{\rm b}<2\sigma_{\rm f}\), a backward wall does not
+split into two forward walls enclosing a strip of the third domain.
+
+\textbf{Phase at the walls.} At \(J_{PD}=0\) the absolute angle is free,
+but a forward wall prefers a large phase jump. With the two slabs of the
+construction above held at equal angles, the jump across the forward
+wall, extrapolated to its centre from both sides, has magnitude 2.44,
+2.79 and 2.96 at \(L=128\), 256 and 512. It approaches \(\pi\) as the
+twist imposed by the slabs spreads over a longer domain. Three forward
+walls in a ring cannot all jump by \(\pi\), because the jumps must add
+to a multiple of \(2\pi\); the slab-free strips settle at \(2\pi/3\) per
+wall. There \(\sigma_{\rm f}\) changes by \(1.1\times10^{-5}\)
+meV/\(a\) between \(L=96\) and 192, while at \(J_{PD}=0.010\) meV it
+does not change within \(10^{-6}\).
+
+At \(J_{PD}=0.010\) meV all three domains of a forward-wall strip take
+the same angle, so the jump is zero, and the walls fix the absolute
+angle: \(\phi^*=-\pi/6\) and \(+\pi/6\) for the two strip axes, and
+\(\pm\pi/3\) for backward walls. The classical energy of a uniform
+state does not select an angle, so this selection is a property of the
+wall. It holds modulo \(\pi\), because a global rotation by \(\pi\)
+about \(z\) leaves the pseudo-dipolar exchange invariant. To measure the
+strength of the pinning, every bulk layer is held at \(\phi^*+u\) by a
+penalty and only the layers within a distance \(d\) of each wall relax.
+For \(u=0.2\) the energy per wall length is \(ku^2/2\) with
+\(1/k=151\), 329, 547, 780, 1257 and 2214 \(a\)/meV at \(d=1.5\), 3,
+4.5, 6, 9 and 15 \(a\). If the wall pinned its core angle with a finite
+stiffness \(k_w\), these would follow \(1/k=1/k_w+d/(2\rho_n)\), with
+\(\rho_n\) the stiffness along the wall normal. The fit for
+\(d\ge6a\) gives \(\rho_n=0.0031\) meV, of the order of the bulk
+stiffness, and an intercept of \(-172\) \(a\)/meV. No positive
+compliance of the wall is resolved, so \(k_w\gtrsim7\times10^{-3}\)
+meV/\(a\), the value at the smallest \(d\). Holding a quarter-turn
+mismatch \(1.5a\) from the core costs 0.007--0.010 meV/\(a\), a large
+fraction of \(\sigma_{\rm f}\); at larger \(d\) the quarter turn relaxes
+into other wall configurations. On scales above a lattice spacing a wall
+therefore acts as a boundary that fixes \(\phi\) to \(\phi^*\) modulo
+\(\pi\). A mismatch between the far field and \(\phi^*\) is removed by
+a twist whose cost falls as it spreads. The phase-offset scans above,
+which imposed \(\Delta\phi\) through fixed slabs, mixed this boundary
+condition with the twist between the slabs. Since \(\phi^*\) depends on
+the wall orientation, a domain bounded by walls of different
+orientations must twist.
+
+\textbf{Junctions.} Honeycomb networks of forward walls are relaxed on
+tori that hold three hexagonal domains of width \(s\), nine walls of
+length \(s/\sqrt3\) and six junctions where three walls meet. A few
+spins at each hexagon centre have their \(z\) components held, so that
+the network cannot coarsen. Six initial phase patterns are relaxed for
+\(s=24\), 48 and 72. The bulk winding \(q\) of a junction is the change
+of \(\phi\) within the domains on a circle of radius \(0.2s\), excluding
+the steps across the walls. If each wall jumps by \(j\), single
+valuedness requires \(3j/2\pi+q\) to be an integer.
+
+At \(J_{PD}=0\) the lowest state has \(q=0\) at \(s=24\) and 48, but at
+\(s=72\) every start except the uniform one relaxes to
+\(|q|=0.16\)--0.20, with
+opposite signs on the two kinds of junction, 0.120 meV below the
+unwound state. This follows from the preferred jump: the gain from
+moving each jump from \(2\pi/3\) toward \(\pi\) grows with the wall
+length, while the winding costs only logarithmically. The junctions
+therefore bind a fractional winding that grows with the network; the
+limit \(|q|=1/2\) for a jump of \(\pi\) is an extrapolation (inferred).
+Such a junction is a wall-vortex composite: a fractional vortex that
+exists only where three walls meet and is confined by their tension.
+
+At \(J_{PD}=0.010\) meV the lowest states at \(s=48\) and 72 have
+\(|q|<0.02\); the junctions bind no winding. Other starts end with
+\(|q|\) close to \(1/2\) at some junctions, which the pinning modulo
+\(\pi\) allows, and in some cases close to 1. The lowest of them lies
+0.050 and 0.071 meV above the unwound state at \(s=48\) and 72; the growth is
+consistent with a logarithmic cost. At \(s=24\) the walls are 14\(a\)
+long and a state with \(|q|\) up to 0.38 is lower by 0.0013 meV, a
+small-network effect. The energies per wall length of the lowest
+networks, 0.01280 and 0.01233 meV/\(a\) at \(s=48\) and 72, exceed
+\(\sigma_{\rm f}\) through the junctions and the twist that the
+orientation-dependent \(\phi^*\) forces inside each domain.
+
+A vortex--antivortex pair held parallel to a wall at several distances
+gave energies that depended on the starting configuration and were not
+reproducible, so the interaction of a vortex with a wall is not
+established here. These networks are classical local minima with held
+centres, not free energies.
 
 The wall cores are only a few lattice spacings wide. Their structure
 must be resolved microscopically even though the smooth long-wavelength
@@ -791,9 +891,10 @@ The positive, weakly size-dependent excess energies support a finite
 classical cost for the tested walls. Since these are variational local
 minima, their positivity alone is not a lower-bound proof for all walls.
 Neither an ordering temperature nor persistence of density order over a
-clock critical phase follows from this calculation. Vortex cores,
-wall-vortex composites and finite-temperature free energies remain
-necessary tests.
+clock critical phase follows from this calculation. Classical vortex
+cores and pairs are in Section~\ref{sec-nbcp-matching-results}; the
+interaction of vortices with walls and all finite-temperature wall free
+energies remain necessary tests.
 
 \subsection{What the SOC Y results establish about clock
 RG}\label{sec-nbcp-y-rg-status}
@@ -921,8 +1022,10 @@ The smooth-wave and density-wall results constrain two parts of the
 effective description. Classical vortex-core and vortex-pair energies,
 their harmonic thermal corrections and the matching cutoff are now in
 Section~\ref{sec-nbcp-matching-results}; the classical core free energy
-depends on how the core position is fixed. Quantum core free energies
-and wall-vortex composites remain uncomputed. A thermal conclusion
+depends on how the core position is fixed. Classical walls bind fractional
+windings at their junctions only at \(J_{PD}=0\)
+(Section~\ref{sec-nbcp-y-density-wall}). Quantum core free energies,
+vortex--wall interactions and wall free energies remain uncomputed. A thermal conclusion
 requires density-order observables, transverse correlations, phase
 locking and stiffness on increasing system sizes. The sampled classical
 walls cannot substitute for their constrained free energies at finite

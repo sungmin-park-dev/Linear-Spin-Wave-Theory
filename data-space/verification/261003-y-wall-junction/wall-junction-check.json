@@ -1,0 +1,1490 @@
+{
+ "created_utc": "2026-10-03T02:07:32.227320+00:00",
+ "scope": "Classical Y state at 0.2 T, J = 0.075 meV, J_z = 0.125 meV, S = 1/2, J_Gamma = 0; full-sphere relaxations; no quantum angular potential or thermal free energy. Lengths in bond lengths a.",
+ "conventions": "Domain d = reference Y with sublattice spins cyclically permuted d times (np.roll); phi of domain d is the in-plane angle of sublattice d. Forward wall: d -> d + 1 crossing along the strip axis (+60 or -60 degrees for axis 0 or 1).",
+ "strips": [
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "forward",
+   "axis": 0,
+   "tension_meV_per_a": 0.014210151845693146,
+   "bulk_phase_domain0_rad": 2.1187639169540287,
+   "max_projected_force_meV": 6.307941947426843e-09,
+   "domain_phases_rad": [
+    2.09707290743503,
+    -2.0844593922358623,
+    0.0063159998805101735
+   ]
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 192,
+   "walls": "forward",
+   "axis": 0,
+   "tension_meV_per_a": 0.014198530732676035,
+   "bulk_phase_domain0_rad": -2.1228744611574406,
+   "max_projected_force_meV": 3.188888774569021e-09,
+   "domain_phases_rad": [
+    -2.115493091981386,
+    2.068800387928213,
+    -0.023331172971501356
+   ]
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "backward",
+   "axis": 0,
+   "tension_meV_per_a": 0.02080592275643223,
+   "bulk_phase_domain0_rad": -0.0018219308290790184,
+   "max_projected_force_meV": 2.86069996783113e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 192,
+   "walls": "backward",
+   "axis": 0,
+   "tension_meV_per_a": 0.020805922756486586,
+   "bulk_phase_domain0_rad": -0.0008324071877067439,
+   "max_projected_force_meV": 5.209584404109683e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "forward",
+   "axis": 1,
+   "tension_meV_per_a": 0.014210151845704429,
+   "bulk_phase_domain0_rad": 2.1066167790976618,
+   "max_projected_force_meV": 7.223759502031357e-09,
+   "domain_phases_rad": [
+    2.1146544044069584,
+    0.02388132102476712,
+    -2.0668650313068326
+   ]
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 192,
+   "walls": "forward",
+   "axis": 1,
+   "tension_meV_per_a": 0.01419853073265279,
+   "bulk_phase_domain0_rad": 2.0131891745708748,
+   "max_projected_force_meV": 3.951221960729612e-09,
+   "domain_phases_rad": [
+    2.0131933017875037,
+    -0.07894426000429011,
+    -2.171232858390423
+   ]
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "backward",
+   "axis": 1,
+   "tension_meV_per_a": 0.020805922756412742,
+   "bulk_phase_domain0_rad": -0.004180947930916476,
+   "max_projected_force_meV": 2.8850941774516414e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 192,
+   "walls": "backward",
+   "axis": 1,
+   "tension_meV_per_a": 0.02080592275658162,
+   "bulk_phase_domain0_rad": 0.00039575760100729585,
+   "max_projected_force_meV": 5.330170284312263e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "forward",
+   "axis": 0,
+   "tension_meV_per_a": 0.011004864832547529,
+   "bulk_phase_domain0_rad": -0.5235950547265804,
+   "max_projected_force_meV": 1.8815278536588043e-09,
+   "domain_phases_rad": [
+    -0.5235922261998738,
+    -0.5236028253036373,
+    -0.5235923019231525
+   ]
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 192,
+   "walls": "forward",
+   "axis": 0,
+   "tension_meV_per_a": 0.011004864832551631,
+   "bulk_phase_domain0_rad": -0.5235985049159317,
+   "max_projected_force_meV": 5.278502570508902e-09,
+   "domain_phases_rad": [
+    -0.5236006968986484,
+    -0.523593848266873,
+    -0.523600621290983
+   ]
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "backward",
+   "axis": 0,
+   "tension_meV_per_a": 0.015900208987419125,
+   "bulk_phase_domain0_rad": 1.04719920752973,
+   "max_projected_force_meV": 2.7670897830012198e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 192,
+   "walls": "backward",
+   "axis": 0,
+   "tension_meV_per_a": 0.01590020898755792,
+   "bulk_phase_domain0_rad": 1.0471887779944868,
+   "max_projected_force_meV": 8.767494029393585e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "forward",
+   "axis": 1,
+   "tension_meV_per_a": 0.011004864832560178,
+   "bulk_phase_domain0_rad": 0.5235981791858777,
+   "max_projected_force_meV": 2.4377467162939315e-09,
+   "domain_phases_rad": [
+    0.5235977797414205,
+    0.5236016391326752,
+    0.5236189396266137
+   ]
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 192,
+   "walls": "forward",
+   "axis": 1,
+   "tension_meV_per_a": 0.011004864832572143,
+   "bulk_phase_domain0_rad": 0.5236006988477329,
+   "max_projected_force_meV": 4.72074002805245e-09,
+   "domain_phases_rad": [
+    0.5236010166721604,
+    0.5236036660004378,
+    0.5236290421038822
+   ]
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "backward",
+   "axis": 1,
+   "tension_meV_per_a": 0.01590020898742391,
+   "bulk_phase_domain0_rad": -1.0471956953778112,
+   "max_projected_force_meV": 3.5022851563315527e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 192,
+   "walls": "backward",
+   "axis": 1,
+   "tension_meV_per_a": 0.015900208987484076,
+   "bulk_phase_domain0_rad": -1.0471750555571546,
+   "max_projected_force_meV": 6.049123747048357e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "one_each",
+   "axis": 0,
+   "tension_meV_per_a": 0.0175500275050896,
+   "bulk_phase_domain0_rad": -0.6310808557742456,
+   "max_projected_force_meV": 8.701534756627716e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 96,
+   "walls": "one_each",
+   "axis": 1,
+   "tension_meV_per_a": 0.01755002750509883,
+   "bulk_phase_domain0_rad": 0.6762772465988068,
+   "max_projected_force_meV": 1.971211992246591e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "one_each",
+   "axis": 0,
+   "tension_meV_per_a": 0.01349694955247335,
+   "bulk_phase_domain0_rad": 0.23319122209151447,
+   "max_projected_force_meV": 1.9818256853307292e-09
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "walls": "one_each",
+   "axis": 1,
+   "tension_meV_per_a": 0.013496949552467708,
+   "bulk_phase_domain0_rad": -0.23337078466900082,
+   "max_projected_force_meV": 2.1808064817972067e-09
+  }
+ ],
+ "pinning_potential": [
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "axis": 0,
+   "penalty": 50.0,
+   "phi_star_rad": -0.5235950459343682,
+   "rows": [
+    {
+     "margin_layers": 1,
+     "free_distance_a": 1.4999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999547307999588,
+     "energy_meV_per_a": 0.0001320256829357545,
+     "max_projected_force_meV": 4.144840907299718e-08
+    },
+    {
+     "margin_layers": 1,
+     "free_distance_a": 1.4999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5706956856768355,
+     "energy_meV_per_a": 0.010303538119620391,
+     "max_projected_force_meV": 7.003434932331687e-08
+    },
+    {
+     "margin_layers": 2,
+     "free_distance_a": 2.9999999999999996,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999767611568003,
+     "energy_meV_per_a": 6.072074022443572e-05,
+     "max_projected_force_meV": 7.205878144178612e-08
+    },
+    {
+     "margin_layers": 2,
+     "free_distance_a": 2.9999999999999996,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707338219572125,
+     "energy_meV_per_a": 0.008655756380679645,
+     "max_projected_force_meV": 3.900775698978398e-08
+    },
+    {
+     "margin_layers": 3,
+     "free_distance_a": 4.499999999999999,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999852209626767,
+     "energy_meV_per_a": 3.658695738267024e-05,
+     "max_projected_force_meV": 2.4784544243316997e-08
+    },
+    {
+     "margin_layers": 3,
+     "free_distance_a": 4.499999999999999,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707659531139477,
+     "energy_meV_per_a": 0.0077934726342917164,
+     "max_projected_force_meV": 8.207275836724648e-08
+    },
+    {
+     "margin_layers": 4,
+     "free_distance_a": 5.999999999999999,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999890020034025,
+     "energy_meV_per_a": 2.5645016796712993e-05,
+     "max_projected_force_meV": 2.3958768267939856e-08
+    },
+    {
+     "margin_layers": 4,
+     "free_distance_a": 5.999999999999999,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707796166035999,
+     "energy_meV_per_a": 0.004224251554126465,
+     "max_projected_force_meV": 1.418040491869832e-07
+    },
+    {
+     "margin_layers": 6,
+     "free_distance_a": 8.999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.1999992009483858,
+     "energy_meV_per_a": 1.5904587628265883e-05,
+     "max_projected_force_meV": 6.109185094610448e-08
+    },
+    {
+     "margin_layers": 6,
+     "free_distance_a": 8.999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707919559622927,
+     "energy_meV_per_a": 0.0007313492136115843,
+     "max_projected_force_meV": 3.8849117357103724e-08
+    },
+    {
+     "margin_layers": 10,
+     "free_distance_a": 14.999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.1999992552372276,
+     "energy_meV_per_a": 9.031755039635014e-06,
+     "max_projected_force_meV": 2.7972964652955845e-08
+    },
+    {
+     "margin_layers": 10,
+     "free_distance_a": 14.999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707921376852392,
+     "energy_meV_per_a": 0.00042162042455084076,
+     "max_projected_force_meV": 2.9797175658054535e-08
+    }
+   ],
+   "compliance_1_over_k_a_per_meV": [
+    151.4788197382589,
+    329.3690945122546,
+    546.6348078951951,
+    779.8700308605869,
+    1257.4887609441928,
+    2214.3925471799644
+   ],
+   "fit_d_min_a": 4.0,
+   "fit_slope_per_meV": 159.0150084645352,
+   "fit_intercept_a_per_meV": -171.90791128663065,
+   "rho_normal_meV": 0.0031443572831775434,
+   "note": "Energies per wall length. The u = pi/2 rows can relax to other wall branches when the free distance is large; they bound the cost of a quarter-turn mismatch held near the core."
+  },
+  {
+   "JPD_meV": 0.01,
+   "L_cells": 96,
+   "axis": 1,
+   "penalty": 50.0,
+   "phi_star_rad": 0.5235981845529004,
+   "rows": [
+    {
+     "margin_layers": 1,
+     "free_distance_a": 1.4999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999547360338316,
+     "energy_meV_per_a": 0.0001320200591365681,
+     "max_projected_force_meV": 4.3041188804021635e-08
+    },
+    {
+     "margin_layers": 1,
+     "free_distance_a": 1.4999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707628019597721,
+     "energy_meV_per_a": 0.007222991985886267,
+     "max_projected_force_meV": 2.8048975392325204e-08
+    },
+    {
+     "margin_layers": 2,
+     "free_distance_a": 2.9999999999999996,
+     "u_target_rad": 0.2,
+     "u_rad": 0.1999976761900733,
+     "energy_meV_per_a": 6.071814563924831e-05,
+     "max_projected_force_meV": 4.822162184836554e-08
+    },
+    {
+     "margin_layers": 2,
+     "free_distance_a": 2.9999999999999996,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": 1.5707341368365408,
+     "energy_meV_per_a": 0.0055787858143373165,
+     "max_projected_force_meV": 5.937917757492528e-08
+    },
+    {
+     "margin_layers": 3,
+     "free_distance_a": 4.499999999999999,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999852249222422,
+     "energy_meV_per_a": 3.6585393408401155e-05,
+     "max_projected_force_meV": 2.5564962435192795e-08
+    },
+    {
+     "margin_layers": 3,
+     "free_distance_a": 4.499999999999999,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": -1.5707087819524597,
+     "energy_meV_per_a": 0.0031290172036270913,
+     "max_projected_force_meV": 1.998404456325653e-08
+    },
+    {
+     "margin_layers": 4,
+     "free_distance_a": 5.999999999999999,
+     "u_target_rad": 0.2,
+     "u_rad": 0.1999989001424263,
+     "energy_meV_per_a": 2.56439198093212e-05,
+     "max_projected_force_meV": 2.534146124541503e-08
+    },
+    {
+     "margin_layers": 4,
+     "free_distance_a": 5.999999999999999,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": -1.5707292573137601,
+     "energy_meV_per_a": 0.0027004338121241556,
+     "max_projected_force_meV": 2.2738261915705715e-08
+    },
+    {
+     "margin_layers": 6,
+     "free_distance_a": 8.999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999920010516747,
+     "energy_meV_per_a": 1.59039077254675e-05,
+     "max_projected_force_meV": 2.0896030253347853e-08
+    },
+    {
+     "margin_layers": 6,
+     "free_distance_a": 8.999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": -1.57075257530251,
+     "energy_meV_per_a": 0.002279324864826878,
+     "max_projected_force_meV": 1.0720615150477952e-07
+    },
+    {
+     "margin_layers": 10,
+     "free_distance_a": 14.999999999999998,
+     "u_target_rad": 0.2,
+     "u_rad": 0.19999925565766546,
+     "energy_meV_per_a": 9.031369388419978e-06,
+     "max_projected_force_meV": 3.136531170552792e-08
+    },
+    {
+     "margin_layers": 10,
+     "free_distance_a": 14.999999999999998,
+     "u_target_rad": 1.5707963267948966,
+     "u_rad": -1.5707711938842752,
+     "energy_meV_per_a": 0.0019647938336795926,
+     "max_projected_force_meV": 4.745808132589069e-08
+    }
+   ],
+   "compliance_1_over_k_a_per_meV": [
+    151.4852732358854,
+    329.38316923478266,
+    546.6581779312996,
+    779.903391439419,
+    1257.5425088342877,
+    2214.487113931352
+   ],
+   "fit_d_min_a": 4.0,
+   "fit_slope_per_meV": 159.02179564259148,
+   "fit_intercept_a_per_meV": -171.9151893832612,
+   "rho_normal_meV": 0.0031442230794813315,
+   "note": "Energies per wall length. The u = pi/2 rows can relax to other wall branches when the free distance is large; they bound the cost of a quarter-turn mismatch held near the core."
+  }
+ ],
+ "forward_wall_jump_JPD0": [
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 128,
+   "axis": 0,
+   "jump_rad": -2.43661105137612,
+   "max_projected_force_meV": 2.7847249595081216e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 256,
+   "axis": 0,
+   "jump_rad": 2.789932629660433,
+   "max_projected_force_meV": 3.755846779418537e-09
+  },
+  {
+   "JPD_meV": 0.0,
+   "L_cells": 512,
+   "axis": 0,
+   "jump_rad": 2.961566637754075,
+   "max_projected_force_meV": 5.8357452759061346e-09
+  }
+ ],
+ "networks": [
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "uniform",
+   "excess_energy_meV": 2.211362668816477,
+   "per_wall_length_meV_per_a": 0.01773237266829281,
+   "hold_penalty_meV": 3.802982438865025e-14,
+   "max_torque_meV": 5.239569061984536e-08,
+   "total_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "seconds": 1.6781888630002868
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 2.133778664081376,
+   "per_wall_length_meV_per_a": 0.017110245640256424,
+   "hold_penalty_meV": 1.5148297174045953e-13,
+   "max_torque_meV": 4.3991395240331315e-08,
+   "total_winding": [
+    0.0,
+    0.0,
+    -0.0,
+    -0.0,
+    -0.0,
+    1.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    0.0,
+    0.0,
+    -0.0,
+    -0.0,
+    0.0
+   ],
+   "seconds": 2.3844379939996543
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "random_0",
+   "excess_energy_meV": 2.133777044376089,
+   "per_wall_length_meV_per_a": 0.017110232652238596,
+   "hold_penalty_meV": 1.749805238973566e-13,
+   "max_torque_meV": 4.540660306060604e-08,
+   "total_winding": [
+    -0.0,
+    1.0,
+    -0.0,
+    -0.0,
+    -0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.0,
+    -0.0
+   ],
+   "seconds": 2.4047864369999843
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "random_1",
+   "excess_energy_meV": 2.1337802684530374,
+   "per_wall_length_meV_per_a": 0.01711025850531768,
+   "hold_penalty_meV": 1.6785125720755966e-13,
+   "max_torque_meV": 8.138762306971222e-08,
+   "total_winding": [
+    0.0,
+    0.0,
+    -0.0,
+    -0.0,
+    -0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    -0.0,
+    0.0,
+    -0.0,
+    -0.0,
+    0.0
+   ],
+   "seconds": 2.5436920679999275
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "random_2",
+   "excess_energy_meV": 2.134292275115655,
+   "per_wall_length_meV_per_a": 0.01711436416065781,
+   "hold_penalty_meV": 1.2413287103555033e-13,
+   "max_torque_meV": 2.3689537571031877e-08,
+   "total_winding": [
+    0.0,
+    -0.0,
+    0.0,
+    -0.0,
+    -1.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.0,
+    -0.0,
+    -0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "seconds": 1.5661132630002612
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "seed": "random_3",
+   "excess_energy_meV": 2.1337770597010177,
+   "per_wall_length_meV_per_a": 0.017110232775125425,
+   "hold_penalty_meV": 1.4123533100336938e-13,
+   "max_torque_meV": 1.95168704922885e-07,
+   "total_winding": [
+    0.0,
+    1.0,
+    -0.0,
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    0.0,
+    -0.0,
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "seconds": 2.8010410209999463
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "uniform",
+   "excess_energy_meV": 4.010680783216458,
+   "per_wall_length_meV_per_a": 0.01608033076266445,
+   "hold_penalty_meV": 3.256907060109724e-14,
+   "max_torque_meV": 2.4078601075934726e-07,
+   "total_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "seconds": 4.071745444000044
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 3.9207721045884796,
+   "per_wall_length_meV_per_a": 0.0157198529862176,
+   "hold_penalty_meV": 1.5823904704634182e-12,
+   "max_torque_meV": 1.70208728587566e-07,
+   "total_winding": [
+    -0.0,
+    0.0,
+    0.0,
+    -0.0,
+    0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.122,
+    0.069,
+    0.126,
+    -0.114,
+    -0.08,
+    -0.11
+   ],
+   "seconds": 11.724265234000086
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "random_0",
+   "excess_energy_meV": 3.912656322523844,
+   "per_wall_length_meV_per_a": 0.015687313757330783,
+   "hold_penalty_meV": 2.4457303000252352e-15,
+   "max_torque_meV": 4.9366960833484174e-08,
+   "total_winding": [
+    0.0,
+    -0.0,
+    -0.0,
+    -0.0,
+    0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    -0.0,
+    -0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "seconds": 24.289362190999782
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "random_1",
+   "excess_energy_meV": 3.9187873499430452,
+   "per_wall_length_meV_per_a": 0.015711895356850813,
+   "hold_penalty_meV": 1.8695789257695752e-12,
+   "max_torque_meV": 1.5153261496916418e-07,
+   "total_winding": [
+    0.0,
+    -0.0,
+    0.0,
+    -0.0,
+    -1.0,
+    -1.0
+   ],
+   "bulk_winding": [
+    0.049,
+    0.131,
+    0.087,
+    -0.072,
+    -0.094,
+    -0.116
+   ],
+   "seconds": 13.2207574439999
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "random_2",
+   "excess_energy_meV": 3.9131793544380002,
+   "per_wall_length_meV_per_a": 0.015689410789389343,
+   "hold_penalty_meV": 1.5841725487814413e-13,
+   "max_torque_meV": 2.8026803262510885e-07,
+   "total_winding": [
+    -0.0,
+    -0.0,
+    -0.0,
+    -0.0,
+    0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.0,
+    0.0,
+    0.0,
+    -0.0,
+    -0.0,
+    -0.0
+   ],
+   "seconds": 9.68082008400006
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "seed": "random_3",
+   "excess_energy_meV": 3.9163134958852197,
+   "per_wall_length_meV_per_a": 0.015701976743613167,
+   "hold_penalty_meV": 1.9620022319969217e-12,
+   "max_torque_meV": 6.785810437667315e-08,
+   "total_winding": [
+    0.0,
+    0.0,
+    0.0,
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.07,
+    0.049,
+    0.125,
+    -0.098,
+    -0.067,
+    -0.067
+   ],
+   "seconds": 10.76329129900023
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "uniform",
+   "excess_energy_meV": 5.8106895369004405,
+   "per_wall_length_meV_per_a": 0.01553149614956857,
+   "hold_penalty_meV": 5.435784208196585e-15,
+   "max_torque_meV": 8.429674101730925e-08,
+   "total_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "seconds": 6.9145291639997595
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 5.693293940318881,
+   "per_wall_length_meV_per_a": 0.015217707356568385,
+   "hold_penalty_meV": 5.891259713277488e-13,
+   "max_torque_meV": 6.026750783841931e-07,
+   "total_winding": [
+    -1.0,
+    -1.0,
+    -1.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.176,
+    0.189,
+    0.166,
+    -0.193,
+    -0.191,
+    -0.157
+   ],
+   "seconds": 41.04180379299987
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "random_0",
+   "excess_energy_meV": 5.693293940320473,
+   "per_wall_length_meV_per_a": 0.015217707356572638,
+   "hold_penalty_meV": 9.67221782463979e-14,
+   "max_torque_meV": 1.7368838403871428e-07,
+   "total_winding": [
+    1.0,
+    1.0,
+    1.0,
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    -0.176,
+    -0.189,
+    -0.166,
+    0.193,
+    0.191,
+    0.157
+   ],
+   "seconds": 37.60599934899983
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "random_1",
+   "excess_energy_meV": 5.691336287205786,
+   "per_wall_length_meV_per_a": 0.01521247471049512,
+   "hold_penalty_meV": 7.779449892192641e-13,
+   "max_torque_meV": 4.85258975489816e-07,
+   "total_winding": [
+    -1.0,
+    0.0,
+    -1.0,
+    0.0,
+    -0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.156,
+    0.193,
+    0.169,
+    -0.199,
+    -0.174,
+    -0.158
+   ],
+   "seconds": 30.1519841420004
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "random_2",
+   "excess_energy_meV": 5.690904451572578,
+   "per_wall_length_meV_per_a": 0.015211320449295683,
+   "hold_penalty_meV": 1.195180339789057e-13,
+   "max_torque_meV": 1.29198795673665e-07,
+   "total_winding": [
+    -1.0,
+    -1.0,
+    -1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    0.165,
+    0.165,
+    0.179,
+    -0.194,
+    -0.168,
+    -0.155
+   ],
+   "seconds": 37.32250487900001
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "seed": "random_3",
+   "excess_energy_meV": 5.6915147526935925,
+   "per_wall_length_meV_per_a": 0.015212951734094314,
+   "hold_penalty_meV": 6.297545627789396e-13,
+   "max_torque_meV": 2.9473805965319476e-07,
+   "total_winding": [
+    -1.0,
+    -1.0,
+    -1.0,
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.193,
+    0.17,
+    0.161,
+    -0.196,
+    -0.174,
+    -0.164
+   ],
+   "seconds": 29.66760712400037
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "uniform",
+   "excess_energy_meV": 1.7788479457321102,
+   "per_wall_length_meV_per_a": 0.01426414361549787,
+   "hold_penalty_meV": 1.29460080284152e-06,
+   "max_torque_meV": 5.115590940518137e-08,
+   "total_winding": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "bulk_winding": [
+    -0.018,
+    0.011,
+    0.002,
+    -0.012,
+    0.006,
+    -0.013
+   ],
+   "seconds": 2.7186665190001804
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 1.807609442466088,
+   "per_wall_length_meV_per_a": 0.01449477497496535,
+   "hold_penalty_meV": 5.011964082544737e-07,
+   "max_torque_meV": 1.7057887718612322e-07,
+   "total_winding": [
+    1.0,
+    2.0,
+    1.0,
+    -2.0,
+    -2.0,
+    4.0
+   ],
+   "bulk_winding": [
+    -0.412,
+    -0.398,
+    -0.412,
+    0.788,
+    0.788,
+    -0.446
+   ],
+   "seconds": 5.868191560000014
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "random_0",
+   "excess_energy_meV": 1.8073018084478747,
+   "per_wall_length_meV_per_a": 0.014492308133531638,
+   "hold_penalty_meV": 1.6174640153308752e-06,
+   "max_torque_meV": 5.774912277529696e-08,
+   "total_winding": [
+    -2.0,
+    -2.0,
+    4.0,
+    1.0,
+    2.0,
+    1.0
+   ],
+   "bulk_winding": [
+    0.809,
+    0.746,
+    -0.454,
+    -0.394,
+    -0.398,
+    -0.409
+   ],
+   "seconds": 3.831759398000031
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "random_1",
+   "excess_energy_meV": 1.7935595118183443,
+   "per_wall_length_meV_per_a": 0.01438211204105465,
+   "hold_penalty_meV": 1.9985076650934893e-06,
+   "max_torque_meV": 1.386302079885902e-07,
+   "total_winding": [
+    3.0,
+    2.0,
+    1.0,
+    -2.0,
+    -1.0,
+    3.0
+   ],
+   "bulk_winding": [
+    -0.386,
+    -0.017,
+    -0.411,
+    0.789,
+    0.401,
+    -0.445
+   ],
+   "seconds": 2.045910848999938
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "random_2",
+   "excess_energy_meV": 1.8061732952952951,
+   "per_wall_length_meV_per_a": 0.014483258864470168,
+   "hold_penalty_meV": 2.3068701824246442e-06,
+   "max_torque_meV": 6.09667954169666e-08,
+   "total_winding": [
+    1.0,
+    2.0,
+    2.0,
+    -2.0,
+    2.0,
+    0.0
+   ],
+   "bulk_winding": [
+    -0.387,
+    -0.402,
+    -0.408,
+    0.81,
+    -0.082,
+    0.362
+   ],
+   "seconds": 3.3446032679999007
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "seed": "random_3",
+   "excess_energy_meV": 1.7775058600038562,
+   "per_wall_length_meV_per_a": 0.014253381760546717,
+   "hold_penalty_meV": 1.4829533071491885e-06,
+   "max_torque_meV": 2.665410288981614e-07,
+   "total_winding": [
+    0.0,
+    2.0,
+    -0.0,
+    1.0,
+    0.0,
+    1.0
+   ],
+   "bulk_winding": [
+    0.287,
+    -0.382,
+    -0.034,
+    0.022,
+    0.055,
+    -0.082
+   ],
+   "seconds": 3.1266306389998135
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "uniform",
+   "excess_energy_meV": 3.1913109469695655,
+   "per_wall_length_meV_per_a": 0.012795168293754709,
+   "hold_penalty_meV": 2.2768868252392953e-08,
+   "max_torque_meV": 2.713098498860487e-07,
+   "total_winding": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "bulk_winding": [
+    -0.003,
+    -0.004,
+    0.0,
+    -0.003,
+    -0.003,
+    -0.003
+   ],
+   "seconds": 10.463181128999622
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 3.2625653605476828,
+   "per_wall_length_meV_per_a": 0.013080854091395507,
+   "hold_penalty_meV": 4.291693544985842e-08,
+   "max_torque_meV": 7.611327499518722e-07,
+   "total_winding": [
+    0.0,
+    2.0,
+    0.0,
+    -2.0,
+    -2.0,
+    4.0
+   ],
+   "bulk_winding": [
+    -0.463,
+    -0.462,
+    -0.464,
+    0.92,
+    0.92,
+    -0.466
+   ],
+   "seconds": 71.15612927000029
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "random_0",
+   "excess_energy_meV": 3.241670382733844,
+   "per_wall_length_meV_per_a": 0.01299707825066265,
+   "hold_penalty_meV": 1.1272748512190825e-07,
+   "max_torque_meV": 5.79216757968879e-07,
+   "total_winding": [
+    -2.0,
+    -2.0,
+    4.0,
+    2.0,
+    1.0,
+    3.0
+   ],
+   "bulk_winding": [
+    0.918,
+    0.92,
+    -0.469,
+    -0.461,
+    -0.461,
+    -0.46
+   ],
+   "seconds": 41.93679475599993
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "random_1",
+   "excess_energy_meV": 3.241670382700306,
+   "per_wall_length_meV_per_a": 0.012997078250528187,
+   "hold_penalty_meV": 1.127419122497823e-07,
+   "max_torque_meV": 1.7302834592224377e-07,
+   "total_winding": [
+    2.0,
+    3.0,
+    1.0,
+    -2.0,
+    -2.0,
+    4.0
+   ],
+   "bulk_winding": [
+    -0.461,
+    -0.461,
+    -0.463,
+    0.921,
+    0.918,
+    -0.467
+   ],
+   "seconds": 25.22063654800013
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "random_2",
+   "excess_energy_meV": 3.284346116183201,
+   "per_wall_length_meV_per_a": 0.013168181349238008,
+   "hold_penalty_meV": 5.431864827557049e-08,
+   "max_torque_meV": 4.661579960269592e-08,
+   "total_winding": [
+    0.0,
+    2.0,
+    2.0,
+    1.0,
+    1.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    0.453,
+    -0.463,
+    -0.46,
+    -0.001,
+    -0.009,
+    0.454
+   ],
+   "seconds": 15.320687379999981
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "seed": "random_3",
+   "excess_energy_meV": 3.25673518914806,
+   "per_wall_length_meV_per_a": 0.013057478737041382,
+   "hold_penalty_meV": 6.511976093079422e-08,
+   "max_torque_meV": 6.149706124740164e-08,
+   "total_winding": [
+    -0.0,
+    2.0,
+    1.0,
+    1.0,
+    -0.0,
+    1.0
+   ],
+   "bulk_winding": [
+    0.444,
+    -0.462,
+    -0.004,
+    0.002,
+    -0.003,
+    -0.01
+   ],
+   "seconds": 14.3363379970001
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "uniform",
+   "excess_energy_meV": 4.613689864376624,
+   "per_wall_length_meV_per_a": 0.012332014283126353,
+   "hold_penalty_meV": 4.214309124162196e-08,
+   "max_torque_meV": 8.993847596356525e-08,
+   "total_winding": [
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "bulk_winding": [
+    -0.0,
+    -0.002,
+    -0.003,
+    -0.003,
+    -0.016,
+    -0.002
+   ],
+   "seconds": 33.80765624100013
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "steps_2pi/3",
+   "excess_energy_meV": 4.73264588117911,
+   "per_wall_length_meV_per_a": 0.012649973951286725,
+   "hold_penalty_meV": 1.870831795468587e-08,
+   "max_torque_meV": 6.485254886038983e-07,
+   "total_winding": [
+    3.0,
+    2.0,
+    3.0,
+    -2.0,
+    -2.0,
+    4.0
+   ],
+   "bulk_winding": [
+    0.024,
+    -0.483,
+    0.017,
+    0.95,
+    0.953,
+    -0.479
+   ],
+   "seconds": 75.9253754930005
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "random_0",
+   "excess_energy_meV": 4.732684511638013,
+   "per_wall_length_meV_per_a": 0.01265007720733231,
+   "hold_penalty_meV": 1.4919904564863806e-08,
+   "max_torque_meV": 2.264077516547815e-07,
+   "total_winding": [
+    -1.0,
+    -2.0,
+    3.0,
+    3.0,
+    2.0,
+    1.0
+   ],
+   "bulk_winding": [
+    0.964,
+    0.958,
+    0.518,
+    -0.476,
+    -0.476,
+    -0.486
+   ],
+   "seconds": 76.76792151900008
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "random_1",
+   "excess_energy_meV": 4.7147734688775245,
+   "per_wall_length_meV_per_a": 0.012602202460298816,
+   "hold_penalty_meV": 1.0554039728592562e-08,
+   "max_torque_meV": 1.3880424985861486e-07,
+   "total_winding": [
+    1.0,
+    2.0,
+    3.0,
+    -2.0,
+    -0.0,
+    0.0
+   ],
+   "bulk_winding": [
+    -0.964,
+    0.02,
+    0.02,
+    0.949,
+    0.481,
+    0.471
+   ],
+   "seconds": 98.83502809499942
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "random_2",
+   "excess_energy_meV": 4.785832545245398,
+   "per_wall_length_meV_per_a": 0.012792137538397697,
+   "hold_penalty_meV": 6.410290954669684e-09,
+   "max_torque_meV": 2.0653546750114807e-07,
+   "total_winding": [
+    -1.0,
+    0.0,
+    2.0,
+    2.0,
+    1.0,
+    -0.0
+   ],
+   "bulk_winding": [
+    -0.026,
+    -0.498,
+    -0.48,
+    -0.476,
+    -0.002,
+    0.472
+   ],
+   "seconds": 38.33319995699958
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "seed": "random_3",
+   "excess_energy_meV": 4.684886207239174,
+   "per_wall_length_meV_per_a": 0.012522316263297693,
+   "hold_penalty_meV": 1.4718619338834626e-08,
+   "max_torque_meV": 1.301388468975853e-07,
+   "total_winding": [
+    -0.0,
+    2.0,
+    2.0,
+    1.0,
+    -0.0,
+    -1.0
+   ],
+   "bulk_winding": [
+    -0.004,
+    -0.477,
+    -0.48,
+    -0.002,
+    0.473,
+    0.471
+   ],
+   "seconds": 29.51512604599975
+  }
+ ],
+ "network_summary": [
+  {
+   "JPD_meV": 0.0,
+   "s": 24,
+   "lowest_seed": "random_0",
+   "lowest_per_wall_length_meV_per_a": 0.017110232652238596,
+   "lowest_max_abs_bulk_winding": 0.0,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": null,
+   "gap_to_lowest_unwound_meV": 0.0
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 48,
+   "lowest_seed": "random_0",
+   "lowest_per_wall_length_meV_per_a": 0.015687313757330783,
+   "lowest_max_abs_bulk_winding": 0.0,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": null,
+   "gap_to_lowest_unwound_meV": 0.0
+  },
+  {
+   "JPD_meV": 0.0,
+   "s": 72,
+   "lowest_seed": "random_2",
+   "lowest_per_wall_length_meV_per_a": 0.015211320449295683,
+   "lowest_max_abs_bulk_winding": 0.194,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": null,
+   "gap_to_lowest_unwound_meV": 0.11978508532786236
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 24,
+   "lowest_seed": "random_3",
+   "lowest_per_wall_length_meV_per_a": 0.014253381760546717,
+   "lowest_max_abs_bulk_winding": 0.382,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": 0.0,
+   "gap_to_lowest_unwound_meV": 0.0013420857282540055
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 48,
+   "lowest_seed": "uniform",
+   "lowest_per_wall_length_meV_per_a": 0.012795168293754709,
+   "lowest_max_abs_bulk_winding": 0.004,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": 0.05035943573074064,
+   "gap_to_lowest_unwound_meV": 0.0
+  },
+  {
+   "JPD_meV": 0.01,
+   "s": 72,
+   "lowest_seed": "uniform",
+   "lowest_per_wall_length_meV_per_a": 0.012332014283126353,
+   "lowest_max_abs_bulk_winding": 0.016,
+   "gap_to_lowest_with_bulk_winding_above_0.3_meV": 0.0711963428625495,
+   "gap_to_lowest_unwound_meV": 0.0
+  }
+ ],
+ "inputs_sha256": {
+  "examples/nbcp_y_wall_junction.py": "5731940d904fc9d3404e099646146d8c60e77e45ae89ae8bc688e86c18c9e9e2",
+  "examples/nbcp_y_density_wall.py": "f04828f09bdd8309edbce5e33c39380c6fec6f24e7b3763e994207b82e420e41",
+  "examples/nbcp_y_vortex_core.py": "df87219fb2b7b2e41ee95c6853de39efce8db829fda8c983b955c86461a9cec2",
+  "examples/nbcp_y_soc_conditions.py": "8e30d0cf09e1b97087e43be5f4ceb56da463e2032770093c5d959b9c5e9dde34",
+  "examples/nbcp_y_stiffness.py": "32fad51c3124581ead8f63c2582fd30d66f9691cc4ed6dd11c967ef5b76a33e7"
+ },
+ "seconds": 250.7895537459999
+}
