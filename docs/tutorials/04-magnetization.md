@@ -83,9 +83,14 @@ ED plateau M = 0.250 centred at h = 2.49: classical 0.312  1/S 0.260
 ED plateau M = 0.375 centred at h = 3.44: classical 0.425  1/S 0.385
 ```
 
-The 1/S curve is much closer to ED than the classical one. At low field the
-1/S susceptibility, 0.060, is close to the quantum Monte Carlo value
-χ⊥ = 0.0657 (arXiv:2601.20189), while the classical value is 1/8.
+The 1/S curve is much closer to ED than the classical one. The printed
+M/h = 0.060 at h = 0.1 still contains a correction linear in h. Its h → 0
+limit is 0.0561, the 1/S perpendicular susceptibility
+χ⊥ = 1/8 − 0.034447/S of Hamer, Zheng and Oitmaa (PRB 50, 6877 (1994)).
+The classical value is 1/8 and quantum Monte Carlo gives χ⊥ = 0.0657
+(arXiv:2601.20189). The reduced-moment formula would give
+(S − 0.1966)/(8S) = 0.076 instead of 0.0561, because it misses the
+canting-angle shift (see `test_literature_benchmarks.py`).
 
 How good the 1/S result is varies by system. In more extensive checks
 (square S = 1/2 and S = 1, XXZ, honeycomb, ED clusters up to 26 sites, and
