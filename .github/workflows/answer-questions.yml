@@ -8,7 +8,7 @@ name: Answer questions
 on:
   push:
     branches: [main]
-    paths: ['workbench/comments/**']
+    paths: ['workbench/comments/**', '.github/workflows/answer-questions.yml']
   workflow_dispatch:
 
 concurrency:
@@ -54,11 +54,24 @@ jobs:
           { echo "list<<RW_QUESTIONS_END"; cat "$RUNNER_TEMP/questions.md"; echo "RW_QUESTIONS_END"; } >> "$GITHUB_OUTPUT"
           echo "now=$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')" >> "$GITHUB_OUTPUT"
 
+      # `claude setup-token` prints the token wrapped over two lines in a narrow terminal, and a
+      # pasted secret keeps that line break. Strip whitespace so either paste works.
+      - name: Clean the token
+        if: steps.find.outputs.open == 'true'
+        env:
+          RAW: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          clean=$(printf '%s' "$RAW" | tr -d '[:space:]')
+          if [ -z "$clean" ]; then echo "::error::The CLAUDE_CODE_OAUTH_TOKEN secret is empty"; exit 1; fi
+          echo "::add-mask::$clean"
+          echo "CLEAN_OAUTH_TOKEN=$clean" >> "$GITHUB_ENV"
+
       - name: Answer with Claude
+        id: claude
         if: steps.find.outputs.open == 'true'
         uses: anthropics/claude-code-action/base-action@v1
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_code_oauth_token: ${{ env.CLEAN_OAUTH_TOKEN }}
           claude_args: >-
             --allowedTools "Read,Glob,Grep,Edit(workbench/comments/**)"
             --disallowedTools "Bash,Write,NotebookEdit,WebFetch"
@@ -90,6 +103,12 @@ jobs:
             Rules: only append lines. Never change or delete existing lines, never touch other questions'
             sections, and never edit any file outside workbench/comments/. Do not start a line of your answer
             with `#`, `## `, `- 상태:` or `<!--`.
+
+      # The action hides Claude's output; on failure print only the final result message
+      # (for example an invalid or expired token), never the conversation.
+      - name: Show why Claude stopped
+        if: failure() && steps.claude.outputs.execution_file != ''
+        run: jq -r '.[] | select(.type == "result") | .result // empty' "${{ steps.claude.outputs.execution_file }}"
 
       - name: Check what changed
         if: steps.find.outputs.open == 'true'
