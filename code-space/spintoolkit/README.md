@@ -16,6 +16,7 @@
 | `methods/optimization.py` | 기존 `SpinSystem` 기반 고전 스핀상태 탐색(`SpinOptimizer`; 새 자료형용 전역 탐색으로 옮긴 뒤 사용 중단 예정, D30) |
 | `methods/classical.py` | `SpinModel`의 항만 읽는 고전 에너지·국소장·토크 |
 | `methods/lswt/` | 새 진입점 `solve_lswt`(D24), 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`). 기존 `LSWTSolver`는 사용 중단(D30) |
+| `methods/nlswt/` | 비선형 스핀파 `solve_nlswt`(D46): HP 4차 전개, O(S⁰) 바닥 에너지, 1/S 마그논 에너지 |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
 | `models/` | 표준 벤치마크 해밀토니안(사각·삼각격자 하이젠버그)과 해석적 기준 스핀 배열 |
 | `observables/` | 보스 통계, 열역학, 위상, 상관함수 |

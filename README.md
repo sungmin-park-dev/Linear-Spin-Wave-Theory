@@ -19,6 +19,7 @@ Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up
 | Model | Sites, bilinear exchange (any 3×3 matrix), single-ion terms, Zeeman coupling with a g-tensor; symmetry detection on the layer group |
 | Classical states | Energy, torques, global search on a magnetic supercell, Luttinger–Tisza, Monte Carlo, Landau–Lifshitz and Langevin dynamics |
 | LSWT | `solve_lswt` for commensurate states (Colpa diagonalization, zero-point energy, stability check); rotating-frame LSWT for single-Q spirals |
+| Interacting spin waves | `solve_nlswt`: ground-state energy to order S^0 (Hartree-Fock, cubic, tadpole) and on-shell 1/S magnon energies with decay rates; exact large-S perturbation theory on a finite torus |
 | Observables | Band structures and density of states; magnetization curve M(h) with the 1/S correction and moment reduction; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
 | Comparison | `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy |
 | Figures | Bands and density of states, neutron maps (path, constant energy, powder, energy-integrated with Bragg peaks, single spin components), magnetization curves, Berry curvature, thermal Hall, spin textures with skyrmion density, phase diagrams, thermodynamics, spin configurations |
