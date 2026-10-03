@@ -1,0 +1,400 @@
+{
+ "created_utc": "2026-10-03T03:54:26.003818+00:00",
+ "scope": "NBCP Y (0.2 T) and V (1.4 T), S = 1/2, J = 0.075, J_z = 0.125 meV, J_Gamma = 0, phi = 0, rotation about z. Delta^2 = A + B: A leading order (C_phi / chi_z), B next order in 1/S at S = 1/2 (two loops). Curvatures per magnetic cell; zero_point and order_s0 are d^2/dphi^2 of E_zp and of the constrained order-S^0 energy (meV/rad^2).",
+ "note": "Produced by examples/nbcp_pseudo_goldstone_two_loop.py; the last row was re-run separately after the full run hit the session time limit (same code).",
+ "rows": [
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.01,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 4.712448030232209e-05,
+   "B_meV2": -0.0012814298060681321,
+   "leading_gap_meV": 0.006864727256222354,
+   "B_over_A": -27.192444305958507,
+   "curvature": {
+    "U1": 0.0004447536170346014,
+    "U2": -0.011656321284064021,
+    "sigma_xx": 0.00044475481219928575,
+    "schur_one_loop": -4.908521946203309e-10,
+    "sigma2_xx": -0.011656320793211827,
+    "zero_point": 0.000157081169617519,
+    "order_s0": -0.004140524130153384
+   },
+   "two_loop_over_one_loop_curvature": -26.359137382509015,
+   "components": {
+    "B_one_loop": -4.6213448608807355e-05,
+    "B_two_loop_static": -0.0012352163574593246
+   },
+   "ward_identity_relative_error": 2.687251184849636e-06,
+   "seconds": 12.726979621000282
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0,
+   "A_meV2": 4.7096297065348656e-05,
+   "B_meV2": -0.0013128604347632468,
+   "leading_gap_meV": 0.006862674191985851,
+   "B_over_A": -27.87608615899424,
+   "curvature": {
+    "U1": 0.0004444873767225954,
+    "U2": -0.01193052407185868,
+    "sigma_xx": 0.0004444885753566165,
+    "schur_one_loop": -6.478526849959265e-11,
+    "sigma2_xx": -0.011930524007073411,
+    "zero_point": 0.00015698713701607986,
+    "order_s0": -0.004237776633837859
+   },
+   "two_loop_over_one_loop_curvature": -26.994419507145945,
+   "components": {
+    "B_one_loop": -4.7344787237008986e-05,
+    "B_two_loop_static": -0.0012655156475262378
+   },
+   "ward_identity_relative_error": 2.6966660559030097e-06,
+   "seconds": 116.62364734200128
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.01,
+   "mesh": 36,
+   "pinning_meV": 0.0,
+   "A_meV2": 4.7092811130315695e-05,
+   "B_meV2": -0.0013259135003166123,
+   "leading_gap_meV": 0.006862420209395203,
+   "B_over_A": -28.155327076303244,
+   "curvature": {
+    "U1": 0.0004444536795393945,
+    "U2": -0.01201625831459031,
+    "sigma_xx": 0.00044445487868360905,
+    "schur_one_loop": -7.18294264049156e-11,
+    "sigma2_xx": -0.012016258242760884,
+    "zero_point": 0.00015697523561101584,
+    "order_s0": -0.0042681958530078916
+   },
+   "two_loop_over_one_loop_curvature": -27.19024970017862,
+   "components": {
+    "B_one_loop": -4.791148615954506e-05,
+    "B_two_loop_static": -0.0012780020141570673
+   },
+   "ward_identity_relative_error": 2.698018420677507e-06,
+   "seconds": 559.7671205509996
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.0025,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 4.379652649015269e-07,
+   "B_meV2": -1.0037651208475667e-05,
+   "leading_gap_meV": 0.0006617894415155978,
+   "B_over_A": -22.918829443546294,
+   "curvature": {
+    "U1": 4.1334507849890885e-06,
+    "U2": -9.2969887619499e-05,
+    "sigma_xx": 4.13346023010741e-06,
+    "schur_one_loop": -9.086147617552304e-11,
+    "sigma2_xx": -9.296979675802282e-05,
+    "zero_point": 1.4598808396245704e-06,
+    "order_s0": -3.299737581463943e-05
+   },
+   "two_loop_over_one_loop_curvature": -22.602787103586607,
+   "components": {
+    "B_one_loop": -1.869360084535762e-07,
+    "B_two_loop_static": -9.85071520002209e-06
+   },
+   "ward_identity_relative_error": 2.285044340133539e-06,
+   "seconds": 7.506222213000001
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.005,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 3.850815183094229e-06,
+   "B_meV2": -9.075719001725543e-05,
+   "leading_gap_meV": 0.001962349403927402,
+   "B_over_A": -23.56830585266616,
+   "curvature": {
+    "U1": 3.6343417729138383e-05,
+    "U2": -0.000837651120322663,
+    "sigma_xx": 3.634350286278731e-05,
+    "schur_one_loop": -9.979254225749842e-11,
+    "sigma2_xx": -0.0008376510205301207,
+    "zero_point": 1.2836020542913303e-05,
+    "order_s0": -0.0002973559578215371
+   },
+   "two_loop_over_one_loop_curvature": -23.16574337252099,
+   "components": {
+    "B_one_loop": -2.002800523888019e-06,
+    "B_two_loop_static": -8.87543894933674e-05
+   },
+   "ward_identity_relative_error": 2.3424777922052678e-06,
+   "seconds": 7.300394756999594
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0001,
+   "A_meV2": NaN,
+   "B_meV2": NaN,
+   "leading_gap_meV": null,
+   "B_over_A": null,
+   "curvature": {
+    "U1": 0.0004488813162070537,
+    "U2": -0.011340557636597842,
+    "sigma_xx": 0.00044534965243893404,
+    "schur_one_loop": null,
+    "sigma2_xx": null,
+    "zero_point": 0.00015853901906270434,
+    "order_s0": -0.004028626558295152
+   },
+   "two_loop_over_one_loop_curvature": -25.410946668603867,
+   "components": {
+    "B_one_loop": NaN,
+    "B_two_loop_static": NaN
+   },
+   "ward_identity_relative_error": 0.00786770052708235,
+   "seconds": 111.17735910299962
+  },
+  {
+   "phase": "Y",
+   "B_T": 0.2,
+   "h_meV": 0.05377406697774,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0003,
+   "A_meV2": NaN,
+   "B_meV2": NaN,
+   "leading_gap_meV": null,
+   "B_over_A": null,
+   "curvature": {
+    "U1": 0.0004539617256689803,
+    "U2": -0.010693784007613224,
+    "sigma_xx": 0.000438922808613733,
+    "schur_one_loop": null,
+    "sigma2_xx": null,
+    "zero_point": 0.00016033335334094195,
+    "order_s0": -0.003799454826516388
+   },
+   "two_loop_over_one_loop_curvature": -23.69722049308737,
+   "components": {
+    "B_one_loop": NaN,
+    "B_two_loop_static": NaN
+   },
+   "ward_identity_relative_error": 0.033128160822556645,
+   "seconds": 111.67254928799957
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.01,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 0.0002449525492126852,
+   "B_meV2": -0.0048283172650109,
+   "leading_gap_meV": 0.015650960009299275,
+   "B_over_A": -19.711235014821632,
+   "curvature": {
+    "U1": 0.001897855433034918,
+    "U2": -0.03407170935293333,
+    "sigma_xx": 0.0018978619899168527,
+    "schur_one_loop": -0.0015455655431109918,
+    "sigma2_xx": -0.032526143809822335,
+    "zero_point": 0.0011397481061100184,
+    "order_s0": -0.02064328848931565
+   },
+   "two_loop_over_one_loop_curvature": -18.112149850173104,
+   "components": {
+    "B_one_loop": -0.00042577550395405317,
+    "B_two_loop_static": -0.004402541761056847
+   },
+   "ward_identity_relative_error": 3.4548900936422383e-06,
+   "seconds": 7.4487574599988875
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0,
+   "A_meV2": 0.0002448444579853045,
+   "B_meV2": -0.004974890196913561,
+   "leading_gap_meV": 0.01564750644624582,
+   "B_over_A": -20.318573831931097,
+   "curvature": {
+    "U1": 0.0018970882451193592,
+    "U2": -0.03507673689210952,
+    "sigma_xx": 0.0018970948101548553,
+    "schur_one_loop": -0.0017026729588721786,
+    "sigma2_xx": -0.033374063933237344,
+    "zero_point": 0.0011392873750350543,
+    "order_s0": -0.0212534761681857
+   },
+   "two_loop_over_one_loop_curvature": -18.655061605972556,
+   "components": {
+    "B_one_loop": -0.00040782686643235855,
+    "B_two_loop_static": -0.004567063330481203
+   },
+   "ward_identity_relative_error": 3.4605851957723773e-06,
+   "seconds": 110.8867241909993
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.01,
+   "mesh": 36,
+   "pinning_meV": 0.0,
+   "A_meV2": 0.0002447439782545507,
+   "B_meV2": -0.004951574091651727,
+   "leading_gap_meV": 0.01564429539015902,
+   "B_over_A": -20.231648300256637,
+   "curvature": {
+    "U1": 0.0018969810101875204,
+    "U2": -0.035403375910274544,
+    "sigma_xx": 0.0018969875761672788,
+    "schur_one_loop": -0.001756839590080549,
+    "sigma2_xx": -0.033646536320193994,
+    "zero_point": 0.0011392229756038096,
+    "order_s0": -0.021451868062252563
+   },
+   "two_loop_over_one_loop_curvature": -18.83026283847784,
+   "components": {
+    "B_one_loop": -0.0002198809656946731,
+    "B_two_loop_static": -0.004731693125957054
+   },
+   "ward_identity_relative_error": 3.4612785911501096e-06,
+   "seconds": 561.9853647710006
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.0025,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 1.8881811684563912e-06,
+   "B_meV2": -2.0956688089714185e-05,
+   "leading_gap_meV": 0.001374111046624832,
+   "B_over_A": -11.098875701025293,
+   "curvature": {
+    "U1": 1.4629306046453091e-05,
+    "U2": -0.00016190490011504607,
+    "sigma_xx": 1.4629340239988771e-05,
+    "schur_one_loop": -0.0009258171572353793,
+    "sigma2_xx": 0.0007639122571203333,
+    "zero_point": 8.785560570061593e-06,
+    "order_s0": -9.794737742536078e-05
+   },
+   "two_loop_over_one_loop_curvature": -11.148677041637436,
+   "components": {
+    "B_one_loop": -5.990538967755514e-08,
+    "B_two_loop_static": -2.089678270003663e-05
+   },
+   "ward_identity_relative_error": 2.3373313519446437e-06,
+   "seconds": 7.220290390001537
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.005,
+   "mesh": 12,
+   "pinning_meV": 0.0,
+   "A_meV2": 1.6969489718354352e-05,
+   "B_meV2": -0.0002042873031605143,
+   "leading_gap_meV": 0.004119404048931636,
+   "B_over_A": -12.038505962825464,
+   "curvature": {
+    "U1": 0.00013147670964819413,
+    "U2": -0.0015540841893700555,
+    "sigma_xx": 0.00013147702294073516,
+    "schur_one_loop": -0.0009539284706820827,
+    "sigma2_xx": -0.0006001557186879729,
+    "zero_point": 7.895771627846061e-05,
+    "order_s0": -0.0009404955757716101
+   },
+   "two_loop_over_one_loop_curvature": -11.911382700770615,
+   "components": {
+    "B_one_loop": -3.703148062400336e-06,
+    "B_two_loop_static": -0.00020058415509811395
+   },
+   "ward_identity_relative_error": 2.3828748214328894e-06,
+   "seconds": 7.562939559998995
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0001,
+   "A_meV2": NaN,
+   "B_meV2": NaN,
+   "leading_gap_meV": null,
+   "B_over_A": null,
+   "curvature": {
+    "U1": 0.0018864397770285385,
+    "U2": -0.03164449381419383,
+    "sigma_xx": 0.0018737409110667982,
+    "schur_one_loop": null,
+    "sigma2_xx": null,
+    "zero_point": 0.0011328924878754576,
+    "order_s0": -0.0191693375153463
+   },
+   "two_loop_over_one_loop_curvature": -16.920703173957,
+   "components": {
+    "B_one_loop": NaN,
+    "B_two_loop_static": NaN
+   },
+   "ward_identity_relative_error": 0.006731657228805425,
+   "seconds": 107.93847982899933
+  },
+  {
+   "phase": "V",
+   "B_T": 1.4,
+   "h_meV": 0.37641846884417995,
+   "JPD_meV": 0.01,
+   "mesh": 24,
+   "pinning_meV": 0.0003,
+   "A_meV2": NaN,
+   "B_meV2": NaN,
+   "leading_gap_meV": null,
+   "B_over_A": null,
+   "curvature": {
+    "U1": 0.0018577493725056037,
+    "U2": -0.02852057263600744,
+    "sigma_xx": 0.0018199895286931402,
+    "schur_one_loop": null,
+    "sigma2_xx": null,
+    "zero_point": 0.0011156626011046545,
+    "order_s0": -0.017273999418675526
+   },
+   "two_loop_over_one_loop_curvature": -15.483175111876985,
+   "components": {
+    "B_one_loop": NaN,
+    "B_two_loop_static": NaN
+   },
+   "ward_identity_relative_error": 0.020325585555997616,
+   "seconds": 145.82853485399937
+  }
+ ],
+ "seconds": 1875.645363929998
+}
