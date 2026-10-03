@@ -31,8 +31,12 @@ The background-field expansion about ``R(phi)`` reuses the order-S^0 energy
 of :class:`NonlinearSpinWaves` (classical, zero-point, Hartree-Fock, cubic)
 with two changes: the tadpole is minimized under the constraint (the
 linear-in-bosons part of ``x`` in the rotated frame is held at zero), and
-``xbar(phi)`` is evaluated to relative order 1/S with the exact
-Holstein-Primakoff inverse ``a = (S + s^z)^{-1/2} s^+``. Then
+``xbar(phi)`` is evaluated to relative order 1/S with the
+Holstein-Primakoff inverse ``a = (S + s^z)^{-1/2} s^+`` expanded to first
+order in ``n_0 / 2S``. Classically ``n_0 / 2S = (1 - cos alpha) / 2`` for a
+spin rotated by ``alpha`` from the reference axis: the dropped terms start
+at ``phi^3``, so the first derivatives of ``xbar`` at ``phi = 0`` used here
+are unaffected, but ``xbar`` at large rotations is not accurate. Then
 
     Gamma''(0) = E''(0) / xbar'(0)^2 = U_1 + U_2,
     U_1 = E_zp'' / xbar_1'^2 = Sigma_1^xx(0)          (Ward identity, checked),
@@ -255,10 +259,10 @@ def _field_terms(frame: _Frame, frames0: np.ndarray, w: np.ndarray):
     """``xbar`` (leading, 1/S correction) and the linear coefficient ``c1`` of the field ``w . psi_0``.
 
     ``psi_0`` are the bosons of the reference frame; at the rotated frame,
-    ``a_0 = (2S)^{-1/2} [s_0^+ + n_0 s_0^+ / (4S)]`` (exact HP inverse to this
-    order) with ``s_0^+ = p . s``, ``n_0 = S - z . s`` in rotated local
-    components and the rotated LSWT vacuum (no condensate: ``c1 . <psi> = 0``
-    is the constraint).
+    ``a_0 = (2S)^{-1/2} [s_0^+ + n_0 s_0^+ / (4S)]`` (HP inverse to first order in
+    ``n_0 / 2S``, valid for small rotations) with ``s_0^+ = p . s``,
+    ``n_0 = S - z . s`` in rotated local components and the rotated LSWT
+    vacuum (no condensate: ``c1 . <psi> = 0`` is the constraint).
     """
     ex = frame.expansion
     ns = ex.num_sites
