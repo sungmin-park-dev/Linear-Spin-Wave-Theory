@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-03T02:11:51.312745+00:00",
+  "generated_utc": "2026-10-03T03:58:52.528018+00:00",
   "canonical_source": "docs/nbcp/main.tex",
   "source_format": "LaTeX",
   "review_status": "in-review",
@@ -13,12 +13,12 @@
     "docs/nbcp/chapters/03-phase-diagram.tex": "f45625a00c4f38a9c57ea1e236c1ef1504b5361fd852754bc0ab1136eb107673",
     "docs/nbcp/chapters/04-phase-characterization.tex": "96f71d8a5fd8d8c2169560bf6cbc98afcc5f4f5a23f4cba7b932499df626f545",
     "docs/nbcp/chapters/05-skyrmion-phase.tex": "2d33faf3431d3873ee9c28a181a3e5c9482035f6d2bef5ad53d7ebffb93f04a0",
-    "docs/nbcp/chapters/06-yv-low-energy.tex": "c43966a3db1ecc5dea4b80b86071925dd475b0636bf0b98677341fd37d017d86",
-    "docs/nbcp/chapters/07-supersolidity.tex": "3ef7f67b051a29633ba2b809d63424d49d428941d5ddfacd27d3fa32cde1c5fe",
-    "docs/nbcp/chapters/08-y-phase.tex": "d7c896e9711e40580066ccebef5210a33288e19e59da0d7e7ef0f80c8455797f",
+    "docs/nbcp/chapters/06-yv-low-energy.tex": "80c677a4a741c8f8e71ca30bf8b511a05fb45893ac8024fd36e671a3d06100d2",
+    "docs/nbcp/chapters/07-supersolidity.tex": "db59a7642be7efbc7a827a80ec7e68fe498ac91f44a3f0f96a10fbfd540d9153",
+    "docs/nbcp/chapters/08-y-phase.tex": "17e5ffbb275ab7d1a9cfd89d39aee08cb5e651ac3467df05a3642b998de3aaa0",
     "docs/nbcp/chapters/09-v-phase.tex": "145b1ce59497662d74c654ca62b23f7e43b0b7e088e20c62aa06f83dafa0837f",
-    "docs/nbcp/chapters/10-discussion.tex": "a14fee3666569d4d497f562a4d8a4fa7cd0d113b783faff86a88e4d476a967d4",
-    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "3b17fc452b5c15337f70283b11d8733614e9e79a7ab2826cb343fa9309945980",
+    "docs/nbcp/chapters/10-discussion.tex": "4903cc4255751b9c9c8ac7b1e626514a2d0f5efcff7fa89e8d80dfdbdaa5af5d",
+    "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex": "88eb5e47c4110af40fd683d7907ce8521ea9c2a2828c292b876b692b8ef484cf",
     "docs/nbcp/appendices/b-clock-rg.tex": "1de671816af2b5e9fd45583251baffe091a625fbac4f1c616ef74311ace3e958",
     "docs/nbcp/appendices/c-y-stiffness.tex": "77030a5a1477dcd300c1a4024ebc63e0746758f90772766237d484ca4aca8dfa",
     "docs/nbcp/appendices/d-numerical-verification.tex": "5738c68b27818e52aaf69896487701066ec885f717103e865cbad7de5e17ad31",
@@ -49,7 +49,7 @@
     }
   },
   "outputs_sha256": {
-    "research-note.pdf": "feeb9b2310c744b668dddec47922c1407fe216bc6b09e87c2f1b5ffb5e865ac0"
+    "research-note.pdf": "8ebeba8f7510f17800f76734077814a56dfcdb1c0cc7f7a149247dad505d97e0"
   },
   "latex_review_messages": [],
   "source_display_equations": 92,
