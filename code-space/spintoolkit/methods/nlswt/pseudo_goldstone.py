@@ -36,10 +36,17 @@ Holstein-Primakoff inverse ``a = (S + s^z)^{-1/2} s^+``. Then
 
     Gamma''(0) = E''(0) / xbar'(0)^2 = U_1 + U_2,
     U_1 = E_zp'' / xbar_1'^2 = Sigma_1^xx(0)          (Ward identity, checked),
-    U_2 = [E_2'' - 2 E_zp'' xbar_2' / xbar_1'] / xbar_1'^2 = Sigma_2^xx(0).
+    U_2 = [E_2'' - 2 E_zp'' xbar_2' / xbar_1'] / xbar_1'^2.
 
-``Sigma_2`` enters the pole as ``U_2 w^+ w`` (``w`` the functional that
-measures ``x``); the result does not depend on the choice of ``w``. The
+``Gamma''`` is the full static curvature along ``x``, i.e. the Schur complement
+of the inverse propagator onto ``x``: besides the 1PI element it contains the
+static mixing of ``x`` with the other modes through ``Sigma_1``, which the
+one-loop matrix in the pole already supplies. With ``schur_1`` that order-1/S
+part of ``1 / (w [H(0) + Sigma_1(0)]^{-1} w^+)``, the two-loop 1PI element is
+``Sigma_2^xx(0) = U_2 - schur_1`` (without the subtraction the mixing is
+counted twice and ``B`` stays finite at the symmetric point). It enters the
+pole as ``Sigma_2^xx(0) w^+ w`` (``w`` the functional that measures ``x``);
+the result does not depend on the choice of ``w``. The
 strict expansion is read off by scaling ``H(0) -> H(0)/t``,
 ``Sigma_1(w) -> Sigma_1(t w)``, ``Sigma_2 -> t Sigma_2`` and fitting
 ``t w(t)^2 = A + B t`` for ``t -> 0`` (``t = 1`` is the model's spin).
@@ -130,8 +137,9 @@ class PseudoGoldstoneResult:
         ``zero_point``, ``order_s0`` (second derivatives in ``phi`` per
         magnetic cell of ``E_zp`` and of the order-S^0 energy).
     components : dict
-        ``B_one_loop`` (``B`` without the two-loop static term) and
-        ``B_two_loop_static``.
+        ``B_one_loop``: ``B`` with ``U_2 = 0`` (the one-loop matrix, its static mixing
+        of ``x`` with the other modes removed so the static curvature is ``U_1``), and
+        ``B_two_loop_static``: the rest, the contribution of ``U_2``.
     """
 
     header: ResultHeader
@@ -303,6 +311,20 @@ def _strict_fit(H0, M0, M1, M2, extra, t_values):
     return float(c[2]), float(c[1])
 
 
+def _static_curvature(H0, M0, w, t_values):
+    """``Gamma''(t) = 1 / (w (H0/t + M0)^{-1} w^+) = c0 + c1 t + ...`` (static, w-normalized).
+
+    The static curvature the one-loop matrix ``H0 + Sigma_1(0)`` alone gives along the
+    coordinate measured by ``w``: ``c0 = Sigma_1^xx(0)`` and ``c1`` the order-1/S part from
+    the coupling of ``x`` to the other modes (the static Schur complement).
+    """
+    g = []
+    for t in t_values:
+        g.append(1.0 / np.real(w @ np.linalg.solve(H0 / t + M0, w.conj())))
+    c = np.polyfit(np.asarray(t_values), np.asarray(g), 2)
+    return float(c[2]), float(c[1])
+
+
 def pseudo_goldstone_gap(model: SpinModel, state: SpinState, axis=(0.0, 0.0, 1.0),
                          conditions: Optional[ExternalConditions] = None,
                          settings: PseudoGoldstoneSettings = PseudoGoldstoneSettings()
@@ -394,12 +416,19 @@ def pseudo_goldstone_gap(model: SpinModel, state: SpinState, axis=(0.0, 0.0, 1.0
              for n in range(3)]
     M0 = static + cubic[0]
     sigma_xx = float(np.real(kx.conj() @ M0 @ kx))
-    extra = U2 * np.outer(w.conj(), w)
+    # Gamma'' = U1 + U2 is the full static curvature, i.e. the Schur complement of the
+    # inverse propagator onto x; the one-loop matrix already supplies U1 + schur_1 of it,
+    # so the two-loop 1PI element is U2 - schur_1 (otherwise the static mixing of x with
+    # the other modes is counted twice and B does not vanish at the symmetric point).
+    _, schur_1 = _static_curvature(ref.H0, M0, w, settings.t_values)
+    sigma2_xx = U2 - schur_1
+    extra = sigma2_xx * np.outer(w.conj(), w)
     flat = 1e-9 * max(abs(zero_point[0]), abs(order_s0[0]), 1e-300)
     if abs(zpp) < flat and abs(e2pp) < flat:
         A = B1 = B = 0.0      # the rotation is an exact symmetry at both orders: Goldstone mode
     elif settings.pinning == 0:
-        A, B1 = _strict_fit(ref.H0, M0, cubic[1], cubic[2], 0 * extra, settings.t_values)
+        A, B1 = _strict_fit(ref.H0, M0, cubic[1], cubic[2],
+                            -schur_1 * np.outer(w.conj(), w), settings.t_values)
         _, B = _strict_fit(ref.H0, M0, cubic[1], cubic[2], extra, settings.t_values)
     else:                 # the pinned soft mode is classically gapped: no pseudo-Goldstone pole
         A = B1 = B = float("nan")
@@ -410,5 +439,6 @@ def pseudo_goldstone_gap(model: SpinModel, state: SpinState, axis=(0.0, 0.0, 1.0
          "ward_identity_relative_error": abs(sigma_xx - U1) / max(abs(U1), 1e-300)})
     return PseudoGoldstoneResult(
         header, (A, B),
-        {"U1": U1, "U2": U2, "sigma_xx": sigma_xx, "zero_point": zpp, "order_s0": e2pp},
+        {"U1": U1, "U2": U2, "sigma_xx": sigma_xx, "schur_one_loop": schur_1,
+         "sigma2_xx": sigma2_xx, "zero_point": zpp, "order_s0": e2pp},
         {"B_one_loop": B1, "B_two_loop_static": B - B1})

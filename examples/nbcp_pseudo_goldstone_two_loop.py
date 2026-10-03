@@ -76,7 +76,9 @@ def main():
         conv = [r['B_over_A'] for r in rows if r['phase'] == phase and r['pinning_meV'] == 0
                 and r['JPD_meV'] == 0.010 and r['mesh'] in MESHES[-2:]]
         assert abs(conv[1] - conv[0]) < 0.05 * abs(conv[1]), (phase, conv)
-        assert all(r['ward_identity_relative_error'] < 1e-4 for r in rows if r['phase'] == phase)
+        # the pinning field breaks the rotation, so the Ward identity holds only without it
+        assert all(r['ward_identity_relative_error'] < 1e-4 for r in rows
+                   if r['phase'] == phase and r['pinning_meV'] == 0)
     record = {
         'created_utc': datetime.now(timezone.utc).isoformat(),
         'scope': 'NBCP Y (0.2 T) and V (1.4 T), S = 1/2, J = 0.075, J_z = 0.125 meV, J_Gamma = 0, '

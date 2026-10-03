@@ -53,3 +53,19 @@ def test_leading_order_is_the_curvature_over_chi_relation():
     c_phi_per_spin = r.curvature['zero_point'] / 3
     assert r.gap_squared[0] == pytest.approx(c_phi_per_spin / chi_per_spin, rel=2e-3)
     assert r.relative_correction < -1                 # the two-loop curvature dominates (D47)
+
+
+def test_next_order_vanishes_with_the_symmetry_breaking():
+    # V state (1.4 T): x mixes statically with hard modes through Sigma_1 even at J_PD -> 0.
+    # The two-loop element must not count that mixing twice: as J_PD -> 0 both orders vanish
+    # as J_PD^3 and B / A tends to the ratio of the two energy curvatures.
+    h = 0.37641846884417995
+    theta = [0.4093648608853258, 0.4093648608853258, -1.223629193858957]
+    model = nbcp.build_model({'Jxy': J, 'Jz': JZ, 'JPD': 0.001})
+    state = nbcp.candidate_state(model, 'three_msl', np.column_stack([theta, np.zeros(3)]).ravel())
+    r = pseudo_goldstone_gap(model, state, (0, 0, 1), ExternalConditions(field=[0, 0, h]),
+                             PseudoGoldstoneSettings(mesh=(6, 6)))
+    c = r.curvature
+    assert abs(c['schur_one_loop']) > 10 * abs(c['U2'])          # the mixing is not small
+    assert r.relative_correction == pytest.approx(c['order_s0'] / c['zero_point'], rel=2e-2)
+    assert abs(r.components['B_one_loop']) < 1e-2 * abs(r.gap_squared[1])
