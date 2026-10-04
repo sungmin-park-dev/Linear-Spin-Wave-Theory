@@ -100,7 +100,7 @@ project-root/
 │   ├── scripts/
 │   └── research-notes/
 ├── data-space/                  # 검토하고 정돈한 결과 데이터
-└── workbench/                   # research-workspace 앱의 유도 블록·일지 (NBCP 내용 원본은 docs/nbcp/main.tex)
+└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md (NBCP 내용 원본은 docs/nbcp/main.tex)
 ```
 
 ---
@@ -187,5 +187,6 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 5. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
 6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론의 공개 TeX·PDF·HTML은 accepted Markdown에서 생성하고, 사용자 검토용 preview는 draft/in-review Markdown에서도 생성한다. NBCP는 위에서 정한 canonical TeX에서 PDF를 생성하며 TeX 원본을 직접 편집한다. PDF 등 파생물을 직접 수정하지 않는다.
 7. **이론 문체 preflight**: `docs/lswt/`의 reader-facing theory 문서를 작성하거나 교정하기 전에 `GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
+8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `docs/lswt/` 검토 상태, `workbench/` 유도 블록·일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
 
 현재 작업, 우선순위와 진행 상태는 `GOVERNMENT/Working-Pad/TASK-QUEUE.md`에서 확인한다. `AGENTS.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.
