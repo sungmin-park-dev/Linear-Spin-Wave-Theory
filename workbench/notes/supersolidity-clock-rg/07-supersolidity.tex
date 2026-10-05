@@ -289,10 +289,33 @@ long-wavelength coefficient at \(O(T)\), which for Y is
 0.010 and 0.015 meV. The order-by-disorder entropy of the anisotropic
 stiffness opposes the zero-point selection. A larger cutoff, such as
 \(\Lambda=1\), removes modes the phase theory cannot represent, and its
-change of sign is an artefact of that split. Not included are the
-Debye--Waller suppression by the phase fluctuations themselves, which
-is the RG eigenvalue and is of relative order \(T/S\) beyond this,
-anharmonic terms and defects.
+change of sign is an artefact of that split. Anharmonic terms and
+defects are not included.
+
+\emph{Debye--Waller factor.} Phase fluctuations above the matching
+cutoff multiply the sixfold coefficient by \(e^{-D}\) with
+\(D=18\langle\phi^2\rangle_{|\mathbf k|>\Lambda}\). Per mode the
+variance is \((\varepsilon/2\kappa)\coth(\varepsilon/2T)\), where
+\(\kappa(\mathbf k)\) is the relaxed static phase stiffness and
+\(\varepsilon\) the LSWT soft branch; at small \(k\) both agree with the
+phase theory to 2.5\% or better. The thermal part of \(D\) above
+\(\Lambda=0.25\) is at most 0.09 for Y at \(T\le0.003\) meV, inside the
+algebraic window whose bare upper edge is 0.0038 meV, so the matched
+\(\lambda_6\) of Y changes by less than 10\%. The classical estimate
+\(T/\kappa\) would give 2.4 to 7.2, because it treats modes with
+\(\varepsilon\gg T\) as thermally excited. Most of the thermal
+Debye--Waller suppression therefore comes from modes below the cutoff,
+which the RG flow of the phase theory accounts for. For V the phase
+theory holds only up to \(\Lambda\approx0.1\)
+(\nbcpnoteref{V phase supersolidity}{``Local gap and missing spatial matching''}), and there
+\(D=0.21\) at \(T=0.0015\) meV and \(0.9\pm0.1\) at 0.0025 meV, so the
+factor must be kept. The zero-point part of \(D\) over the whole zone is
+52 for Y and 35 for V: the harmonic angle fluctuations are of order
+3~rad\(^2\), another sign that the \(1/S\) expansion of the angular
+potential is not controlled at \(S=1/2\) (inferred). It is not applied
+as a factor, since it overlaps with higher orders of that series
+(\href{../../../data-space/verification/261005-v-matching-debye-waller/v-matching-debye-waller.json}{V
+matching and Debye--Waller check}).
 
 All \(\lambda_6\) values used here are leading order in \(1/S\). At
 \(S=1/2\) the next order of the angular curvature is about 27 times
