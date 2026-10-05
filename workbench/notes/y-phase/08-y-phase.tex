@@ -875,11 +875,63 @@ networks, 0.01280 and 0.01233 meV/\(a\) at \(s=48\) and 72, exceed
 \(\sigma_{\rm f}\) through the junctions and the twist that the
 orientation-dependent \(\phi^*\) forces inside each domain.
 
-A vortex--antivortex pair held parallel to a wall at several distances
-gave energies that depended on the starting configuration and were not
-reproducible, so the interaction of a vortex with a wall is not
-established here. These networks are classical local minima with held
-centres, not free energies.
+These networks are classical local minima with held centres, not free
+energies.
+
+\textbf{Vortices near a wall.} A vortex--antivortex pair is placed in
+the middle domain of a torus of \(96\times48\) magnetic cells that holds
+three forward walls (domain width \(48a\)), at distance \(d\) from one
+wall and split by half the period along it (\(41.6a\)). Each core is
+held by the spins at \(1.8a<r<3.2a\), whose in-plane vectors are pulled
+toward the pair ansatz with a free rotation per core; the winding
+measured on a circle of radius \(5a\) stays \(\pm1\) for
+\(d\ge4.75a\). Three starts agree to \(10^{-7}\) meV for
+\(5a<d<18a\). An earlier attempt with free pairs was not reproducible,
+and a finite cluster with fixed outer rings imposed its own far field on
+the domain beyond the wall, so neither is used. Energies are quoted
+relative to \(d=19.75a\).
+
+At \(J_{PD}=0.010\) meV the wall repels the pair: the energy at
+\(d=4.75a\) is 0.0146 meV higher. The continuum image solution for a
+strip whose phase is fixed on both walls, with the relaxed stiffness of
+the middle domain (\(\phi=-\pi/6\); \(\rho=0.00171\) and 0.00318 meV
+along and normal to the wall), gives 0.0156 meV. Farther out the
+computed repulsion falls off faster than this solution, 0.0018 against
+0.0051 meV at \(10.75a\); in a \(144\times72\) torus it is 0.0085
+against 0.0102 meV at the same distance. A stiffness that changes with
+\(\phi\) around the cores is a likely cause (inferred). Within about
+\(5a\) of the wall the result depends on the geometry: in the larger
+torus the phase of the layer next to the wall turns through \(\pi\) near
+the core and the energy at \(d=4.75a\) is 0.074 meV above the far value,
+so the contact structure is not established. At the domain centre two
+starts end on branches 0.0013 meV apart.
+
+At \(J_{PD}=0\) the wall attracts the pair: the energy at \(d=4.75a\) is
+0.0114 meV lower. A wall that left the phase free on each side, with
+images of opposite sign, would give 0.0226 meV; the computed attraction
+is 0.50 to 0.42 of that and falls with distance, as for an interface
+whose phase jump has a finite stiffness (inferred). At \(d=2.75a\) the
+measured winding is lost and the pair is absorbed into the wall. For
+\(d\ge19.75a\) one of the two equivalent core orders ends 0.028 meV
+higher, a metastable branch. A pinned wall therefore expels vortices
+into the domain interior, while a free wall collects them. These are
+classical energies with held cores, not free energies.
+
+\textbf{Wall free energy.} The tangent-space Hessian of a strip with
+three forward walls is block-diagonal in the momentum along the wall,
+and its eigenvalues against those of a uniform strip give the classical
+harmonic free energy per wall length, \(F_{\rm w}(T)=\sigma_{\rm f}+Tf_1\).
+Extrapolated in the momentum mesh and the strip length,
+\(f_1=-0.461\pm0.003\) per \(a\) at \(J_{PD}=0\)
+(\(\sigma_{\rm f}=0.01420\) meV/\(a\)) and \(f_1=+0.105\pm0.002\) per
+\(a\) at \(J_{PD}=0.010\) meV (\(\sigma_{\rm f}=0.01100\) meV/\(a\)). At
+\(T=0.015\) meV, near the onset of classical density order, these give
+0.0073 and 0.0126 meV/\(a\). The free wall gains fluctuation entropy;
+the pinned wall removes the phase entropy of the domains on either side
+(inferred). All eigenvalues are positive, so straight walls are stable
+against ripples along the wall at harmonic order. The Hessian agrees
+with finite differences to \(10^{-7}\) relatively; anharmonic and
+quantum terms are not included.
 
 The wall cores are only a few lattice spacings wide. Their structure
 must be resolved microscopically even though the smooth long-wavelength
@@ -1033,8 +1085,10 @@ their harmonic thermal corrections and the matching cutoff are now in
 Section~\nbcpnoteref{Supersolidity criteria and clock RG}{``First matching results''}; the classical core free energy
 depends on how the core position is fixed. Classical walls bind fractional
 windings at their junctions only at \(J_{PD}=0\)
-(Section~\ref{sec-nbcp-y-density-wall}). Quantum core free energies,
-vortex--wall interactions and wall free energies remain uncomputed. A thermal conclusion
+(Section~\ref{sec-nbcp-y-density-wall}), where classical vortex--wall
+energies and the classical harmonic wall free energy are also given: a
+pinned wall repels vortices and a free wall attracts them. Quantum core
+and wall free energies remain uncomputed. A thermal conclusion
 requires density-order observables, transverse correlations, phase
 locking and stiffness on increasing system sizes. The sampled classical
 walls cannot substitute for their constrained free energies at finite
