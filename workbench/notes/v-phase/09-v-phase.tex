@@ -299,8 +299,51 @@ perturbation at the Gaussian line throughout the sixfold window, since
 its eigenvalue \(2-9/(4\pi K)\) is positive for every \(K>2/\pi\). The
 selection rule makes that amplitude linear in \(J_\Gamma\) near the PD
 axis, so the pure-PD sixfold scenario is not protected against a small
-Gamma coupling. Which finite-temperature sequence of phases follows when
-six degenerate minima carry unequal barriers has not been analyzed.
+Gamma coupling.
+
+\textbf{Finite-temperature sequence.} A phase-only model on a square
+lattice of spacing \(a_0=1/\Lambda=10a\), the V matching length of the
+next subsection,
+\[
+E=-J\sum_{\langle ij\rangle}\cos(\phi_i-\phi_j)
+-\sum_i\left[h_6\cos6\phi_i+h_3\sin3\phi_i\right],
+\]
+with \(J=\sqrt{\det\rho}=0.00203\) meV,
+\(h_6=\lambda_6(a_0^2/a_{\rm spin})e^{-D}\),
+\(h_3=4r\lambda_6(a_0^2/a_{\rm spin})e^{-D/4}\),
+\(\lambda_6=1.024\times10^{-5}\) meV and \(D\) the thermal Debye--Waller
+exponent above \(\Lambda\), is simulated with Metropolis updates and
+replica exchange on \(L=16\), 24 and 32
+(\href{../../../examples/nbcp_v_clock_pinning_mc.py}{V clock
+script}). The effective exponent \(\eta\) of
+\(m_1=|\langle e^{\mathrm i\phi}\rangle|\) between \(L=16\) and 32 and the
+helicity modulus \(\Upsilon\) separate an algebraic regime
+(\(1/9\lesssim\eta\lesssim1/4\), \(\Upsilon>2T/\pi\)) from order;
+\(|\langle\cos3\phi\rangle|\) measures the choice between the two minima
+of a pair.
+
+At \(r=0\) an algebraic regime appears for \(T\approx0.0013\)--0.0019 meV
+(\(\eta=0.10\)--0.20), with sixfold order below about 0.0012 meV. At
+\(r=0.05\) (\(J_\Gamma\approx0.0001\) meV) the effective \(\eta\) is
+0.03--0.07 over the same range and falls toward order, so no algebraic
+regime is resolved on these lattices; a narrower one at larger sizes is
+not excluded. The system orders into one of the three pairs below about
+0.0019 meV and selects one minimum of the pair below 0.0009 meV. The
+pair-order temperature rises to 0.0022 meV at \(r=0.5\) and 0.0025 meV at
+\(r\ge1\), where only three minima remain and a single ordering occurs;
+the pair-internal order falls to 0.0003 meV at \(r=0.5\). For \(0<r<1\)
+the sequence is therefore disorder, threefold pair order, then a twofold
+choice within the pair; the universality classes are not determined. In
+this model the algebraic window of the pure-PD axis closes once
+\(J_\Gamma/J_{\rm PD}\gtrsim0.01\). Halving the matching length or scaling
+both amplitudes by 0.3 keeps the \(r=0\) window and the \(r=0.5\) pair
+order. With amplitudes scaled by 3, and for \(r\ge0.5\) generally, hot
+starts do not equilibrate on \(L=32\); the values quoted come from cold
+starts with replica exchange, and the amplitude-3 case is not
+established. Ordering temperatures are resolved to about one temperature
+step (10\%). The inputs are leading order in \(1/S\), \(\lambda_3\) is
+taken at \(T=0\), and the vortex core is that of the lattice XY model,
+not a matched V core.
 
 \subsection{Local gap and missing spatial
 matching}\label{local-gap-and-missing-spatial-matching}
