@@ -1,0 +1,127 @@
+\clearpage
+
+\section{Characterization of Magnetic Phases}\label{sec-nbcp-phase-characterization}
+
+\subsection{Y, UUD, V and the polarized
+state}\label{y-uud-v-and-the-polarized-state}
+
+At common azimuth \(\phi=0\), the following signed-angle definitions fix
+the states independently of historical names:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+State
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((\vartheta_A,\vartheta_B,\vartheta_C)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Characteristic structure
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+State
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((\vartheta_A,\vartheta_B,\vartheta_C)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Characteristic structure
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\caption{Signed-angle definitions of the three-sublattice reference states.}\label{tab-nbcp-03-phase-diagram-2}\\
+\endlastfoot
+Y & \((t,-t,\pi)\) & Opposite transverse components; one spin
+antiparallel to the field \\
+UUD & \((0,0,\pi)\) & Two up spins and one down spin; \(m_z=S/3\) \\
+V & \((t,t,v)\) & Two equal canted spins; the third has the opposite
+transverse direction \\
+P & \((0,0,0)\) & All spins parallel to the field; \(m_z=S\) \\
+\end{longtable}
+
+For Y, substituting \(c=\cos t\) into Eq.~\ref{eq-nbcp-three-energy}
+gives
+
+\begin{equation}\phantomsection\label{eq-nbcp-y-energy}{
+e_Y=S^2[-J+(J+J_z)c^2-2J_zc]-\frac{hS}{3}(2c-1),
+\qquad c=\frac{h+3SJ_z}{3S(J+J_z)}.
+}\end{equation}
+
+Its merger with UUD occurs at \(c=1\). The collinear energies are
+\(e_{\rm UUD}=-S^2J_z-hS/3\) and \(e_P=3S^2J_z-hS\). Their crossing
+alone does not locate the intervening canted phase.
+
+For the V family, the energy and two independent stationarity conditions
+are
+
+\begin{equation}\phantomsection\label{eq-nbcp-v-stationarity}{
+\begin{aligned}
+e_V={}&S^2\left[J(\sin^2t+2\sin t\sin v)
++J_z(\cos^2t+2\cos t\cos v)\right]
+-\frac{hS}{3}(2\cos t+\cos v),\\
+0={}&J\cos t(\sin t+\sin v)-J_z\sin t(\cos t+\cos v)
++\frac{h}{3S}\sin t,\\
+0={}&2J\sin t\cos v-2J_z\cos t\sin v+\frac{h}{3S}\sin v.
+\end{aligned}
+}\end{equation}
+
+The second and third lines are respectively
+\((\partial_t e_V)/(2S^2)=0\) and \((\partial_v e_V)/S^2=0\). Their
+solutions must also pass a stability check. At \(B=1.4\) T with the
+current gap parameters, the selected classical branch has
+\((t,t,v)=(0.409364861,0.409364861,-1.223629194)\) rad.
+
+The original {\small\texttt{\nolinkurl{Three_MSL.tex}}} calls a family
+with two equal canted spins a ``Gamma phase.'' Its normalized vectors
+are
+
+\[
+\mathbf n_A=\mathbf n_B=(-\sin t,0,\cos t),
+\qquad \mathbf n_C=(\sin\psi,0,-\cos\psi).
+\]
+
+A common \(R_z(\pi)\) rotation maps this family to V above with
+\(v=\psi-\pi\). This is a geometric identification of the reference
+families; at nonzero \(J_\Gamma\), that spin-only rotation is not a
+symmetry of the full Hamiltonian. The old ``V'' ansatz instead assigns
+opposite transverse components to A and B. Its restricted extrema must
+not be substituted for the V solution above or identified with the
+paper's \(\Psi\) phase merely by renaming.
+
+\subsection{Competing magnetic cells and quantum
+results}\label{competing-magnetic-cells-and-quantum-results}
+
+The source notebook contains a two-sublattice stripe energy and a
+four-sublattice variational construction. These are essential
+competitors because they retain the anisotropic bond contributions that
+cancel in the three-sublattice energy. For a stripe whose
+same-sublattice bonds lie along \(\pm\boldsymbol\delta_1\), with
+\(\mathsf J_d\) the bond matrix of Eq.~\eqref{eq-nbcp-bond-matrix} for the
+family \(\pm\boldsymbol\delta_d\), the bond count gives
+
+\begin{equation}\phantomsection\label{eq-nbcp-stripe-energy}{
+E^{(2)}_{\rm cell}=\mathbf S_A^{\mathsf T}\mathsf J_1\mathbf S_A
++\mathbf S_B^{\mathsf T}\mathsf J_1\mathbf S_B
++2\mathbf S_A^{\mathsf T}(\mathsf J_2+\mathsf J_3)\mathbf S_B
+-h(S_A^z+S_B^z).
+}\end{equation}
+
+Comparison with a three-sublattice state requires
+\(E^{(2)}_{\rm cell}/2\) and \(E^{(3)}_{\rm cell}/3\). A stationary
+point found in a fixed spin plane still requires fluctuations outside
+that plane and at finite momentum to be checked. In particular, an
+exactly in-plane stripe at \(h\ne0\) experiences a linear Zeeman torque;
+a field-independent Hessian evaluated there does not prove finite-field
+stability.
+
+The target paper reports Y, UUD, V, \(\Psi\) and P at zero
+bond-dependent SOC, and stripe and four-site SkX orders as SOC grows.
+Its phase map uses iDMRG cylinders, while the reported \(\Psi\) state is
+not a stable LSWT reference. These results motivate the competitor list;
+their phase boundaries and finite-circumference convergence have not
+been independently reproduced here. See
+Park et al., Section II~\cite{park2026}.

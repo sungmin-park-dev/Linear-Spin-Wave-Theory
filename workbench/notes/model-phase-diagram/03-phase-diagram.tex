@@ -1,0 +1,145 @@
+\clearpage
+
+\section{Phase Diagram}\label{sec-nbcp-phases}
+
+The classical three-sublattice analysis supplies reference branches and
+local boundaries. A phase diagram requires comparison with other
+magnetic cells and the relevant quantum energies. The distinction is
+maintained below: a stable magnon spectrum is a local test, while the
+lowest energy among an incomplete set of candidate states need not
+identify the global ground state.
+
+\subsection{Classical phase diagram}\label{sec-nbcp-classical-phases}
+
+\subsubsection{Three-sublattice classical
+energy}\label{three-sublattice-classical-energy}
+
+Let \(\mathbf n_\alpha=\mathbf S_\alpha/S\), with \(\alpha=A,B,C\),
+specify a uniform three-sublattice configuration. Each pair of
+sublattices is connected by all three bond orientations. Since
+\(\sum_d\mathsf J_d=3\operatorname{diag}(J,J,J_z)\), its classical
+energy per physical spin reduces to
+
+\begin{equation}\phantomsection\label{eq-nbcp-three-energy}{
+e_{\rm cl}=S^2\sum_{(\alpha\beta)=(AB),(BC),(CA)}
+\left[J\sin\vartheta_\alpha\sin\vartheta_\beta
+\cos(\phi_\alpha-\phi_\beta)
++J_z\cos\vartheta_\alpha\cos\vartheta_\beta\right]
+-\frac{hS}{3}\sum_\alpha\cos\vartheta_\alpha.
+}\end{equation}
+
+Here \(\vartheta\) may be signed, with
+\(\mathbf n=(\sin\vartheta\cos\phi,\sin\vartheta\sin\phi,\cos\vartheta)\).
+Negative \(\vartheta\) is a coordinate choice, equivalent to a positive
+polar angle and an azimuth shifted by \(\pi\).
+
+The SOC contributions cancel in this restricted classical energy. They
+do not disappear from the operator Hamiltonian, from finite-momentum
+fluctuations, or from states with other magnetic unit cells. In
+particular, the cancellation does not establish SOC-independent global
+phase boundaries.
+
+\subsubsection{Classical reference fields and their stability
+meaning}\label{classical-reference-fields-and-their-stability-meaning}
+
+The UUD stability matrix can be derived in regular Cartesian coordinates
+at the collinear poles. Put
+\(\mathbf S_A=(\sqrt S x_A,\sqrt S y_A,S-(x_A^2+y_A^2)/2)\) and
+similarly for B; for C replace the last component by
+\(-S+(x_C^2+y_C^2)/2\). To quadratic order,
+\(\delta e=(\mathbf x^{\mathsf T}M\mathbf x+\mathbf y^{\mathsf T}M\mathbf y)/2\),
+where
+
+\begin{equation}\phantomsection\label{eq-nbcp-uud-hessian}{
+M=\begin{pmatrix}
+h/3&JS&JS\\
+JS&h/3&JS\\
+JS&JS&2J_zS-h/3
+\end{pmatrix}.
+}\end{equation}
+
+The antisymmetric A/B eigenvector has eigenvalue \(h/3-JS\). The
+symmetric A/B sector and C reduce to a \(2\times2\) matrix with diagonal
+entries \(h/3+JS\) and \(2J_zS-h/3\), and off-diagonal entry
+\(\sqrt2JS\). Setting the lower eigenvalue to zero gives the upper UUD
+boundary. At P, the diagonal entries become \(h/3-2J_zS\), giving the
+saturation boundary. For \(J_z>J>0\) the three reference fields are
+
+\begin{equation}\phantomsection\label{eq-nbcp-critical-fields}{
+\begin{aligned}
+h_{c1}&=3SJ,\\
+h_{c2}&=3S\left[J_z-\frac J2+
+\sqrt{J_z^2+J_zJ-\frac74J^2}\right],\\
+h_{c3}&=3S(J+2J_z),\qquad B_{ci}=h_{ci}/(g_z\mu_B).
+\end{aligned}
+}\end{equation}
+
+These are the classical XXZ reference boundaries and uniform
+three-sublattice softening conditions. Quantum corrections, other
+ordering wave vectors and SOC-driven competitors require separate
+calculations.
+
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+\(J\) (meV)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((h_{c1},h_{c2},h_{c3})\) (meV)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((B_{c1},B_{c2},B_{c3})\) (T)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+\(J\) (meV)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((h_{c1},h_{c2},h_{c3})\) (meV)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\((B_{c1},B_{c2},B_{c3})\) (T)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\caption{Classical three-sublattice reference fields for the stated exchange parameters; the starred row is the literature set.}\label{tab-nbcp-03-phase-diagram-1}\\
+\endlastfoot
+0.075 & (0.112500, 0.315916, 0.487500) & (0.418417, 1.174976,
+1.813142) \\
+0.076 & (0.114000, 0.314316, 0.489000) & (0.423996, 1.169024,
+1.818721) \\
+0.0779\(^{\ast}\) & (0.116850, 0.302359, 0.484350) & (0.428053, 1.107621,
+1.774305) \\
+\end{longtable}
+
+The first two rows use \(J_z=0.125\) meV and \(g_z=4.645\). The starred
+row is the literature set of Woodland et al.~\cite{woodland2025}, Table~1,
+with \(J_z=0.1225\) meV and \(g_c=4.716\); there \(J\) is their
+\(J_{xy}\), the coefficient of \(\hat S^x\hat S^x+\hat S^y\hat S^y\).
+All rows use \(S=1/2\) and
+\(\mu_B=0.05788381806\) meV/T. The older notes also quote
+\((0.1005,0.3278,0.4755)\) meV while specifying \(J=0.076\) meV. Those
+numbers are not evaluations of Eq.~\ref{eq-nbcp-critical-fields} at the
+stated inputs and are not used here. The present reference fields were
+recalculated; the archived phase scans were not rerun.
+
+\subsection{Quantum corrections: zero-point
+energy}\label{sec-nbcp-phase-quantum-correction}
+
+At harmonic order, the comparison adds the spin-wave vacuum energy to
+the classical energy for each admissible reference state. The positive
+physical magnon bands and the normal-ordering trace constant must both
+be included, and all candidate energies must use the same per-spin
+normalization and Brillouin-zone convention. An unstable quadratic
+background cannot be assigned a physical harmonic vacuum energy by
+discarding its unstable modes.
+
+The existing calculations resolve the vacuum-energy dependence along
+selected Y/V angular orbits; they do not reoptimize and compare all
+candidate phases across the model's parameter space. Consequently, the
+classical reference fields are not promoted to quantum-corrected phase
+boundaries. The local angular selection and its pseudo-Goldstone gap are
+treated in Section~\nbcpnoteref{Y/V low energy and pseudo-Goldstone gap}{``Y and V Phases: Symmetry and Low-Energy Theory''}; numerical quadrature
+and convergence are recorded in Section~\nbcpnoteref{Numerical verification and provenance}{``Numerical convergence''}.

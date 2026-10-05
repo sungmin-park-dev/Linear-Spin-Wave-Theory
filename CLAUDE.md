@@ -87,7 +87,7 @@ project-root/
 │
 ├── legacy/                      # 원본 legacy 코드 아카이브
 ├── data-space/                  # 검토하고 정돈한 결과 데이터
-└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md (NBCP 내용 원본은 docs/nbcp/main.tex)
+└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md, 연구노트 notes/ (2026-10-05부터 NBCP 내용 원본; docs/nbcp/는 그날 상태로 보존)
 ```
 
 ---
@@ -109,7 +109,7 @@ Markdown 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents
 
 상세 source inventory와 원문 section-to-docs 대응은 `docs/lswt/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 `docs/lswt/` Markdown owner에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
 
-NBCP 연구는 [2026-09-18 결정](GOVERNMENT/Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 여기서 포함하는 `chapters/`, `appendices/`, `references.tex`를 유일한 내용 편집 원본으로 사용한다. `preamble.tex`는 공통 서식, `metadata.tex`는 제목·날짜와 검토 상태를 관리한다. 본문은 TeX에서 직접 수정하며 semantic label과 참조를 유지한다. `examples/nbcp_research_export.py`가 XeLaTeX로 `docs/nbcp/output/`에 PDF와 생성 기록만 저장하고, 빌드 중간 파일은 임시 폴더에서 처리한다. 기존 `research-note.md`는 안내만 제공하며 이전 Markdown·변환기는 날짜가 붙은 archive로 보존한다. 이 NBCP 한정 결정은 LSWT 일반 이론의 Markdown 정본 원칙이나 물리·수학 검토 상태를 바꾸지 않는다. 참고자료·navigation·archive·output은 내용 편집 원본이 아니다.
+NBCP 연구는 [2026-09-18 결정](GOVERNMENT/Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 여기서 포함하는 `chapters/`, `appendices/`, `references.tex`를 내용 편집 원본으로 사용했다. [2026-10-05 결정](GOVERNMENT/Court-Precedents/2026-10-05-nbcp-research-notes.md)에 따라 원고는 그날 상태로 보존하고 더 고치지 않으며, 그 내용을 복제한 `workbench/notes/`의 연구노트 8개가 이후 NBCP 내용의 편집 원본이다(본문만 두고 머리는 앱 서식 `research-note`와 `workbench/macros.tex`가 붙인다). `preamble.tex`는 공통 서식, `metadata.tex`는 제목·날짜와 검토 상태를 관리한다. 본문은 TeX에서 직접 수정하며 semantic label과 참조를 유지한다. `examples/nbcp_research_export.py`가 XeLaTeX로 `docs/nbcp/output/`에 PDF와 생성 기록만 저장하고, 빌드 중간 파일은 임시 폴더에서 처리한다. 기존 `research-note.md`는 안내만 제공하며 이전 Markdown·변환기는 날짜가 붙은 archive로 보존한다. 이 NBCP 한정 결정은 LSWT 일반 이론의 Markdown 정본 원칙이나 물리·수학 검토 상태를 바꾸지 않는다. 참고자료·navigation·archive·output은 내용 편집 원본이 아니다.
 
 ---
 

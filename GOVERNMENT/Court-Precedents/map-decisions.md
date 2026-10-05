@@ -25,6 +25,7 @@ LSWT 프로젝트의 결정 기록과 판례 레이어.
 | [[GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface\|2026-08-09-lswt-docs-authoring-surface]] | `docs/` 작성 위치와 source 보관 경로를 반영하는 후속 결정 | accepted |
 
 | [2026-09-18-nbcp-latex-source-authority](2026-09-18-nbcp-latex-source-authority.md) | NBCP 한정 LaTeX 편집 원본과 PDF 생성 경계 | accepted; 작성 형식 결정 |
+| [2026-10-05-nbcp-research-notes](2026-10-05-nbcp-research-notes.md) | NBCP 원고 보존, 이후 내용 원본은 `workbench/notes/` 연구노트 | accepted; 2026-09-18 결정 1항 대체 |
 
 ## 에이전트 지침
 

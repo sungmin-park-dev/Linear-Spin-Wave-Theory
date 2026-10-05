@@ -2,7 +2,7 @@
 
 Claude 프로젝트 공유 폴더(`/mnt/project-files/`)에만 있던 2026-10-01–02 검토·계획 문서를 저장소로 옮긴 사본이다. research-workspace 앱(연구 작업대)이 `workbench/research.yaml`의 `sources.materials`로 이 폴더를 자료로 보여 준다.
 
-- 과정 기록이며 정본이 아니다. NBCP 내용 원본은 `docs/nbcp/main.tex`, LSWT 이론 정본은 `docs/lswt/` Markdown이다.
+- 과정 기록이며 정본이 아니다. NBCP 내용 원본은 `workbench/notes/` 연구노트(2026-10-05부터, `docs/nbcp/main.tex`는 그날 상태로 보존), LSWT 이론 정본은 `docs/lswt/` Markdown이다.
 - 문서 안의 `/mnt/project-files/...` 경로는 원래 위치다. 옮긴 사본의 위치는 아래 표를 따른다.
 
 | 파일 | 내용 | 원래 위치 |

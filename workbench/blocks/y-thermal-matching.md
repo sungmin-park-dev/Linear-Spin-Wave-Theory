@@ -9,4 +9,4 @@ grounds: docs/nbcp/chapters/08-y-phase.tex (tab-nbcp-07-y-phase-6 뒤 문단)
 grounds: docs/nbcp/chapters/07-supersolidity.tex (cutoff 해결, 2026-10-02)
 ---
 
-<!-- 결론은 이 노트가 아니라 docs/nbcp/ 해당 장에 옮겨 적는다 (NBCP 원본은 main.tex) -->
+<!-- 결론은 이 노트가 아니라 연구노트 workbench/notes/supersolidity-clock-rg/에 옮겨 적는다 (2026-10-05부터 NBCP 원본은 연구노트) -->

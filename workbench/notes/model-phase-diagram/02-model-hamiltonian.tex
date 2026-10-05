@@ -1,0 +1,115 @@
+\clearpage
+
+\section{Model Hamiltonian}\label{sec-nbcp-model-hamiltonian}
+
+\subsection{Model}\label{sec-nbcp-model-symmetries}
+
+We consider a spin-\(1/2\) model with nearest-neighbor bilinear exchange
+on a two-dimensional triangular lattice, following
+Park et al.~\cite{park2026}. NBCP has space group
+\(P\overline{3}m1\); the corresponding point group \(\mathsf D_{3d}\),
+together with the bond symmetries, permits four exchange coefficients:
+\(J\), \(J_z\), \(J_{\rm PD}\) and \(J_\Gamma\).
+The effective-spin description and the exchange-matrix derivation are
+collected in Appendix~\ref{app-nbcp-model-derivation}.
+
+With \(z\parallel c\) perpendicular to the layer, the Hamiltonian is
+\begin{equation}\label{eq-nbcp-model-decomposition}
+H_{\rm tot}=H_{\rm XXZ}+H_{\rm PD}+H_\Gamma,
+\end{equation}
+where
+\begin{align*}
+H_{\rm XXZ}&=\sum_{\langle ij\rangle}
+\left[J\left(\hat S_i^x\hat S_j^x+\hat S_i^y\hat S_j^y\right)
++J_z\hat S_i^z\hat S_j^z\right]-h\sum_i\hat S_i^z,\\
+H_{\rm PD}&=2J_{\rm PD}\sum_{\langle ij\rangle}
+\left([\hat S^x,\hat S^y]_{ij}\cos\varphi_{ij}
+-\{\hat S^x,\hat S^y\}_{ij}\sin\varphi_{ij}\right),\\
+H_\Gamma&=J_\Gamma\sum_{\langle ij\rangle}
+\left(\{\hat S^y,\hat S^z\}_{ij}\cos\varphi_{ij}
+-\{\hat S^x,\hat S^z\}_{ij}\sin\varphi_{ij}\right).
+\end{align*}
+Here \(\langle ij\rangle\) counts each nearest-neighbor pair once, and
+\(h=g_z\mu_B B\) is the Zeeman energy for \(B\parallel z\).
+Following the paper, we use the bond-bilinear abbreviations
+\begin{align*}
+[\hat S^\alpha,\hat S^\beta]_{ij}
+&\equiv\hat S_i^\alpha\hat S_j^\alpha-\hat S_i^\beta\hat S_j^\beta,\\
+\{\hat S^\alpha,\hat S^\beta\}_{ij}
+&\equiv\hat S_i^\alpha\hat S_j^\beta+\hat S_i^\beta\hat S_j^\alpha.
+\end{align*}
+The square bracket here is not a commutator. The bond phase
+\(\varphi_{ij}=0,\pm2\pi/3\) labels the three unoriented bond families
+in Fig.~\ref{fig-nbcp-bond-phases}; reversing a bond leaves its phase unchanged.
+
+\begin{figure}[H]
+\centering
+\includegraphics{figures/bond-phases.pdf}
+\caption{Triangular lattice with nearest-neighbor vectors
+\(\boldsymbol\delta_1\), \(\boldsymbol\delta_2\), \(\boldsymbol\delta_3\).
+The bond phase is \(\varphi=0\) for \(\pm\boldsymbol\delta_1\) (teal),
+\(+2\pi/3\) for \(\pm\boldsymbol\delta_2\) (orange) and \(-2\pi/3\) for
+\(\pm\boldsymbol\delta_3\) (purple); opposite bonds share a phase.
+\(\boldsymbol\delta_1\parallel x\), and the dot-in-circle marks
+\(z\parallel c\), along the field \(B\).}
+\label{fig-nbcp-bond-phases}
+\end{figure}
+
+\newpage
+\subsection{Symmetries}\label{sec-nbcp-model-symmetry-properties}
+
+The three terms in Eq.~\eqref{eq-nbcp-model-decomposition} have distinct
+symmetries~\cite{park2026}:
+\begin{itemize}
+\item \textbf{(Point group)} The field $h\neq0$ reduces the point
+group from $\mathsf D_{3d}$ to $\mathsf S_6$, a sixfold rotation
+followed by reflection in the layer.
+\item \textbf{(Combined $\mathsf S_6$)} $H_{\rm PD}$ and $H_\Gamma$
+break the global spin-$z$ U(1) symmetry of $H_{\rm XXZ}$.
+$\mathsf S_6$ survives, but only as a combined operation on lattice
+sites and spins:
+\begin{equation}\label{eq-nbcp-s6-transform}
+S_6:\quad
+\hat S_j^x\pm i\hat S_j^y\longrightarrow
+ e^{\mp i2\pi/3}(\hat S_{j'}^x\pm i\hat S_{j'}^y),
+\qquad \hat S_j^z\longrightarrow\hat S_{j'}^z,
+\end{equation}
+with $j'$ the transformed site. Unlike U(1), $\mathsf S_6$ is not a
+spin rotation at fixed sites, so it only constrains the discrete angular
+pinning of Section~\nbcpnoteref{Y/V low energy and pseudo-Goldstone gap}{``From a classical orbit to quantum pinning''}.
+Its effective shift of the common angle depends on how the operation
+permutes the sublattices of a given state: \(\pi/3\) for Y
+(Section~\nbcpnoteref{Y phase supersolidity}{``What the SOC Y results establish about clock RG''}) and \(2\pi/3\) for V
+(Section~\nbcpnoteref{V phase supersolidity}{``The extra symmetry at zero Gamma coupling''}).
+\item \textbf{($\pi$-rotation)} A global spin rotation
+$U_\pi=\exp(-i\pi\sum_j\hat S_j^z)$ leaves $H_{\rm PD}$ invariant but
+sends $H_\Gamma\to-H_\Gamma$: nonzero $J_\Gamma$ removes the extra
+$\pi$-rotation symmetry that the XXZ+PD model retains.
+\item \textbf{(Antiunitary $C_2'\mathcal T$)} A twofold rotation about
+an in-plane bond axis reverses the longitudinal field, and time reversal
+restores it. Their product therefore survives in a field along $c$. For
+the bond-1 axis (model $x$ axis) it maps a site at $(x,y)$ to $(x,-y)$,
+keeps each three-sublattice label and sends
+$\hat{\mathbf S}_j\to\operatorname{diag}(-1,1,1)\hat{\mathbf S}_{j'}$, so a
+common azimuth $\phi$ goes to $\pi-\phi$ at fixed polar angles. Each
+bond matrix obeys $RJ_dR^{\mathsf T}=J_{d'}$ with
+$R=\operatorname{diag}(1,-1,-1)$ for PD and $\Gamma$ of either sign.
+Section~\nbcpnoteref{V phase supersolidity}{``Higher harmonics and threefold pinning near the PD axis''} uses it.
+\end{itemize}
+
+\subsection{Parameters and conventions}\label{sec-nbcp-model-parameters}
+
+For the Y/V gap comparison we use
+\(J=0.075\,\mathrm{meV}\), \(J_z=0.125\,\mathrm{meV}\) and
+\(g_z=4.645\), following Fig.~4 of Park et al.~\cite{park2026}, so
+that the gaps can be compared with that figure. The neutron fit of
+Woodland et al.~\cite{woodland2025} gives the nearby literature values
+\(J=0.0779\) meV, \(J_z=0.1225\) meV and \(g_c=4.716\); its classical
+reference fields are listed in Section~\ref{sec-nbcp-classical-phases}.
+The bond-dependent couplings and field are specified for each calculation.
+Spin operators are dimensionless; exchange constants, \(h\) and gaps
+are in meV, and \(e\) denotes energy per physical spin.
+The exchange-model limit \(J_{\rm PD}=J_\Gamma=0\) does not remove the
+atomic SOC that forms the effective doublet.
+Historical parameter sets and the \(J=2J_\pm\) convention are given in
+Appendix~\ref{app-nbcp-model-derivation}.

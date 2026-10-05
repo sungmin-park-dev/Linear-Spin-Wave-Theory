@@ -1,0 +1,4 @@
+name: NBCP model and phase diagram
+from: docs/nbcp/main.tex
+summary: The nearest-neighbour effective-spin Hamiltonian of NBCP, its symmetries
+  and parameters, and the classical and harmonic phase diagram.

@@ -1,0 +1,39 @@
+% Project macros for the research notes in workbench/notes/ (research-workspace inputs this file
+% after the LaTeX template "research-note"). They carry the definitions of docs/nbcp/preamble.tex
+% that the notes duplicated from the NBCP manuscript on 2026-10-05 still use.
+
+% Reference to a place in another research note (the notes are compiled separately)
+\providecommand{\nbcpnoteref}[2]{#2 in research note \emph{#1}}
+
+% Image scaling used by the figure environments
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\nbcp@box
+\providecommand*\nbcpbounded[1]{%
+  \sbox\nbcp@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\nbcp@box+\dp\nbcp@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\nbcp@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\nbcp@box}%
+  \else\usebox{\nbcp@box}%
+  \fi
+}
+\makeatother
+
+% Shaded code listings (numerical-verification note)
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},breaklines=true,fontsize=\footnotesize}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\providecommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\providecommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\providecommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\providecommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\providecommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\providecommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+
+% Boxed summaries and compact lists
+\usepackage{tcolorbox}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}

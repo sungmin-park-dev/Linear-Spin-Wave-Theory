@@ -10,4 +10,4 @@ grounds: docs/nbcp/chapters/10-discussion.tex, issue-notes/open/260810-pseudo-go
 grounds: docs/nbcp/appendices/a-pseudo-goldstone-gap.tex
 ---
 
-<!-- 결론은 이 노트가 아니라 docs/nbcp/ 해당 장에 옮겨 적는다 (NBCP 원본은 main.tex) -->
+<!-- 결론은 이 노트가 아니라 연구노트 workbench/notes/pseudo-goldstone-gap/에 옮겨 적는다 (2026-10-05부터 NBCP 원본은 연구노트) -->

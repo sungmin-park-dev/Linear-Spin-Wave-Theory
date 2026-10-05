@@ -11,4 +11,4 @@ grounds: "docs/nbcp/appendices/a-pseudo-goldstone-gap.tex (PR #20, #22)"
 
 검증: tadpole을 넣은 1-loop가 Δ² = C_φ/χ_z와 0.1–0.4% 일치 (data-space/verification/261001-gap-validity/)
 
-<!-- 결론은 이 노트가 아니라 docs/nbcp/ 해당 장에 옮겨 적는다 (NBCP 원본은 main.tex) -->
+<!-- 결론은 이 노트가 아니라 연구노트 workbench/notes/pseudo-goldstone-gap/에 옮겨 적는다 (2026-10-05부터 NBCP 원본은 연구노트) -->
