@@ -1,0 +1,4 @@
+name: Y/V low energy and pseudo-Goldstone gap
+from: docs/nbcp/main.tex
+summary: Accidental classical orbit of the Y and V states, its quantum angular pinning,
+  and the pseudo-Goldstone gap Delta^2 = C_phi/chi_z with its validity checks.

@@ -13,4 +13,4 @@ grounds: docs/nbcp/appendices/a-pseudo-goldstone-gap.tex
 
 출처: GOVERNMENT/Working-Pad/project-review/2026-10-01-park2026-gap-analysis.md §Fig. 4(b) provenance check
 
-<!-- 결론은 이 노트가 아니라 docs/nbcp/ 해당 장에 옮겨 적는다 (NBCP 원본은 main.tex) -->
+<!-- 결론은 이 노트가 아니라 연구노트 workbench/notes/pseudo-goldstone-gap/에 옮겨 적는다 (2026-10-05부터 NBCP 원본은 연구노트) -->

@@ -2,12 +2,14 @@ title: NBCP spin supersolid
 question: NBCP의 Y·V 상이 유한온도에서 spin supersolid인지, vortex와 thermal matching으로 판정한다
 started: 2026-09-30
 agent-status: true
+latex-template: research-note
 sources:
   manuscript:
     - docs/nbcp/main.tex — Spin Supersolidity in Na₂BaCo(PO₄)₂
     - docs/development/main.tex — Spin Wave Theory
   canon:
-    - docs/nbcp/main.tex — NBCP 연구 원고 (내용 원본, chapters/·appendices/ 포함)
+    - workbench/notes — NBCP 연구노트 8개 (2026-10-05부터 내용 원본)
+    - docs/nbcp/main.tex — NBCP 연구 원고 (2026-10-05 상태로 보존, 더 고치지 않음)
     - docs/lswt — LSWT 일반 이론 Markdown 정본 (사용자 승인 본문만)
     - docs/development/main.tex — 패키지 개발 설계와 결정 기록 D01–D45 (Beamer)
   tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md

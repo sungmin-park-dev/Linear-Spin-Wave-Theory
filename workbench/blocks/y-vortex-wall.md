@@ -8,4 +8,4 @@ grounds: docs/nbcp/chapters/10-discussion.tex (다음 계산), 08-y-phase.tex §
 grounds: docs/nbcp/chapters/07-supersolidity.tex (고전 vortex core·쌍, 2026-10-02)
 ---
 
-<!-- 결론은 이 노트가 아니라 docs/nbcp/ 해당 장에 옮겨 적는다 (NBCP 원본은 main.tex) -->
+<!-- 결론은 이 노트가 아니라 연구노트 workbench/notes/y-phase/에 옮겨 적는다 (2026-10-05부터 NBCP 원본은 연구노트) -->

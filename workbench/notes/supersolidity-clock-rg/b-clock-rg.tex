@@ -1,0 +1,247 @@
+\clearpage
+
+\section{Clock RG: Derivation and
+Normalization}\label{sec-nbcp-clock-rg}
+
+The clock criterion concerns a two-dimensional thermal phase field after
+short-distance and nonzero-frequency fluctuations have been integrated
+out. It is not an RG equation for the zero-temperature magnon energy.
+The assumptions are a stable density-ordered background, a compact phase
+\(\phi\equiv\phi+2\pi\), a positive spatial stiffness, weak clock
+pinning and dilute integer vortices. Within these assumptions, the
+sixfold perturbation can be irrelevant while vortices remain bound, as
+in the planar-model analysis of
+José et al.~(1977)~\cite{jose1977}. The
+derivation below fixes the field, area and fugacity normalizations used
+here.
+
+\textbf{Static normalization and constant spatial anisotropy.} Let
+\(\mathcal T=k_{\rm B}T\), let \(a_0\) be the matching cutoff of the
+phase theory, and take a phase-independent positive symmetric tensor
+\(\rho\). The nearest-neighbor distance \(a\), area per spin
+\(a_{\rm spin}\) and matching cutoff \(a_0\) are distinct quantities.
+The static free energy is
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-partition}{
+F=\int d^2r\left[
+\frac12(\nabla\phi)^{\mathsf T}\rho(\nabla\phi)
+-\frac{\lambda_p}{a_{\rm spin}}\cos(p\phi-\delta_p)\right],
+\qquad Z=\int\mathcal D\phi\,e^{-F/\mathcal T}.
+}\end{equation}
+
+Here \(\lambda_p\) is a pinning energy per physical spin at the matching
+scale, and \(p\) is an integer harmonic order, not the shorthand for
+\(J_{\rm PD}\) used in the preceding SOC calculation. To remove constant
+spatial anisotropy, define \(\rho_{\rm eff}=\sqrt{\det\rho}\) and make
+the area-preserving change of coordinates
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-anisotropy-map}{
+\mathbf r=L\mathbf R,\qquad
+L=\frac{\rho^{1/2}}{(\det\rho)^{1/4}},\qquad
+\det L=1,\qquad L^{-1}\rho L^{-\mathsf T}=\rho_{\rm eff}I_2.
+}\end{equation}
+
+Then \(d^2r=d^2R\) and the gradient energy is
+\(\rho_{\rm eff}\int d^2R\,|\nabla_R\phi|^2/2\). For diagonal \(\rho\),
+this means \(x=(\rho_{xx}/\rho_{yy})^{1/4}X\) and
+\(y=(\rho_{yy}/\rho_{xx})^{1/4}Y\). The microscopic cutoff shape changes
+under this transformation, affecting short-distance matching but not the
+Gaussian scaling dimensions. With dimensionless coordinates
+\(\mathbf x=\mathbf R/a_0\),
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-dimensionless-action}{
+\mathcal S_0=\frac K2\int d^2x\,(\nabla\phi)^2,
+\qquad
+\delta\mathcal S=-y_p\int d^2x\,\cos(p\phi-\delta_p),
+\qquad
+K=\frac{\rho_{\rm eff}}{\mathcal T},\quad
+y_p=\frac{a_0^2\lambda_p}{a_{\rm spin}\mathcal T}.
+}\end{equation}
+
+\(\mathcal S=F/\mathcal T\) is dimensionless; it is not the spin length
+\(S\). For an isotropic tensor \(\rho_{\rm eff}=\rho_s\). A tensor that
+depends on \(\phi\) cannot be made constant everywhere by this single
+coordinate transformation; that limitation is relevant to SOC Y below.
+
+\textbf{Gaussian correlation function and scaling dimension.} Use
+\(\phi(\mathbf x)=\int d^2q\,e^{\mathrm i\mathbf q\cdot\mathbf x}\phi_{\mathbf q}/(2\pi)^2\).
+The Gaussian covariance follows by inverting its quadratic kernel:
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-propagator}{
+\mathcal S_0=\frac K2\int\frac{d^2q}{(2\pi)^2}
+q^2\phi_{\mathbf q}\phi_{-\mathbf q},\qquad
+\langle\phi_{\mathbf q}\phi_{\mathbf q'}\rangle_0
+=\frac{(2\pi)^2\delta^{(2)}(\mathbf q+\mathbf q')}{Kq^2}.
+}\end{equation}
+
+The zero mode cancels in the phase difference. With
+\(R=|\mathbf R|\gg a_0\), angular integration gives
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-phase-variance}{
+\begin{aligned}
+W(R)&=\langle[\phi(\mathbf R)-\phi(0)]^2\rangle_0\\
+&=\frac{2}{K}\int^{1/a_0}\frac{d^2q}{(2\pi)^2}
+\frac{1-\cos(\mathbf q\cdot\mathbf R)}{q^2}\\
+&=\frac{1}{\pi K}\int_0^{1/a_0}\frac{dq}{q}[1-J_0(qR)]
+=\frac{1}{\pi K}\ln\frac R{a_0}+O(1).
+\end{aligned}
+}\end{equation}
+
+The last step uses the logarithmic range \(1/R\lesssim q\lesssim1/a_0\);
+the cutoff changes the additive constant. Gaussian averaging of a vertex
+operator now yields
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-vertex-dimension}{
+\begin{aligned}
+\langle e^{\mathrm ip\phi(\mathbf R)}e^{-\mathrm ip\phi(0)}\rangle_0
+&=\exp[-p^2W(R)/2]\propto(R/a_0)^{-p^2/(2\pi K)},\\
+x_p&=\frac{p^2}{4\pi K},\qquad
+\eta=2x_1=\frac{1}{2\pi K}.
+\end{aligned}
+}\end{equation}
+
+An operator of scaling dimension \(x_p\) has a two-point function
+proportional to \(R^{-2x_p}\). The cosine is the sum of charges \(+p\)
+and \(-p\) and has this same dimension. Its phase offset \(\delta_p\)
+does not affect that dimension.
+
+\textbf{Integrating a momentum shell.} Split \(\phi=\phi_<+\phi_>\),
+with the fast modes in \(\Lambda e^{-d\ell}<q<\Lambda\). Their local
+variance is
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-shell-variance}{
+\langle\phi_>^2\rangle_0
+=\frac1K\int_{\Lambda e^{-d\ell}}^\Lambda
+\frac{2\pi q\,dq}{(2\pi)^2q^2}
+=\frac{d\ell}{2\pi K}.
+}\end{equation}
+
+At first order in \(y_p\), average the perturbation over these modes.
+The odd sine average vanishes and the Gaussian cosine average gives
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-shell-cosine}{
+\begin{aligned}
+\langle\cos[p(\phi_<+\phi_>)-\delta_p]\rangle_>
+&=e^{-p^2\langle\phi_>^2\rangle_0/2}
+\cos(p\phi_<-\delta_p)\\
+&=e^{-p^2d\ell/(4\pi K)}\cos(p\phi_<-\delta_p).
+\end{aligned}
+}\end{equation}
+
+Restore the cutoff with \(\mathbf x=e^{d\ell}\mathbf x'\). The measure
+contributes \(e^{2d\ell}\), while the Gaussian gradient action is
+invariant in two dimensions and the compact angle is not rescaled.
+Therefore
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-pinning-flow}{
+y_p'=y_p\exp\left[\left(2-\frac{p^2}{4\pi K}\right)d\ell\right],
+\qquad
+\frac{dy_p}{d\ell}=\left(2-\frac{p^2}{4\pi K}\right)y_p+\cdots.
+}\end{equation}
+
+The two terms have different origins: \(2\) is the area rescaling, and
+\(p^2/(4\pi K)\) is the suppression by fast phase fluctuations. Treating
+\(K\) as constant gives the exponential solution used in the paper. More
+generally, the linearized solution is
+\(y_p(\ell)=y_p(0)\exp\{\int_0^\ell[2-p^2/(4\pi K(\ell'))]d\ell'\}\); it
+is not a fixed exponential once the stiffness flows.
+
+\textbf{Vortex charge and fugacity.} Compactness permits a winding
+\(\oint\nabla\phi\cdot d\mathbf l=2\pi m\), with integer \(m\). Outside
+its core, \(\phi=m\arg(X+\mathrm iY)\) and \(|\nabla\phi|=|m|/R\). Hence
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-vortex-energy}{
+E_m=E_{{\rm core},m}
++\frac{\rho_{\rm eff}}2\int_{a_0}^L2\pi R\,dR\,\frac{m^2}{R^2}
+=E_{{\rm core},m}+\pi\rho_{\rm eff}m^2\ln(L/a_0).
+}\end{equation}
+
+A vortex position contributes a measure \(d^2R/a_0^2\), or entropy
+\(2k_{\rm B}\ln(L/a_0)\) for one defect. Its dimensionless weight
+therefore scales as \(y_m(L/a_0)^{2-\pi Km^2}\), where \(y_m\) includes
+the core weight and its local prefactor. This identifies
+\(x_{v,m}=\pi Km^2\). The isolated-vortex argument extracts the scaling
+dimension; a periodic system has net charge zero and contains neutral
+vortex configurations. For charges \(m=\pm1\) with fugacity \(y_v\) per
+charge,
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-vortex-flow}{
+\frac{dy_v}{d\ell}=(2-\pi K)y_v+\cdots.
+}\end{equation}
+
+Vortices are irrelevant at the Gaussian line only if \(K>2/\pi\). A
+smooth-wave LSWT calculation cannot determine \(y_v\): the vortex core
+involves configurations outside a small-amplitude expansion about one
+uniform state.
+
+\textbf{Why the stiffness also flows.} The preceding eigenvalues are
+exact at the Gaussian line, but keeping \(K\) fixed discards the leading
+feedback of defects. To display its normalization, use normal-ordered
+vertices at the cutoff and a real-space dipole shell
+\(a_0<r<a_0e^{d\ell}\). Each pinning charge in
+\(\exp[y_p\int\cos(p\phi)]\) has fugacity \(y_p/2\). The neutral part of
+the second-order cumulant contributes
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-neutral-dipole}{
+\delta\mathcal S_{\rm neutral}
+=-\frac{y_p^2}{4a_0^4}\int d^2R\int_{\rm shell}d^2r
+\left(\frac{a_0}{r}\right)^{2x_p}
+\cos\!\left[p\left(\phi(\mathbf R+\mathbf r/2)-\phi(\mathbf R-\mathbf r/2)\right)\right].
+}\end{equation}
+
+The constant term changes the free energy. Expanding the phase
+difference as \(\mathbf r\cdot\nabla\phi\) and the cosine as
+\(1-p^2(\mathbf r\cdot\nabla\phi)^2/2\) gives
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-electric-screening}{
+\begin{aligned}
+\int_{\rm shell}d^2r\,r_\mu r_\nu
+\left(\frac{a_0}{r}\right)^{2x_p}
+&=\pi a_0^4\delta_{\mu\nu}\,d\ell+O(d\ell^2),\\
+\delta\mathcal S_{\rm grad}
+&=\frac{\pi p^2y_p^2}{8}d\ell\int d^2R\,|\nabla\phi|^2,
+\qquad
+\left.\frac{dK}{d\ell}\right|_p=\frac{\pi p^2}{4}y_p^2.
+\end{aligned}
+}\end{equation}
+
+Pinning increases \(K\) at this order. The vortex contribution can be
+obtained from the dual Gaussian field \(\theta\). The neutral vortex gas
+has pair weight \(\prod_{i<j}(r_{ij}/a_0)^{2\pi K m_i m_j}\), reproduced
+by the dual action
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-dual-action}{
+\mathcal S_{\rm dual}
+=\frac{K_d}{2}\int d^2R\,|\nabla\theta|^2
+-\frac{2y_v}{a_0^2}\int d^2R\,\cos\theta,
+\qquad K_d=\frac{1}{4\pi^2K}.
+}\end{equation}
+
+Indeed, \(x_{e^{\mathrm i\theta}}=1/(4\pi K_d)=\pi K\). Applying the
+preceding dipole result with \(p=1\) and cosine amplitude \(2y_v\) gives
+\(dK_d/d\ell=\pi y_v^2\), or \(dK^{-1}/d\ell=4\pi^3y_v^2\). The dual
+field is an alternative representation of vortex effects, not an
+additional independent phase field. Combining the leading terms yields,
+in this dipole-fugacity convention,
+
+\begin{equation}\phantomsection\label{eq-nbcp-clock-coupled-flow}{
+\begin{aligned}
+\frac{dy_p}{d\ell}&=\left(2-\frac{p^2}{4\pi K}\right)y_p+\cdots,\\
+\frac{dy_v}{d\ell}&=(2-\pi K)y_v+\cdots,\\
+\frac{dK^{-1}}{d\ell}&=4\pi^3y_v^2-
+\frac{\pi p^2}{4K^2}y_p^2+\cdots.
+\end{aligned}
+}\end{equation}
+
+The quadratic coefficients require the stated fugacity normalization and
+cutoff convention; rescaling either fugacity changes them. The linear
+scaling dimensions and the opposing effects of vortex screening and
+pinning do not depend on that choice. Higher orders generate additional
+harmonics and mixed operators. The displayed equations are a
+dilute-defect, weak-pinning truncation, not a quantitative flow for
+arbitrary SOC.
+
+The algebraic-window inequalities and their physical conditions are
+stated in Section~\ref{sec-nbcp-clock}. They use the stiffness at the
+relevant scale and must not be converted to transition temperatures by
+inserting an unmatched classical coefficient.

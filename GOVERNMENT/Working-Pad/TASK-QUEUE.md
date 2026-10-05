@@ -5,7 +5,7 @@ section: working-pad
 status: in-review
 last-edited-by: claude
 created: 2026-06-03
-updated: 2026-10-03
+updated: 2026-10-05
 ---
 
 # Task Queue
@@ -15,6 +15,8 @@ updated: 2026-10-03
 
 ## 현재 작업
 
+> **2026-10-05:** NBCP 원고를 그날 상태로 보존하고 내용을 `workbench/notes/` 연구노트 8개로 복제했다. 이후 NBCP 내용의 원본은 연구노트다([결정](../Court-Precedents/2026-10-05-nbcp-research-notes.md)). 아래 기록의 "원본은 `docs/nbcp/main.tex`"는 그 전의 상태다.
+>
 > **2026-10-03 현재:** 구현은 끝났고 대부분 항목이 2026-10-02 일괄 검토 안내(`/mnt/project-files/review/2026-10-02-batch-review-guide.md`)의 사용자 검토를 기다린다. 검토 없이 진행할 수 있는 연구 작업은 4번(wall–vortex 결합, 비선형 스핀파)이다.
 >
 > **2026-09-30 재개(사용자 결정):** 같은 날의 전체 멈춤을 풀었다. 하루 연구 시간 5시간을 Emergence EB 대표작 2시간, TN+NQS 1.5시간, LSWT 1.5시간으로 나눈다. NBCP spin supersolid의 열린 유도·계산은 research-workspace 앱에 등록해 `workbench/blocks/`의 블록으로 진행한다(Y vortex·wall → 유한온도 matching → 유한 크기 열적 검증, quantum gradient, V clock·pinning, 전역 경쟁). 블록은 과정 기록이고 NBCP 내용 원본은 `docs/nbcp/main.tex`다. 아래 순위는 그대로 둔다.
