@@ -3,8 +3,12 @@
 The 2026-10-01 harmonic phase diagram
 (`data-space/verification/261001-nbcp-harmonic-phase-diagram/`) compared
 1-, 2-, 3- and 4-site cells; where every candidate was LSWT-unstable the
-cell was left hatched. This script revisits each hatched point, and two
-reference points inside Y and V, with larger commensurate cells:
+cell was left hatched. At further points the lowest classical state of
+those cells was LSWT-unstable but a stable state of higher classical
+energy was ranked first; the classical ground state then lies below an
+unstable state and outside the cells, so these points are undetermined as
+well. This script revisits both kinds of point, and two reference points
+inside Y and V, with larger commensurate cells:
 3 x 3 (9 sites), 2 sqrt3 x 2 sqrt3 (12), 4 x 4 (16), 3 sqrt3 x 3 sqrt3 (27)
 and 6 x 6 (36), besides the original cells.
 
@@ -12,7 +16,11 @@ On each cell the classical minimum is the lowest of random starts and of
 the best states of the smaller cells it contains (tiled), all refined with
 `refine_classical`, so a larger cell can only lower the energy. The lowest
 state over all cells is then tested for LSWT stability with
-`compare_states` (mesh density 18, as before). If its classical energy is
+`compare_states` (mesh density 18, as before). A state that fails there is
+tested again with mesh density 19: an isolated zero mode that the first
+mesh hits exactly (the 2-site stripe has one at a zone-boundary momentum)
+is avoided by the other mesh, while a negative mode remains on both, so a
+state counts as unstable only if it fails on both meshes. If its classical energy is
 flat under a common rotation about z, twelve rotation angles in [0, pi/3)
 are tested and the stable angle of lowest zero-point energy is kept, as for
 the three-site states. The state is described by its cell, magnetization,
@@ -23,7 +31,15 @@ Classical energies and harmonic stability only; cells up to 36 sites; an
 incommensurate modulation is detected only through its commensurate
 approximants.
 
-Run from the repository root (about 30 minutes on four cores):
+Boundary check: the scan points next to those points (one step in J or h
+on the same axis) are searched in the same way. Wherever the answer
+changes, the neighbours of that point are searched as well, until no new
+point changes, so the edge of a region found here is located on the scan
+grid. The answer changes if a larger cell lowers the 2026-10-01 classical
+minimum by more than GAIN_TOL, or if the lowest classical state is
+LSWT-unstable.
+
+Run from the repository root (about 75 minutes on four cores):
     python examples/nbcp_hatched_region_search.py
 """
 
@@ -61,7 +77,10 @@ CONTAINS = {'4': ['2'], '9': ['3'], '12': ['2', '3', '4'], '16': ['2', '4'], '27
             '36': ['2', '3', '4', '9', '12']}
 STARTS = 12
 K_DENSITY = 18
+K_DENSITY_RETRY = 19                         # other parity: avoids momenta the first mesh hits exactly
 N_PHI = 12
+GAIN_TOL = 1e-6                              # meV per site: a lower state than the 2026-10-01 cells
+SCAN_FILES = ('scan-J0-0.03.json', 'scan-JGamma-0.035-0.10.json', 'scan-JPD-0.035-0.10.json')
 Y_FIELD = 4.645 * 0.05788381806 * 0.2       # 0.2 T as Zeeman energy, meV
 V_FIELD = 4.645 * 0.05788381806 * 1.4       # 1.4 T
 
@@ -70,15 +89,35 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def hatched_points():
-    points = []
-    for name in ('scan-J0-0.03.json', 'scan-JGamma-0.035-0.10.json', 'scan-JPD-0.035-0.10.json'):
+def scan_grid():
+    """The 2026-10-01 scan points with h > 0, keyed by (axis, J, h)."""
+    grid = {}
+    for name in SCAN_FILES:
         for p in json.loads((SCANS / name).read_text())['points']:
-            if p['h'] > 0 and p['harmonic_winner'] is None:
-                best = min(p['candidates'], key=lambda c: c['classical'])
-                points.append({'axis': p['axis'], 'J': p['J'], 'h': p['h'], 'kind': 'hatched',
-                               'old_classical_winner': p['classical_winner'], 'old_classical_energy': best['classical']})
-    return points
+            if p['h'] > 0:
+                grid[(p['axis'], p['J'], p['h'])] = p
+    return grid
+
+
+def as_point(p, kind):
+    best = min(p['candidates'], key=lambda c: c['classical'])
+    won = p['harmonic_winner']
+    winner = best if won is None else next(c for c in p['candidates']
+                                           if (c['label'], c['cell']) == (won['label'], won['cell']))
+    return {'axis': p['axis'], 'J': p['J'], 'h': p['h'], 'kind': kind,
+            'old_classical_winner': p['classical_winner'], 'old_harmonic_winner': won,
+            'old_classical_energy': best['classical'], 'old_winner_classical_energy': winner['classical']}
+
+
+def neighbours(grid, key):
+    """Scan points one step away in J or in h on the same axis."""
+    axis, J, h = key
+    Js = sorted({k[1] for k in grid if k[0] == axis})
+    hs = sorted({k[2] for k in grid if k[0] == axis})
+    i, j = Js.index(J), hs.index(h)
+    steps = [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]
+    return [(axis, Js[a], hs[b]) for a, b in steps
+            if 0 <= a < len(Js) and 0 <= b < len(hs) and (axis, Js[a], hs[b]) in grid]
 
 
 def rotate(state, angle):
@@ -145,7 +184,12 @@ def search_point(point):
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         candidates = [state] if not flat else [rotate(state, a) for a in np.arange(N_PHI) * (np.pi / 3) / N_PHI]
-        reports = compare_states(model, {f'r{i}': s for i, s in enumerate(candidates)}, cond, k_density=K_DENSITY, refine=False)
+        named = {f'r{i}': s for i, s in enumerate(candidates)}
+        reports = compare_states(model, named, cond, k_density=K_DENSITY, refine=False)
+        mesh_density = K_DENSITY
+        if not any(r.status == 'stable' for r in reports):
+            reports = compare_states(model, named, cond, k_density=K_DENSITY_RETRY, refine=False)
+            mesh_density = K_DENSITY_RETRY
     stable = [r for r in reports if r.status == 'stable']
     pick = min(stable, key=lambda r: r.to_dict()['harmonic_energy']) if stable else reports[0]
     d = pick.to_dict()
@@ -154,17 +198,32 @@ def search_point(point):
     out.update({
         'cell_energies_meV_per_site': energies, 'winner_cell': winner, 'winner_sites': len(state.directions),
         'classical_energy': e_cl, 'gain_over_old_classical_meV_per_site': point['old_classical_energy'] - e_cl,
+        'gain_over_old_winner_meV_per_site': point.get('old_winner_classical_energy', point['old_classical_energy']) - e_cl,
         'orbit_flat': flat, 'stable_angles': len(stable), 'tested_angles': len(candidates),
-        'lswt_status': 'stable' if stable else 'unstable', 'harmonic_energy': d['harmonic_energy'],
+        'lswt_status': 'stable' if stable else 'unstable', 'lswt_mesh_density': mesh_density,
+        'lswt_message': pick.message, 'harmonic_energy': d['harmonic_energy'],
         'skyrmion_Q': d['skyrmion']['integer'], 'mz_per_spin': float(0.5 * n[:, 2].mean()),
         'fourier': fourier(model, pick.state), 'directions': n.round(5).tolist(),
         'seconds': time.monotonic() - t0})
     return out
 
 
+def report(r):
+    print('%-5s J=%.4f h=%.3f %-20s winner %2s-site  gain %.2e  LSWT %-8s (%d/%d angles)  Q=%s mz=%.3f  in-plane q %s' % (
+        r['axis'], r['J'], r['h'], r['kind'], r['winner_sites'], r['gain_over_old_classical_meV_per_site'],
+        r['lswt_status'], r['stable_angles'], r['tested_angles'], r['skyrmion_Q'], r['mz_per_spin'],
+        r['fourier']['in_plane'][0][0]), flush=True)
+
+
 def main():
     start = time.monotonic()
-    points = hatched_points()
+    grid = scan_grid()
+    hatched = [k for k, p in grid.items() if p['harmonic_winner'] is None]
+    unstable_minimum = [k for k, p in grid.items() if p['harmonic_winner'] is not None
+                        and min(p['candidates'], key=lambda c: c['classical'])['status'] != 'stable']
+    points = [as_point(grid[k], 'hatched') for k in hatched]
+    points += [as_point(grid[k], 'unstable minimum') for k in unstable_minimum]
+    seeds = hatched + unstable_minimum
     points += [{'axis': 'PD', 'J': 0.010, 'h': round(Y_FIELD, 6), 'kind': 'reference Y (0.2 T)',
                 'old_classical_winner': {'label': 'Y', 'cell': 'three_msl'}, 'old_classical_energy': None},
                {'axis': 'PD', 'J': 0.010, 'h': round(V_FIELD, 6), 'kind': 'reference V (1.4 T)',
@@ -176,21 +235,32 @@ def main():
             rng = np.random.default_rng(0)
             p['old_classical_energy'] = min(float(classical_energy(model, refine_classical(model, random_state(model, CELLS['3'], rng), cond), cond))
                                             for _ in range(STARTS))
+    done = set(seeds)
+    front = sorted({n for k in seeds for n in neighbours(grid, k)} - done)
     with ProcessPoolExecutor(max_workers=min(4, os.cpu_count() or 1)) as pool:
         results = list(pool.map(search_point, points))
-    for r in results:
-        print('%-5s J=%.4f h=%.3f %-20s winner %2s-site  gain %.2e  LSWT %-8s (%d/%d angles)  Q=%s mz=%.3f  in-plane q %s' % (
-            r['axis'], r['J'], r['h'], r['kind'], r['winner_sites'], r['gain_over_old_classical_meV_per_site'],
-            r['lswt_status'], r['stable_angles'], r['tested_angles'], r['skyrmion_Q'], r['mz_per_spin'],
-            r['fourier']['in_plane'][0][0]), flush=True)
+        for r in results:
+            report(r)
+        rounds = 0
+        while front:                                       # boundary check: grow from every changed point
+            rounds += 1
+            done |= set(front)
+            found = list(pool.map(search_point, [as_point(grid[k], 'boundary %d' % rounds) for k in front]))
+            for r in found:
+                report(r)
+            results += found
+            changed = [(r['axis'], r['J'], r['h']) for r in found
+                       if r['gain_over_old_classical_meV_per_site'] > GAIN_TOL or r['lswt_status'] == 'unstable']
+            front = sorted({n for k in changed for n in neighbours(grid, k)} - done)
     record = {
         'created_utc': datetime.now(timezone.utc).isoformat(),
         'scope': 'NBCP nearest-neighbour model, J = 0.075, J_z = 0.125 meV, S = 1/2, field along z as Zeeman energy h '
                  '(meV); classical minima on cells up to 36 sites and LSWT stability of the lowest; no quantum '
                  'corrections beyond harmonic order.',
-        'cells': CELLS, 'starts_per_cell': STARTS, 'k_density': K_DENSITY, 'results': results,
+        'cells': CELLS, 'starts_per_cell': STARTS, 'k_density': K_DENSITY, 'k_density_retry': K_DENSITY_RETRY, 'gain_tolerance_meV_per_site': GAIN_TOL,
+        'boundary_rounds': rounds, 'results': results,
         'inputs_sha256': {str(p.relative_to(ROOT)): digest(p) for p in
-                          [Path(__file__)] + sorted(SCANS.glob('scan-*.json'))},
+                          [Path(__file__)] + [SCANS / n for n in SCAN_FILES]},
         'seconds': time.monotonic() - start,
     }
     OUT.mkdir(parents=True, exist_ok=True)

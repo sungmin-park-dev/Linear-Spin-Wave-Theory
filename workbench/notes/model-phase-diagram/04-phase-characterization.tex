@@ -125,3 +125,116 @@ not a stable LSWT reference. These results motivate the competitor list;
 their phase boundaries and finite-circumference convergence have not
 been independently reproduced here. See
 Park et al., Section II~\cite{park2026}.
+
+\subsection{Harmonic phase diagram and larger magnetic
+cells}\label{sec-nbcp-harmonic-phase-diagram}
+
+The two planes \((h,J_{\rm PD})\) at \(J_\Gamma=0\) and
+\((h,J_\Gamma)\) at \(J_{\rm PD}=0\) were scanned at harmonic order with
+\(J=0.075\) meV, \(J_z=0.125\) meV, \(S=1/2\) and the field along \(z\)
+as the Zeeman energy \(h\), on a grid with field step 0.02 meV
+(\href{../../../data-space/verification/261001-nbcp-harmonic-phase-diagram/README.md}{2026-10-01
+scan}). At each point the classical minimum on the one-, two-, three-
+and four-site cells is tested for LSWT stability on matched momentum
+meshes (18 primitive momenta per direction), and the stable states are
+ranked by \(E_{\rm cl}+E_{\rm zp}\). For the three-site states, whose
+classical energy does not depend on a common rotation about \(z\), twelve
+angles in \([0,\pi/3)\) are tested. Global sign changes
+\(J_{\rm PD}\to-J_{\rm PD}\) and \(J_\Gamma\to-J_\Gamma\) are removed by
+\(R_z(\pi/2)\) and \(R_z(\pi)\), so each axis needs only \(J>0\). On the
+PD axis, Y persists to \(J_{\rm PD}\approx0.015\) meV and gives way to a
+two-site stripe from about 0.0225 meV; V shrinks from the high-field side
+and is replaced above \(h\approx0.36\) meV by the stripe from
+\(J_{\rm PD}\approx0.0125\) meV; UUD survives to 0.03 meV and no SkX
+appears. On the \(\Gamma\) axis, Y, UUD and V
+persist to \(J_\Gamma\approx0.03\) meV, followed by a low-field stripe
+and a four-site \(|Q|=2\) SkX. This agrees qualitatively with the
+iDMRG phase map of the target paper; its boundary values were not
+compared.
+
+The four-site scan leaves two kinds of point undetermined. At 45 points
+no candidate is LSWT-stable. At 19 further points the lowest classical
+candidate is LSWT-unstable and a stable state of higher classical energy
+was ranked first; the classical ground state then lies below an unstable
+state and outside the four cells. Both kinds were revisited with
+commensurate cells of up to 36 sites (\(3\times3\),
+\(2\sqrt3\times2\sqrt3\), \(4\times4\), \(3\sqrt3\times3\sqrt3\) and
+\(6\times6\)), twelve random starts per cell together with tiled states
+of the smaller cells, so that a larger cell can only lower the energy
+(\href{../../../data-space/verification/261005-nbcp-hatched-region/hatched-region-check.json}{cell
+search}). The lowest state found is tested for LSWT stability as above;
+a state counts as unstable only if it has a negative mode on two meshes
+of different parity, because the two-site stripe has an isolated zero
+mode at a zone-boundary momentum that one mesh hits exactly. The grid
+neighbours of every point whose answer changes were searched in turn
+until no new point changed (143 points in all). The results are:
+
+\begin{itemize}
+\item
+  \emph{Low field between Y and the stripe.} At
+  \(J_{\rm PD}=0.0175\)--0.0275 meV and \(h\le0.10\)--0.18 meV
+  (34 points) the lowest state is a 12-site
+  (\(2\sqrt3\times2\sqrt3\)) state, LSWT-stable. Its longitudinal
+  spin component orders at K, as a three-sublattice density, and its
+  in-plane component at M, as in a stripe; it lies up to
+  \(1.9\times10^{-3}\) meV per spin below the four-site minimum. At
+  \(J_{\rm PD}=0.0175\) meV, \(h=0.08\) and 0.10 meV, a 27-site state of
+  the same longitudinal order is lower still by
+  \((1\)--\(5)\times10^{-6}\) meV. The region extends into the stripe of the
+  four-site scan (\(J_{\rm PD}=0.025\) meV, \(h=0.12\)--0.14 meV;
+  \(J_{\rm PD}=0.0275\) meV, \(h=0.04\)--0.18 meV), while
+  \(J_{\rm PD}=0.03\) meV stays a stripe and the Y and UUD boundaries are
+  unchanged. With the zero-point energy on the same meshes, the stripe
+  is lower again by \((0.5\)--\(1.2)\times10^{-3}\) meV at
+  \(J_{\rm PD}=0.0275\) meV, \(h=0.04\)--0.12 meV; at the other five
+  former stripe points the 12-site state also has the lower harmonic
+  energy. Where no four-site candidate was stable, the 12-site state is
+  the only stable state found. At
+  \(J_{\rm PD}=0.015\) meV, \(h=0.02\) meV the three-site state remains
+  the lowest and unstable.
+\item
+  \emph{Near saturation.} On the V side at \(J_{\rm PD}\le0.01\) meV,
+  \(h\ge0.40\) meV, and on the \(\Gamma\) axis at
+  \(J_\Gamma=0.04\)--0.10 meV, \(h=0.42\)--0.48 meV, no cell up to 36
+  sites lowers the three-site state, which stays unstable at 30 points.
+  The negative modes, with eigenvalues of \(-3\times10^{-4}\) to
+  \(-4\times10^{-3}\) meV, lie mostly at the smallest momenta of the mesh
+  and otherwise at single momenta near the zone boundary, which points to
+  a long-wavelength or incommensurate modulation. This includes the band
+  of four-site states at \(h=0.42\)--0.46 meV and
+  \(J_\Gamma=0.04\)--0.075 meV of the four-site scan; the four-site
+  states at \(J_\Gamma\ge0.08\) meV, \(h=0.46\) meV and below this band
+  remain the lowest and stable. At \(J_{\rm PD}=0.01\)--0.0125 meV,
+  \(h=0.42\)--0.50 meV, a 27-site state with in-plane order at a
+  wave vector of that cell, e.g.\ \((4/9,4/9)\) in reciprocal-lattice
+  units between K and M, lies up to \(7\times10^{-5}\) meV below the
+  four-site minimum. It is LSWT-stable at \(J_{\rm PD}=0.01\) meV,
+  \(h=0.42\) and 0.44 meV, and at \(J_{\rm PD}=0.0125\) meV,
+  \(h=0.48\) meV, with a harmonic energy lower than that of the
+  four-site state, and unstable at the other three points. At
+  \(J_{\rm PD}=0.0125\) meV, \(h=0.40\)--0.44 meV, the lowest state is
+  the two-site stripe, stable on the second mesh; at \(h=0.46\) meV it
+  is weakly unstable (\(-1.2\times10^{-5}\) meV).
+\item
+  \emph{Narrow V windows.} Near the high-field edge of V as few as one
+  of the twelve angles is stable. At \(J_\Gamma=0.05\) meV,
+  \(h=0.40\) meV the three-site state is now stable at three angles
+  (unstable in the four-site scan), and at \(J_\Gamma=0.06\) meV,
+  \(h=0.48\) meV it is now unstable at all twelve (stable before). The
+  edge of V is therefore resolved only to about one grid step.
+\item
+  \emph{Reference points.} Y at 0.2~T and V at 1.4~T for
+  \(J_{\rm PD}=0.010\) meV remain the lowest states up to 36 sites and
+  LSWT-stable, so the starting states of the supersolidity analysis are
+  unchanged.
+\end{itemize}
+
+These are classical energies and harmonic stability on commensurate
+cells of up to 36 sites; an incommensurate modulation is seen only
+through its commensurate approximants. The energy differences of order
+\(10^{-4}\)--\(10^{-3}\) meV between the 12-site, 27-site, stripe and
+four-site states are below the scale of the next order in \(1/S\), and
+the zero-point differences rest on coarse meshes for the large cells
+whose convergence has not been checked. Points still undetermined (35
+of the 143) need a search over continuous wave vectors, such as single-
+and double-\(\mathbf Q\) spirals, and a Luttinger--Tisza lower bound.
