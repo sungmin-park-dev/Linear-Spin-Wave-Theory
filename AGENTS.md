@@ -116,7 +116,7 @@ Markdown 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents
 | `docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf` | 원래 기록, 수식과 review annotation을 판정하는 primary evidence |
 | `docs/lswt/sources/01-editable-notes/note_lswt_reviewed.tex` | 원문 section 순서를 유지한 editable transcription |
 | `docs/lswt/sources/01-editable-notes/note_lswt_restructured.tex` | 재배치와 일부 편집이 포함된 structural reference |
-| `docs/lswt/sources/02-reference-papers/` | 유도와 convention을 확인하는 외부 참고문헌 |
+| 논문 라이브러리 (research-library, 10/7 `02-reference-papers/`에서 옮김) | 유도와 convention을 확인하는 외부 참고문헌 (Toth–Lake: `tothLinear2015`) |
 | `docs/lswt/sources/03-verification-notes/` | 수식, basis convention과 코드의 내부 검증 자료 |
 | 사용자 승인 `docs/lswt/00-*`–`04-*`의 이론 Markdown | 현재 LSWT 이론 claim을 소유하는 유일한 theory canon |
 

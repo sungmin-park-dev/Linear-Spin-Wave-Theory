@@ -9,7 +9,7 @@ created: 2026-10-01
 updated: 2026-10-01
 source_refs:
   - conversation: 2026-10-01 사용자 위임("최고의 spin model 범용 솔빙 패키지를 만들어봐")
-  - docs/lswt/sources/02-reference-papers/1402.6069v4.pdf
+  - paper library tothLinear2015 (arXiv:1402.6069v4; was docs/lswt/sources/02-reference-papers/1402.6069v4.pdf)
   - GOVERNMENT/Working-Pad/issue-notes/closed/260930-lt-step-and-commensurate-structure-decision.md
 related:
   - GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md
@@ -20,7 +20,7 @@ related:
 
 > 상태: 구현·검증 완료, 사용자 물리·수학 검토 대기. 사용자 위임(2026-10-01)에 따라 추천안으로
 > 진행했으며 아래 선택은 모두 되돌릴 수 있다. 근거 문헌은 S. Toth and B. Lake,
-> J. Phys.: Condens. Matter **27**, 166002 (2015) (`docs/lswt/sources/02-reference-papers/1402.6069v4.pdf`).
+> J. Phys.: Condens. Matter **27**, 166002 (2015) (논문 라이브러리 `tothLinear2015`, arXiv:1402.6069v4).
 
 ## 1. 문제
 

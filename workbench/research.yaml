@@ -20,7 +20,6 @@ sources:
     - data-space/gallery
     - docs/tutorials
     - docs/nbcp/output
-    - docs/lswt/sources/02-reference-papers
   reviews: [docs/lswt]
 topics:
   - id: nbcp-phase-diagram

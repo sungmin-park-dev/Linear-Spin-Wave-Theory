@@ -8,7 +8,7 @@ This directory collects the source evidence used while rewriting the Linear Spin
 |---|---|---|
 | 00 | [`00-primary-source/`](00-primary-source) | The strongest record of the original LSWT note, including review annotations |
 | 01 | [`01-editable-notes/`](01-editable-notes) | Editable TeX lineages and their rendered snapshots |
-| 02 | [`02-reference-papers/`](02-reference-papers) | External physics references used to check derivations and conventions |
+| 02 | paper library (`research-library`, moved 2026-10-07) | External physics references used to check derivations and conventions |
 | 03 | [`03-verification-notes/`](03-verification-notes) | Internal notes that compare formulas, basis conventions, and code |
 
 The numeric prefixes define evidence-review order, not independent levels of theory canon. When sources disagree, do not merge them silently: return to the primary PDF, record the discrepancy, and leave the result `Unknown` until it is resolved by physics and mathematics review.
@@ -22,7 +22,7 @@ The numeric prefixes define evidence-review order, not independent levels of the
 | [`note_lswt_reviewed.tex`](01-editable-notes/note_lswt_reviewed.tex) | Editable transcription that retains the original section order and contains 33 `\REVIEW{...}` callouts. It assists comparison but does not override the primary PDF. |
 | [`note_lswt_restructured.tex`](01-editable-notes/note_lswt_restructured.tex) | Structurally reorganized TeX reference containing the same 33 review callouts and additional appendix organization. It is not the canonical authoring surface. |
 | PDFs in `01-editable-notes/` | Rendered snapshots of their corresponding TeX lineages. They are reference outputs, not editable masters. |
-| [`1402.6069v4.pdf`](02-reference-papers/1402.6069v4.pdf) | External LSWT reference: J. Toth and B. Lake, *Linear spin wave theory for single-Q incommensurate magnetic structures*. |
+| `1402.6069v4.pdf` (moved 2026-10-07 to the paper library, key `tothLinear2015`) | External LSWT reference: J. Toth and B. Lake, *Linear spin wave theory for single-Q incommensurate magnetic structures*. |
 | [`hamiltonian_convention.tex`](03-verification-notes/hamiltonian_convention.tex) | Internal derivation and comparison note for the Hamiltonian basis and legacy code. It is verification evidence, not theory authority. |
 
 The exact production relationship between the 27-page primary PDF and `note_lswt_reviewed.pdf` is currently `Unknown`; visual and structural similarity does not establish that one file was generated directly from the other.
@@ -40,7 +40,7 @@ The exact production relationship between the 27-page primary PDF and `note_lswt
 | `01-editable-notes/note_lswt_reviewed.pdf` | 26 | `e76f88c7f644f738c68c00d95d031ef21e5c2975376f41d5028b62efc2d03eea` |
 | `01-editable-notes/note_lswt_restructured.tex` | — | `8f4a1fc95927b486f28da8d415a7093f00233d4636c505338fda6209ad00f124` |
 | `01-editable-notes/note_lswt_restructured.pdf` | 27 | `f5dd6e3bc3673c8a2e3a29551a95b809fa0e8c64f0fc8229f91fb0a3e99b5aa2` |
-| `02-reference-papers/1402.6069v4.pdf` | 12 | `25e7b9fdae30bd03d607cec8a7b33868b491f99483252e4ab471fb20aa27ff42` |
+| `1402.6069v4.pdf` (paper library `tothLinear2015.pdf`, moved 2026-10-07) | 12 | `25e7b9fdae30bd03d607cec8a7b33868b491f99483252e4ab471fb20aa27ff42` |
 | `03-verification-notes/hamiltonian_convention.tex` | — | `719d266aca2073aaa1c5328a1964fe8ba43522d8a41a7f856685395a4686c624` |
 | `03-verification-notes/hamiltonian_convention.pdf` | 4 | `526d965e4b66fe05fce4ed506e46f524ffd57dc2f011b04f9e52c792f56eed0d` |
 
