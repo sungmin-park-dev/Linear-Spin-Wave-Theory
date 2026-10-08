@@ -26,10 +26,11 @@ Toolkit 개발 설계, LSWT 일반 이론과 NBCP 연구 노트를 주제별로 
 
 ## 현재 편집할 파일
 
-- 개발 설계는 [main.tex](development/main.tex), `development/sections/`와 `development/appendices/`에서 편집한다. `development/`에서 `make qa`로 PDF를 갱신한다.
+[2026-10-05 결정](../GOVERNMENT/Court-Precedents/2026-10-05-nbcp-research-notes.md)과 [2026-10-08 결정](../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 내용의 편집 원본은 research-workspace 앱의 연구노트 [`workbench/notes/`](../workbench/notes/)다.
 
-- 일반 이론은 [LSWT 읽기 순서](lswt/README.md)에서 해당 Markdown 문서를 찾는다.
-- NBCP는 [main.tex](nbcp/main.tex)에서 연결하는 장·부록별 TeX와 [references.tex](nbcp/references.tex)를 편집한다. PDF는 생성물이며 Markdown 본문을 중복 관리하지 않는다.
+- 일반 이론: `lswt-foundations`, `lswt-derivation`, `lswt-observables`. [docs/lswt/](lswt/README.md)의 Markdown은 2026-10-08 상태로 보존하며 더 고치지 않는다.
+- 개발 설계와 결정 기록: `dev-design`, `dev-verification`, `dev-decisions`. [development/](development/README.md)의 Beamer는 2026-10-08 상태로 보존한다.
+- NBCP: 주제별 연구노트 8개. [nbcp/main.tex](nbcp/main.tex)는 2026-10-05 상태로 보존한다.
 - 계산 코드와 결과 데이터는 각각 [examples/](../examples/)와 [data-space/](../data-space/)에서 관리한다. NBCP 노트에서 해당 실행·검증 기록을 연결한다.
 
 폴더 위치는 검토 완료 여부를 뜻하지 않는다. LSWT 이론의 acceptance, NBCP 연구 검토, 코드 검증은 별도로 기록한다. 참고자료는 현재 주장을 확인하는 근거이며 본문과 동등한 편집 원본이 아니다.

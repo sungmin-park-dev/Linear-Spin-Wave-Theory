@@ -1,5 +1,7 @@
 # 2D Spin-System Toolkit — 개발 목표와 시스템 설계
 
+> **2026-10-08부터 보존본.** 이 폴더의 Beamer 내용은 [2026-10-08 결정](../../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 연구노트 `dev-design`, `dev-verification`, `dev-decisions`로 옮겼고, 이후 편집은 연구노트에서 한다. 이 폴더는 그날 상태로 보존하며 더 고치지 않는다.
+
 개발 목표, 시스템의 계산 흐름, 모델 공통 전달 규약과 모듈별 책임을 설명하는
 Beamer PDF다. 구현·검증 기록은 설계를 뒷받침하는 부록으로 관리한다.
 현재 검토본은 30이며, 기록일은 2026-09-30이다.
