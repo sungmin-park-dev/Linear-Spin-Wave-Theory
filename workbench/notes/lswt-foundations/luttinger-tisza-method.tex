@@ -9,15 +9,18 @@ LSWT expands about a classical reference configuration, and the expansion is mea
 
 \subsection{Classical Energy as a Quadratic Form}
 
-We consider the bilinear exchange and single-ion terms of Bilinear Spin Hamiltonian (Section~\ref{sec-lswt-bilinear-spin-hamiltonian}) without the Zeeman term. Replacing each spin operator by the classical vector \(S_I\mathbf n_I\), with unit vector \(\mathbf n_I\), and writing the link sum as an ordered-pair sum gives the classical energy
+We consider the bilinear exchange and single-ion terms of Bilinear Spin Hamiltonian (Section~\ref{sec-lswt-bilinear-spin-hamiltonian}) without the Zeeman term. The classical energy is the expectation value of these terms in the spin-coherent product state with unit vectors \(\mathbf n_I\), as defined in LSWT Overview (Section~\ref{sec-lswt-lswt-overview}). For the exchange terms this replaces each spin operator by the classical vector \(S_I\mathbf n_I\). For the single-ion term the coherent-state value is \(\langle\hat S_I^\alpha\hat S_I^\beta+\hat S_I^\beta\hat S_I^\alpha\rangle/2=S_I(S_I-\tfrac12)n_I^\alpha n_I^\beta+\tfrac{S_I}2\delta^{\alpha\beta}\), which differs from \(S_I^2n_I^\alpha n_I^\beta\) at finite spin and reduces to the constant \(\operatorname{Tr}\mathsf D_I/4\) at \(S_I=\tfrac12\). Writing the link sum as an ordered-pair sum gives
 
 \[
 E_{\mathrm{cl}}[\{\mathbf n_I\}]
 =\frac12\sum_{I\neq J}S_IS_J\,\mathbf n_I^{\mathsf T}\mathsf J_{IJ}\mathbf n_J
-+\sum_IS_I^2\,\mathbf n_I^{\mathsf T}\mathsf D_I\mathbf n_I,
++\sum_IS_I\big(S_I-\tfrac12\big)\,\mathbf n_I^{\mathsf T}\mathsf D_I\mathbf n_I
++E_D,
+\qquad
+E_D=\sum_I\frac{S_I}{2}\operatorname{Tr}\mathsf D_I,
 \]
 
-where \(\mathsf J_{JI}=\mathsf J_{IJ}^{\mathsf T}\). The energy is a quadratic form in the \(3N_{\mathrm{site}}\) components of the unit vectors. The ground-state problem minimizes this form under the strong constraint
+where \(\mathsf J_{JI}=\mathsf J_{IJ}^{\mathsf T}\) and the constant \(E_D\) does not depend on the spin directions. Apart from \(E_D\), the energy is a quadratic form in the \(3N_{\mathrm{site}}\) components of the unit vectors. The ground-state problem minimizes this form under the strong constraint
 
 \[
 |\mathbf n_I|=1\quad\text{for every site }I.
@@ -44,11 +47,11 @@ The LT problem uses the unit cell of the Hamiltonian, with sites \(I=(i,a)\) at 
 where the reality condition follows from real \(\mathbf n_{ia}\) and the momenta run over the Brillouin zone of the Hamiltonian's unit cell. Translation invariance makes the energy diagonal in \(\mathbf q\):
 
 \begin{equation}\label{eq-lswt-lt-matrix}
-E_{\mathrm{cl}}=\sum_{\mathbf q}\mathbf n(\mathbf q)^\dagger\,\mathsf L_{\mathbf q}\,\mathbf n(\mathbf q),
+E_{\mathrm{cl}}=\sum_{\mathbf q}\mathbf n(\mathbf q)^\dagger\,\mathsf L_{\mathbf q}\,\mathbf n(\mathbf q)+E_D,
 \qquad
 \big[\mathsf L_{\mathbf q}\big]_{ab}
 =\frac12\sum_{J\in b}S_aS_b\,\mathsf J_{IJ}\exp\!\big(\mathrm i\mathbf q\cdot(\mathbf r_J-\mathbf r_I)\big)
-+\delta_{ab}\,S_a^2\,\mathsf D_a,
++\delta_{ab}\,S_a\big(S_a-\tfrac12\big)\,\mathsf D_a,
 \end{equation}
 
 where \(\mathbf n(\mathbf q)\) collects the \(3N_s\) components \(\mathbf n_a(\mathbf q)\), \(I\) is a fixed site of sublattice \(a\), and the sum runs over the sites \(J\neq I\) of sublattice \(b\) coupled to \(I\). Each \([\mathsf L_{\mathbf q}]_{ab}\) is a \(3\times3\) block. The relation \(\mathsf J_{JI}=\mathsf J_{IJ}^{\mathsf T}\) makes the \(3N_s\times3N_s\) LT matrix \(\mathsf L_{\mathbf q}\) Hermitian, and real interaction matrices give \(\mathsf L_{-\mathbf q}=\mathsf L_{\mathbf q}^*\). The spin lengths are absorbed into \(\mathsf L_{\mathbf q}\), so the constraints refer to unit vectors for any \(S_a\). The weak constraint becomes \(\sum_{\mathbf q}\|\mathbf n(\mathbf q)\|^2=N_{\mathrm{site}}\).
@@ -58,10 +61,10 @@ where \(\mathbf n(\mathbf q)\) collects the \(3N_s\) components \(\mathbf n_a(\m
 Let \(\lambda_{\min}(\mathbf q)\) be the lowest eigenvalue of \(\mathsf L_{\mathbf q}\) and \(\lambda_{\mathrm{LT}}=\min_{\mathbf q}\lambda_{\min}(\mathbf q)\). Each momentum component satisfies \(\mathbf n(\mathbf q)^\dagger\mathsf L_{\mathbf q}\mathbf n(\mathbf q)\ge\lambda_{\mathrm{LT}}\|\mathbf n(\mathbf q)\|^2\), so every configuration obeying the weak constraint, and in particular every configuration of unit spins, satisfies
 
 \begin{equation}\label{eq-lswt-lt-bound}
-\frac{E_{\mathrm{cl}}}{N_{\mathrm{site}}}\ge\lambda_{\mathrm{LT}}.
+\frac{E_{\mathrm{cl}}-E_D}{N_{\mathrm{site}}}\ge\lambda_{\mathrm{LT}}.
 \end{equation}
 
-Equality holds exactly when \(\mathbf n(\mathbf q)\) vanishes except at the minimizing wave vectors \(\mathbf Q\) and their negatives, and lies in the eigenspace of \(\lambda_{\mathrm{LT}}\) there. A configuration of this form that also satisfies the strong constraint attains the bound and is therefore a classical ground state, with energy \(N_{\mathrm{site}}\lambda_{\mathrm{LT}}\). If no such configuration exists, \(\lambda_{\mathrm{LT}}\) is a strict lower bound and the method does not determine the ground state.
+Equality holds exactly when \(\mathbf n(\mathbf q)\) vanishes except at the minimizing wave vectors \(\mathbf Q\) and their negatives, and lies in the eigenspace of \(\lambda_{\mathrm{LT}}\) there. A configuration of this form that also satisfies the strong constraint attains the bound and is therefore a classical ground state, with energy \(N_{\mathrm{site}}\lambda_{\mathrm{LT}}+E_D\). If no such configuration exists, \(\lambda_{\mathrm{LT}}\) is a strict lower bound and the method does not determine the ground state.
 
 \subsection{Single-Wave-Vector Configurations}
 
@@ -114,6 +117,8 @@ If \(\mathsf L_{\mathbf q}-\Lambda\) is positive semidefinite at every \(\mathbf
 \item
   \textbf{Zeeman field.} The Zeeman term is linear in the spin vectors, so the energy is no longer a homogeneous quadratic form, and the bound above does not include it.
 \item
+  \textbf{Single-ion anisotropy.} An anisotropic \(\mathsf D_I\) makes the diagonal blocks of \(\mathsf L_{\mathbf q}\) distinguish spin directions, so the minimizing eigenvectors generally do not combine into unit spins; for example, easy-plane anisotropy with a spiral whose plane contains the hard axis. For such models the LT result is a lower bound and a list of candidate wave vectors rather than a solution.
+\item
   \textbf{Multiple wave vectors.} When no single-wave-vector configuration satisfies the strong constraint, a combination of several minimizing wave vectors may still do so. Failure of the single-wave-vector construction therefore does not show that the bound is unattainable.
 \item
   \textbf{Degenerate minima.} When the bound is attained, a minimum of \(\lambda_{\min}(\mathbf q)\) on a line or an extended region, or a degenerate eigenspace beyond that required by a global spin-rotation symmetry, signals a degenerate manifold of classical ground states, and the choice among them is not made by the classical energy. The threefold degeneracy of \(\mathsf L_{\mathbf q}\) for isotropic exchange reflects only the global rotation of all spins. When the bound is not attained, the degeneracy of the LT minimum does not determine the degeneracy of the true ground states.
@@ -121,7 +126,7 @@ If \(\mathsf L_{\mathbf q}-\Lambda\) is positive semidefinite at every \(\mathbf
 
 \subsection{Relation to Linear Spin-Wave Theory}
 
-LSWT requires a reference configuration of unit spins that is stationary under the fixed-length constraint, as described in Classical Order and Local Frame (Section~\ref{sec-lswt-classical-order-and-local-frame}). A configuration that attains the LT bound is a global minimum of the zero-field classical energy. Every harmonic fluctuation about it therefore raises or preserves the energy, and its BdG matrix \(\mathsf H_{\mathbf k}\) is at least positive semidefinite, as required in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}. When the bound is not attained, \(\lambda_{\mathrm{LT}}\) still bounds the energy of any candidate configuration obtained by numerical minimization from below, and the minimizing wave vectors indicate the magnetic unit cells to consider.
+LSWT requires a reference configuration of unit spins that is stationary under the fixed-length constraint, as described in Classical Order and Local Frame (Section~\ref{sec-lswt-classical-order-and-local-frame}). A configuration that attains the LT bound is a global minimum of the zero-field classical energy. Every harmonic fluctuation about it therefore raises or preserves the energy, and its BdG matrix \(\mathsf H_{\mathbf k}\) is at least positive semidefinite, provided the quadratic boson Hamiltonian uses the same coherent-state value of the single-ion term as the classical energy above (\lswtnoteref{LSWT derivation}{Real-Space Boson Hamiltonian}), as required in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}. When the bound is not attained, \(\lambda_{\mathrm{LT}}\) still bounds the energy of any candidate configuration obtained by numerical minimization from below, and the minimizing wave vectors indicate the magnetic unit cells to consider.
 
 \subsection{References}
 

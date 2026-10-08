@@ -5,7 +5,7 @@
 \hypertarget{sec-lswt-real-space-boson-hamiltonian}{%
 \section{Real-Space Boson Hamiltonian}\label{sec-lswt-real-space-boson-hamiltonian}}
 
-The quadratic boson Hamiltonian collects the terms of second order in the Holstein--Primakoff operators. The expression below includes inter-site exchange and the Zeeman term in the local frame. It does not yet include an explicit contribution from the separately defined on-site anisotropy matrix \(\mathsf D_I\).
+The quadratic boson Hamiltonian collects the terms of second order in the Holstein--Primakoff operators. The expression below includes inter-site exchange and the Zeeman term in the local frame. The single-ion term with matrix \(\mathsf D_I\) is added in the subsection on the single-ion term below.
 
 The circular-component expressions below are provisional: the contraction convention relating \(\widetilde J_\ell^{pq}\) to the Cartesian exchange matrix is not fully specified. The labels \(p,q\in\{+,-,0\}\) denote local circular components, rather than laboratory Cartesian indices.
 
@@ -49,6 +49,16 @@ Each site receives exchange contributions from all incident links. Let \(\partia
 \]
 
 This coefficient combines the rotated field with the longitudinal exchange contributions from neighboring spins. Its use inherits the circular-component convention and interaction scope stated above.
+
+\subsection{Single-Ion Term}
+
+The single-ion term \(\hat{\mathbf S}_I^{\mathsf T}\mathsf D_I\hat{\mathbf S}_I\) contains two spin operators of the same site, and their product is not determined by the classical vector alone. We use the rule that reproduces the spin-coherent expectation value of the classical energy in \lswtnoteref{LSWT foundations}{LSWT Overview}: the term enters the quadratic Hamiltonian as a self-coupling of site \(I\), expanded like a link whose two endpoints coincide, with the rotated matrix \(\widetilde{\mathsf D}_I=\mathsf R_I^{\mathsf T}\mathsf D_I\mathsf R_I\) replaced by
+\[
+\Big(1-\frac{1}{2S_I}\Big)\widetilde{\mathsf D}_I,
+\]
+and without the constant produced by normal-ordering the transverse operators of the same site. The corresponding classical energy is \(S_I(S_I-\tfrac12)\,\mathbf n_I^{\mathsf T}\mathsf D_I\mathbf n_I+\tfrac{S_I}{2}\operatorname{Tr}\mathsf D_I\); at \(S_I=\tfrac12\) it is the constant \(\operatorname{Tr}\mathsf D_I/4\) and the term drops out of the quadratic Hamiltonian, as the spin-\(\tfrac12\) identity of \lswtnoteref{LSWT foundations}{Bilinear Spin Hamiltonian} requires.
+
+For an easy-axis term \(D(\hat S_I^z)^2\) with \(D<0\) and the spin along \(z\), only \(\widetilde D_I^{00}=D\) is nonzero, and the longitudinal part \((S_I-\hat n_I)^2\) contributes \(-2S_I(1-\tfrac1{2S_I})D\,\hat n_I=(2S_I-1)|D|\,\hat n_I\). The resulting single-ion gap \((2S_I-1)|D|\) equals the exact spacing between the levels \(m=S_I\) and \(m=S_I-1\), whereas the factor \(2S_I\) of a direct expansion with \(\widetilde{\mathsf D}_I\) overestimates it. The rule is justified by these two agreements, with the coherent-state classical energy and with the exact single-ion gap, rather than derived from the Holstein--Primakoff expansion of the operator product.
 
 \subsection{References}
 
