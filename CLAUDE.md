@@ -22,7 +22,7 @@ NBCP(Na₂BaCo(PO₄)₂) 관련 논문(arXiv:2505.06398; npj Quantum Materials 
 
 ## 현재 디렉토리 구조
 
-> LSWT 일반 이론은 `docs/lswt/`, NBCP 연구 노트는 `docs/nbcp/`, 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
+> LSWT 일반 이론, NBCP 연구와 개발 설계는 `workbench/notes/` 연구노트(2026-10-08부터; `docs/lswt/`·`docs/development/`·`docs/nbcp/`는 보존본), 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
 > 설계 사본은 `GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy.md`에 둔다.
 
 ```
@@ -87,16 +87,16 @@ project-root/
 │
 ├── legacy/                      # 원본 legacy 코드 아카이브
 ├── data-space/                  # 검토하고 정돈한 결과 데이터
-└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md, 연구노트 notes/ (2026-10-05부터 NBCP 내용 원본; docs/nbcp/는 그날 상태로 보존)
+└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md, 연구노트 notes/ (NBCP는 2026-10-05부터, LSWT 이론·개발 노트는 2026-10-08부터 내용 원본; docs/의 원고는 그날 상태로 보존)
 ```
 
 ---
 
 ## 이론 문서와 source authority
 
-LSWT 이론 내용은 `docs/lswt/`에 영어 Markdown으로 정리한다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
+LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 LaTeX 연구노트 3개(`lswt-foundations`, `lswt-derivation`, `lswt-observables`)에 정리한다. `docs/lswt/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/development/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
 
-Markdown 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따른다. 이는 2026-08-09 결정의 경로 조항을 갱신한 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/lswt/README.md](docs/lswt/README.md)다.
+단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따랐고, 정본의 위치와 작성 경로는 2026-10-08 결정이 연구노트로 바꿨다. 이는 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/lswt/README.md](docs/lswt/README.md)다.
 
 | 경로 | 역할 |
 |---|---|
@@ -105,9 +105,9 @@ Markdown 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents
 | `docs/lswt/sources/01-editable-notes/note_lswt_restructured.tex` | 재배치와 일부 편집이 포함된 structural reference |
 | 논문 라이브러리 (research-library, 10/7 `02-reference-papers/`에서 옮김) | 유도와 convention을 확인하는 외부 참고문헌 (Toth–Lake: `tothLinear2015`) |
 | `docs/lswt/sources/03-verification-notes/` | 수식, basis convention과 코드의 내부 검증 자료 |
-| 사용자 승인 `docs/lswt/00-*`–`04-*`의 이론 Markdown | 현재 LSWT 이론 claim을 소유하는 유일한 theory canon |
+| 사용자 승인 `workbench/notes/lswt-*` 연구노트 | 현재 LSWT 이론 claim을 소유하는 유일한 theory canon (2026-10-08 전에는 `docs/lswt/` Markdown) |
 
-상세 source inventory와 원문 section-to-docs 대응은 `docs/lswt/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 `docs/lswt/` Markdown owner에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
+상세 source inventory와 원문 section-to-docs 대응은 `docs/lswt/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 LSWT 연구노트에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
 
 NBCP 연구는 [2026-09-18 결정](GOVERNMENT/Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 여기서 포함하는 `chapters/`, `appendices/`, `references.tex`를 내용 편집 원본으로 사용했다. [2026-10-05 결정](GOVERNMENT/Court-Precedents/2026-10-05-nbcp-research-notes.md)에 따라 원고는 그날 상태로 보존하고 더 고치지 않으며, 그 내용을 복제한 `workbench/notes/`의 연구노트 8개가 이후 NBCP 내용의 편집 원본이다(본문만 두고 머리는 앱 서식 `research-note`와 `workbench/macros.tex`가 붙인다). `preamble.tex`는 공통 서식, `metadata.tex`는 제목·날짜와 검토 상태를 관리한다. 본문은 TeX에서 직접 수정하며 semantic label과 참조를 유지한다. `examples/nbcp_research_export.py`가 XeLaTeX로 `docs/nbcp/output/`에 PDF와 생성 기록만 저장하고, 빌드 중간 파일은 임시 폴더에서 처리한다. 기존 `research-note.md`는 안내만 제공하며 이전 Markdown·변환기는 날짜가 붙은 archive로 보존한다. 이 NBCP 한정 결정은 LSWT 일반 이론의 Markdown 정본 원칙이나 물리·수학 검토 상태를 바꾸지 않는다. 참고자료·navigation·archive·output은 내용 편집 원본이 아니다.
 
@@ -172,8 +172,8 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 3. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
 4. **물리적 의도 불명확 시 질문**: legacy 로직의 물리적 의미가 불분명하면 임의 해석하지 말고 반드시 질문할 것.
 5. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
-6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론의 공개 TeX·PDF·HTML은 accepted Markdown에서 생성하고, 사용자 검토용 preview는 draft/in-review Markdown에서도 생성한다. NBCP는 위에서 정한 canonical TeX에서 PDF를 생성하며 TeX 원본을 직접 편집한다. PDF 등 파생물을 직접 수정하지 않는다.
-7. **이론 문체 preflight**: `docs/lswt/`의 reader-facing theory 문서를 작성하거나 교정하기 전에 `GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
+6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론, NBCP와 개발 노트는 `workbench/notes/` 연구노트 TeX를 직접 편집하고 PDF는 그로부터 생성한다. LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
+7. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/notes/lswt-*`)를 작성하거나 교정하기 전에 `GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
 8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `docs/lswt/` 검토 상태, `workbench/` 유도 블록·일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
 
 현재 작업, 우선순위와 진행 상태는 `GOVERNMENT/Working-Pad/TASK-QUEUE.md`에서 확인한다. `CLAUDE.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.

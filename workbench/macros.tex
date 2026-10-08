@@ -37,3 +37,46 @@
 % Boxed summaries and compact lists
 \usepackage{tcolorbox}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Reference to a place in another LSWT research note (the notes are compiled separately)
+\providecommand{\lswtnoteref}[2]{#2 in research note \emph{#1}}
+
+% Korean text in the toolkit development notes (dev-design, dev-verification, dev-decisions)
+\usepackage{iftex}
+\ifXeTeX
+  \makeatletter
+  \@ifpackageloaded{xetexko}{}{\usepackage{xetexko}}
+  \makeatother
+  \IfFontExistsTF{Apple SD Gothic Neo}{\setmainhangulfont{Apple SD Gothic Neo}\setsanshangulfont{Apple SD Gothic Neo}}{%
+    \IfFontExistsTF{Noto Sans CJK KR}{\setmainhangulfont{Noto Sans CJK KR}\setsanshangulfont{Noto Sans CJK KR}}{}}
+\fi
+
+% Article definitions for the Beamer constructs kept in the development notes, which were
+% converted from docs/development/main.tex on 2026-10-08 (frames became subsections).
+\usepackage{tabularx,booktabs,array,alltt,tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\definecolor{KFBNavy}{HTML}{18324C}
+\definecolor{KFBBlue}{HTML}{2E95F3}
+\definecolor{KFBMuted}{HTML}{62778B}
+\definecolor{KFBLine}{HTML}{D8E0E7}
+\definecolor{KFBInk}{HTML}{142C43}
+\tikzset{
+  box/.style={draw=KFBLine,fill=white,rounded corners=1.2mm,
+    text=KFBInk,align=center,font=\small,inner sep=6pt,minimum height=0.8cm},
+  focus/.style={box,draw=KFBNavy,fill=KFBNavy!5,line width=0.8pt},
+  flow/.style={-{Latex[length=2mm]},draw=KFBBlue,line width=0.85pt},
+  auxflow/.style={flow,dashed,draw=KFBMuted}
+}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\providecommand{\framesubtitle}[1]{\par\noindent{\itshape\color{KFBMuted}#1}\par\smallskip}
+\providecommand{\supportingtext}[1]{{\small\color{KFBMuted}#1}}
+\providecommand{\slidesource}[2]{\par\smallskip{\footnotesize\color{KFBMuted}근거: #1\ifx\relax#2\relax\else{} [#2]\fi}\par}
+\providecommand{\contentsubheading}[1]{\par\textbf{#1}\par}
+\providecommand{\sectionpage}{}
+\newenvironment{columns}[1][]{\par\noindent\begin{minipage}{\linewidth}}{\end{minipage}\par\medskip}
+\newenvironment{column}[1]{\begin{minipage}[t]{#1}}{\end{minipage}\hfill}
+\newenvironment{block}[1]{\begin{tcolorbox}[colframe=KFBLine,colback=white,coltitle=KFBInk,colbacktitle=KFBNavy!8,title={#1}]}{\end{tcolorbox}}
+\newenvironment{band}[2][]{\begin{tcolorbox}[colframe=KFBNavy,colback=KFBNavy!6,title={#2}]}{\end{tcolorbox}}
+\NewDocumentEnvironment{mdcallout}{O{note} O{} m}{\begin{tcolorbox}[colframe=KFBBlue,colback=KFBBlue!4,title={#3}]}{\end{tcolorbox}}
+\newenvironment{semiverbatim}{\begin{alltt}}{\end{alltt}}

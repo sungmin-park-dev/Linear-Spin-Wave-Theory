@@ -1,0 +1,84 @@
+% Classical Order and Local Frame
+% Converted on 2026-10-08 from docs/lswt/00-foundations/classical-order-and-local-frame.md (status: draft, source-section: Rotations for Spin Models).
+% Review status: draft; awaiting the user's physics and mathematics review.
+
+\hypertarget{sec-lswt-classical-order-and-local-frame}{%
+\section{Classical Order and Local Frame}\label{sec-lswt-classical-order-and-local-frame}}
+
+Linear spin-wave theory describes small quantum fluctuations about a classical spin configuration. At each site \(I\), the spin direction is the unit vector
+
+\[
+\mathbf n_I
+=(\sin\theta_I\cos\phi_I,\,
+  \sin\theta_I\sin\phi_I,\,
+  \cos\theta_I).
+\]
+
+The local quantization axis is chosen along \(\mathbf n_I\). The polar angle \(\theta_I\) is measured from the positive laboratory \(z\) axis, and the azimuthal angle \(\phi_I\) from the positive laboratory \(x\) axis.
+
+\subsection{Rotation to the Local Frame}
+
+The rotation matrix converts local spin components into laboratory components:
+
+\[
+\hat{\mathbf S}_I=\mathsf R_I\hat{\widetilde{\mathbf S}}_I,
+\qquad
+\mathsf R_I=\mathsf R(\theta_I,\phi_I),
+\]
+
+with
+
+\[
+\mathsf R(\theta,\phi)=
+\begin{pmatrix}
+\cos\theta\cos\phi & -\sin\phi & \sin\theta\cos\phi\\
+\cos\theta\sin\phi &  \cos\phi & \sin\theta\sin\phi\\
+-\sin\theta & 0 & \cos\theta
+\end{pmatrix}.
+\]
+
+Its third column is \(\mathbf n_I\), so the local longitudinal component lies along the classical spin. For a bond \(\ell=(I,J)\), the exchange matrix and Zeeman-energy vector in the local frames are
+
+\[
+\widetilde{\mathsf J}_\ell
+=\mathsf R_I^{\mathsf T}\mathsf J_\ell\mathsf R_J,
+\qquad
+\widetilde{\mathbf h}_I=\mathsf R_I^{\mathsf T}\mathbf h_I.
+\]
+
+The exchange term involves rotations at both endpoints, whereas the field term involves only the rotation at its own site. The field is written as a column vector; the equivalent row-vector expression is \(\mathbf h_I^{\mathsf T}\mathsf R_I\).
+
+\subsection{Local Circular Basis}
+
+Let \(\mathbf e_x,\mathbf e_y,\mathbf e_z\) denote Cartesian coordinate unit vectors. The local circular basis, expressed in laboratory coordinates, is
+
+\[
+\mathbf e_I^\pm
+=\mathsf R_I\frac{\mathbf e_x\pm\mathrm i\mathbf e_y}{\sqrt2},
+\qquad
+\mathbf e_I^0=\mathsf R_I\mathbf e_z=\mathbf n_I.
+\]
+
+The superscript \(0\) identifies the longitudinal direction, and \(\pm\) label the transverse circular vectors. These are classical basis vectors, so they carry no operator hats. The phase convention is explicit in their definitions; contractions used to turn exchange matrices into circular components require a separate component convention.
+
+\subsection{References}
+
+\subsubsection{Internal Documents}
+
+\begin{itemize}
+\tightlist
+\item
+  Notation and Conventions (Section~\ref{sec-lswt-notation-and-conventions}): defines the rotation-matrix direction and local-basis notation.
+\item
+  Bilinear Spin Hamiltonian (Section~\ref{sec-lswt-bilinear-spin-hamiltonian}): defines the laboratory-frame exchange matrices and Zeeman field rotated here.
+\item
+  \lswtnoteref{LSWT derivation}{Holstein–Primakoff Expansion}: uses the local quantization axis to introduce bosonic fluctuations.
+\end{itemize}
+
+\subsubsection{External Sources}
+
+\begin{itemize}
+\tightlist
+\item
+  None.
+\end{itemize}

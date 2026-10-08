@@ -1,0 +1,189 @@
+% Structure Factor and Spectral Function
+% Converted on 2026-10-08 from docs/lswt/02-observables/structure-factor-and-spectral-function.md (status: draft, source-section: "Structure Factor; Spectral Function (source pp. 19–23)").
+% Review status: draft; awaiting the user's physics and mathematics review.
+
+\hypertarget{sec-lswt-structure-factor-and-spectral-function}{%
+\section{Structure Factor and Spectral Function}\label{sec-lswt-structure-factor-and-spectral-function}}
+
+The spin correlation function \(\mathcal C^{\alpha\beta}(\mathbf q,t)\) of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}) determines the momentum- and energy-resolved observables of magnetic excitations. Its equal-time value is the static structure factor, its Fourier transform in time is the dynamic structure factor measured by inelastic neutron scattering, and the Fourier transform of the corresponding commutator is the spectral function, which determines the retarded response. This document derives these quantities in LSWT, where each magnon mode contributes a delta function in energy with a weight fixed by the paraunitary transformation. We keep \(\hbar=1\) and the per-site normalization of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}).
+
+\subsection{One-Magnon Weights}
+
+The transverse correlation of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}), \(\mathcal C_\perp^{\alpha\beta}(\mathbf q,t)=\mathsf V^\alpha\mathsf T_{\mathbf q}\mathsf N_{\mathbf q}(t)\mathsf T_{\mathbf q}^\dagger(\mathsf V^\beta)^\dagger\), is a sum over the columns of \(\mathsf T_{\mathbf q}\). For a particle column \(n=1,\ldots,N_{\mathrm{sub}}\) we define the one-magnon weight
+
+\begin{equation}\label{eq-lswt-one-magnon-weight}
+W_n^{\alpha\beta}(\mathbf q)
+=\big(\mathsf V^\alpha\mathsf T_{\mathbf q}\big)_n\big(\mathsf V^\beta\mathsf T_{\mathbf q}\big)_n^*,
+\end{equation}
+
+which is a Hermitian, positive-semidefinite \(3\times3\) matrix of rank one in \((\alpha,\beta)\). The phase and degeneracy freedom of \(\mathsf T_{\mathbf q}\) described in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization} leaves \(W_n^{\alpha\beta}\) unchanged for a nondegenerate band and leaves the sum over a degenerate set unchanged.
+
+The hole columns are determined by the particle columns at \(-\mathbf q\). The hole column \(N_{\mathrm{sub}}+n\) of \(\mathsf T_{\mathbf q}\) can be chosen as \(\Sigma_1\) times the complex conjugate of the particle column \(n\) of \(\mathsf T_{-\mathbf q}\), and the spin vertex \(\mathsf V^\alpha\) of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}) satisfies \(\mathsf V^\alpha\Sigma_1=(\mathsf V^\alpha)^*\). Hence \((\mathsf V^\alpha\mathsf T_{\mathbf q})_{N_{\mathrm{sub}}+n}=\big[(\mathsf V^\alpha\mathsf T_{-\mathbf q})_n\big]^*\), and the hole term of mode \(n\) carries the weight \(W_n^{\beta\alpha}(-\mathbf q)\) at the energy \(\varepsilon_{n,-\mathbf q}\).
+
+\subsection{Static Structure Factor}
+
+The static structure factor is the equal-time correlation function,
+
+\begin{equation}\label{eq-lswt-static-structure-factor}
+\mathcal S^{\alpha\beta}(\mathbf q)
+=\mathcal C^{\alpha\beta}(\mathbf q,0)
+=\mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)
++\sum_{n=1}^{N_{\mathrm{sub}}}\Big[\big(1+n_{n\mathbf q}\big)W_n^{\alpha\beta}(\mathbf q)+n_{n,-\mathbf q}\,W_n^{\beta\alpha}(-\mathbf q)\Big],
+\end{equation}
+
+with \(n_{n\mathbf q}=n_{\mathrm B}(\varepsilon_{n\mathbf q})\). The elastic part \(\mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)\), given in Spin Correlations (Section~\ref{sec-lswt-spin-correlations}), is present only at magnetic reciprocal-lattice vectors and is proportional to \(N_{\mathrm{site}}\); the inelastic part is of order one per site. At zero temperature only the particle weights remain. Because the correlation function includes all energy transfers, \(\mathcal S^{\alpha\beta}(\mathbf q)\) is also the frequency integral of the dynamic structure factor below.
+
+\subsection{Dynamic Structure Factor}
+
+The dynamic structure factor is the time Fourier transform of the correlation function,
+
+\begin{equation}\label{eq-lswt-dynamic-structure-factor-definition}
+\mathcal S^{\alpha\beta}(\mathbf q,\omega)
+=\frac{1}{2\pi}\int_{-\infty}^{\infty}dt\,\exp(\mathrm i\omega t)\,\mathcal C^{\alpha\beta}(\mathbf q,t).
+\end{equation}
+
+The elastic part is time independent and transforms into \(\delta(\omega)\). In the transverse part, the particle entries of \(\mathsf N_{\mathbf q}(t)\) oscillate as \(\exp(-\mathrm i\varepsilon_{n\mathbf q}t)\) and the hole entries as \(\exp(+\mathrm i\varepsilon_{n,-\mathbf q}t)\), so they transform into delta functions at positive and negative energy transfer, respectively:
+
+\begin{equation}\label{eq-lswt-dynamic-structure-factor}
+\mathcal S^{\alpha\beta}(\mathbf q,\omega)
+=\mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)\,\delta(\omega)
++\sum_{n=1}^{N_{\mathrm{sub}}}\Big[\big(1+n_{n\mathbf q}\big)W_n^{\alpha\beta}(\mathbf q)\,\delta(\omega-\varepsilon_{n\mathbf q})
++n_{n,-\mathbf q}\,W_n^{\beta\alpha}(-\mathbf q)\,\delta(\omega+\varepsilon_{n,-\mathbf q})\Big].
+\end{equation}
+
+Positive \(\omega\) corresponds to energy transferred to the magnet by creating a magnon \((\mathbf q,n)\); negative \(\omega\) corresponds to the absorption of a thermally excited magnon \((-\mathbf q,n)\). The ratio \(n_{\mathrm B}(\varepsilon)/[1+n_{\mathrm B}(\varepsilon)]=\exp(-\beta\varepsilon)\) gives detailed balance,
+
+\begin{equation}\label{eq-lswt-detailed-balance}
+\mathcal S^{\beta\alpha}(-\mathbf q,-\omega)=\exp(-\beta\omega)\,\mathcal S^{\alpha\beta}(\mathbf q,\omega).
+\end{equation}
+
+The dynamic structure factor in \eqref{eq-lswt-dynamic-structure-factor} contains the elastic scattering, of order \(S^2\) with its \(O(S)\) moment reduction, and the one-magnon scattering, of order \(S\). The two-magnon continuum from the connected longitudinal correlation is of order \(S^0\) and is not included. At a zero mode, for example a Goldstone mode at a magnetic Bragg vector, the one-magnon weights can diverge as \(\varepsilon_{n\mathbf q}\to0\), because the entries of \(\mathsf T_{\mathbf q}\) grow as described in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}.
+
+\subsubsection{Broadening}
+
+In LSWT the magnons have infinite lifetime, and the dynamic structure factor consists of delta functions. A finite energy resolution or a phenomenological lifetime is represented by multiplying the correlation function by \(\exp(-\eta|t|)\) with \(\eta>0\). Because the particle and hole entries of \(\mathsf N_{\mathbf q}(t)\) oscillate with opposite signs, each delta function is replaced by a Lorentzian centered at its own energy,
+
+\begin{equation}\label{eq-lswt-lorentzian-broadening}
+\delta(\omega-\varepsilon_{n\mathbf q})\to L_\eta(\omega-\varepsilon_{n\mathbf q}),
+\qquad
+\delta(\omega+\varepsilon_{n,-\mathbf q})\to L_\eta(\omega+\varepsilon_{n,-\mathbf q}),
+\qquad
+L_\eta(x)=\frac{1}{\pi}\frac{\eta}{x^2+\eta^2},
+\end{equation}
+
+and the elastic \(\delta(\omega)\) is replaced by \(L_\eta(\omega)\). The Lorentzian has unit area and full width at half maximum \(2\eta\), so the frequency integral \(\mathcal S^{\alpha\beta}(\mathbf q)\) is unchanged. The broadening is not part of LSWT; other line shapes, such as a Gaussian resolution function, enter in the same way.
+
+\subsection{Magnetic Neutron Scattering Intensity}
+
+For unpolarized neutrons, the magnetic scattering cross-section contains the dynamic structure factor through the projection onto the components perpendicular to the momentum transfer,
+
+\begin{equation}\label{eq-lswt-neutron-projection}
+\mathcal S_\perp(\mathbf q,\omega)
+=\sum_{\alpha,\beta}\left(\delta_{\alpha\beta}-\hat q_\alpha\hat q_\beta\right)\mathcal S^{\alpha\beta}(\mathbf q,\omega),
+\qquad
+\hat{\mathbf q}=\mathbf q/|\mathbf q|,
+\end{equation}
+
+up to the magnetic form factor, the \(g\) factor, and constant prefactors. The projector is symmetric in \((\alpha,\beta)\), so only the symmetric part of \(\mathcal S^{\alpha\beta}\) contributes. For momentum transfer in the plane of a two-dimensional layer, \(\hat{\mathbf q}=(q_x,q_y,0)/|\mathbf q|\). When the \(g\) tensor \(\mathsf g_I\) of \lswtnoteref{LSWT foundations}{Bilinear Spin Hamiltonian} is anisotropic, the neutron couples to the magnetic moment rather than to the spin, and the spin correlations are replaced by moment correlations with the vertex components \(\sum_\gamma g_\mu^{\alpha\gamma}\,\mathsf V^\gamma\) for sublattice \(\mu\).
+
+\subsection{Retarded Response and Spectral Function}
+
+The linear response of the spin component \(\hat S_{\mathbf q}^\alpha\) to a field coupling to \(\hat S_{-\mathbf q}^\beta\) is given by the retarded function
+
+\begin{equation}\label{eq-lswt-retarded-function}
+G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)
+=-\mathrm i\int_0^{\infty}dt\,\exp\!\big(\mathrm i(\omega+\mathrm i0^+)t\big)
+\big\langle\big[\hat S_{\mathbf q}^\alpha(t),\hat S_{-\mathbf q}^\beta(0)\big]\big\rangle.
+\end{equation}
+
+We define the spectral function as the time Fourier transform of the same commutator,
+
+\begin{equation}\label{eq-lswt-spectral-function}
+\mathcal A^{\alpha\beta}(\mathbf q,\omega)
+=\frac{1}{2\pi}\int_{-\infty}^{\infty}dt\,\exp(\mathrm i\omega t)
+\big\langle\big[\hat S_{\mathbf q}^\alpha(t),\hat S_{-\mathbf q}^\beta(0)\big]\big\rangle.
+\end{equation}
+
+Three relations connect these functions with each other and with the dynamic structure factor.
+
+\textbf{Spectral representation.} Writing the commutator as \(\int d\omega'\,\exp(-\mathrm i\omega't)\mathcal A^{\alpha\beta}(\mathbf q,\omega')\) and performing the time integral gives
+
+\[
+G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)
+=\int_{-\infty}^{\infty}d\omega'\,\frac{\mathcal A^{\alpha\beta}(\mathbf q,\omega')}{\omega-\omega'+\mathrm i0^+}.
+\]
+
+\textbf{Fluctuation--dissipation relation.} The first term of the commutator gives \(\mathcal S^{\alpha\beta}(\mathbf q,\omega)\). The second term, \(\langle\hat S_{-\mathbf q}^\beta(0)\hat S_{\mathbf q}^\alpha(t)\rangle=\mathcal C^{\beta\alpha}(-\mathbf q,-t)\), gives \(\mathcal S^{\beta\alpha}(-\mathbf q,-\omega)\). With detailed balance,
+
+\begin{equation}\label{eq-lswt-fluctuation-dissipation}
+\mathcal A^{\alpha\beta}(\mathbf q,\omega)
+=\mathcal S^{\alpha\beta}(\mathbf q,\omega)-\mathcal S^{\beta\alpha}(-\mathbf q,-\omega)
+=\big(1-\exp(-\beta\omega)\big)\,\mathcal S^{\alpha\beta}(\mathbf q,\omega).
+\end{equation}
+
+\textbf{Anti-Hermitian part.} The dynamic structure factor is a Hermitian matrix in \((\alpha,\beta)\) at each \(\omega\), and so is \(\mathcal A^{\alpha\beta}\). The spectral representation then gives
+
+\begin{equation}\label{eq-lswt-spectral-anti-hermitian}
+\mathcal A^{\alpha\beta}(\mathbf q,\omega)
+=-\frac{1}{2\pi\mathrm i}\Big[G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)-\big(G_{\mathrm R}^{\beta\alpha}(\mathbf q,\omega)\big)^*\Big].
+\end{equation}
+
+For a diagonal component this reduces to \(\mathcal A^{\alpha\alpha}(\mathbf q,\omega)=-\pi^{-1}\operatorname{Im}G_{\mathrm R}^{\alpha\alpha}(\mathbf q,\omega)\). For \(\alpha\neq\beta\), the imaginary part of a single element \(G_{\mathrm R}^{\alpha\beta}\) is not the spectral function unless \(G_{\mathrm R}\) is symmetric in \((\alpha,\beta)\).
+
+\subsubsection{LSWT Result}
+
+Inserting \eqref{eq-lswt-dynamic-structure-factor} into \eqref{eq-lswt-fluctuation-dissipation}, the thermal factors cancel: \((1-\exp(-\beta\varepsilon))(1+n_{\mathrm B}(\varepsilon))=1\) at \(\omega=\varepsilon\), and \((1-\exp(\beta\varepsilon))\,n_{\mathrm B}(\varepsilon)=-1\) at \(\omega=-\varepsilon\). The elastic part drops out because \(1-\exp(0)=0\). The spectral function and the retarded function are
+
+\begin{equation}\label{eq-lswt-spectral-function-lswt}
+\begin{aligned}
+\mathcal A^{\alpha\beta}(\mathbf q,\omega)
+&=\sum_{n=1}^{N_{\mathrm{sub}}}\Big[W_n^{\alpha\beta}(\mathbf q)\,\delta(\omega-\varepsilon_{n\mathbf q})
+-W_n^{\beta\alpha}(-\mathbf q)\,\delta(\omega+\varepsilon_{n,-\mathbf q})\Big],\\
+G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)
+&=\sum_{n=1}^{N_{\mathrm{sub}}}\left[\frac{W_n^{\alpha\beta}(\mathbf q)}{\omega-\varepsilon_{n\mathbf q}+\mathrm i0^+}
+-\frac{W_n^{\beta\alpha}(-\mathbf q)}{\omega+\varepsilon_{n,-\mathbf q}+\mathrm i0^+}\right].
+\end{aligned}
+\end{equation}
+
+In LSWT both functions are independent of temperature, since the magnons do not interact. Replacing \(0^+\) by \(\eta\) in \(G_{\mathrm R}\) and taking the anti-Hermitian part replaces the delta functions of \(\mathcal A^{\alpha\beta}\) by the Lorentzians \(L_\eta\) of \eqref{eq-lswt-lorentzian-broadening}.
+
+The frequency integral of the spectral function is the equal-time commutator \(\langle[\hat S_{\mathbf q}^\alpha,\hat S_{-\mathbf q}^\beta]\rangle\). In LSWT, the paraunitarity \(\mathsf T_{\mathbf q}\Sigma_3\mathsf T_{\mathbf q}^\dagger=\Sigma_3\) turns the sum of the weights into a property of the vertex alone,
+
+\begin{equation}\label{eq-lswt-spectral-sum-rule}
+\int_{-\infty}^{\infty}d\omega\,\mathcal A^{\alpha\beta}(\mathbf q,\omega)
+=\big(\mathsf V^\alpha\mathsf T_{\mathbf q}\big)\Sigma_3\big(\mathsf V^\beta\mathsf T_{\mathbf q}\big)^\dagger
+=\mathsf V^\alpha\Sigma_3(\mathsf V^\beta)^\dagger
+=\frac{\mathrm i}{N_{\mathrm{sub}}}\sum_{\mu=1}^{N_{\mathrm{sub}}}S_\mu\sum_\gamma\epsilon^{\alpha\beta\gamma}n_\mu^\gamma,
+\end{equation}
+
+where \(\epsilon^{\alpha\beta\gamma}\) is the Levi-Civita symbol. The last step uses \(\mathbf e_\mu^-\times\mathbf e_\mu^+=\mathrm i\,\mathbf n_\mu\). The result is the spin commutation relation \([\hat S_I^\alpha,\hat S_I^\beta]=\mathrm i\sum_\gamma\epsilon^{\alpha\beta\gamma}\hat S_I^\gamma\), averaged over the sites, at leading order in \(S\). It holds for every \(\mathbf q\) and provides a check of the normalization of \(\mathsf T_{\mathbf q}\).
+
+For Cartesian components, the conjugation relation \([\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(\mathbf q,-t)\) of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}) and stationarity give \(\langle\hat S_{-\mathbf q}^\beta\hat S_{\mathbf q}^\alpha(t)\rangle=[\mathcal C^{\alpha\beta}(-\mathbf q,t)]^*\), so the commutator is \(\mathcal C^{\alpha\beta}(\mathbf q,t)-[\mathcal C^{\alpha\beta}(-\mathbf q,t)]^*\). It reduces to \(2\mathrm i\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)\) only when \(\mathcal C^{\alpha\beta}(-\mathbf q,t)=\mathcal C^{\alpha\beta}(\mathbf q,t)\), for example when a symmetry maps \(\mathbf q\) to \(-\mathbf q\); then the retarded function can also be written as \(G_{\mathrm R}^{\alpha\beta}(\mathbf q,\omega)=2\int_0^\infty dt\,\exp(\mathrm i(\omega+\mathrm i0^+)t)\operatorname{Im}\mathcal C^{\alpha\beta}(\mathbf q,t)\). For a nonreciprocal spectrum, \(\varepsilon_{n\mathbf q}\ne\varepsilon_{n,-\mathbf q}\), the commutator must be kept in the general form. For complex combinations of components, the conjugation relation exchanges the components with their complex conjugates, and the commutator must be written out explicitly.
+
+\subsection{References}
+
+\subsubsection{Internal Documents}
+
+\begin{itemize}
+\tightlist
+\item
+  Spin Correlations (Section~\ref{sec-lswt-spin-correlations}): defines \(\mathcal C^{\alpha\beta}(\mathbf q,t)\), the spin vertex \(\mathsf V^\alpha\), the magnon correlation matrix \(\mathsf N_{\mathbf q}(t)\), and the elastic correlation.
+\item
+  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies \(\mathsf T_{\mathbf q}\), its particle--hole structure, its gauge freedom, and its behavior at zero modes.
+\item
+  Thermodynamics (Section~\ref{sec-lswt-thermodynamics}): defines the Bose--Einstein occupations.
+\item
+  \lswtnoteref{LSWT foundations}{Bilinear Spin Hamiltonian}: defines the \(g\) tensor.
+\item
+  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): supplies the reduced moments that enter the elastic part.
+\item
+  \lswtnoteref{LSWT foundations}{Notation and Conventions}: distinguishes the external momentum \(\mathbf q\) from the magnon momentum \(\mathbf k\).
+\end{itemize}
+
+\subsubsection{External Sources}
+
+\begin{itemize}
+\tightlist
+\item
+  G. L. Squires, \emph{Introduction to the Theory of Thermal Neutron Scattering}, 3rd ed.~(Cambridge University Press, 2012), \href{https://doi.org/10.1017/CBO9781139107808}{doi:10.1017/CBO9781139107808}: magnetic neutron cross-section with the projection \(\delta_{\alpha\beta}-\hat q_\alpha\hat q_\beta\), detailed balance, and the fluctuation--dissipation relation.
+\end{itemize}

@@ -1,0 +1,828 @@
+% Converted on 2026-10-08 from docs/development/appendices/b-decisions-references.tex (Beamer, review copy 43).
+% Each frame became a subsection whose body, unchanged, sits in a group as in Beamer.
+
+\section{결정·관리·참고자료}
+
+\hypertarget{appendix-b}{}
+
+\subsection{결정 기록: 합의와 제안을 구분한다}\label{decisions}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{기록일 2026-09-23 · 갱신 2026-09-29 · 대화의 합의·결정은 세부 API 구현 완료와 다르다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D01 & 같은 물리 모델을 여러 계산 방법으로 전달하는 workflow & \textbf{방향 합의} \\
+    D02 & 모델 간 공통 필드와 동일한 의미의 전달 규약 & \textbf{방향 합의} \\
+    D03 & 모델 작업 공간은 작은 구성으로 시작 & \textbf{방향 합의} \\
+    D04 & 원시·중간 계산은 모델 작업 공간, 정돈된 결과는 data-space & \textbf{방향 합의} \\
+    D05 & 분율 좌표·정수 셀 이동·단위 모드·결합 수 규칙 & \textbf{규약 검토} \\
+    D06 & 기존 변위와 새 규약의 대응, 실제 자료형 API & \textbf{D13·D16으로 결정} \\
+    D07 & 1차 범위: NBCP·두 하이젠버그 벤치마크, LSWT 물리량(위상량은 마지막 단계) & \textbf{사용자 결정} \\
+    D08 & \texttt{terms[]} 형식: 형식은 열고 1차 검증은 이선형·Zeeman으로 닫음 & \textbf{사용자 결정} \\
+\bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{후속 변경 시 각 항목의 결정 근거와 검증을 갱신한다.
+  구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{대화 합의와 검토안의 범위}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (계속)}\label{decisions-continued}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-29 사용자 결정.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D09 & 모델은 g-텐서, 장 $B$는 외부 변수; Zeeman 부호 $-\mu_B$ & \textbf{사용자 결정} \\
+    D10 & 최소 ED 검증 도구를 \texttt{methods/ed/}에 두고 ED 솔버로 확장 & \textbf{사용자 결정} \\
+    D11 & 패키지 \texttt{spintoolkit}, 별칭 \texttt{stk}; 키타에프는 후속 벤치마크 & \textbf{사용자 결정} \\
+    D12 & 선택적 Zeeman 항, $g_{\alpha\beta}$ 인덱스, relative $\mu_B=1$(D20으로 대체), 상태 검증·기준 상태 진단 & \textbf{사용자 결정} \\
+    D13 & 표준 Fourier 부호 $e^{+\mathrm i\mathbf k\cdot\mathbf r}$와 전체 위치 게이지; NBCP 변위는 $r_t=r_s-d$ & \textbf{사용자 결정} \\
+    D14 & 상태·계산 요청·결과를 공통·방법별 부분으로 분리; \texttt{SpinState}는 정수 초격자 $M$ & \textbf{사용자 결정} \\
+    D15 & 표준 벤치마크 모델은 \texttt{spintoolkit/models/}, 연구 모델은 \texttt{model/<name>/} & \textbf{사용자 결정} \\
+    D16 & 1단계 API: \texttt{Term} 생성 함수, (사이트, 셀) 방향 dict, 위반 일괄 보고, 최상위 노출; 직렬화는 4단계 & \textbf{사용자 결정} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{2026-09-29 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D17--D24)}\label{decisions-selection}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-29--30 사용자 결정. 근거와 수치 자료는 부록 A와 이 부록의 뒤쪽에 있다.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D17 & 영점 에너지 상태 선택은 고전 manifold 위에서: $E_{\mathrm{cl}}$ Hessian 영공간으로 정한 축 $\hat n$의 궤도 $R_{\hat n}(\phi)$에서 $E_{\mathrm{qm}}$ 최소화(2b단계) & \textbf{사용자 결정} \\
+    D18 & D17 구현 계획: \texttt{quantum} 삭제(과거의 실수), MAGSWT 유지·재현 검증, 2b단계, 삼각격자 $h=0$·$h>h_{\mathrm{sat}}$ & \textbf{사용자 결정} \\
+    D19 & D17 판정: 물리 근거 모드(기본)와 고정 상수 모드; 기본값은 \texttt{definitions/defaults.py}; 판정 값 기록 & \textbf{사용자 결정} \\
+    D20 & 수치 계산은 무차원($E_0$ 기준: 장 $\mu_B\mathbf B/E_0$, 온도 $k_BT/E_0$); 물리 단위 T·K·meV는 문서 규약, 변환은 사용자 & \textbf{사용자 결정} \\
+    D21 & 2단계: NBCP 문헌·원고 파라미터 세트(g는 세트별), 변환은 \texttt{system/conversion.py}, 장이 같을 때만 역변환, 새 LSWT 진입점은 4단계 & \textbf{사용자 결정} \\
+    D22 & 2b단계: \texttt{select\_on\_manifold}; 경쟁 영역은 두 최소를 기록하고 자동 선택 안 함; $E_{\mathrm{qm}}$은 호출 가능 객체(기존 \texttt{EnergyFunction} 경유); 새 DE 없음; \texttt{quantum} 삭제 & \textbf{사용자 결정} \\
+    D23 & 3단계: 일반 해밀토니안 ED(U(1)·운동량 섹터는 선택), 2-마그논·flux는 후속, 문헌 비교는 4단계; 토러스의 겹친 결합 합산, 접히는 결합은 모든 방법에서 거부; ED는 전체 에너지 저장 & \textbf{사용자 결정} \\
+    D24 & 4단계: \texttt{solve\_lswt} 진입점(기존 \texttt{LSWTSolver} 유지), 무차원, 정규화 기본 없음(영모드는 오류), 대각화 정보 보관·재사용, 4a·4b·4c & \textbf{사용자 결정} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{구현·수치 검증·사용자 확인은 각각 별도 상태로 기록한다.}
+  \slidesource{2026-09-29 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D25--D28)}\label{decisions-stage4}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 사용자 결정. 근거와 수치 자료는 부록 A에 있다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D25 & 4b: 영모드는 $\lambda_{\min}(\mathsf H)/\text{scale}$로 영($\le10^{-12}$)·후보($\le10^{-6}$)·갭; 후보가 있으면 사용자가 \texttt{gapless}를 정할 때까지 유한 온도 계산을 멈춤; gapless이면 $t>0$의 보손 수·모멘트·자화는 NaN, $F,U,S,C$는 계산; 탐색은 고대칭점·격자 최소점·연속 최소화·선 검사, $k=0$ 기원 표시; 무차원 $t$ & \textbf{사용자 결정} \\
+    D26 & 4c: 한 마그논 가로 성분과 정확한 Bragg(2-마그논 연속체는 후속); 모드별 무게가 주 출력, 넓힌 스펙트럼은 보조; 새 구현, 기존 \texttt{correlations.py}는 비교 대상만; 결합 상관과 에너지 교차 확인 & \textbf{사용자 결정} \\
+    D27 & 기존 코드 정리: \texttt{correlations.py} 삭제, 동시간 실공간 상관·사다리 성분은 새 모듈로; MAGSWT 격자 탐색 삭제, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}; MAGSWT 정규화는 유지 & \textbf{사용자 결정} \\
+    D28 & 고전·양자 비교: 완화 경로 위 1-loop 유효 퍼텐셜 $\Gamma(\phi)=E_{\mathrm{cl}}+E_{\mathrm{zp}}$의 최소(부드러운 방향의 1-loop 정상성); 곡률 비 대역을 대체; 평평하면 D17 & \textbf{사용자 결정}, 구현·제공자 결정 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D29)}\label{decisions-stage5}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 사용자 결정(추천안 채택). 근거와 수치 자료는 부록 A에 있다.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}YP{2.5cm}@{}}
+    \toprule
+    ID & 내용 & 상태 \\
+    \midrule
+    D29 & 5단계 위상량: thermal Hall은 층당 $\kappa_{xy}^{2D}/T$를 $k_B^2/\hbar$ 단위의 무차원 값으로(5b); 곡률은 D13 전체 위치 게이지에서 계산·보고, Chern 수·$\kappa$의 게이지 불변은 시험; 부호 $\Omega=\partial_{k_x}A_y-\partial_{k_y}A_x$, $A=i\langle u|\eta\nabla u\rangle$, $C=\frac{1}{2\pi}\int\Omega$, $\kappa=-\frac{k_B^2T}{\hbar A}\sum c_2\Omega$, 물리적 Bloch 상태(ED)로 고정; 이상항 기준 모델로 키타에프 [111] 편극상; 5a·5b·5c로 나눠 검증. 5b 세부: $\kappa$는 쌍 합(퇴화·교차 밴드에서도 정의), 영모드는 D25. 5c: 두 Hall 경로의 계산 핵심 통합, 기존 SI API 유지. 5d: 적응형 k 적분($\kappa$만, 선택 인자) & \textbf{사용자 결정}, 5a--5d 구현 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D30): 설계 미결 사항}\label{decisions-d30}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 사용자 결정(추천안 채택). 구현은 LSWT 작업 재개 뒤에 한다.}
+  \footnotesize\renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}p{2.4cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    자기 셀 & LT는 진단 도구로 구현($J(\mathbf q)$ 최소 $\mathbf q^*$, 강한 제약 만족 여부, 후보 셀 제안; 선택 단계는 그대로). 대각 셀 전용 \texttt{CommensurateStructure}는 삭제(참조·호환 매핑·예시·테스트 정리, 옛 저장 객체 복원 여부 먼저 확인) \\
+    기존 경로 & \texttt{LSWTSolver}($\to$ \texttt{solve\_lswt}), SI Hall API($\to$ \texttt{thermal\_hall})에 사용 중단 경고, 삭제는 공개 배포 정리 때. 전역 고전 탐색을 새 자료형으로 옮긴 뒤 \texttt{EnergyFunction}/\texttt{SpinOptimizer}도 같은 방식으로. \texttt{SpinSystem}과 기존 해밀토니안 구성기는 내부 도구로 유지 \\
+    1차 범위 제외 & D17 확장(사이트별 회전축·여러 차원 영공간), 후속 항 종류(같은 사이트 이차항, 3·4-스핀 항, $S\ge1$), 키타에프 flux 섹터 대조와 ED 2-마그논 섹터 --- 필요한 벤치마크나 모델이 생길 때 다시 연다 \\
+    TN 필드 규약 & 솔버 경계 검증 실험(인수인계 260607) 결과를 보고 정한다 \\
+    적응형 적분 & 오차 추정 개선은 보류(계산량이 문제가 될 때) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D31): 위상량 수치 기준 확정}\label{decisions-d31}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 사용자 결정. 두 계산은 반대 방향으로 실패하므로, 일치할 때만 받으면 틀린 정수 대신 NaN이 나온다.}
+  \footnotesize\renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}P{3.2cm}P{1.6cm}Y@{}}
+    \toprule
+    기준 & 값 & 의미와 근거 \\
+    \midrule
+    밴드 간격 & $10^{-8}E_0$ & 이하이면 그 격자점의 곡률 판정 불가(Kubo 분모가 0에 가까움). 기존 경로의 승인값을 무차원으로 \\
+    FHS 링크 겹침 & $10^{-3}$ & 이하이면 격자점 사이의 밴드 교차. 정상 경우 최소 겹침 0.55--0.95, 대칭 보호 교차 $10^{-15}$ \\
+    Kubo--FHS 일치 & 0.1 & FHS: 갭이 있으면 거친 격자에서도 정확, 갭 닫힘은 모름(임의의 정수). Kubo: 작은 갭에서 느리게 수렴, 갭 닫힘·격자 부족이 정수 이탈로 드러남. 거부되면 격자를 키운다 \\
+    FHS admissibility & $10^{-6}$ rad & plaquette 위상이 $\pm\pi$에서 이 이내이면 판정 불가. 밴드 접촉을 둘러싼 plaquette의 Berry 위상 $\pi$는 가지($\pm\pi$)가 반올림으로 정해짐. 최대 위상: $D=0$에서 $\pi$, $D=10^{-3}$에서 $\pi-0.06$, 갭 있는 경우 1.01 이하 (2026-10-01 보완) \\
+    적응형 적분 & 1e-3 / 1e-7 / 2e5 / 12 & 상대·절대 허용오차, 계산점 예산, 최대 깊이 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{Haldane 예: $D=10^{-2}$--$10^{-4}$에서 FHS는 $6\times6$부터 정답 $(+1,-1)$, Kubo는 0.002--0.99로 수렴 중이라 대부분 거부; $D=0$(갭 없음)에서 FHS는 플랫폼·격자에 따라 $-1$, 0, $+1$이었고, 0이면 Kubo 0과 일치해 틀린 $(0,0)$이 채택됐다($24\times24$) $\to$ 2026-10-01 admissibility 기준으로 판정 불가.}
+  \slidesource{2026-09-30 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D32--D33): 6단계와 4d 인터페이스}\label{decisions-d32}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 사용자 결정(추천안 채택). D30의 구현 방법.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    LT 진단 & \texttt{luttinger\_tisza(model, mesh=(N, N)) -> LTReport}(\texttt{methods/luttinger\_tisza.py}): $\mathbf q^*$, 분수와 후보 초격자, 고유공간 차원, 단일 q 강한 제약과 그 상태, 퇴화 표시; 영장; 선택하지 않음 \\
+    전역 고전 탐색 & \texttt{classical\_search(model, supercell, conditions, seed=42, ...)}(\texttt{methods/classical.py}): $(\theta,\phi)$ 차분 진화(기존 설정) 뒤 \texttt{refine\_classical}; 각도 고정 없음 \\
+    진행 & 6a(정리) $\to$ 6b $\to$ 6c; 6b·6c는 검증 뒤 사용자 확인 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-09-30 결정}{contract}
+  \par\medskip
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    D33 & 결정 \\
+    \midrule
+    밴드 구조(4d) & \texttt{high\_symmetry\_points(lattice)}, \texttt{band\_structure(result, path, points, lattice="primitive")}: 결정 격자 경로 기본, 자기 셀 밴드는 접힌 채, 영모드 표시, 불안정은 NaN; 그림은 7단계(시각화)에서 설계·검토 \\
+    \bottomrule
+  \end{tabularx}
+\endgroup
+
+
+\subsection{결정 기록 (D34): 단일 Q 나선의 회전틀 LSWT}\label{decisions-d34}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임), 사용자 물리·수학 검토 대기. Toth--Lake (2015).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    상태 & \texttt{IncommensurateStructure(model\_ref, wave\_vector, rotation\_axis, directions)}: $\mathbf n_a(\mathbf R)=R_{\mathbf n}(2\pi\,\mathbf q\cdot(n_1,n_2))\,\mathbf d_a$, 위상은 셀 번호만, 원뿔 허용, 정합이면 \texttt{to\_spin\_state} \\
+    LSWT & \texttt{solve\_spiral\_lswt}: $J'=J R_{\mathbf n}(2\pi\,\mathbf q\cdot\Delta\mathbf n)$인 원시 셀 모델을 \texttt{solve\_lswt}로 풂; 밴드는 회전틀 운동량의 $\omega(\mathbf k)$ \\
+    적용 조건 & 모든 $J$가 축 회전과 교환(축 XXZ, 축 방향 DM), $g^T\mathbf b\parallel\mathbf n$; 아니면 근사값 대신 \texttt{SpiralSymmetryError} \\
+    구조인자 & \texttt{spiral\_structure\_factor}: $S=\sum_m R_m S'(\mathbf k-m\mathbf Q)R_m^\dagger$; $\mathbf Q$ 또는 $2\mathbf Q\in G$이면 초격자 안내 \\
+    안전장치 & 회전틀 결과는 실험실 상관·위상량이 거부(나선 위상량 미검증); 피치 $\partial E/\partial\mathbf q$ 진단 \\
+    LT 연결 & \texttt{IncommensurateStructure.from\_lt}, \texttt{LTWaveVector.amplitude}, \texttt{refine\_spiral} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{검증: 삼각 $120^\circ$·DM·원뿔 나선이 같은 운동량의 초격자 LSWT와 에너지·밴드·$S^{ab}(\mathbf q,\omega)$에서 반올림 수준 일치, 비정합 J1--J2 사슬의 피치와 $\omega(\mathbf k)$가 해석식과 $10^{-14}$ 수준 일치 (\texttt{verification/spiral-rotating-frame-2026-10-01.json}).}
+  \slidesource{2026-10-01 나선 메모}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D35): 결정 대칭과 대칭 허용 결합}\label{decisions-d35-symmetry}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임: 범용 솔버 방향), 사용자 검토 대기. 기존 API 변경 없음.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    위치·입력 & \texttt{system/symmetry.py}; 결정은 \texttt{LayerCrystal(lattice, positions, species, heights)}로 리간드까지 받는다. 자기 이온만의 대칭(\texttt{LayerCrystal.from\_model})은 상한이다 \\
+    연산 & $\mathbf r\to R\mathbf r+\mathbf t$, $R=\mathrm{diag}(R_2,\pm1)$; 스핀·장은 축 벡터 $R_s=\det(R)R$; $J\to R_sJR_s^{T}$, 결합이 뒤집히면 전치; $g\to R_sgR_s^{T}$; 시간 반전은 지원 항을 모두 보존하므로 군에 넣지 않음 \\
+    기능 & \texttt{find\_symmetry}, \texttt{close\_group}; \texttt{CrystalSymmetry.allowed\_exchange}, \texttt{allowed\_g\_tensor}(허용 형태의 기저), \texttt{bilinear\_terms}, \texttt{zeeman\_terms}(궤도 생성), \texttt{check\_model} \\
+    물리 판정 & 대칭을 깨는 계수는 금지 성분을 보여 주며 거부(임의로 대칭화하지 않음) \\
+    검증 & 평평한 삼각격자 XYZ 3개, CdI$_2$형 D$_{3d}$ 삼각격자 $J,\Delta,J_{\pm\pm},J_{z\pm}$ 4개·DM 없음·축 대칭 $g$, 평평한 카고메 $D_z$만·균일 순환; 생성 모델의 LSWT $\omega(C_3\mathbf k)=\omega(\mathbf k)$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D36--D37): 직접 $H(\mathbf k)$와 단일 이온 항}\label{decisions-d36-onsite}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 2번 집중을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    D36 직접 $H(\mathbf k)$ & \texttt{methods/lswt/quadratic.py}의 \texttt{QuadraticBoseHamiltonian}: \texttt{SpinModel}에서 $H(\mathbf k)$와 해석적 $\partial_{\mathbf k}H$를 바로 만든다. \texttt{solve\_lswt}가 사용; 규약(Nambu 순서, 국소 좌표 게이지, D13)은 그대로이며 기존 구성기와 $10^{-16}$ 수준으로 일치 \\
+    D37 항 & \texttt{Term.onsite(site, A)}: $\mathbf S_i^{T}A\mathbf S_i$, $A$는 실수 대칭(반대칭 부분은 비에르미트라 거부), 사이트당 하나 \\
+    D37 규칙 & 고전·LSWT는 스핀 결맞음 상태 값 $S(S-\tfrac12)\mathbf n^{T}A\mathbf n+\tfrac S2\operatorname{tr}A$, 즉 계수 $(1-\tfrac1{2S})A$를 쓰고, 횡방향 정규 순서 상수는 더하지 않는다. ED와 LT는 각각 정확한 연산자와 같은 결맞음 값을 쓴다 \\
+    근거 & $S=\tfrac12$에서 상수 $\operatorname{tr}A/4$; $D(S^z)^2$ 단일 이온 갭 $(2S-1)|D|$ 정확; 선형항이 정확한 연산자와 같음; 단일 스핀 $S\le20$ 정확 스펙트럼과 비교 시 large-S는 갭 오차 $\approx0.57$, 정규 순서 상수를 더하면 에너지 오차가 $S$에 비례 \\
+    검증 & 축 대칭 모델의 1-마그논 LSWT 밴드 = 토러스 ED($10^{-11}$); 결합 상관 에너지 = LSWT 바닥 에너지; LT 하한 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D38): 고전 스핀 동역학}\label{decisions-d38-dynamics}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 5번 집중을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    계 & \texttt{methods/dynamics.py}의 \texttt{ClassicalTorus}: 유한 토러스(D23), 스핀 길이 $S_i$, 고전 에너지는 D37 결맞음 값. 시간 단위 $\hbar/E_0$ \\
+    운동 방정식 & $\dot{\mathbf s}_i=\mathbf s_i\times\mathbf h_i$, $\mathbf h_i=-\partial E/\partial\mathbf s_i$. 암시적 중점법은 길이와 에너지를 정확히 보존하고 작은 진동 진동수를 $(2/\Delta t)\arctan(\omega\Delta t/2)$로 옮긴다 \\
+    랑주뱅 & $\dot{\mathbf s}=\mathbf s\times(\mathbf h+\boldsymbol\xi)-(\alpha/S)\,\mathbf s\times(\mathbf s\times\mathbf h)$, $\langle\xi\xi\rangle=(2\alpha T/S)\delta$ (Stratonovich, 확률 Heun 후 투영). 감쇠 이동도 $\alpha S$와 구면 확산 $\alpha TS$의 비가 $T$라 정상 분포가 $e^{-E/T}$ \\
+    $S(\mathbf q,\omega)$ & 완전 위치 위상(D13), Hann 창 주기도, 합 규칙 보존. 양자 상세 균형 인자와 형태 인자는 적용하지 않음 \\
+    검증 & 단일 스핀 Langevin 함수; 단일 이온 분포(구적법, large-S 값과 구별); 작은 진동 = LSWT 밴드; 저온 $S(\mathbf q,\omega)$ 정점 = LSWT 분산 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D39): 유한 온도 각도 자유 에너지}\label{decisions-d39-free-energy}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 NBCP 우선을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    식 & $f(\phi,T)=E_{\rm cl}+E_{\rm zp}+\frac{T}{N}\sum_{\mathbf k n}\ln(1-e^{-\varepsilon_{\mathbf k n}/T})$, \texttt{LSWTHarmonicFreeEnergy}; 제한 상태와 영점 처리는 D28 그대로. 1/S 조화 차수 \\
+    부드러운 모드 & $|\mathbf k|<\Lambda$의 가장 낮은 모드는 위상 이론(clock RG)에 남기고 열항에서 뺀다. $\Lambda=0$은 전체 조화 자유 에너지. $\Lambda$와 뺀 모드 수를 기록 \\
+    정의되지 않음 & 불안정 모드 쌍이나 0 에너지 모드가 남으면 \texttt{nan}과 횟수 기록 \\
+    검증 & 편극 정사각 반강자성체 닫힌 식; $-\partial F/\partial T$ = Bose 엔트로피; 차단 모드 차이; NBCP Y·V 메쉬 수렴 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D40): 고전 몬테카를로와 열 관측량}\label{decisions-d40-monte-carlo}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 사용자가 NBCP 우선을 지정), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    갱신 & 결합 그래프 색칠로 같은 색을 한꺼번에; Metropolis 제안 $S\,\mathrm{normalize}(\mathbf s/S+\sigma\mathbf g)$(대칭), onsite 포함 정확한 $\Delta E$; 과완화(국소장 반사)는 onsite 없는 사이트만 \\
+    관측량 & 에너지, 비열 $N\,\mathrm{var}(e)/T^2$, $\mathbf m_{\mathbf q}$(D13), 상대 비틀림 강성 $\Upsilon=(\langle E''\rangle-\mathrm{var}(E')/T)/N$, 잭나이프 오차. 축에 대해 U(1)이 아닌 교환은 거부하고, 요청 시 U(1) 대칭 부분 $\bar J$의 강성만 준다 \\
+    검증 & 비틀림 미분 = 유한 차분; $\Upsilon(0)=|J|S^2$; 과완화 에너지 보존; 단일 스핀·단일 이온 분포; 고온 급수; 몬테카를로 = Langevin 에너지 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D41): 비편극 중성자 세기}\label{decisions-d41-neutron}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; NBCP 재현과 배포의 공통 1순위), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    정의 & 사이트당 $I(\mathbf Q,\omega)=\sum_{ab}(\delta_{ab}-\hat Q_a\hat Q_b)\,S_M^{ab}(\mathbf Q,\omega)$, $S_M$은 $\mathbf S_i\to\tfrac12 g_i F_i(|\mathbf Q|)\mathbf S_i$로 바꾼 D26 구조인자(탄성 포함, 나선 D34 포함). 계수 $(\gamma r_0)^2 k_f/k_i\,e^{-2W}$는 제외 \\
+    2D 층 & $S_M$은 $\mathbf Q_\parallel$에만 의존; $Q_z$는 편극 인자와 형상인자의 $|\mathbf Q|$에만 들어간다 \\
+    형상인자 & 쌍극자 근사 $\langle j_0\rangle+c\langle j_2\rangle$, Brown 표 중 Sunny.jl·periodictable이 일치하는 3d 이온; $c=0$ 기본 \\
+    분해능·평균 & 에너지 의존 FWHM(Gaussian/Lorentzian); 분말 = 구면 Fibonacci 평균; 도메인 $I_R(\mathbf Q)=I(R^{-1}\mathbf Q)$, $R$의 해밀토니안 대칭성은 사용자 책임 \\
+    검증 & $g=2,F=1$ 환원; 강자성 $W(1+\hat Q_z^2)$, 비등방 $g$; 나선 = 초격자; 분말 $4/3$; C4 도메인; NBCP 3.5 T 닫힌 해와 $10^{-15}$ 일치 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D42): 스커미온 수와 후보 상태 비교}\label{decisions-d42-texture}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 위임; 두 목표 공통 2순위), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    스커미온 수 & 주기 삼각분할의 반시계 삼각형마다 Berg--L\"uscher $\tan(\Omega/2)=\mathbf n_i\cdot(\mathbf n_j\times\mathbf n_k)/(1+\sum\mathbf n\cdot\mathbf n)$, $Q=\sum\Omega/4\pi$; 연속 극한 $(1/4\pi)\int\mathbf n\cdot(\partial_x\mathbf n\times\partial_y\mathbf n)$ \\
+    정의 안 됨 & 삼중곱 0, 분모 $\le 0$(공면 120°, 반평행)이면 $Q$를 0이 아닌 ``정의 안 됨''으로 보고 \\
+    후보 비교 & 고전 정제, 셀 크기에 맞춘 메시의 LSWT 안정성, 안정할 때만 $E_{\rm cl}+E_{\rm zp}$; 주어진 후보 안의 순위일 뿐 바닥상태 판정이 아님 \\
+    검증 & 팔분구 $\pi/2$; 스커미온 $\mp1$(삼각·정사각); 사면체 $|Q|=2$; 삼각 Heisenberg $E=-0.5388J$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D43): 0.2 공개 API와 옛 API 삭제 일정}\label{decisions-d43-api}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 사용자 결정(결정 카드 A: 경고 후 다음 판 삭제).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    공개 API & \texttt{SpinModel}, \texttt{SpinState}, \texttt{solve\_lswt}, \texttt{LSWTSettings}, \texttt{LSWTResult}; README·docstring·예제는 이것만 쓴다 \\
+    옛 API & \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, SI Hall 메서드, \texttt{lswt} 이름: 0.2에서 동작, 경고에 삭제 판 0.3 명시 \\
+    내부 경로 & 새 API가 내부에서 만드는 \texttt{SpinSystem}은 \texttt{internal\_use()}로 경고하지 않음 \\
+    검증 & README 빠른 시작을 \texttt{-W error::DeprecationWarning}으로 실행; $E=-0.5388J$, M점 $\omega=1.0J$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D44): 공개 배포 전 시각화 묶음}\label{decisions-d44-figures}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자: 공개 배포는 시각화가 갖춰진 뒤), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    그림 & 중성자 경로·일정 에너지·분말 지도, Berry 곡률과 Chern 수, thermal Hall, 스핀 텍스처와 입체각 밀도, 상도표, 열역학 곡선 \\
+    정의 안 됨 & NaN(Bragg 벡터의 Goldstone 가중치, 분리 안 된 밴드, 안정 후보 없음, 공면 120°의 $\Omega$)은 회색·빗금·``undefined''; 0이나 이웃 값으로 채우지 않음 \\
+    표시 & 저장된 수치만 그림; 단위 변환은 라벨과 함께만; $\langle n\rangle>S$ 구간 음영 \\
+    검증 & 120° 상태 M점 $\omega=1.0J$, $Q_x=\pi$ 직선 $\gamma=-1/3$; 벌집 DM Chern $\pm1$; \texttt{examples/gallery.py} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D45): 표준 LSWT 관측량 그림 보강}\label{decisions-d45-standard}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-01 Claude 결정(사용자 질문에 대한 점검), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    추가 & 마그논 상태밀도 $g(\omega)$, 성분별 $S^{ab}(\mathbf q,\omega)$, 에너지 적분 세기(확산 + Bragg), $M(h)$와 모멘트 감소 \\
+    $M(h)$ & $M=-dE/dh$; 고전 $E_{\rm cl}$과 조화 $E_{\rm cl}+E_{\rm zp}$의 중심 차분; $g(S-\langle n\rangle)$ 근사 쓰지 않음; 불안정 분기 NaN \\
+    정의 안 됨 & $\mathbf Q=0$ Bragg 세기(편극인자), 불안정 상태의 $M$과 $\langle n\rangle$은 NaN \\
+    검증 & DOS 적분 1; 강자성체 $S^{xx}=S/2$, $S^{zz}=0$; Néel Bragg $m^2/2$; 사각 반강자성체 $M=h/8J$, 포화 위 $M=S$ \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-01 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D46): 비선형 스핀파 1/S 전개}\label{decisions-d46-nlswt}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-03 Claude 결정(사용자: 비선형 스핀파 solver 선택), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    전개 & LSWT 국소 좌표에서 $s^z=S-n$, $s^+=\sqrt{2S}\,[a-a^\dagger aa/4S]$; 보존 4개까지 자동 생성, $H_n\sim S^{2-n/2}$ \\
+    바닥 에너지 & $E_{\rm cl}+E_{\rm zp}+\langle H_4\rangle-6\sum|S^s|^2/(\omega_1+\omega_2+\omega_3)-\tfrac12\zeta^\dagger H(0)^+\zeta$ \\
+    마그논 & HF와 tadpole의 정적 보정 + on-shell $\Sigma_3(k,\omega_n)$(붕괴·원천), 확산 $\eta$로 붕괴율 \\
+    운동량 & 1/3 칸 이동 메시(합에 닫힘, 영점 없음) 또는 유한 토러스(정확한 RS 섭동) \\
+    정의 안 됨 & 비정지 상태, 메시 위 영 모드, $H(0)$ 영 모드 방향 tadpole(질서-무질서), onsite 항 \\
+    gap & $\Delta^2=C_\phi/\chi$는 선도 차수 관계; 다음 차수는 무른 모드 2-loop 동역학이 필요 \\
+    검증 & 큰 $S$ 정확 대각화(에너지 $10^{-8}$, 마그논 $10^{-5}$); 정사각 $-0.012474J$; 삼각 $-0.008012J$(문헌과 0.2\%) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-03 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D47): 유사 Goldstone gap의 다음 차수}\label{decisions-d47-pseudo-goldstone}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-03 Claude 결정(사용자: ``ㅇ한번 해봐.''), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    극점 & $\det[\omega\sigma_3-H(0)-\Sigma(\omega)]=0$; $H(0)\sim S$, $\Sigma_1\sim S^0$(Nambu 행렬 전체), $\Sigma_2\sim S^{-1}$ \\
+    전개 & $\Delta^2=A+B$, $A=K\Sigma_1^{xx}(0)=C_\phi/\chi$; $B$는 $\Sigma_1$의 xx 외 성분과 $\Sigma_2^{xx}(0)$만 필요 \\
+    2-loop 정적 & $\Sigma_2^{xx}(0)=U_2-\mathrm{schur}_1$: $\langle x\rangle$ 고정 O($S^0$) 에너지 곡률에서 $\Sigma_1$ 정적 혼합(이중 계산) 제거 \\
+    차수 분리 & $H(0)/t$, $\Sigma_1(t\omega)$, $t\Sigma_2$ 축척 후 $t\omega^2=A+Bt$ 적합 \\
+    메시 & 1/3 이동 메시를 격자 점군 상으로 평균(C$_3$ 복원) \\
+    검증 & 대각 $\Sigma$ $10^{-12}$, Ward $\sim3\times10^{-6}$, Goldstone 극한 $A=B=0$, $A$ vs $C_\phi/\chi$ 0.04\%, $J_{PD}\to0$에서 $B\propto J_{PD}^3$ \\
+    NBCP & $S=1/2$: $B/A\approx-27$(Y), $-20$(V) $\Rightarrow$ 1/S 급수가 gap을 정하지 못함 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-03 결정}{contract}
+\endgroup
+
+
+\subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{0.4cm}YP{4.9cm}@{}}
+    \toprule
+    & 결정 & 근거 \\
+    \midrule
+    1 & \texttt{zeeman} 항은 선택 사항이다. 항이 없는 사이트는 장과 결합하지 않는다.
+      $B\neq0$인데 항이 없는 사이트가 있으면 경고하고 결과에 기록한다.
+      & 영행렬 항을 강제하면 모델 작성 부담만 늘고, 계산 비용 차이는 대각화에 비해 무시할 수 있다. \\
+    2 & $H_Z=-\mu_B B_\alpha g_{\alpha\beta}S_\beta$: $g_{\alpha\beta}$는 스핀 성분 $\beta$를 장 성분 $\alpha$에 연결한다.
+      & Einstein 합 규약에서 자연스럽고, 비대칭 $g$의 전치 모호성을 없앤다. \\
+    3 & (D20으로 대체) 에너지 단위가 \texttt{relative}인 모델은 $\mu_B=1$로 두고 $B$를 에너지 단위 값으로 해석한다.
+      & 상대 단위 모델에서 환산 근거를 추정하지 않는다. \\
+    4 & 상태 검증(사이트 대응, 단위 벡터, 초격자 유효성, 계산계 정합, 주기 최소성)과
+      기준 상태 진단(정상성, 안정성)을 나눈다. 방향은 단위 벡터로 저장한다.
+      & 정상성·안정성은 모델과 $B$에 따라 달라진다. 접힌 밴드는 Chern 수를 모호하게 한다.
+      각도 표현은 극점에서 $\phi$가 정의되지 않는다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \slidesource{2026-09-29 세부 규칙 결정}{contract}
+\endgroup
+
+
+\subsection{2026-09-29 당시의 상태 탐색: DE 뒤 세 경로}\label{state-search-current}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{기록용. 지금은 \texttt{classical}만 남았다(\texttt{quantum}은 D18·D22, \texttt{MAGSWT}는 D27에서 삭제).}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{1.7cm}YP{2.2cm}Y@{}}
+    \toprule
+    경로 & DE 뒤 단계 & 결과 method & 한계 \\
+    \midrule
+    \texttt{classical} & DE 각도에서 $E_{\mathrm{qm}}$만 계산 & \texttt{DE}
+      & 고전 축퇴를 가르지 않음 \\
+    \texttt{MAGSWT} & 모든 azimuth에 $k\pi/6$ ($k=1,\dots,6$)을 더한 점과 DE 점에서 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$ 비교
+      & \texttt{DE(MAGSWT)}, \texttt{MAGSWT}
+      & $z$축 회전만 가정; \texttt{tl\_angle}의 $\theta$ 성분은 회전이 아님; 격자 간격이 분해능 \\
+    \texttt{quantum} & L-BFGS-B로 모든 자유 각도의 $E_{\mathrm{cl}}+E_{\mathrm{qm}}$ 최소화, 무작위 교란 재시작 2회
+      & \texttt{DE+BFGS}, \texttt{DE}
+      & manifold 제약 없음; 교란은 전역 \texttt{np.random} \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{DE는 \texttt{seed=42}로 고정되어 결정론적이며, \texttt{angle\_setting}으로 일부 각도를 고정할 수 있다.
+  \texttt{quantum}의 fallback·배열 변경 결함은 \texttt{d43d8d4}에서 고쳤다(부록 A). 영점 선택은 \texttt{select\_on\_manifold}, 궤도 위 에너지 지형은 \texttt{orbit\_energy\_landscape}.}
+  \slidesource{현재 \texttt{methods/optimization.py}}{implementation,selection}
+\endgroup
+
+
+\subsection{D17: 영점 에너지 선택은 고전 manifold 위에서 한다}\label{state-selection-rule}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{축은 해밀토니안의 대칭이 아니라 고전 에너지 $E_{\mathrm{cl}}$에서 정한다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{manifold 위에서 비교하는 이유}
+        \small
+        \begin{itemize}
+          \item manifold 밖에서는 토크가 0이 아니어서 보손 선형항이 남는다.
+          \item $E_{\mathrm{cl}}=O(S^2)$, $E_{\mathrm{qm}}=O(S^0)$의 합을 자유롭게 최소화하면
+            $O(1/S)$만큼 벗어나 LSWT 차수를 넘는다.
+          \item 정확한 대칭 방향에서는 $E_{\mathrm{qm}}$도 일정하다.
+            선택은 $E_{\mathrm{cl}}$만 일정한 accidental 방향에서 일어난다.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{탐색 절차}
+        \small
+        \begin{enumerate}
+          \item DE 해에서 국소 접평면 좌표로 $E_{\mathrm{cl}}$ Hessian 계산
+          \item 회전 생성자 $\hat n\times\mathbf S_\alpha$를 영공간에 사영해 축 $\hat n$ 결정.
+            영공간 없음 $\to$ DE 반환; 회전 span 밖 $\to$ 경고;
+            여러 축 $\to$ 축 지정 요구
+          \item 궤도 $R_{\hat n}(\phi)\mathbf S(0)$: $\phi$ 격자 뒤 1차원 bounded 최소화
+          \item 궤도 전체의 $E_{\mathrm{cl}}$ 일정성 검사; 선택 에너지와 곡률 $C_\phi$ 기록
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{$\phi=0$이 후보에 들어가므로 결과는 항상 정의되고 난수가 필요 없다.
+  $C_\phi$는 pseudo-Goldstone gap $\Delta_{\mathrm{PG}}^2=C_\phi/\chi_z$로 이어진다.
+  $(\theta,\phi)$ 좌표는 극점 사이트에 가짜 영모드를 만들므로 쓰지 않는다.}
+  \slidesource{2026-09-29 결정; NBCP 노트 6장의 궤도 정의를 일반 축으로 확장}{contract,selection}
+\endgroup
+
+
+\subsection{D18: $E_{\mathrm{cl}}+E_{\mathrm{qm}}$의 제약 없는 최소화를 없앤다}\label{quantum-removal}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{표준 스핀파 전개의 전제를 깨고, 그 에너지는 LSWT 차수를 넘는다.}
+  \[
+    H = S^2 e_{\mathrm{cl}}(\theta_0) + H_1 + H_2 + H_3 + H_4 + \cdots,
+    \qquad H_1 \propto S^{3/2},\ H_2 \propto S,\ H_3 \propto S^{1/2},\ H_4 \propto S^0
+  \]
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}Y@{}}
+    \toprule
+    문제 & 내용 \\
+    \midrule
+    전제가 깨짐 & 전개의 전제는 $\theta_0$가 고전 정상점이라 $H_1=0$인 것. 최소점은 $\delta\theta\sim O(1/S)$ 벗어나 $H_1=O(S^{1/2})$가 남는데, $E_{\mathrm{qm}}$은 $H_1$을 버린 영점 에너지다 \\
+    차수 불일치 & 에너지 이득 $S^2(1/S)^2=O(S^0)$는 버린 $H_3$·$H_4$ 보정과 같은 차수; 조화 근사 에너지는 변분 상한도 아니다 \\
+    선택 오염 & NBCP의 선택 에너지($2.8\times10^{-6}$, $1.6\times10^{-12}$)보다 후보별 $O(S^0)$ 이완 차이가 클 수 있다 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{정당한 부분은 manifold 위의 선택(D17)과, 기준점을 옮기지 않고 계산하는 모멘트 방향의 $1/S$ 보정(필요 시 별도 관측량)이다.
+  \texttt{quantum}은 2b단계에서 D17 구현과 함께 삭제했다(D22).}
+  \slidesource{2026-09-29 결정}{contract}
+\endgroup
+
+
+\subsection{D17 수치 확인: 축은 $E_{\mathrm{cl}}$ Hessian에서 정해진다}\label{state-selection-check}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{NBCP Y 상태, $B=0.2$ T, $N=6$, 궤도 24점. 모든 경우 영공간은 1차원이고 회전 span 안에 있다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{2.6cm}P{2.3cm}P{4.2cm}@{}}
+    \toprule
+    경우 & 찾은 축 & 궤도 $E_{\mathrm{cl}}$ 변동 & 궤도 $E_{\mathrm{qm}}$ 변동 \\
+    \midrule
+    정확한 U(1) & $\hat z$, 오차 $9\times10^{-9}$ & $7\times10^{-18}$ & $3.8\times10^{-16}$: 선택 없음 \\
+    $J_{\mathrm{PD}}=0.010$ & $\hat z$, 오차 $2\times10^{-8}$ & $1\times10^{-17}$ & $2.83\times10^{-6}$: $\pi/3$ 간격 최소 6개 \\
+    $J_\Gamma=0.010$ & $\hat z$, 오차 $1\times10^{-8}$ & $1\times10^{-17}$ & $3.2\times10^{-12}$: 수렴한 선택(다음 쪽) \\
+    $J_{\mathrm{PD}}$, 문제 전체를 $R$로 회전 & $R\hat z$, 오차 $8\times10^{-9}$ & $2\times10^{-17}$ & $2.83\times10^{-6}$: 회전 전과 같음 \\
+    같은 회전에서 azimuth 이동 $R_z$ & --- & $1.5\times10^{-2}$ & 의미 없음 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  DE 해(기울기 $2$--$3\times10^{-7}$)에서 출발해도 축 오차는 $1.3\times10^{-5}$ 이하였다.
+  다만 최소 고윳값 $3.6\times10^{-7}$(다음 $6.7\times10^{-3}$)이 고정 허용오차로는 영모드로 판정되지 않은 경우가 있었다.
+  \par\medskip
+  \supportingtext{영공간 판정 기준과 선택 판정 규칙의 자료와 검토안은 다음 두 쪽에 있다.}
+  \slidesource{\texttt{examples/nbcp\_y\_orbit\_axis\_check.py}}{selection}
+\endgroup
+
+
+\subsection{D17 판정 자료 1: 영공간은 정밀화 뒤 간격비로 판정한다}\label{state-selection-null-criteria}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{판정 자료 · DE 세 seed $\times$ 축퇴 4경우(12건)와 대조 2경우(6건). 대조: 장을 기울임, $20h$ 편극 상태.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{3.0cm}P{3.0cm}@{}}
+    \toprule
+    판정 규칙 & 축퇴 12건 판정 & 대조 6건 오판 \\
+    \midrule
+    DE 해에 고정 허용오차(최대 고윳값의 $10^{-6}$배) & 8건 & 0건 \\
+    DE 해에 간격비 $w_{\min}/w_{\mathrm{next}}<10^{-3}$ & 12건(최대 $5.3\times10^{-5}$) & 0건(최소 $2\times10^{-2}$) \\
+    고전 L-BFGS-B 정밀화 뒤 고정 허용오차 & 12건(간격비 최대 $3\times10^{-7}$) & 0건 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  정밀화는 $E_{\mathrm{cl}}$을 $1.7\times10^{-11}$ 이하로 바꾸고 축 오차를 $1.4\times10^{-5}$에서 $1.1\times10^{-7}$로 줄였다.
+  편극 상태에서 사라지는 $z$ 생성자의 상대 특이값은 DE 해에서 $3$--$8\times10^{-6}$, 정밀화 뒤 $2$--$4\times10^{-8}$이다.
+  \par\medskip
+  \textbf{D19}: 이 표의 간격비·rank 값은 고정 상수 모드의 기본값이 된다. 기본 모드는 물리 근거로 판정한다(다음 쪽들).
+  \par\medskip
+  \supportingtext{기울인 장 대조군(간격비 $2\times10^{-2}$)과 축퇴 DE 해($5\times10^{-5}$)의 여유는 약한 고전 pinning에서 줄어든다.
+  그래서 판정만이 아니라 간격비를 기록한다.}
+  \slidesource{\texttt{examples/nbcp\_y\_orbit\_criteria\_check.py}}{criteria}
+\endgroup
+
+
+\subsection{D17 판정 자료 2: 선택 위치는 작은 mesh에서도 정해진다}\label{state-selection-mesh}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{검토안 · 궤도 위 $E_{\mathrm{qm}}$의 6배 조화 성분 진폭을 독립 경로의 수렴값 $\lambda_6$($N=96$)과 비교했다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}YP{2.7cm}P{1.6cm}P{1.6cm}P{1.6cm}@{}}
+    \toprule
+    경우 & $\lambda_6$ (meV/spin) & $N=3$ & $N=6$ & $N=12$ \\
+    \midrule
+    $J_{\mathrm{PD}}=0.010$ & $1.44\times10^{-6}$ & $+9.2\%$ & $+1.1\%$ & $+0.2\%$ \\
+    $J_{\mathrm{PD}}=0.005$ & $1.19\times10^{-7}$ & $+4.6\%$ & $+0.6\%$ & $+0.1\%$ \\
+    $J_\Gamma=0.010$ & $1.64\times10^{-12}$ & $+3.5\%$ & $0.00\%$ & $0.00\%$ \\
+    $J_\Gamma=0.005$ & $2.53\times10^{-14}$ & $+3.3\%$ & $-0.05\%$ & $-0.01\%$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  모든 경우와 $N\ge3$에서 최소 위치는 $\phi\equiv0\pmod{\pi/3}$이었다(차이 $7.5\times10^{-5}$ rad 이하).
+  앞 쪽의 $J_\Gamma$ 변동 $3.2\times10^{-12}$는 수렴한 선택이다($2\lambda_6$). 24점 격자는 위치 분해능만 제한한다.
+  \par\medskip
+  \textbf{검토안}: 궤도 위 $E_{\mathrm{qm}}$은 격자 최솟값 대신 조화 성분 fit으로 위치와 진폭을 정한다.
+  진폭이 부동소수 바닥(상대 $10^{-16}$ 수준)에 여유를 둔 값보다 작으면 ``선택 없음''으로 기록한다.
+  \par\medskip
+  \supportingtext{비교 기준은 \texttt{examples/nbcp\_y\_angular\_matching.py}의 기록이며, 이 쪽의 값은 \texttt{EnergyFunction} 경로다.}
+  \slidesource{\texttt{examples/nbcp\_y\_orbit\_criteria\_check.py}}{criteria}
+\endgroup
+
+
+\subsection{D19: 판정 기준은 물리적 질문에 묶는다}\label{state-selection-criteria}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{고정 임계값은 NBCP Y 상태 하나로 맞춘 값이라 모델마다 다를 수 있다. 두 모드 중 선택한다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}P{2.0cm}P{3.2cm}YP{2.9cm}@{}}
+    \toprule
+    판정 & 물리적 질문 & 물리 근거 모드(기본) & 고정 상수 모드 \\
+    \midrule
+    영공간 & 이 방향은 평평한가 & 정밀화 뒤 토크로 추정한 수치 정확도 이하면 평평; 분해되면 궤도 방향 $C_{\mathrm{cl}}$ 대 $C_{\mathrm{qm}}$로 고전 고정·양자 선택·경쟁 & 간격비 $<10^{-3}$ \\
+    선택 없음 & $E_{\mathrm{qm}}$이 변하지 않아야 하는가 & 궤도 회전이 모든 항의 대칭인지($R^{\mathsf T}JR=J$, zeeman) 모델에서 판정; 아니면서 진폭이 fit 잔차 수준이면 ``분해 불가'' & 진폭 $<\max(10\times$잔차$,\,10^3\epsilon|E_{\mathrm{qm}}|)$ \\
+    생성자 rank & 회전이 상태를 움직이는가 & 모든 스핀이 $\hat n$과 공선인지; 허용오차는 추정한 각도 정확도의 배수 & 상대 특이값 $10^{-4}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{물리 근거는 모두 가벼운 계산이다(토크, Hessian, 이미 계산한 $E_{\mathrm{qm}}$, 행렬 연산, 외적).
+  고정 상수의 기본값은 \texttt{definitions/defaults.py}에 두고 실행별 값은 방법 설정으로 넘긴다. 어느 모드든 판정에 쓴 값을 결과에 기록한다.}
+  \slidesource{2026-09-29 결정; 세부 계수는 부록 A의 2b단계 쪽}{contract}
+\endgroup
+
+
+\subsection{D28: 비교 규칙을 1-loop 유효 퍼텐셜로 바꾼다}\label{d28-principle}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-30 채택·구현(\texttt{0e9247f}, 부록 A). 이전 규칙(곡률 비, 대역 0.1--10)은 근거가 없고 조화 차수가 다르면 $m^2$만큼 치우친다.}
+  \small
+  \[
+    \Gamma(\phi)=\min_{\text{다른 좌표}}E_{\mathrm{cl}}\big|_{\phi}+E_{\mathrm{zp}}(\phi)+O(S^0)
+  \]
+  \begin{tabularx}{\textwidth}{@{}P{2.6cm}Y@{}}
+    \toprule
+    항목 & 내용 \\
+    \midrule
+    의미 & 부드러운 좌표 $\phi$의 1-loop 유효 퍼텐셜; 답은 $\Gamma$의 최소(Shender 1982, Henley 1989; 유사 Goldstone 갭: Rau--McClarty--Moessner 2018) \\
+    완화 경로 & 각 $\phi$에서 궤도 방향만 고정하고 나머지를 고전 최소화. 궤도 방향 토크만 남고, 스핀에 수직인 구속장은 $H_2$를 바꾸지 않으므로 선형항을 버린 계산이 구속된 1-loop 계산 \\
+    D17·D18과의 관계 & 고전 궤도가 평평하면 $\Gamma=\text{상수}+E_{\mathrm{zp}}$로 D17과 같다. $\phi$ 하나만 움직여 D18이 막은 딱딱한 좌표의 $O(1/S)$ 이완이 없다 \\
+    적용 조건 & 단열 분리: $\Gamma$의 곡률 $\ll$ 딱딱한 모드의 최소 강성. 비를 결과에 기록 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{$d\Gamma/d\phi=0$: 부드러운 방향의 1-loop 선형항 상쇄. 한계 $O(S^0)$, $T=0$. 세부(확정): $\Gamma$ 최소 반환; \texttt{competition}·\texttt{not\_flat} 폐지, \texttt{selected}(이동량 보고)·\texttt{not\_soft} 추가; 단열 비 $>0.1$ 경고.}
+  \slidesource{D28 검토 자료}{potential}
+\endgroup
+
+
+\subsection{D28 검토 자료: 강체 궤도는 고전 고정을 과대평가했다}\label{d28-results}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{NBCP Y(0.2 T, $J_{\mathrm{PD}}$)와 V(1.4 T, $J_\Gamma$), 면내 장 성분 비 = 기울기, 72점, $N=6$.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{1.9cm}P{2.3cm}P{2.3cm}P{2.1cm}Y@{}}
+    \toprule
+    경우 & 고전 변동: 강체 / 완화 & 양자 변동(완화) & $\Gamma$ 최소$-$양자 최소 & 단열 비 \\
+    \midrule
+    Y, 0° & 0 / 0 & $2.9\times10^{-6}$ & $3.7\times10^{-7}$ (D17) & $1.1\times10^{-2}$ \\
+    Y, 0.57° & -- / $5.9\times10^{-8}$ & $3.2\times10^{-6}$ & $-9.7\times10^{-4}$ & $1.1\times10^{-2}$ \\
+    Y, 1.7° & $7.5\times10^{-6}$ / $5.3\times10^{-7}$ & $3.8\times10^{-6}$ & $-8.9\times10^{-3}$ & $1.1\times10^{-2}$ \\
+    Y, 5.7° & -- / $5.8\times10^{-6}$ & $9.0\times10^{-6}$ & $+4.5\times10^{-2}$ & $2.8\times10^{-2}$ \\
+    Y, 16.7° & -- / $5.1\times10^{-5}$ & $5.7\times10^{-5}$ & $+6.1\times10^{-2}$ & $1.7\times10^{-1}$ \\
+    V, 0.57° & -- / $1.8\times10^{-4}$ & $5.8\times10^{-5}$ & 고전 최소 쪽($-3.3\times10^{-2}$) & $9.3\times10^{-3}$ \\
+    V, 5.7° & 완화 실패 & -- & -- & $2.4\times10^{3}$ \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{정정: 강체 궤도로 얻은 ``1.7°면 고전 고정이 이긴다''는 틀렸다(고전 변동을 14배 과대평가). Y는 면내 알짜 모멘트가 없어 고전 변동 $\propto$ 기울기$^2$, V는 선형이라 0.57°에서 이미 고전 우세. 에너지 단위 meV/spin, 이동 단위 rad.
+  \textbf{구현 후 정정}: 이 표는 MAGSWT 정규화 제공자로 계산해 기울인 장의 $\Gamma$ 최소·단열 비가 오염되었다(Y 1.7°는 $-8.3\times10^{-3}$, Y 16.7° 단열 비는 0.023). 정정 값은 부록 A의 D28 구현 쪽.}
+  \slidesource{\texttt{examples/nbcp\_effective\_potential\_check.py}}{potential}
+\endgroup
+
+
+\subsection{설계 문서와 부록을 갱신하는 방법}\label{record-management}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{변경 내용, 근거, 판정, 다음 작업을 함께 남긴다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{내용의 소유 위치}
+        \textbf{전달 규약 상세}\\
+        Working-Pad의 검토 문서\\[0.7em]
+        \textbf{개발 목표와 시스템 설계}\\
+        \texttt{main.tex}와 \texttt{sections/}\\[0.7em]
+        \textbf{수치 증거와 소스 식별}\\
+        검증 JSON · \texttt{source-manifest.json}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{문서의 갱신 순서}
+        \begin{enumerate}
+          \item 본문의 목표·구조·규약을 갱신한다.
+          \item 구현·시험 기록을 부록에 연결한다.
+          \item 계획·결정·열린 이슈를 갱신한다.
+          \item 기록일·소스 manifest를 갱신한다.
+          \item PDF를 빌드하고 전 페이지를 확인한다.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \medskip
+  \supportingtext{화면에 보이는 PDF는 편집 원본에서 생성한다.
+  과거 검증 수치를 새 코드의 결과로 자동 승계하지 않는다.}
+  \slidesource{설계 문서의 관리 방식; 템플릿은 Knowledge Factory에서 재사용}{contract,theme}
+\endgroup
+
+
+\subsection{근거 문서와 템플릿}\label{sources}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{12}
+    \bibitem{contract}
+      모델 간 공통 SpinModel 전달 규약, 2026-09-23 작성 · 2026-09-29 갱신.
+      \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review.
+    \bibitem{plan}
+      2D Spin-System Toolkit 1차 개발 계획, 2026-09-29.
+      \newblock \texttt{GOVERNMENT/Working-Pad/idea-proposals/} · in-review · 범위·패키지·벤치마크·단계.
+    \bibitem{extraction}
+      NBCP 모델 추출 검증 기록, 2026-09-23.
+      \newblock \texttt{model/nbcp/verification/} · 모델·해밀토니안·탐색·pytest 기록.
+    \bibitem{implementation}
+      현재 \texttt{SpinSystem}, 격자, 고전 에너지, LSWT 해밀토니안 구현.
+      \newblock \texttt{code-space/spintoolkit/} · 작업 공간 소스 대조.
+    \bibitem{geometry}
+      NBCP Y SOC 조건 검사: \texttt{geometry\_audit}.
+      \newblock \texttt{examples/nbcp\_y\_soc\_conditions.py} · 코드 관찰 근거.
+    \bibitem{theme}
+      Knowledge Factory Beamer, 로컬 템플릿 스냅샷.
+      \newblock 선언 버전 v0.2.3 · note mode · 복사한 theme 내용은 수정하지 않음.
+    \bibitem{layout}
+      기능별 패키지 이행 검증 기록, 2026-09-23.
+      \newblock \texttt{docs/development/verification/} · 본문·수치·호환성·pytest 대조.
+    \bibitem{rename}
+      패키지 이름 변경 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · 테스트·수치·호환성·설치 대조.
+    \bibitem{stage1}
+      1단계 공통 자료형 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · 정확값·교차 확인·규약 사례·회귀 대조.
+    \bibitem{selection}
+      상태 선택 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · \texttt{quantum} 경로 수정과 D17 궤도 축 수치 확인.
+  \end{thebibliography}
+\endgroup
+
+
+\subsection{근거 문서 (계속)}\label{sources-continued}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{12}
+    \setcounter{enumiv}{10}
+    \bibitem{criteria}
+      D17 판정 기준 자료, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · 영공간 판정 규칙 비교와 선택의 mesh 의존성.
+    \bibitem{stage2}
+      2단계 NBCP 연결 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · $\mathsf H(\mathbf k)$ 원소 단위 대조, 왕복 변환, 에너지.
+    \bibitem{stage4a}
+      4a LSWT 진입점·바닥상태 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 기존 솔버 재현, 해석값, QMC·DMRG.
+    \bibitem{stage4b}
+      4b 영모드·유한 온도 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 영모드 판정, ED 저온 대조.
+    \bibitem{stage4c}
+      4c 구조인자 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · ED 무게, 합 규칙, 기존 코드 진단.
+    \bibitem{cleanup}
+      기존 코드 정리 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · MAGSWT 격자 탐색·\texttt{correlations.py} 삭제와 대체.
+    \bibitem{potential}
+      D28 검토 자료: 1-loop 유효 퍼텐셜, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 완화 경로, D17 극한, 기울인 장.
+    \bibitem{d28impl}
+      D28 구현 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 시제품 대조, 영점 제공자, mesh 수렴, 2b 재실행; \texttt{d28-provider-projection-2026-09-30.json} · $k=0$ 구속 모드 투영.
+    \bibitem{stage6b}
+      6b 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json} · \texttt{examples/luttinger\_tisza\_check.py}.
+    \bibitem{stage6c}
+      6c 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage6c-classical-search-2026-09-30.json} · \texttt{examples/classical\_search\_check.py}.
+    \bibitem{stage4d}
+      4d 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage4d-band-structure-2026-09-30.json} · \texttt{examples/lswt\_stage4d\_check.py}.
+    \bibitem{stage7}
+      7단계 검증 기록, 2026-10-01.
+      \newblock \texttt{docs/development/verification/stage7-visualization-2026-10-01.json} · \texttt{examples/visualization\_stage7\_check.py}.
+    \bibitem{stage2b}
+      2b단계 상태 선택 검증 기록, 2026-09-29.
+      \newblock \texttt{docs/development/verification/} · NBCP Y·V 선택, 대조군, 벤치마크, MAGSWT 재현.
+    \bibitem{stage3}
+      3단계 토러스 전개·최소 ED 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/} · 1-마그논 대 LSWT, 독립 구현 대조.
+  \end{thebibliography}
+\endgroup
+
+
+\subsection{근거 문서 (5단계 이후)}\label{sources-stage5}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{긴 경로와 정확한 해시는 source-manifest.json에서 관리한다.}
+  \small
+  \begin{thebibliography}{24}
+    \setcounter{enumiv}{20}
+    \bibitem{stage5a}
+      5a 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5a-berry-chern-2026-09-30.json} · \texttt{examples/lswt\_stage5a\_check.py}.
+    \bibitem{stage5b}
+      5b 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5b-thermal-hall-2026-09-30.json} · \texttt{examples/lswt\_stage5b\_check.py}.
+    \bibitem{stage5c}
+      5c 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5c-hall-kernel-2026-09-30.json}.
+    \bibitem{stage5d}
+      5d 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage5d-adaptive-integration-2026-09-30.json} · \texttt{examples/lswt\_stage5d\_check.py}.
+    \bibitem{stage6b-quarter}
+      6b 보정 검증 기록, 2026-09-30.
+      \newblock \texttt{docs/development/verification/stage6b-quarter-wave-vector-2026-09-30.json} · \texttt{test\_quarter\_wave\_vector\_accepts\_the\_up\_up\_down\_down\_state}.
+  \end{thebibliography}
+\endgroup
+

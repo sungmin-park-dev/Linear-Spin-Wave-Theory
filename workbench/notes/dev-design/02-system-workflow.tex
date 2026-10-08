@@ -1,0 +1,169 @@
+% Converted on 2026-10-08 from docs/development/sections/02-system-workflow.tex (Beamer, review copy 43).
+% Each frame became a subsection whose body, unchanged, sits in a group as in Beamer.
+
+\section{시스템 구조와 계산 흐름}
+
+
+
+\subsection{모델과 계산 입력 준비}\label{workflow}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{목표 구조 1/2 · 해밀토니안·계산격자·스핀 배열의 역할을 구분한다.}
+  \centering
+  \begin{tikzpicture}
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (builders) at (0,1.3)
+      {모델별 정의\\NBCP 등};
+    \node[focus,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (model) at (4.6,1.3)
+      {공통 물리 모델\\해밀토니안};
+    \node[focus,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (system) at (9.2,1.3)
+      {계산 대상 스핀계\\사이트·결합·계수};
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (geometry) at (9.2,-1.1)
+      {계산격자 조건\\크기·형상·경계조건};
+    \node[box,font=\normalsize,text width=3.5cm,minimum height=1.3cm] (state) at (4.6,-1.1)
+      {스핀 배열\\스핀 방향\\자기구조의 반복주기};
+    \draw[flow] (builders)--(model);
+    \draw[flow] (model)--(system);
+    \draw[flow] (geometry.north)--(system.south);
+    \draw[auxflow,{Latex[length=2mm]}-{Latex[length=2mm]}] (state.east)--(geometry.west)
+      node[midway,above,font=\small,text=KFBMuted]{정합};
+  \end{tikzpicture}
+  \par\bigskip
+  \begin{minipage}{0.98\textwidth}
+    \supportingtext{모델은 해밀토니안이며, 계산 대상 스핀계는 여기에 계산격자 조건을 적용해 구성한다.\\
+    스핀 배열은 고전 최적화의 초기 배열 또는 LSWT의 기준 배열로 입력하며, 계산격자와 정합해야 한다.}
+  \end{minipage}
+  \slidesource{합의된 블록 구조; 공통 모델 규약과 전체 연결은 개발 대상}{contract}
+\endgroup
+
+
+\subsection{계산 방법과 결과 활용}\label{workflow-calculation}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{목표 구조 2/2 · 계산 대상 스핀계에서 방법을 선택하고 결과를 분석·표현한다.}
+  \centering
+  \begin{tikzpicture}
+    \node[font=\normalsize,text=KFBNavy] (system) at (4.6,3.55)
+      {계산 대상 스핀계 · 외부 변수(장 $B$, 온도 $T$)};
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (classical) at (0,1.75)
+      {고전 계산\\에너지·최적화};
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (lswt) at (4.6,1.75)
+      {LSWT};
+    \node[box,dashed,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (quantum) at (9.2,1.75)
+      {ED · 텐서 네트워크\\1차: 최소 ED 검증};
+    \node[focus,font=\normalsize,text width=3.1cm,minimum height=1.1cm] (result) at (0,-0.6)
+      {계산 결과};
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.1cm] (observables) at (4.6,-0.6)
+      {물리량 분석};
+    \node[box,font=\normalsize,text width=3.1cm,minimum height=1.1cm] (output) at (9.2,-0.6)
+      {시각화·결과 저장};
+    \draw[flow] (system.south)--(lswt.north);
+    \draw[flow] (4.6,2.9)--(0,2.9)--(classical.north);
+    \draw[flow] (4.6,2.9)--(9.2,2.9)--(quantum.north);
+    \fill[KFBBlue] (4.6,2.9) circle (1.25pt);
+    \draw[flow] ([yshift=0.25cm]classical.east)--([yshift=0.25cm]lswt.west);
+    \node[font=\footnotesize,text=KFBMuted,align=center,anchor=south,inner sep=1pt] at (2.3,2.05)
+      {기준\\상태};
+    \draw[auxflow] ([yshift=-0.25cm]lswt.west)--([yshift=-0.25cm]classical.east);
+    \node[font=\footnotesize,text=KFBMuted,align=center,anchor=north,inner sep=1pt] at (2.3,1.45)
+      {영점\\에너지};
+    \draw[flow] (classical.south)--(result.north);
+    \draw[draw=KFBBlue,line width=0.85pt]
+      (lswt.south)--(4.6,0.45)--(0,0.45);
+    \draw[draw=KFBBlue,line width=0.85pt]
+      (quantum.south)--(9.2,0.45)--(4.6,0.45);
+    \fill[KFBBlue] (0,0.45) circle (1.25pt);
+    \fill[KFBBlue] (4.6,0.45) circle (1.25pt);
+    \draw[flow] (result)--(observables);
+    \draw[flow] (observables)--(output);
+  \end{tikzpicture}
+  \par\bigskip
+  \begin{minipage}{0.98\textwidth}
+    \supportingtext{현재 구현 기반: NBCP·고전 최적화·LSWT. 1차에서 최소 ED 검증 도구를 더하고, ED·TN 솔버는 후속 확장이다.\\
+    영점 에너지로 고전 manifold 위의 상태를 고르는 경로(D17 궤도 선택)가 있어 LSWT가 상태 선택에 되먹임된다.\\
+    LSWT의 기준 상태는 직접 지정할 수도 있다. ED·TN은 고전 최적화를 필수로 거치지 않는다.}
+  \end{minipage}
+  \slidesource{합의된 계산·분석 흐름; 공통 규약을 통한 연결은 후속 개발 대상}{contract}
+\endgroup
+
+
+\subsection{구성요소별 책임과 전달 정보}\label{boundaries}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{기능별 역할을 정하고, 다음 블록이 사용할 정보를 명확하게 전달한다.}
+  \begin{tabularx}{\textwidth}{@{}p{3.0cm}Y@{}}
+    \toprule
+    구성요소 & 담당 기능과 전달 정보 \\
+    \midrule
+    \textbf{모델 정의} & 해밀토니안: 격자·스핀 크기·항·g-텐서를 공통 형식으로 제공한다. \\
+    \textbf{계산계 구성} & 모델에 계산격자 조건을 적용하여 계산 대상 스핀계를 구성한다. \\
+    \textbf{상태 정의·최적화} & 스핀 방향·반복주기를 표현하고, 계산계와 정합한 기준 상태를 탐색한다. \\
+    \textbf{계산 방법} & 계산계·상태·외부 변수와 방법별 수치 설정을 받아 계산을 수행한다. \\
+    \textbf{결과·물리량 분석} & 방법별 결과를 보존하고, 필요한 정보로 물리량을 계산한다. \\
+    \textbf{시각화·저장} & 결과를 표현하고 입력 조건·외부 변수·단위와 함께 보관한다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \begin{band}{전달 경계}
+    스핀 크기 $S$와 g-텐서는 모델에, 스핀 방향과 자기구조의 반복주기는 상태에 속한다.\\
+    장 $B$·온도 $T$는 외부 변수이며, k점 격자·허용오차 등의 수치 설정과 구분한다.
+  \end{band}
+  \slidesource{합의된 기능별 책임; 외부 변수와 상태 조건은 다음 두 쪽에서 설명}{contract}
+\endgroup
+
+
+\subsection{외부 변수는 해밀토니안과의 관계로 구분한다}\label{external-variables}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{모델 계수를 바꾸면 새 모델을 만들고, 장·온도를 바꾸면 계산 요청만 바뀐다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{2.7cm}p{3.9cm}Yp{2.9cm}@{}}
+    \toprule
+    부류 & 예 & $H$에 들어가는가 & 변경 시 처리 \\
+    \midrule
+    해밀토니안 파라미터 & 모델 계수 $J$, $K$, $\Gamma$ & 예 & 새 모델 생성 \\
+     & 외부 장 $B$ & 예: 모델의 $g$와 결합 & 계산 요청에서 변경 \\
+    통계 조건 & 온도 $T$ & 아니오: $\rho\propto e^{-H/k_BT}$ & 계산 요청에서 변경 \\
+    계산계 실현 & 열역학 극한; 유한 클러스터 크기·형상·경계조건 & 유한 연산자의 공간과 항 집합을 결정 & 계산계 재구성 \\
+    수치 설정 & k점 격자, 허용오차, 최적화 초기값 & 아니오 & 방법 설정에서 변경 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \begin{mdcallout}[note]{k점 격자의 두 가지 의미}
+    LSWT의 $N_1\times N_2$ k점 격자는 같은 수의 자기 단위격자로 된 주기 경계 토러스와 같다.
+    열역학 극한에서는 수렴을 조절하는 수치 설정이지만, 같은 클러스터의 ED와 비교할 때는
+    계산계 실현을 정한다. 결과에 어느 의미로 사용했는지 기록한다.
+  \end{mdcallout}
+  \slidesource{외부 변수 분류; 2026-09-29 검토}{contract}
+\endgroup
+
+
+\subsection{상태는 계산계와 정합해야 한다}\label{state-geometry}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{스핀 배열은 독립 입력이 아니며, LSWT 기준 상태에는 정상성 조건이 있다.}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{계산계와의 정합}
+        \begin{itemize}
+          \item 유한 주기 클러스터: 자기 초격자가 클러스터를 빈틈없이 채워야 한다.
+            허용되는 질서 파수벡터는 클러스터의 이산 k 집합으로 제한된다.
+          \item 예: 120° 구조는 $L$이 3의 배수인 클러스터에만 놓인다.
+          \item 열역학 극한 LSWT: 상태의 자기 단위격자가 계산 셀을 정한다.
+        \end{itemize}
+      \end{block}
+      \smallskip
+      한쪽 방향의 입력이 아니라 \textbf{정합성 제약}으로 검사한다.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{LSWT 기준 상태의 조건}
+        \begin{itemize}
+          \item 각 스핀이 국소장과 평행(토크 0)해야 보손 선형항이 사라진다.
+            극소 여부는 Colpa 조건으로 판정한다.
+          \item MAGSWT는 불안정한 기준 상태를 정규화하므로 정상성 위반은
+            오류가 아니라 \textbf{경고로 기록}한다.
+          \item 영점 에너지로 상태를 고를 때는 고전 바닥상태 manifold 위에서만 비교하고(D17),
+            선택에 쓴 에너지를 결과에 기록한다.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \par\medskip
+  \supportingtext{ED·TN은 고전 기준 상태를 필수로 요구하지 않는다.}
+  \slidesource{상태와 계산계의 관계; 기존 최적화 경로 확인}{contract,implementation}
+\endgroup
+

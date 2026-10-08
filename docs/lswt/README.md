@@ -10,6 +10,8 @@ updated: 2026-09-16
 
 # Linear Spin Wave Theory Documentation
 
+> **2026-10-08부터 보존본.** 이 폴더의 내용은 [2026-10-08 결정](../../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 연구노트 `lswt-foundations`, `lswt-derivation`, `lswt-observables`로 옮겼고, 이후 편집은 연구노트에서 한다. 이 폴더는 그날 상태로 보존하며 더 고치지 않는다.
+
 [전체 문서](../README.md) · [NBCP 연구](../nbcp/README.md)
 
 ## 개요
