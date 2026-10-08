@@ -1,0 +1,3 @@
+name: LSWT derivation
+from: docs/lswt
+summary: Holstein-Primakoff expansion, the real- and momentum-space boson Hamiltonians, paraunitary diagonalization and a worked single-mode example.

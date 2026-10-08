@@ -1,0 +1,3 @@
+name: Toolkit implementation and verification
+from: docs/development/main.tex
+summary: Implementation status, numerical comparisons, migration issues and open items (Beamer appendix A).

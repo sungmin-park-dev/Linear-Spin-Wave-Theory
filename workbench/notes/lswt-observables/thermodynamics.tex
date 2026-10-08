@@ -1,0 +1,150 @@
+% Thermodynamics
+% Converted on 2026-10-08 from docs/lswt/02-observables/thermodynamics.md (status: draft, source-section: "Thermodynamics in Linear Spin Wave Theory: Partition Function, Internal Energy, Free Energy, Entropy Expression, Specific Heat (source pp. 13–15)").
+% Review status: draft; awaiting the user's physics and mathematics review.
+
+\hypertarget{sec-lswt-thermodynamics}{%
+\section{Thermodynamics}\label{sec-lswt-thermodynamics}}
+
+In thermal equilibrium the LSWT Hamiltonian describes an ideal gas of magnons on top of the classical reference configuration. The partition function therefore factorizes over the magnon modes \((\mathbf k,n)\), and the free energy, internal energy, entropy, and heat capacity follow from single-oscillator expressions summed over the magnetic Brillouin zone (MBZ). Energy, temperature, and entropy symbols follow \lswtnoteref{LSWT foundations}{Notation and Conventions}; the inverse temperature is \(\beta=(k_{\mathrm B}T)^{-1}\) and the entropy is \(\mathcal S\).
+
+\subsection{Validity of the Magnon-Gas Description}
+
+We use the diagonal Hamiltonian of \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization},
+
+\[
+\hat H_{\mathrm{LSWT}}
+=E_{\mathrm{cl}}+\hat H_2
+=E_{\mathrm{GS}}+\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}\varepsilon_{n\mathbf k}\,\hat n_{\mathbf kn},
+\qquad
+\hat n_{\mathbf kn}=\hat b_{\mathbf kn}^\dagger\hat b_{\mathbf kn},
+\]
+
+with \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\). The classical reference configuration and the magnon energies \(\varepsilon_{n\mathbf k}\) are held fixed as the temperature changes, and the quartic and higher Holstein--Primakoff terms that couple magnons are omitted. The results below are therefore the leading low-temperature description. Its corrections grow with the thermal magnon density, and the description fails when the thermal reduction of a sublattice moment, discussed in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}), becomes comparable to the spin length. In two dimensions, the interpretation of these results as properties of an ordered phase requires the qualifications stated in \lswtnoteref{LSWT foundations}{LSWT Overview}.
+
+All quantities below assume \(\varepsilon_{n\mathbf k}>0\), which holds when \(\mathsf H_{\mathbf k}\) is positive definite. The section on zero modes describes the limit \(\varepsilon_{n\mathbf k}\to0\).
+
+\subsection{Partition Function}
+
+The Gibbs state \(\hat\rho=\exp(-\beta\hat H_{\mathrm{LSWT}})/Z\) has the partition function \(Z=\operatorname{Tr}\exp(-\beta\hat H_{\mathrm{LSWT}})\). The number operators of different modes commute, so the trace factorizes into independent geometric series, one for each mode:
+
+\begin{equation}\label{eq-lswt-partition-function}
+Z=\exp(-\beta E_{\mathrm{GS}})\prod_{\mathbf k\in\mathrm{MBZ}}\prod_{n=1}^{N_{\mathrm{sub}}}\frac{1}{1-\exp(-\beta\varepsilon_{n\mathbf k})},
+\qquad
+-\ln Z=\beta E_{\mathrm{GS}}+\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}\ln\!\left(1-\exp(-\beta\varepsilon_{n\mathbf k})\right).
+\end{equation}
+
+Each geometric series converges because \(\varepsilon_{n\mathbf k}>0\). The constant \(E_{\mathrm{GS}}\) contributes the factor \(\exp(-\beta E_{\mathrm{GS}})\); it shifts the internal and free energies but drops out of the entropy and heat capacity, which depend only on the thermal part of \(\ln Z\).
+
+The thermal occupation of mode \((\mathbf k,n)\) is the Bose--Einstein distribution
+
+\begin{equation}\label{eq-lswt-bose-einstein-distribution}
+\langle\hat n_{\mathbf kn}\rangle
+=n_{\mathrm B}(\varepsilon_{n\mathbf k}),
+\qquad
+n_{\mathrm B}(\varepsilon)=\frac{1}{\exp(\beta\varepsilon)-1}.
+\end{equation}
+
+\subsection{Internal and Free Energies}
+
+The internal energy is the thermal average of the Hamiltonian, \(U=\langle\hat H_{\mathrm{LSWT}}\rangle=-\partial\ln Z/\partial\beta\). Differentiating \eqref{eq-lswt-partition-function} gives
+
+\begin{equation}\label{eq-lswt-internal-energy}
+U=E_{\mathrm{GS}}+\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}\varepsilon_{n\mathbf k}\,n_{\mathrm B}(\varepsilon_{n\mathbf k}).
+\end{equation}
+
+The internal energy thus consists of the classical energy, the zero-point correction, and the energy of the thermally excited magnons. The Helmholtz free energy, defined by \(Z=\exp(-\beta F)\), is
+
+\begin{equation}\label{eq-lswt-free-energy}
+F=E_{\mathrm{GS}}+k_{\mathrm B}T\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}\ln\!\left(1-\exp(-\beta\varepsilon_{n\mathbf k})\right).
+\end{equation}
+
+Each logarithm is negative, so the thermal magnons lower \(F\) below \(E_{\mathrm{GS}}\). At \(T=0\) both \(U\) and \(F\) reduce to \(E_{\mathrm{GS}}\).
+
+\subsection{Entropy}
+
+The entropy of the Gibbs state is the von Neumann entropy \(\mathcal S=-k_{\mathrm B}\operatorname{Tr}(\hat\rho\ln\hat\rho)\). Inserting \(\ln\hat\rho=-\beta\hat H_{\mathrm{LSWT}}-\ln Z\) gives \(\mathcal S=(U-F)/T\), which coincides with the thermodynamic relation \(\mathcal S=-\partial F/\partial T\). With \eqref{eq-lswt-internal-energy} and \eqref{eq-lswt-free-energy},
+
+\[
+\mathcal S=k_{\mathrm B}\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}
+\left[\beta\varepsilon_{n\mathbf k}\,n_{\mathrm B}(\varepsilon_{n\mathbf k})-\ln\!\left(1-\exp(-\beta\varepsilon_{n\mathbf k})\right)\right].
+\]
+
+The relations \(\beta\varepsilon=\ln[(1+n_{\mathrm B})/n_{\mathrm B}]\) and \(\ln(1-\exp(-\beta\varepsilon))=-\ln(1+n_{\mathrm B})\), which follow from the definition of \(n_{\mathrm B}\), express the entropy through the occupations alone:
+
+\begin{equation}\label{eq-lswt-magnon-entropy}
+\mathcal S=k_{\mathrm B}\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}
+\Big[\big(1+n_{\mathbf kn}\big)\ln\big(1+n_{\mathbf kn}\big)-n_{\mathbf kn}\ln n_{\mathbf kn}\Big],
+\qquad
+n_{\mathbf kn}=n_{\mathrm B}(\varepsilon_{n\mathbf k}).
+\end{equation}
+
+This is the entropy of an ideal Bose gas with the occupations \(n_{\mathbf kn}\). The zero-point correction does not enter, since it is a temperature-independent constant.
+
+\subsection{Heat Capacity}
+
+The heat capacity is the temperature derivative of the internal energy, \(C=\partial U/\partial T\). Only the occupations depend on temperature, and \(\partial n_{\mathrm B}(\varepsilon)/\partial T=(\varepsilon/k_{\mathrm B}T^2)\exp(\beta\varepsilon)/(\exp(\beta\varepsilon)-1)^2\), so
+
+\begin{equation}\label{eq-lswt-magnon-heat-capacity}
+C=k_{\mathrm B}\sum_{\mathbf k\in\mathrm{MBZ}}\sum_{n=1}^{N_{\mathrm{sub}}}
+\frac{(\beta\varepsilon_{n\mathbf k})^2}{4\sinh^2(\beta\varepsilon_{n\mathbf k}/2)}.
+\end{equation}
+
+Each mode contributes the heat capacity of a harmonic oscillator. The contribution approaches \(k_{\mathrm B}\) for \(\varepsilon_{n\mathbf k}\ll k_{\mathrm B}T\) and is exponentially small for \(\varepsilon_{n\mathbf k}\gg k_{\mathrm B}T\), so at low temperature the heat capacity is dominated by the lowest magnon energies. The relation \(C=T\,\partial\mathcal S/\partial T\) gives the same expression.
+
+\subsection{Normalization and Momentum Sums}
+
+The quantities above are extensive: the sums run over the \(N_{\mathrm{uc}}\) momenta of the MBZ and the \(N_{\mathrm{sub}}\) bands. Values per magnetic site follow by dividing by \(N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}\); for example, \(U/N_{\mathrm{site}}=\mathcal E_{\mathrm{GS}}+N_{\mathrm{site}}^{-1}\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}n_{\mathrm B}(\varepsilon_{n\mathbf k})\). In the thermodynamic limit the momentum sum becomes an integral over the MBZ, \(N_{\mathrm{uc}}^{-1}\sum_{\mathbf k}\to A_{\mathrm{MBZ}}^{-1}\int_{\mathrm{MBZ}}d^2\mathbf k\), where \(A_{\mathrm{MBZ}}\) is the area of the MBZ. A finite momentum mesh approximates this integral.
+
+\subsection{Zero Modes}
+
+When \(\mathsf H_{\mathbf k}\) is only positive semidefinite, some magnon energy vanishes, for example at a Goldstone mode. Near an isolated zero at \(\mathbf k_0\) we assume \(\varepsilon_{n\mathbf k}\propto|\mathbf k-\mathbf k_0|^a\) with \(a>0\); linear (\(a=1\)) and quadratic (\(a=2\)) dispersions are the common cases. The summands behave as follows as \(\varepsilon\to0\):
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Quantity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Summand for \(\varepsilon\ll k_{\mathrm B}T\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Limit at \(\varepsilon=0\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(U\) & \(\varepsilon\,n_{\mathrm B}(\varepsilon)\to k_{\mathrm B}T\) & finite \\
+\(C\) & \(k_{\mathrm B}\) & finite \\
+\(F\) & \(k_{\mathrm B}T\ln(\beta\varepsilon)\) & logarithmically divergent \\
+\(\mathcal S\) & \(k_{\mathrm B}[1+\ln(k_{\mathrm B}T/\varepsilon)]\) & logarithmically divergent \\
+\end{longtable}
+
+The logarithmic divergences are integrable. In two dimensions \(\int d^2\mathbf q\,\ln|\mathbf q|\) converges near \(\mathbf q=0\) for any \(a>0\), so \(F\), \(U\), \(\mathcal S\), and \(C\) remain finite in the thermodynamic limit. A zero mode at an isolated momentum has vanishing weight in the MBZ integral. On a finite mesh that contains \(\mathbf k_0\), the treatment of that single point is a discretization choice, and the continuum values do not depend on it. Quantities weighted by the occupations without a compensating factor of \(\varepsilon\), such as the boson number and the sublattice moment, can diverge instead; they are treated in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}).
+
+\subsection{References}
+
+\subsubsection{Internal Documents}
+
+\begin{itemize}
+\tightlist
+\item
+  \lswtnoteref{LSWT foundations}{Notation and Conventions}: defines \(\beta\), \(\mathcal S\), \(\varepsilon_{n\mathbf k}\), \(E_{\mathrm{cl}}\), \(\Delta E_{\mathrm{zp}}\), \(E_{\mathrm{GS}}\), and the system-size symbols.
+\item
+  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies the diagonal magnon Hamiltonian, the zero-point correction, and the positive-definiteness condition.
+\item
+  \lswtnoteref{LSWT foundations}{LSWT Overview}: states the finite-temperature qualification for two-dimensional ordered states.
+\item
+  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): uses the Bose--Einstein occupations for boson numbers and sublattice moments.
+\item
+  Thermodynamic Derivations (Section~\ref{sec-lswt-thermodynamic-derivations}): is reserved for longer entropy and correlation-matrix derivations.
+\end{itemize}
+
+\subsubsection{External Sources}
+
+\begin{itemize}
+\tightlist
+\item
+  None.
+\end{itemize}

@@ -1,0 +1,3 @@
+name: Toolkit development design
+from: docs/development/main.tex
+summary: Development goals, calculation workflow, the common model data contract, module layout and the development plan of the spin-system toolkit.

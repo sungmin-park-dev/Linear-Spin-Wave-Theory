@@ -1,0 +1,78 @@
+% Converted on 2026-10-08 from docs/development/sections/01-overview.tex (Beamer, review copy 43).
+% Each frame became a subsection whose body, unchanged, sits in a group as in Beamer.
+
+\section{개요}
+
+
+
+\subsection{문서의 역할과 구성}\label{document-purpose}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{개발에 필요한 물리 정보·기능 명세·구현 방법을 정리한다.}
+  \begin{block}{문서의 목적}
+    2D Spin System Solver를 구현하기 위한 개발 문서이다.
+    구현을 위한 물리적 정보를 어떤 형식으로 표현하며, 어떤 기능을 구현할지 어떻게 구현할지 설명한다.
+  \end{block}
+  \par\medskip
+  \begin{tabularx}{\textwidth}{@{}p{2.8cm}Y@{}}
+    \toprule
+    항목 & 요약 \\
+    \midrule
+    물리 정보의 표현 & 모델 정의에 필요한 정보와 자료구조·단위·전달 규약을 설명한다. \\
+    기능 명세 & 기능별 입력·출력과 계산 절차를 정리한다. \\
+    구현 방법 & Python·NumPy·SciPy를 이용한 구현 방식과 모듈 구성을 설명한다. \\
+    개발 계획 & 구현 순서와 단계별 적용 범위를 정리한다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{섹션 구성과 세부 설계는 논의와 구현에 따라 수정한다.
+  구현 내역·시험 결과·결정 이력은 부록에 연결한다.}
+\endgroup
+
+
+\subsection{개발 목표}\label{development-goals}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2D 스핀 모델의 정의·계산·분석을 연결하는 도구를 구현한다.}
+  \begin{tabularx}{\textwidth}{@{}p{2.7cm}Y@{}}
+    \toprule
+    목표 & 도구가 제공할 기능 \\
+    \midrule
+    일관된 모델 정의 & 모델별 물리 정보를 같은 자료구조와 의미로 전달한다. \\
+    계산과 분석 & 바닥상태 탐색·솔버 계산·물리량 분석·시각화를 연결한다. \\
+    기능의 재사용 & 새로운 모델에서도 공통 계산 모듈을 재사용한다. \\
+    결과의 해석 & 입력 조건·단위·정규화를 결과와 함께 기록한다. \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \textbf{1차 개발 범위}\\[0.4em]
+  NBCP와 두 벤치마크(사각격자·삼각격자 하이젠버그)에서 모델 정의부터
+  LSWT 물리량까지 연결한다. 세부 범위는 다음 쪽에 정리한다.
+  \par\medskip
+  \supportingtext{후속 확장: 키타에프 벤치마크, ED·텐서 네트워크 솔버, 유한 클러스터, 고차 스핀 상호작용.}
+  \slidesource{합의된 개발 방향과 2026-09-29 범위 결정}{plan}
+\endgroup
+
+
+\subsection{1차 개발 범위}\label{first-scope}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-09-29 확정 · 세부 필드명과 수치 규약은 검토안이다.}
+  \small
+  \begin{tabularx}{\textwidth}{@{}p{1.6cm}Yp{4.1cm}@{}}
+    \toprule
+    축 & 1차 범위 & 후속 \\
+    \midrule
+    모델 & NBCP · 사각격자 하이젠버그 · 삼각격자 하이젠버그 & 키타에프 벤치마크 \\
+    항 & 서로 다른 두 사이트의 실수 이선형 항, Zeeman 항 & 같은 사이트 이차항, 3·4-스핀 항 \\
+    장 & 모델은 사이트별 g-텐서를 갖고, 장 $B$는 외부 변수로 받는다 & — \\
+    계산계 & 열역학 극한 주기계: 자기 단위격자와 k점 격자 & 유한 클러스터 솔버, 열린 경계 \\
+    상태 & 정합 고전 상태; 상태 검증과 기준 상태 진단(정상성·안정성) & 비정합 상태 \\
+    방법 & 고전 에너지·최적화, LSWT & ED·TN 솔버, real-space BdG \\
+    물리량 & 스펙트럼, 바닥상태 에너지, 열역학량, 상관함수, 위상량(thermal Hall) & — \\
+    검증 & 최소 ED 검증 도구(1-마그논 섹터); TN은 문헌값 비교 & ED 솔버로 확장 \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{위상량은 1차 범위에 포함하되 단계별 구현의 마지막 단계로 둔다.
+  최소 ED 검증 도구는 향후 ED 솔버로 확장하므로 \texttt{methods/} 아래에 둔다.}
+  \slidesource{2026-09-29 사용자 결정(D07)}{plan}
+\endgroup
+
