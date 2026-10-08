@@ -95,11 +95,13 @@ Independent higher-order spin interactions, such as scalar spin chirality or rin
 
 \subsection{Zeeman Term and g-Tensor}
 
-The scalar \(g\)-factor and the Bohr magneton \(\mu_B\) are taken to be positive, and the electron sign is written explicitly in the magnetic moment. With spin operators expressed in units of \(\hbar\), the moment at site \(I\) is
+The scalar \(g\)-factor and the Bohr magneton \(\mu_B\) are taken to be positive. We use the convention common in spin-wave calculations in which the magnetic moment at site \(I\) is written, with spin operators in units of \(\hbar\), as
 
 \[
-\hat{\boldsymbol\mu}_I=-\mu_B\mathsf g_I\hat{\mathbf S}_I.
+\hat{\boldsymbol\mu}_I=\mu_B\mathsf g_I\hat{\mathbf S}_I,
 \]
+
+so that a field favors spins parallel to it. For electron spins the physical moment is \(-\mu_B\mathsf g_I\hat{\mathbf S}_I\). The Hamiltonian below at field \(\mathbf B\) therefore equals the electron Hamiltonian at field \(-\mathbf B\). Energies, magnon spectra and quantities even in the field are the same in both conventions, whereas quantities odd under time reversal, such as the sign of the thermal Hall conductivity or of a magnon chirality, refer to the reversed field and change sign when expressed in terms of the physical field of an electron system.
 
 Here, \(\mathsf g_I\) is the dimensionless \(g\)-tensor. In the isotropic case, \(\mathsf g_I=g_I\mathsf I_3\) with \(g_I>0\), where \(\mathsf I_3\) is the \(3\times3\) identity matrix. For an anisotropic coupling, positive \(g\) values refer to the principal-axis coupling magnitudes; positivity is not an entrywise condition on the tensor in an arbitrary Cartesian basis.
 
@@ -108,7 +110,7 @@ The Zeeman energy is \(-\sum_I\mathbf B_I\mathbin{\cdot}\hat{\boldsymbol\mu}_I\)
 \begin{equation}\label{eq-lswt-zeeman-g-tensor}
 \hat H_{\mathrm Z}
 =-\sum_I\mathbf h_I\mathbin{\cdot}\hat{\mathbf S}_I
-=+\mu_B
+=-\mu_B
 \sum_I
 \sum_{\alpha,\beta}
 B_I^\alpha g_I^{\alpha\beta}\hat{S}_I^\beta.
@@ -117,14 +119,14 @@ B_I^\alpha g_I^{\alpha\beta}\hat{S}_I^\beta.
 The first index of \(g_I^{\alpha\beta}\) labels the field component, and the second labels the spin component. Collecting the coefficient of each spin operator therefore yields
 
 \[
-h_I^\beta=-\mu_B\sum_\alpha B_I^\alpha g_I^{\alpha\beta},
+h_I^\beta=\mu_B\sum_\alpha B_I^\alpha g_I^{\alpha\beta},
 \qquad
-\mathbf h_I=-\mu_B\mathsf g_I^{\mathsf T}\mathbf B_I.
+\mathbf h_I=\mu_B\mathsf g_I^{\mathsf T}\mathbf B_I.
 \]
 
-The transpose follows from the column-vector convention. The vector \(\mathbf h_I\) has units of energy and is real for a Hermitian Zeeman term; it is distinct from the applied field \(\mathbf B_I\), measured in tesla. In meV and tesla, \(\mu_B\simeq0.0578838\,\mathrm{meV/T}\). In particular, an isotropic positive \(g_I\) gives \(\mathbf h_I=-g_I\mu_B\mathbf B_I\) with the stated definition of \(\mathbf h_I\).
+The transpose follows from the column-vector convention. The vector \(\mathbf h_I\) has units of energy and is real for a Hermitian Zeeman term; it is distinct from the applied field \(\mathbf B_I\), measured in tesla. In meV and tesla, \(\mu_B\simeq0.0578838\,\mathrm{meV/T}\). In particular, an isotropic positive \(g_I\) gives \(\mathbf h_I=g_I\mu_B\mathbf B_I\) with the stated definition of \(\mathbf h_I\).
 
-Spin--orbit coupling and crystal-field effects can make \(\mathsf g_I\) anisotropic. For a free electron, the positive spin \(g\)-factor is approximately \(2.0023\) in this convention; the electron sign remains explicit in the magnetic-moment relation above.
+Spin--orbit coupling and crystal-field effects can make \(\mathsf g_I\) anisotropic. For a free electron, the positive spin \(g\)-factor is approximately \(2.0023\); the electron sign is absorbed into the convention for the moment stated above.
 
 \subsection{References}
 
