@@ -18,7 +18,7 @@ LSWT 이론을 source evidence에서 Markdown 정본 후보로 이식하고, 코
 웹·PDF 출판으로 연결하는 절차다. Source authority는 이 절차가 아니라 위의
 User-Constitution과 Court decision이 소유한다.
 
-NBCP 연구 노트의 내용 원본은 [2026-09-18 결정](../../Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 포함된 TeX 파일이다. 아래 Markdown 전용 작성·변환 조항은 LSWT 일반 이론에 적용한다. NBCP도 source trace, semantic label, 인간의 물리·수학 검토와 acceptance 구분은 유지하며, PDF는 TeX 원본에서 생성한다.
+NBCP 연구 노트의 내용 원본은 [2026-09-18 결정](../../Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 포함된 TeX 파일이다. 아래 Markdown 전용 작성·변환 조항은 LSWT 일반 이론에 적용한다. NBCP도 source trace, semantic label, 인간의 물리·수학 검토와 acceptance 구분은 유지하며, PDF는 TeX 원본에서 생성한다. 2026-10-09부터 NBCP 연구는 별도 저장소 `nbcp-spin-supersolid`에 있다([결정](../../Court-Precedents/2026-10-09-nbcp-repository-split.md)).
 
 ## Artifact Roles
 
@@ -62,7 +62,7 @@ NBCP 연구 노트의 내용 원본은 [2026-09-18 결정](../../Court-Precedent
 
 ### 2. Draft authoring
 
-1. LSWT 일반 이론은 대응하는 `docs/lswt/` 번호 폴더의 Markdown에만 작성한다. NBCP 연구 노트는 `docs/nbcp/`에서 별도로 운영한다.
+1. LSWT 일반 이론은 대응하는 `docs/lswt/` 번호 폴더의 Markdown에만 작성한다. NBCP 연구 노트는 별도 저장소 `nbcp-spin-supersolid`에서 운영한다.
 2. 한 claim, 정의, 수식은 하나의 canonical Markdown 파일에서만 소유한다.
 3. 작업 계획, review ledger, code discrepancy는 본문이 아니라 audit 또는
    Working-Pad에 둔다.
@@ -189,7 +189,7 @@ accepted Markdown manifest
 - 의미·수식 수정은 Markdown에, 조판 수정은 template 또는 renderer에 반영한다.
 - 공개 build에는 accepted 문서만 포함한다. Draft와 audit는 preview에서만
   확인한다.
-- 보관할 생성 출력은 해당 주제의 `output/`에 둔다. NBCP는 `docs/nbcp/output/`에 PDF와 생성 기록만 남기며 편집 원본과 계산 데이터를 복사하지 않는다.
+- 보관할 생성 출력은 해당 주제의 `output/`에 둔다. NBCP 출력은 저장소 `nbcp-spin-supersolid`의 `docs/nbcp/output/`에 있다.
 - 일회성 renderer 검증과 중간 TeX·Markdown·그림 사본은 temporary output directory에서 처리한다. 보관할 preview만 해당 주제의 `output/`으로 복사한다.
 - Quarto 검증이 source 옆에 `<document>_files/` resource directory 또는 중복
   `.gitignore`를 만들면 검증 직후 생성 여부와 내용을 확인하고 제거한다.

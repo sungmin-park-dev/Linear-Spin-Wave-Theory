@@ -1,54 +1,16 @@
-title: NBCP spin supersolid
-question: NBCP의 Y·V 상이 유한온도에서 spin supersolid인지, vortex와 thermal matching으로 판정한다
+title: Spin Wave Theory
+question: 2D 스핀 모형의 선형 스핀파 이론을 정리하고, 그 계산 패키지 spin-toolkit을 검증해 공개한다
 started: 2026-09-30
 agent-status: true
 latex-template: research-note
 sources:
-  manuscript:
-    - docs/nbcp/main.tex — Spin Supersolidity in Na₂BaCo(PO₄)₂
-    - docs/development/main.tex — Spin Wave Theory
   canon:
-    - workbench/notes — NBCP 연구노트 8개 (2026-10-05부터), LSWT 이론 lswt-* 3개와 개발 노트 dev-* 3개 (2026-10-08부터) 내용 원본
-    - docs/nbcp/main.tex — NBCP 연구 원고 (2026-10-05 상태로 보존, 더 고치지 않음)
+    - workbench/notes — LSWT 이론 lswt-* 3개와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
     - docs/lswt — LSWT 일반 이론 Markdown (2026-10-08 상태로 보존, 더 고치지 않음)
     - docs/development/main.tex — 패키지 개발 설계와 결정 기록 D01–D47 Beamer (2026-10-08 상태로 보존, 더 고치지 않음)
   tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md
-  bib: [docs/nbcp/references.bib]
   materials:
     - GOVERNMENT/Working-Pad/project-review
-    - data-space/verification/261001-nbcp-harmonic-phase-diagram
     - data-space/gallery
     - docs/tutorials
-    - docs/nbcp/output
   reviews: [docs/lswt]
-topics:
-  - id: nbcp-phase-diagram
-    title: NBCP phase diagram
-    parts:
-      - docs/nbcp/chapters/02-model-hamiltonian.tex
-      - docs/nbcp/chapters/03-phase-diagram.tex
-      - docs/nbcp/chapters/04-phase-characterization.tex
-      - docs/nbcp/appendices/e-model-derivation.tex
-  - id: skyrmion-phase
-    title: Skyrmion phase
-    parts: [docs/nbcp/chapters/05-skyrmion-phase.tex]
-  - id: y-v-phase-supersolidity
-    title: Y, V phase supersolidity
-    parts:
-      - docs/nbcp/chapters/06-yv-low-energy.tex
-      - docs/nbcp/chapters/07-supersolidity.tex
-      - docs/nbcp/chapters/08-y-phase.tex
-      - docs/nbcp/chapters/09-v-phase.tex
-      - docs/nbcp/appendices/a-pseudo-goldstone-gap.tex
-      - docs/nbcp/appendices/b-clock-rg.tex
-      - docs/nbcp/appendices/c-y-stiffness.tex
-  - id: spin-wave-theory
-    title: Spin Wave Theory
-    parts:
-      - docs/development/sections/01-overview.tex
-      - docs/development/sections/02-system-workflow.tex
-      - docs/development/sections/03-data-contract.tex
-      - docs/development/sections/04-module-layout.tex
-      - docs/development/sections/05-development-plan.tex
-      - docs/development/appendices/a-implementation-verification.tex
-      - docs/development/appendices/b-decisions-references.tex

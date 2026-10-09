@@ -1,4 +1,0 @@
-name: Numerical verification and provenance
-from: docs/nbcp/main.tex
-summary: Implementation findings, numerical convergence, evidence and reproduction
-  records for the NBCP calculations.

@@ -28,9 +28,7 @@ LSWT 프로젝트의 미해결/종결 이슈와 논의 기록.
 |---|---|---|---|
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug\|260802-topology-thermal-hall-real-space-volume-bug]] | problem | 층당/3D SI κ·full BZ·Chern, 고정 cutoff; 구현 항목은 toolkit 5a–5d(D29)로 해결, NBCP 적용·이론 검토 남음 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit\|260809-lswt-documentation-audit]] | review | `docs/lswt/` coverage, legacy consolidation과 열린 이론 검토 추적 | in-review |
-| [[GOVERNMENT/Working-Pad/issue-notes/open/260810-pseudo-goldstone-gap\|260810-pseudo-goldstone-gap]] | problem | SOC Y/V gap 및 PD-only V의 6회 이방성; 위상 강성·열적 주장 검토와 패키지 설계 대기 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog\|260810-lswt-implementation-backlog]] | review | NBCP band plot 작성과 남은 LSWT 구현 backlog(시각화 포팅, 공개 배포, BdG, 비정합 구조) | draft |
-| [[GOVERNMENT/Working-Pad/issue-notes/open/260918-nbcp-physics-code-review\|260918-nbcp-physics-code-review]] | review | NBCP 9장 구조, claim-to-code 대응과 독립 물리 구현 검토 | in-review |
 | [[GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide\|261001-lswt-draft-physics-review-guide]] | review | `docs/lswt/` draft 10개의 독립 검산 결과, 고친 오류와 문서별 물리·수학 검토 포인트 | in-review |
 
 ### `closed/` — 종결 이슈
