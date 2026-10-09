@@ -1,0 +1,3 @@
+name: LSWT paraunitary diagonalization
+from: docs/lswt
+summary: Paraunitary (bosonic Bogoliubov) diagonalization of the BdG Hamiltonian, a worked single-mode example and proofs of paraunitarity.

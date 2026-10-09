@@ -6,7 +6,7 @@ decision-type: source-authority
 status: accepted
 last-edited-by: claude
 created: 2026-10-08
-updated: 2026-10-08
+updated: 2026-10-09
 scope: docs/lswt, docs/development, workbench/notes
 reviewed-by: user
 reviewed-at: 2026-10-08
@@ -23,5 +23,6 @@ reviewed-at: 2026-10-08
 3. 이후 이 내용의 갱신은 연구노트에서 하며, 연구노트가 내용의 편집 원본이다. LSWT 이론 연구노트는 영어로 쓰고 `lswt-writing-style.md`를 계속 적용한다.
 4. 2026-08-01 결정의 단일 정본 원칙은 위치만 바뀐다. LSWT 이론 claim을 소유하는 정본은 사용자 승인 Markdown 대신 사용자 승인 LSWT 연구노트다. Primary PDF가 원문 판정 근거인 점, 사용자 Human Physics and Mathematics Review 전에는 accepted가 아닌 점, 파생 PDF를 직접 고치지 않는 점은 그대로다. 2026-08-09 결정과 2026-09-16 통합 기록의 작성 경로 조항은 이 결정으로 대체한다.
 5. 옮기기 전 점검(2026-10-08)에서 이론 문서의 확인된 오류 3개와 고칠 항목 2개를 찾았다. 옮길 때는 고치지 않았고, 연구노트에서 따로 고친다. 목록은 `/mnt/project-files/lswt-review/2026-10-08-lswt-workspace-check.md`(프로젝트 공유 폴더)에 있다.
+6. 2026-10-09 구조 변경(사용자 승인 "진행"): LSWT 이론 연구노트 3개를 주제별 7개로 나눴다. `lswt-spin-hamiltonian`(개요·기호·스핀 해밀토니안), `lswt-classical-order`(고전 질서·국소 좌표계, 부록 Luttinger–Tisza), `lswt-boson-hamiltonian`(HP 전개·실공간·운동량 공간), `lswt-paraunitary-diagonalization`(대각화·예제, 부록 paraunitarity proofs), `lswt-magnon-thermodynamics`(마그논 관측량·열역학, 부록 유도), `lswt-spin-correlations`(상관함수·구조인자), `lswt-magnon-topology`(위상 양). 절 본문은 그대로이고, 다른 노트로 간 절을 가리키는 참조만 `\lswtnoteref`로 바꿨다. 개발 노트 3개는 그대로 둔다.
 
 [2026-08-01 결정](2026-08-01-lswt-markdown-source-authority.md) · [2026-10-05 NBCP 결정](2026-10-05-nbcp-research-notes.md) · [연구노트](../../workbench/notes/)

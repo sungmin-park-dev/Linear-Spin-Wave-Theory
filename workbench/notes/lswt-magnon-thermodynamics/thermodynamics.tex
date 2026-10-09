@@ -5,11 +5,11 @@
 \hypertarget{sec-lswt-thermodynamics}{%
 \section{Thermodynamics}\label{sec-lswt-thermodynamics}}
 
-In thermal equilibrium the LSWT Hamiltonian describes an ideal gas of magnons on top of the classical reference configuration. The partition function therefore factorizes over the magnon modes \((\mathbf k,n)\), and the free energy, internal energy, entropy, and heat capacity follow from single-oscillator expressions summed over the magnetic Brillouin zone (MBZ). Energy, temperature, and entropy symbols follow \lswtnoteref{LSWT foundations}{Notation and Conventions}; the inverse temperature is \(\beta=(k_{\mathrm B}T)^{-1}\) and the entropy is \(\mathcal S\).
+In thermal equilibrium the LSWT Hamiltonian describes an ideal gas of magnons on top of the classical reference configuration. The partition function therefore factorizes over the magnon modes \((\mathbf k,n)\), and the free energy, internal energy, entropy, and heat capacity follow from single-oscillator expressions summed over the magnetic Brillouin zone (MBZ). Energy, temperature, and entropy symbols follow \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}; the inverse temperature is \(\beta=(k_{\mathrm B}T)^{-1}\) and the entropy is \(\mathcal S\).
 
 \subsection{Validity of the Magnon-Gas Description}
 
-We use the diagonal Hamiltonian of \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization},
+We use the diagonal Hamiltonian of \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization},
 
 \[
 \hat H_{\mathrm{LSWT}}
@@ -19,7 +19,7 @@ We use the diagonal Hamiltonian of \lswtnoteref{LSWT derivation}{Paraunitary Dia
 \hat n_{\mathbf kn}=\hat b_{\mathbf kn}^\dagger\hat b_{\mathbf kn},
 \]
 
-with \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\). The classical reference configuration and the magnon energies \(\varepsilon_{n\mathbf k}\) are held fixed as the temperature changes, and the quartic and higher Holstein--Primakoff terms that couple magnons are omitted. The results below are therefore the leading low-temperature description. Its corrections grow with the thermal magnon density, and the description fails when the thermal reduction of a sublattice moment, discussed in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}), becomes comparable to the spin length. In two dimensions, the interpretation of these results as properties of an ordered phase requires the qualifications stated in \lswtnoteref{LSWT foundations}{LSWT Overview}.
+with \(E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}\). The classical reference configuration and the magnon energies \(\varepsilon_{n\mathbf k}\) are held fixed as the temperature changes, and the quartic and higher Holstein--Primakoff terms that couple magnons are omitted. The results below are therefore the leading low-temperature description. Its corrections grow with the thermal magnon density, and the description fails when the thermal reduction of a sublattice moment, discussed in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}), becomes comparable to the spin length. In two dimensions, the interpretation of these results as properties of an ordered phase requires the qualifications stated in \lswtnoteref{LSWT spin Hamiltonian}{LSWT Overview}.
 
 All quantities below assume \(\varepsilon_{n\mathbf k}>0\), which holds when \(\mathsf H_{\mathbf k}\) is positive definite. The section on zero modes describes the limit \(\varepsilon_{n\mathbf k}\to0\).
 
@@ -130,11 +130,11 @@ The logarithmic divergences are integrable. In two dimensions \(\int d^2\mathbf 
 \begin{itemize}
 \tightlist
 \item
-  \lswtnoteref{LSWT foundations}{Notation and Conventions}: defines \(\beta\), \(\mathcal S\), \(\varepsilon_{n\mathbf k}\), \(E_{\mathrm{cl}}\), \(\Delta E_{\mathrm{zp}}\), \(E_{\mathrm{GS}}\), and the system-size symbols.
+  \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}: defines \(\beta\), \(\mathcal S\), \(\varepsilon_{n\mathbf k}\), \(E_{\mathrm{cl}}\), \(\Delta E_{\mathrm{zp}}\), \(E_{\mathrm{GS}}\), and the system-size symbols.
 \item
-  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies the diagonal magnon Hamiltonian, the zero-point correction, and the positive-definiteness condition.
+  \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}: supplies the diagonal magnon Hamiltonian, the zero-point correction, and the positive-definiteness condition.
 \item
-  \lswtnoteref{LSWT foundations}{LSWT Overview}: states the finite-temperature qualification for two-dimensional ordered states.
+  \lswtnoteref{LSWT spin Hamiltonian}{LSWT Overview}: states the finite-temperature qualification for two-dimensional ordered states.
 \item
   Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): uses the Bose--Einstein occupations for boson numbers and sublattice moments.
 \item

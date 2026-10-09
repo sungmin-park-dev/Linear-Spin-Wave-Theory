@@ -83,7 +83,7 @@ project-root/
 
 ## 이론 문서와 source authority
 
-LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 LaTeX 연구노트 3개(`lswt-foundations`, `lswt-derivation`, `lswt-observables`)에 정리한다. `docs/lswt/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/development/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
+LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 LaTeX 연구노트에 정리한다. 2026-10-09부터 주제별 7개(`lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`)다(처음 3개 `lswt-foundations`·`lswt-derivation`·`lswt-observables`를 나눔). `docs/lswt/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/development/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
 
 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따랐고, 정본의 위치와 작성 경로는 2026-10-08 결정이 연구노트로 바꿨다. 이는 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/lswt/README.md](docs/lswt/README.md)다.
 
