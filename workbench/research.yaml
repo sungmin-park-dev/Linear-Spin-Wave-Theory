@@ -14,3 +14,12 @@ sources:
     - data-space/gallery
     - docs/tutorials
   reviews: [docs/lswt]
+concepts:
+  - linear-spin-wave-theory
+  - magnon
+  - holstein-primakoff-transformation
+  - luttinger-tisza-method
+  - bosonic-bogoliubov-transformation
+  - dynamical-structure-factor
+  - berry-curvature-and-chern-number-of-bosonic-bands
+  - magnon-thermal-hall-effect
