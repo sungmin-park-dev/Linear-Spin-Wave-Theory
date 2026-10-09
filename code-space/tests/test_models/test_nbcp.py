@@ -86,16 +86,3 @@ def test_optional_bonds_remain_explicit(name, num_angles, bz_type):
     nnn_only = builder(config, angles, Exch_K=nbcp.make_nnn_exchange_matrices(config))
     assert len(nnn_only.couplings) == 3 * num_angles // 2
     assert nbcp.make_nnn_exchange_matrices(CONFIG) is None
-
-
-def test_old_example_imports_preserve_builder_interface():
-    example = import_module("examples.nbcp_ground_state")
-    # The example re-exports the legacy builder names only; the common-model
-    # API added to model.nbcp in stage 2 is not part of that interface.
-    for name in ("make_nn_exchange_matrices", "make_nnn_exchange_matrices",
-                 "one_msl", "two_msl", "three_msl", "four_msl"):
-        assert getattr(example, name) is getattr(nbcp, name)
-    for phase, (name, num_angles, bz_type) in zip(example.PHASES.values(), CELLS):
-        assert phase["builder"] is getattr(nbcp, name)
-        assert phase["num_angles"] == num_angles
-        assert phase["bz_type"] == bz_type

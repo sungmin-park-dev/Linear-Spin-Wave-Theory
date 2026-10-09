@@ -1,5 +1,10 @@
 # NBCP model workspace
 
+> Since 2026-10-09 the NBCP research, including the scripts that use this model,
+> lives in the `nbcp-spin-supersolid` repository, which keeps its own copy of
+> this directory. The copy here is a fixed regression fixture for the package
+> tests; change the research copy instead.
+
 This directory owns NBCP-specific model definitions. Reusable numerical methods
 remain in `code-space/spintoolkit/`; the model builders do not select a solver.
 

@@ -124,8 +124,9 @@ python -m pytest code-space/tests -q
 The tests compare against closed-form results (ferromagnet and Néel magnons,
 triangular-lattice zero-point energy, free-spin powder averages), exact
 diagonalization of small clusters, and the earlier implementation in
-`legacy/`. The NBCP checks live in `examples/nbcp_*.py`, with their outputs in
-`data-space/verification/`.
+`legacy/`. The NBCP research calculations moved to their own repository,
+`nbcp-spin-supersolid`, on 2026-10-09; the NBCP model in `model/nbcp/` stays
+here as a regression fixture.
 
 ## Known limitations
 
@@ -152,7 +153,6 @@ the 0.2 release.
 - [Package layout](code-space/spintoolkit/README.md)
 - [Development design and decision log](docs/development/README.md)
 - [LSWT theory notes](docs/lswt/README.md)
-- [NBCP research notes](docs/nbcp/README.md)
 - [Documentation index](docs/README.md)
 
 ## Related work on NBCP

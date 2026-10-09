@@ -7,7 +7,7 @@
 ## 프로젝트 개요
 
 2D 스핀 모델의 Linear Spin Wave Theory 계산을 위한 Python 라이브러리.
-NBCP(Na₂BaCo(PO₄)₂) 관련 논문(arXiv:2505.06398; npj Quantum Materials 2022, DOI 10.1038/s41535-022-00500-3) 결과를 재현할 수 있도록 공개 배포 목표.
+공개 배포 목표. NBCP(Na₂BaCo(PO₄)₂) 모형(arXiv:2505.06398; npj Quantum Materials 2022, DOI 10.1038/s41535-022-00500-3)을 주요 검증 사례로 쓴다. NBCP 연구 자체는 별도 저장소 `nbcp-spin-supersolid`에 있다.
 
 **핵심 기능**: 격자 정의 → LSWT 대각화 → 물리량 계산 (열역학, 위상, 상관함수)
 
@@ -22,7 +22,7 @@ NBCP(Na₂BaCo(PO₄)₂) 관련 논문(arXiv:2505.06398; npj Quantum Materials 
 
 ## 현재 디렉토리 구조
 
-> LSWT 일반 이론, NBCP 연구와 개발 설계는 `workbench/notes/` 연구노트(2026-10-08부터; `docs/lswt/`·`docs/development/`·`docs/nbcp/`는 보존본), 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
+> LSWT 일반 이론과 개발 설계는 `workbench/notes/` 연구노트(2026-10-08부터; `docs/lswt/`·`docs/development/`는 보존본), 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
 > 설계 사본은 `GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy.md`에 둔다.
 
 ```
@@ -77,30 +77,19 @@ project-root/
 │   │   ├── 03-examples/
 │   │   ├── 04-appendices/
 │   │   └── sources/             # 원본·전사본·외부 논문·검증 근거
-│   ├── nbcp/                    # NBCP 연구
-│   │   ├── main.tex              # NBCP LaTeX 원본 진입점
-│   │   ├── chapters/             # 본문 9장
-│   │   ├── appendices/           # 상세 유도와 수치 검증
-│   │   ├── references.tex        # 문헌과 source 역할
-│   │   ├── preamble.tex          # 공통 서식
-│   │   ├── metadata.tex          # 제목·날짜·검토 상태
-│   │   ├── output/              # 생성 PDF와 생성 기록
-│   │   └── sources/             # Overleaf 원문 대조 기록
 │   └── archive/                 # 집필을 종료한 문서
 │
 ├── model/                       # 모델별 정의·간단한 계산·원시 및 중간 결과
-│   └── nbcp/                    # NBCP 모델 구성
+│   └── nbcp/                    # NBCP 모형 정의 (패키지 회귀 테스트용 고정본)
 │
-├── examples/                    # 실행 예제와 검증 스크립트
-│   ├── nbcp_ground_state.py
-│   └── nbcp_hamiltonian_check.py
+├── examples/                    # 실행 예제, 튜토리얼과 검증 스크립트
 │
 ├── legacy/                      # 원본 legacy 코드와 과거 연구노트 아카이브
 │   ├── modules/
 │   ├── scripts/
 │   └── research-notes/
 ├── data-space/                  # 검토하고 정돈한 결과 데이터
-└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md, 연구노트 notes/ (NBCP는 2026-10-05부터, LSWT 이론·개발 노트는 2026-10-08부터 내용 원본; docs/의 원고는 그날 상태로 보존)
+└── workbench/                   # research-workspace 앱의 유도 블록·일지, 자동 요약 STATUS.md, 연구노트 notes/ (LSWT 이론·개발 노트는 2026-10-08부터 내용 원본; docs/의 원고는 그날 상태로 보존)
 ```
 
 ---
@@ -122,7 +111,7 @@ LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08
 
 상세 source inventory와 원문 section-to-docs 대응은 `docs/lswt/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 LSWT 연구노트에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
 
-NBCP 연구는 [2026-09-18 결정](GOVERNMENT/Court-Precedents/2026-09-18-nbcp-latex-source-authority.md)에 따라 `docs/nbcp/main.tex`와 여기서 포함하는 `chapters/`, `appendices/`, `references.tex`를 내용 편집 원본으로 사용했다. [2026-10-05 결정](GOVERNMENT/Court-Precedents/2026-10-05-nbcp-research-notes.md)에 따라 원고는 그날 상태로 보존하고 더 고치지 않으며, 그 내용을 복제한 `workbench/notes/`의 연구노트 8개가 이후 NBCP 내용의 편집 원본이다(본문만 두고 머리는 앱 서식 `research-note`와 `workbench/macros.tex`가 붙인다). `preamble.tex`는 공통 서식, `metadata.tex`는 제목·날짜와 검토 상태를 관리한다. 본문은 TeX에서 직접 수정하며 semantic label과 참조를 유지한다. `examples/nbcp_research_export.py`가 XeLaTeX로 `docs/nbcp/output/`에 PDF와 생성 기록만 저장하고, 빌드 중간 파일은 임시 폴더에서 처리한다. 기존 `research-note.md`는 안내만 제공하며 이전 Markdown·변환기는 날짜가 붙은 archive로 보존한다. 이 NBCP 한정 결정은 LSWT 일반 이론의 Markdown 정본 원칙이나 물리·수학 검토 상태를 바꾸지 않는다. 참고자료·navigation·archive·output은 내용 편집 원본이 아니다.
+NBCP 연구는 2026-10-09 별도 저장소 `sungmin-park-dev/nbcp-spin-supersolid`로 옮겼다([결정](GOVERNMENT/Court-Precedents/2026-10-09-nbcp-repository-split.md)). 연구노트·보조 노트·원고·계산 스크립트와 결과는 그 저장소가 소유한다. 이 저장소의 `model/nbcp/`와 `data-space/verification/260912-pseudo-goldstone/`는 패키지 회귀 테스트가 쓰는 고정본이다.
 
 ---
 
@@ -185,7 +174,7 @@ SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
 3. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
 4. **물리적 의도 불명확 시 질문**: legacy 로직의 물리적 의미가 불분명하면 임의 해석하지 말고 반드시 질문할 것.
 5. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
-6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론, NBCP와 개발 노트는 `workbench/notes/` 연구노트 TeX를 직접 편집하고 PDF는 그로부터 생성한다. LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
+6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/notes/` 연구노트 TeX를 직접 편집하고 PDF는 그로부터 생성한다. LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
 7. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/notes/lswt-*`)를 작성하거나 교정하기 전에 `GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
 8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `docs/lswt/` 검토 상태, `workbench/` 유도 블록·일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
 

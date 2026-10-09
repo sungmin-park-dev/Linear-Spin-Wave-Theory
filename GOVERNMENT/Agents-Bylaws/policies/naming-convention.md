@@ -42,13 +42,13 @@ LSWT repo의 파일, 폴더, 운영 문서 이름 규칙이다. 언어·도구�
 
 ## Theory 문서 이름
 
-- LSWT 정본 후보와 accepted 문서는 `docs/lswt/`의 번호 폴더 아래에 둔다. NBCP 연구 내용은 `docs/nbcp/main.tex`와 포함된 장·부록별 TeX에서 관리한다. Markdown은 navigation·검토 기록에 사용한다.
+- LSWT 정본 후보와 accepted 문서는 `docs/lswt/`의 번호 폴더 아래에 둔다. NBCP 연구는 2026-10-09 별도 저장소 `nbcp-spin-supersolid`로 옮겼다. Markdown은 navigation·검토 기록에 사용한다.
 - 독자의 큰 읽기 순서는 `00-foundations/`, `01-derivation/`처럼 folder의
   two-digit numeric prefix로 나타낸다.
 - 개별 Markdown은 순서가 바뀌어도 유지되는 semantic kebab-case filename을
   사용하고 numeric prefix를 붙이지 않는다.
 - `docs/README.md`는 전체 주제와 파일 역할을 안내한다. LSWT 읽기 순서는
-  `docs/lswt/README.md`, NBCP 연구 목록은 `docs/nbcp/README.md`가 소유하며
+  `docs/lswt/README.md`가 소유하며
   같은 목록을 하위 navigation map에 반복하지 않는다.
 - migration 또는 audit 문서는 목적을 명확히 쓴다.
   - 좋음: `section-migration-plan.md`
