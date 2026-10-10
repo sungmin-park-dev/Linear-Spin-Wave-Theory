@@ -1,0 +1,3 @@
+name: LSWT spin Hamiltonian
+from: docs/lswt
+summary: Scope of spin-wave theory, notation and conventions, and the bilinear spin Hamiltonian with exchange, single-ion anisotropy and Zeeman terms.

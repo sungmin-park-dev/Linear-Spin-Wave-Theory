@@ -5,11 +5,11 @@
 \hypertarget{sec-lswt-worked-example}{%
 \section{Worked Example}\label{sec-lswt-worked-example}}
 
-A single magnetic sublattice, \(N_{\mathrm{sub}}=1\), gives the smallest quadratic boson Hamiltonian that contains every ingredient of the general LSWT problem: a normal coefficient, an anomalous pairing coefficient, a paraunitary Bogoliubov transformation, a zero-point correction, and a quantum reduction of the boson number. Every quantity can be written in closed form. The example follows the steps of Paraunitary Diagonalization (Section~\ref{sec-lswt-paraunitary-diagonalization}) and \lswtnoteref{LSWT observables}{Magnon Observables} for this case, so the general formulas can be checked against explicit expressions. We allow the normal coefficients at \(\mathbf k\) and \(-\mathbf k\) to differ, which shows how a nonreciprocal spectrum \(\varepsilon_{\mathbf k}\ne\varepsilon_{-\mathbf k}\) arises.
+A single magnetic sublattice, \(N_{\mathrm{sub}}=1\), gives the smallest quadratic boson Hamiltonian that contains every ingredient of the general LSWT problem: a normal coefficient, an anomalous pairing coefficient, a paraunitary Bogoliubov transformation, a zero-point correction, and a quantum reduction of the boson number. Every quantity can be written in closed form. The example follows the steps of Paraunitary Diagonalization (Section~\ref{sec-lswt-paraunitary-diagonalization}) and \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables} for this case, so the general formulas can be checked against explicit expressions. We allow the normal coefficients at \(\mathbf k\) and \(-\mathbf k\) to differ, which shows how a nonreciprocal spectrum \(\varepsilon_{\mathbf k}\ne\varepsilon_{-\mathbf k}\) arises.
 
 \subsection{Single-Sublattice BdG Hamiltonian}
 
-For \(N_{\mathrm{sub}}=1\) the blocks \(\mathsf A_{\mathbf k}\) and \(\mathsf B_{\mathbf k}\) of Momentum-Space BdG Hamiltonian (Section~\ref{sec-lswt-momentum-space-bdg-hamiltonian}) are numbers. The block relations reduce to a real normal coefficient \(A_{\mathbf k}\) and an even anomalous coefficient, \(B_{-\mathbf k}=B_{\mathbf k}\). We drop the sublattice index and write the quadratic Hamiltonian in normal-ordered form,
+For \(N_{\mathrm{sub}}=1\) the blocks \(\mathsf A_{\mathbf k}\) and \(\mathsf B_{\mathbf k}\) of \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian} are numbers. The block relations reduce to a real normal coefficient \(A_{\mathbf k}\) and an even anomalous coefficient, \(B_{-\mathbf k}=B_{\mathbf k}\). We drop the sublattice index and write the quadratic Hamiltonian in normal-ordered form,
 
 \[
 \hat H_2
@@ -123,7 +123,7 @@ The second form follows because \(A_{\mathbf k}^{-}\) is odd and cancels in the 
 
 \subsection{Boson Number and Anomalous Average}
 
-Inserting \eqref{eq-lswt-example-bogoliubov} into the averages and using the Gibbs occupations \(n_{\mathbf k}=n_{\mathrm B}(\varepsilon_{\mathbf k})\) of \lswtnoteref{LSWT observables}{Thermodynamics}, with \(\langle\hat b_{\mathbf k}^\dagger\hat b_{\mathbf k}\rangle=n_{\mathbf k}\) and vanishing averages of \(\hat b\hat b\) and of products at different momenta, gives
+Inserting \eqref{eq-lswt-example-bogoliubov} into the averages and using the Gibbs occupations \(n_{\mathbf k}=n_{\mathrm B}(\varepsilon_{\mathbf k})\) of \lswtnoteref{LSWT magnon thermodynamics}{Thermodynamics}, with \(\langle\hat b_{\mathbf k}^\dagger\hat b_{\mathbf k}\rangle=n_{\mathbf k}\) and vanishing averages of \(\hat b\hat b\) and of products at different momenta, gives
 
 \begin{equation}\label{eq-lswt-example-averages}
 \begin{aligned}
@@ -134,7 +134,7 @@ Inserting \eqref{eq-lswt-example-bogoliubov} into the averages and using the Gib
 \end{aligned}
 \end{equation}
 
-The first line is the single-band form of the boson number in \lswtnoteref{LSWT observables}{Magnon Observables}. In the magnon vacuum the occupations vanish, and
+The first line is the single-band form of the boson number in \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}. In the magnon vacuum the occupations vanish, and
 
 \[
 \langle\hat a_{\mathbf k}^\dagger\hat a_{\mathbf k}\rangle_0=\sinh^2\theta_{\mathbf k}=\frac12\left(\frac{A_{\mathbf k}^{+}}{\omega_{\mathbf k}}-1\right),
@@ -177,7 +177,7 @@ The stability condition becomes marginal when \(A_{\mathbf k}A_{-\mathbf k}\to|B
 \quad(\omega_{\mathbf k}\ll k_{\mathrm B}T).
 \]
 
-The occupation per mode diverges at the zero mode, while the energy per mode, \(\frac12(\omega_{\mathbf k}-A_{\mathbf k}^{+})\), stays finite. Whether the momentum sum of the boson number converges then depends on the dispersion near the zero and on the dimension, as discussed in \lswtnoteref{LSWT observables}{Magnon Observables}. At \(\omega_{\mathbf k}=0\) itself the transformation does not exist, and the single-mode boson number is undefined rather than large.
+The occupation per mode diverges at the zero mode, while the energy per mode, \(\frac12(\omega_{\mathbf k}-A_{\mathbf k}^{+})\), stays finite. Whether the momentum sum of the boson number converges then depends on the dispersion near the zero and on the dimension, as discussed in \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}. At \(\omega_{\mathbf k}=0\) itself the transformation does not exist, and the single-mode boson number is undefined rather than large.
 
 \subsection{References}
 
@@ -186,15 +186,15 @@ The occupation per mode diverges at the zero mode, while the energy per mode, \(
 \begin{itemize}
 \tightlist
 \item
-  Momentum-Space BdG Hamiltonian (Section~\ref{sec-lswt-momentum-space-bdg-hamiltonian}): defines the Nambu spinor, the BdG blocks, their block relations, and the trace subtraction specialized here.
+  \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian}: defines the Nambu spinor, the BdG blocks, their block relations, and the trace subtraction specialized here.
 \item
   Paraunitary Diagonalization (Section~\ref{sec-lswt-paraunitary-diagonalization}): supplies the paraunitary condition, the particle--hole structure, the zero-point correction, and the single-mode zero-mode cases.
 \item
-  \lswtnoteref{LSWT observables}{Magnon Observables}: defines the correlation matrix and the boson number whose single-band forms are evaluated here.
+  \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}: defines the correlation matrix and the boson number whose single-band forms are evaluated here.
 \item
-  \lswtnoteref{LSWT observables}{Thermodynamics}: defines the Bose--Einstein occupations.
+  \lswtnoteref{LSWT magnon thermodynamics}{Thermodynamics}: defines the Bose--Einstein occupations.
 \item
-  \lswtnoteref{LSWT foundations}{Notation and Conventions}: defines \(\Sigma_3\), \(\mathsf T_{\mathbf k}\), \(\hat\Phi_{\mathbf k}\), and the energy symbols.
+  \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}: defines \(\Sigma_3\), \(\mathsf T_{\mathbf k}\), \(\hat\Phi_{\mathbf k}\), and the energy symbols.
 \end{itemize}
 
 \subsubsection{External Sources}

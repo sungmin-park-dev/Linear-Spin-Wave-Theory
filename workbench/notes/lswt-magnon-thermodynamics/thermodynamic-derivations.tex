@@ -9,7 +9,7 @@ The thermodynamic quantities of a harmonic magnon gas and the equal-time correla
 
 \subsection{Factorization of the Partition Function}
 
-The diagonal Hamiltonian \(\hat H_{\mathrm{LSWT}}=E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}\hat n_{\mathbf kn}\) of \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization} is diagonal in the Fock basis \(|\{m_{\mathbf kn}\}\rangle\) of magnon occupation numbers \(m_{\mathbf kn}=0,1,2,\ldots\), with eigenvalues \(E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}m_{\mathbf kn}\). The trace is a sum over all occupation configurations, and the exponential of a sum is a product, so
+The diagonal Hamiltonian \(\hat H_{\mathrm{LSWT}}=E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}\hat n_{\mathbf kn}\) of \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization} is diagonal in the Fock basis \(|\{m_{\mathbf kn}\}\rangle\) of magnon occupation numbers \(m_{\mathbf kn}=0,1,2,\ldots\), with eigenvalues \(E_{\mathrm{GS}}+\sum_{\mathbf k,n}\varepsilon_{n\mathbf k}m_{\mathbf kn}\). The trace is a sum over all occupation configurations, and the exponential of a sum is a product, so
 
 \[
 Z=\exp(-\beta E_{\mathrm{GS}})\prod_{\mathbf k,n}\sum_{m=0}^{\infty}\exp(-\beta\varepsilon_{n\mathbf k}m)
@@ -129,7 +129,7 @@ The Gibbs state is diagonal in the magnon occupation numbers, so every average o
 =\operatorname{diag}\big(1+n_{1\mathbf k},\ldots,1+n_{N_{\mathrm{sub}}\mathbf k},\;n_{1,-\mathbf k},\ldots,n_{N_{\mathrm{sub}},-\mathbf k}\big),
 \]
 
-which is the matrix \(\mathsf N_{\mathbf k}(0)\) of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}); each hole entry carries the occupation of its own band at \(-\mathbf k\). In the magnon vacuum all occupations vanish and \(\mathsf N_{\mathbf k}(0)=\operatorname{diag}(\mathsf I_{N_{\mathrm{sub}}},0)\).
+which is the matrix \(\mathsf N_{\mathbf k}(0)\) of \lswtnoteref{LSWT spin correlations}{Spin Correlations}; each hole entry carries the occupation of its own band at \(-\mathbf k\). In the magnon vacuum all occupations vanish and \(\mathsf N_{\mathbf k}(0)=\operatorname{diag}(\mathsf I_{N_{\mathrm{sub}}},0)\).
 
 \subsection{Boson Number and Sublattice Moment}
 
@@ -159,13 +159,13 @@ The same result follows directly from \(\hat a_{\mathbf k\mu}=\sum_n[(\mathsf P_
 \item
   Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): states the correlation matrix, the boson number, and the reduced moment derived here.
 \item
-  Spin Correlations (Section~\ref{sec-lswt-spin-correlations}): defines the magnon correlation matrix \(\mathsf N_{\mathbf q}(t)\), whose equal-time value is derived here.
+  \lswtnoteref{LSWT spin correlations}{Spin Correlations}: defines the magnon correlation matrix \(\mathsf N_{\mathbf q}(t)\), whose equal-time value is derived here.
 \item
-  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies the diagonal magnon Hamiltonian and the blocks of \(\mathsf T_{\mathbf k}\).
+  \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}: supplies the diagonal magnon Hamiltonian and the blocks of \(\mathsf T_{\mathbf k}\).
 \item
-  \lswtnoteref{LSWT derivation}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention and the Nambu spinor.
+  \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention and the Nambu spinor.
 \item
-  \lswtnoteref{LSWT foundations}{Notation and Conventions}: fixes the thermodynamic and system-size notation.
+  \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}: fixes the thermodynamic and system-size notation.
 \end{itemize}
 
 \subsubsection{External Sources}

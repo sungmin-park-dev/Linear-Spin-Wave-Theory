@@ -5,7 +5,7 @@ agent-status: true
 latex-template: research-note
 sources:
   canon:
-    - workbench/notes — LSWT 이론 lswt-* 3개와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
+    - workbench/notes — LSWT 이론 lswt-* 7개(2026-10-09 주제별로 나눔)와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
     - docs/lswt — LSWT 일반 이론 Markdown (2026-10-08 상태로 보존, 더 고치지 않음)
     - docs/development/main.tex — 패키지 개발 설계와 결정 기록 D01–D47 Beamer (2026-10-08 상태로 보존, 더 고치지 않음)
   tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md
@@ -14,3 +14,12 @@ sources:
     - data-space/gallery
     - docs/tutorials
   reviews: [docs/lswt]
+concepts:
+  - linear-spin-wave-theory
+  - magnon
+  - holstein-primakoff-transformation
+  - luttinger-tisza-method
+  - bosonic-bogoliubov-transformation
+  - dynamical-structure-factor
+  - berry-curvature-and-chern-number-of-bosonic-bands
+  - magnon-thermal-hall-effect

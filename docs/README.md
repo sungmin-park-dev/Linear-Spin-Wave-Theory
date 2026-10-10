@@ -25,7 +25,7 @@ Toolkit 개발 설계와 LSWT 일반 이론을 주제별로 관리한다. NBCP �
 
 [2026-10-08 결정](../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 내용의 편집 원본은 research-workspace 앱의 연구노트 [`workbench/notes/`](../workbench/notes/)다.
 
-- 일반 이론: `lswt-foundations`, `lswt-derivation`, `lswt-observables`. [docs/lswt/](lswt/README.md)의 Markdown은 2026-10-08 상태로 보존하며 더 고치지 않는다.
+- 일반 이론: 주제별 7개 `lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology` (2026-10-09에 처음 3개를 나눔). [docs/lswt/](lswt/README.md)의 Markdown은 2026-10-08 상태로 보존하며 더 고치지 않는다.
 - 개발 설계와 결정 기록: `dev-design`, `dev-verification`, `dev-decisions`. [development/](development/README.md)의 Beamer는 2026-10-08 상태로 보존한다.
 - 계산 코드와 결과 데이터는 각각 [examples/](../examples/)와 [data-space/](../data-space/)에서 관리한다.
 

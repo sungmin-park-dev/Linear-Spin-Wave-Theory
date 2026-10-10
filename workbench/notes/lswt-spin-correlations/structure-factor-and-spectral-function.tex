@@ -16,7 +16,7 @@ W_n^{\alpha\beta}(\mathbf q)
 =\big(\mathsf V^\alpha\mathsf T_{\mathbf q}\big)_n\big(\mathsf V^\beta\mathsf T_{\mathbf q}\big)_n^*,
 \end{equation}
 
-which is a Hermitian, positive-semidefinite \(3\times3\) matrix of rank one in \((\alpha,\beta)\). The phase and degeneracy freedom of \(\mathsf T_{\mathbf q}\) described in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization} leaves \(W_n^{\alpha\beta}\) unchanged for a nondegenerate band and leaves the sum over a degenerate set unchanged.
+which is a Hermitian, positive-semidefinite \(3\times3\) matrix of rank one in \((\alpha,\beta)\). The phase and degeneracy freedom of \(\mathsf T_{\mathbf q}\) described in \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization} leaves \(W_n^{\alpha\beta}\) unchanged for a nondegenerate band and leaves the sum over a degenerate set unchanged.
 
 The hole columns are determined by the particle columns at \(-\mathbf q\). The hole column \(N_{\mathrm{sub}}+n\) of \(\mathsf T_{\mathbf q}\) can be chosen as \(\Sigma_1\) times the complex conjugate of the particle column \(n\) of \(\mathsf T_{-\mathbf q}\), and the spin vertex \(\mathsf V^\alpha\) of Spin Correlations (Section~\ref{sec-lswt-spin-correlations}) satisfies \(\mathsf V^\alpha\Sigma_1=(\mathsf V^\alpha)^*\). Hence \((\mathsf V^\alpha\mathsf T_{\mathbf q})_{N_{\mathrm{sub}}+n}=\big[(\mathsf V^\alpha\mathsf T_{-\mathbf q})_n\big]^*\), and the hole term of mode \(n\) carries the weight \(W_n^{\beta\alpha}(-\mathbf q)\) at the energy \(\varepsilon_{n,-\mathbf q}\).
 
@@ -57,7 +57,7 @@ Positive \(\omega\) corresponds to energy transferred to the magnet by creating 
 \mathcal S^{\beta\alpha}(-\mathbf q,-\omega)=\exp(-\beta\omega)\,\mathcal S^{\alpha\beta}(\mathbf q,\omega).
 \end{equation}
 
-The dynamic structure factor in \eqref{eq-lswt-dynamic-structure-factor} contains the elastic scattering, of order \(S^2\) with its \(O(S)\) moment reduction and, for a canted reference configuration, the \(O(S)\) term from the rotation of the moments described in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}), and the one-magnon scattering, of order \(S\). The two-magnon continuum from the connected longitudinal correlation is of order \(S^0\) and is not included. At a zero mode, for example a Goldstone mode at a magnetic Bragg vector, the one-magnon weights can diverge as \(\varepsilon_{n\mathbf q}\to0\), because the entries of \(\mathsf T_{\mathbf q}\) grow as described in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}.
+The dynamic structure factor in \eqref{eq-lswt-dynamic-structure-factor} contains the elastic scattering, of order \(S^2\) with its \(O(S)\) moment reduction and, for a canted reference configuration, the \(O(S)\) term from the rotation of the moments described in \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}, and the one-magnon scattering, of order \(S\). The two-magnon continuum from the connected longitudinal correlation is of order \(S^0\) and is not included. At a zero mode, for example a Goldstone mode at a magnetic Bragg vector, the one-magnon weights can diverge as \(\varepsilon_{n\mathbf q}\to0\), because the entries of \(\mathsf T_{\mathbf q}\) grow as described in \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}.
 
 \subsubsection{Broadening}
 
@@ -84,7 +84,7 @@ For unpolarized neutrons, the magnetic scattering cross-section contains the dyn
 \hat{\mathbf q}=\mathbf q/|\mathbf q|,
 \end{equation}
 
-up to the magnetic form factor, the \(g\) factor, and constant prefactors. The projector is symmetric in \((\alpha,\beta)\), so only the symmetric part of \(\mathcal S^{\alpha\beta}\) contributes. For momentum transfer in the plane of a two-dimensional layer, \(\hat{\mathbf q}=(q_x,q_y,0)/|\mathbf q|\). When the \(g\) tensor \(\mathsf g_I\) of \lswtnoteref{LSWT foundations}{Bilinear Spin Hamiltonian} is anisotropic, the neutron couples to the magnetic moment rather than to the spin, and the spin correlations are replaced by moment correlations with the vertex components \(\sum_\gamma g_\mu^{\alpha\gamma}\,\mathsf V^\gamma\) for sublattice \(\mu\).
+up to the magnetic form factor, the \(g\) factor, and constant prefactors. The projector is symmetric in \((\alpha,\beta)\), so only the symmetric part of \(\mathcal S^{\alpha\beta}\) contributes. For momentum transfer in the plane of a two-dimensional layer, \(\hat{\mathbf q}=(q_x,q_y,0)/|\mathbf q|\). When the \(g\) tensor \(\mathsf g_I\) of \lswtnoteref{LSWT spin Hamiltonian}{Bilinear Spin Hamiltonian} is anisotropic, the neutron couples to the magnetic moment rather than to the spin, and the spin correlations are replaced by moment correlations with the vertex components \(\sum_\gamma g_\mu^{\alpha\gamma}\,\mathsf V^\gamma\) for sublattice \(\mu\).
 
 \subsection{Retarded Response and Spectral Function}
 
@@ -169,15 +169,15 @@ For Cartesian components, the conjugation relation \([\mathcal C^{\alpha\beta}(\
 \item
   Spin Correlations (Section~\ref{sec-lswt-spin-correlations}): defines \(\mathcal C^{\alpha\beta}(\mathbf q,t)\), the spin vertex \(\mathsf V^\alpha\), the magnon correlation matrix \(\mathsf N_{\mathbf q}(t)\), and the elastic correlation.
 \item
-  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies \(\mathsf T_{\mathbf q}\), its particle--hole structure, its gauge freedom, and its behavior at zero modes.
+  \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}: supplies \(\mathsf T_{\mathbf q}\), its particle--hole structure, its gauge freedom, and its behavior at zero modes.
 \item
-  Thermodynamics (Section~\ref{sec-lswt-thermodynamics}): defines the Bose--Einstein occupations.
+  \lswtnoteref{LSWT magnon thermodynamics}{Thermodynamics}: defines the Bose--Einstein occupations.
 \item
-  \lswtnoteref{LSWT foundations}{Bilinear Spin Hamiltonian}: defines the \(g\) tensor.
+  \lswtnoteref{LSWT spin Hamiltonian}{Bilinear Spin Hamiltonian}: defines the \(g\) tensor.
 \item
-  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): supplies the reduced moments that enter the elastic part.
+  \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}: supplies the reduced moments that enter the elastic part.
 \item
-  \lswtnoteref{LSWT foundations}{Notation and Conventions}: distinguishes the external momentum \(\mathbf q\) from the magnon momentum \(\mathbf k\).
+  \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}: distinguishes the external momentum \(\mathbf q\) from the magnon momentum \(\mathbf k\).
 \end{itemize}
 
 \subsubsection{External Sources}

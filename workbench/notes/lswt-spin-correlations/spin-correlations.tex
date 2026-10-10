@@ -36,7 +36,7 @@ For a complex combination \(\hat S^{c}=\sum_\alpha c_\alpha\hat S^\alpha\), such
 
 \subsection{Linear Spin-Wave Expansion of the Spin Operator}
 
-The local frame of site \(I\) has the circular vectors \(\mathbf e_I^\pm=\mathsf R_I(\mathbf e_x\pm\mathrm i\mathbf e_y)/\sqrt2\) and the longitudinal vector \(\mathbf e_I^0=\mathbf n_I\), defined in \lswtnoteref{LSWT foundations}{Classical Order and Local Frame}. With the local ladder operators \(\hat{\widetilde S}_I^\pm=\hat{\widetilde S}_I^x\pm\mathrm i\hat{\widetilde S}_I^y\), the spin operator reads \(\hat{\mathbf S}_I=(\hat{\widetilde S}_I^+\mathbf e_I^-+\hat{\widetilde S}_I^-\mathbf e_I^+)/\sqrt2+\hat{\widetilde S}_I^0\mathbf e_I^0\). Its laboratory component \(\alpha\) is therefore
+The local frame of site \(I\) has the circular vectors \(\mathbf e_I^\pm=\mathsf R_I(\mathbf e_x\pm\mathrm i\mathbf e_y)/\sqrt2\) and the longitudinal vector \(\mathbf e_I^0=\mathbf n_I\), defined in \lswtnoteref{LSWT classical order}{Classical Order and Local Frame}. With the local ladder operators \(\hat{\widetilde S}_I^\pm=\hat{\widetilde S}_I^x\pm\mathrm i\hat{\widetilde S}_I^y\), the spin operator reads \(\hat{\mathbf S}_I=(\hat{\widetilde S}_I^+\mathbf e_I^-+\hat{\widetilde S}_I^-\mathbf e_I^+)/\sqrt2+\hat{\widetilde S}_I^0\mathbf e_I^0\). Its laboratory component \(\alpha\) is therefore
 
 \[
 \hat S_I^\alpha
@@ -49,7 +49,7 @@ u_I^\alpha=\mathbf e_\alpha\cdot\mathbf e_I^+,
 v_I^\alpha=\mathbf e_\alpha\cdot\mathbf n_I.
 \]
 
-The coefficients \(u_I^\alpha\) and \(v_I^\alpha\) are the laboratory components of the local basis vectors. Inserting the leading Holstein--Primakoff forms \(\hat{\widetilde S}_I^+\simeq\sqrt{2S_I}\,\hat a_I\), \(\hat{\widetilde S}_I^-\simeq\sqrt{2S_I}\,\hat a_I^\dagger\), and \(\hat{\widetilde S}_I^0=S_I-\hat n_I\) of \lswtnoteref{LSWT derivation}{Holstein–Primakoff Expansion} gives
+The coefficients \(u_I^\alpha\) and \(v_I^\alpha\) are the laboratory components of the local basis vectors. Inserting the leading Holstein--Primakoff forms \(\hat{\widetilde S}_I^+\simeq\sqrt{2S_I}\,\hat a_I\), \(\hat{\widetilde S}_I^-\simeq\sqrt{2S_I}\,\hat a_I^\dagger\), and \(\hat{\widetilde S}_I^0=S_I-\hat n_I\) of \lswtnoteref{LSWT boson Hamiltonian}{Holstein–Primakoff Expansion} gives
 
 \begin{equation}\label{eq-lswt-spin-operator-expansion}
 \hat S_I^\alpha
@@ -57,11 +57,11 @@ The coefficients \(u_I^\alpha\) and \(v_I^\alpha\) are the laboratory components
 +\sqrt{S_I}\left(\bar u_I^\alpha\hat a_I+u_I^\alpha\hat a_I^\dagger\right).
 \end{equation}
 
-The longitudinal part contains the classical moment, of order \(S\), and the boson number. The transverse part is linear in the bosons and of order \(S^{1/2}\). The correlation function is kept to order \(S\). At this order it contains two pieces: the product of the ordered moments, of order \(S^2\), together with its reduction by \(\langle\hat n_I\rangle\), of order \(S\); and the transverse correlation, of order \(S\). Cross terms between the transverse part and the constant \(S_I\) vanish because \(\langle\hat a_I\rangle=0\) in the Gibbs state of a quadratic Hamiltonian without linear terms. For a canted reference configuration whose angles are not fixed by symmetry, this cancellation holds only within the quadratic Hamiltonian: the cubic Holstein--Primakoff terms give a transverse expectation value of order \(S^0\), and its product with \(S_I\) is of order \(S\). This term is the rotation of the ordered moment described in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}), and for such states the order-\(S\) correlation uses the moment including that rotation. Cross terms between the transverse part and \(\hat n_I\) contain an odd number of boson operators and vanish by Wick's theorem. The connected longitudinal correlation \(\langle\hat n_I(t)\hat n_J(0)\rangle-\langle\hat n_I\rangle\langle\hat n_J\rangle\) is of order \(S^0\); it describes two-magnon scattering and is omitted, as are the \(O(S^0)\) corrections to the transverse part from the next Holstein--Primakoff terms.
+The longitudinal part contains the classical moment, of order \(S\), and the boson number. The transverse part is linear in the bosons and of order \(S^{1/2}\). The correlation function is kept to order \(S\). At this order it contains two pieces: the product of the ordered moments, of order \(S^2\), together with its reduction by \(\langle\hat n_I\rangle\), of order \(S\); and the transverse correlation, of order \(S\). Cross terms between the transverse part and the constant \(S_I\) vanish because \(\langle\hat a_I\rangle=0\) in the Gibbs state of a quadratic Hamiltonian without linear terms. For a canted reference configuration whose angles are not fixed by symmetry, this cancellation holds only within the quadratic Hamiltonian: the cubic Holstein--Primakoff terms give a transverse expectation value of order \(S^0\), and its product with \(S_I\) is of order \(S\). This term is the rotation of the ordered moment described in \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}, and for such states the order-\(S\) correlation uses the moment including that rotation. Cross terms between the transverse part and \(\hat n_I\) contain an odd number of boson operators and vanish by Wick's theorem. The connected longitudinal correlation \(\langle\hat n_I(t)\hat n_J(0)\rangle-\langle\hat n_I\rangle\langle\hat n_J\rangle\) is of order \(S^0\); it describes two-magnon scattering and is omitted, as are the \(O(S^0)\) corrections to the transverse part from the next Holstein--Primakoff terms.
 
 \subsection{Transverse Correlations in Momentum Space}
 
-We write sites as \(I=(i,\mu)\) with \(\mathbf r_{i\mu}=\mathbf R_i+\boldsymbol\delta_\mu\), and use the full-position Fourier convention of \lswtnoteref{LSWT derivation}{Momentum-Space BdG Hamiltonian}. The inverse transform \(\hat a_{\mathbf q\mu}=N_{\mathrm{uc}}^{-1/2}\sum_i\exp(-\mathrm i\mathbf q\cdot\mathbf r_{i\mu})\hat a_{i\mu}\) defines the boson at any momentum. Momenta that differ by a magnetic reciprocal-lattice vector \(\mathbf G\) are related by \(\hat a_{\mathbf q+\mathbf G,\mu}=\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\hat a_{\mathbf q\mu}\). The Nambu spinor \(\hat\Psi_{\mathbf q}\), the BdG matrix \(\mathsf H_{\mathbf q}\), and the paraunitary matrix \(\mathsf T_{\mathbf q}\) are evaluated at the unfolded momentum \(\mathbf q\). The energies \(\varepsilon_{n\mathbf q}\) are periodic over the MBZ, while \(\hat\Psi_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\hat\Psi_{\mathbf q}\) and \(\mathsf T_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\mathsf T_{\mathbf q}\) with \(\Lambda_{\mathbf G}=\mathsf I_2\otimes\operatorname{diag}\big(\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\big)\), the same phase in both Nambu blocks.
+We write sites as \(I=(i,\mu)\) with \(\mathbf r_{i\mu}=\mathbf R_i+\boldsymbol\delta_\mu\), and use the full-position Fourier convention of \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian}. The inverse transform \(\hat a_{\mathbf q\mu}=N_{\mathrm{uc}}^{-1/2}\sum_i\exp(-\mathrm i\mathbf q\cdot\mathbf r_{i\mu})\hat a_{i\mu}\) defines the boson at any momentum. Momenta that differ by a magnetic reciprocal-lattice vector \(\mathbf G\) are related by \(\hat a_{\mathbf q+\mathbf G,\mu}=\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\hat a_{\mathbf q\mu}\). The Nambu spinor \(\hat\Psi_{\mathbf q}\), the BdG matrix \(\mathsf H_{\mathbf q}\), and the paraunitary matrix \(\mathsf T_{\mathbf q}\) are evaluated at the unfolded momentum \(\mathbf q\). The energies \(\varepsilon_{n\mathbf q}\) are periodic over the MBZ, while \(\hat\Psi_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\hat\Psi_{\mathbf q}\) and \(\mathsf T_{\mathbf q+\mathbf G}=\Lambda_{\mathbf G}\mathsf T_{\mathbf q}\) with \(\Lambda_{\mathbf G}=\mathsf I_2\otimes\operatorname{diag}\big(\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\big)\), the same phase in both Nambu blocks.
 
 For a periodic reference configuration the coefficients depend only on the sublattice, \(u_I^\alpha=u_\mu^\alpha\) and \(v_I^\alpha=v_\mu^\alpha\). Summing \eqref{eq-lswt-spin-operator-expansion} with the Fourier phases gives the transverse part of the spin component,
 
@@ -84,7 +84,7 @@ The magnon spinor \(\hat\Phi_{\mathbf q}=\mathsf T_{\mathbf q}^{-1}\hat\Psi_{\ma
 n_{1,-\mathbf q}\exp(\mathrm i\varepsilon_{1,-\mathbf q}t),\ldots\Big),
 \end{equation}
 
-with \(n_{n\mathbf q}=n_{\mathrm B}(\varepsilon_{n\mathbf q})\) from Thermodynamics (Section~\ref{sec-lswt-thermodynamics}). The particle entries carry \(1+n\) because \(\langle\hat b\hat b^\dagger\rangle=1+\langle\hat b^\dagger\hat b\rangle\); the hole entries carry \(n\). The anomalous averages \(\langle\hat b\hat b\rangle\) vanish. The transverse correlation function is then
+with \(n_{n\mathbf q}=n_{\mathrm B}(\varepsilon_{n\mathbf q})\) from \lswtnoteref{LSWT magnon thermodynamics}{Thermodynamics}. The particle entries carry \(1+n\) because \(\langle\hat b\hat b^\dagger\rangle=1+\langle\hat b^\dagger\hat b\rangle\); the hole entries carry \(n\). The anomalous averages \(\langle\hat b\hat b\rangle\) vanish. The transverse correlation function is then
 
 \begin{equation}\label{eq-lswt-transverse-correlation}
 \mathcal C_\perp^{\alpha\beta}(\mathbf q,t)
@@ -98,7 +98,7 @@ The sublattice-resolved correlation \(\mathcal C_{\mu\nu}^{\alpha\beta}\), whose
 
 \subsection{Elastic Correlations at Magnetic Bragg Vectors}
 
-The longitudinal part of \eqref{eq-lswt-spin-operator-expansion} has the thermal average \(\langle\hat S_I^\alpha\rangle=v_\mu^\alpha(S_\mu-\langle\hat n_\mu\rangle)=m_\mu^\alpha\), the ordered moment of sublattice \(\mu\) reduced by the boson number \(\langle\hat n_\mu\rangle\) of Magnon Observables (Section~\ref{sec-lswt-magnon-observables}). Its Fourier sum over the \(N_{\mathrm{uc}}\) cells is \(N_{\mathrm{uc}}\,\delta_{\mathbf q,\mathbf G}\), a Kronecker delta that selects the magnetic reciprocal-lattice vectors \(\mathbf G\). The product of the averages gives the elastic correlation
+The longitudinal part of \eqref{eq-lswt-spin-operator-expansion} has the thermal average \(\langle\hat S_I^\alpha\rangle=v_\mu^\alpha(S_\mu-\langle\hat n_\mu\rangle)=m_\mu^\alpha\), the ordered moment of sublattice \(\mu\) reduced by the boson number \(\langle\hat n_\mu\rangle\) of \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}. Its Fourier sum over the \(N_{\mathrm{uc}}\) cells is \(N_{\mathrm{uc}}\,\delta_{\mathbf q,\mathbf G}\), a Kronecker delta that selects the magnetic reciprocal-lattice vectors \(\mathbf G\). The product of the averages gives the elastic correlation
 
 \begin{equation}\label{eq-lswt-elastic-correlation}
 \mathcal C_{\mathrm{el}}^{\alpha\beta}(\mathbf q)
@@ -109,7 +109,7 @@ The longitudinal part of \eqref{eq-lswt-spin-operator-expansion} has the thermal
 F^\alpha(\mathbf G)=\sum_{\mu=1}^{N_{\mathrm{sub}}}\exp(-\mathrm i\mathbf G\cdot\boldsymbol\delta_\mu)\,m_\mu^\alpha,
 \end{equation}
 
-where \(F^\alpha(\mathbf G)\) is the magnetic structure factor of the magnetic unit cell. The elastic correlation does not depend on time. It is proportional to \(N_{\mathrm{site}}\), reflecting long-range order, while the transverse correlation is of order one per site. To order \(S\), the product of the reduced moments contains the classical term \(S_\mu S_\nu v_\mu^\alpha v_\nu^\beta\) and the reductions \(-v_\mu^\alpha v_\nu^\beta(S_\mu\langle\hat n_\nu\rangle+S_\nu\langle\hat n_\mu\rangle)\), together with \(S_\mu v_\mu^\alpha\,\delta m_\nu^\beta+\delta m_\mu^\alpha\,S_\nu v_\nu^\beta\) for a canted reference configuration, where \(\delta\mathbf m_\mu\) is the order-\(S^0\) rotation of the moment from Magnon Observables (Section~\ref{sec-lswt-magnon-observables}); the remaining product \(\langle\hat n_\mu\rangle\langle\hat n_\nu\rangle\) is of order \(S^0\) and is retained only because the moments appear in factorized form.
+where \(F^\alpha(\mathbf G)\) is the magnetic structure factor of the magnetic unit cell. The elastic correlation does not depend on time. It is proportional to \(N_{\mathrm{site}}\), reflecting long-range order, while the transverse correlation is of order one per site. To order \(S\), the product of the reduced moments contains the classical term \(S_\mu S_\nu v_\mu^\alpha v_\nu^\beta\) and the reductions \(-v_\mu^\alpha v_\nu^\beta(S_\mu\langle\hat n_\nu\rangle+S_\nu\langle\hat n_\mu\rangle)\), together with \(S_\mu v_\mu^\alpha\,\delta m_\nu^\beta+\delta m_\mu^\alpha\,S_\nu v_\nu^\beta\) for a canted reference configuration, where \(\delta\mathbf m_\mu\) is the order-\(S^0\) rotation of the moment from \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}; the remaining product \(\langle\hat n_\mu\rangle\langle\hat n_\nu\rangle\) is of order \(S^0\) and is retained only because the moments appear in factorized form.
 
 To the order kept, the correlation function is
 
@@ -137,21 +137,21 @@ where \(\mathsf w_\mu^\alpha=(\bar u_\mu^\alpha,u_\mu^\alpha)\) and \([\cdots]_{
 \begin{itemize}
 \tightlist
 \item
-  \lswtnoteref{LSWT foundations}{Classical Order and Local Frame}: defines \(\mathsf R_I\), \(\mathbf n_I\), and the local circular vectors \(\mathbf e_I^\pm\).
+  \lswtnoteref{LSWT classical order}{Classical Order and Local Frame}: defines \(\mathsf R_I\), \(\mathbf n_I\), and the local circular vectors \(\mathbf e_I^\pm\).
 \item
-  \lswtnoteref{LSWT derivation}{Holstein–Primakoff Expansion}: supplies the leading boson forms of the local spin operators.
+  \lswtnoteref{LSWT boson Hamiltonian}{Holstein–Primakoff Expansion}: supplies the leading boson forms of the local spin operators.
 \item
-  \lswtnoteref{LSWT derivation}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention and the Nambu spinor.
+  \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention and the Nambu spinor.
 \item
-  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: supplies \(\mathsf T_{\mathbf q}\) and the magnon energies.
+  \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}: supplies \(\mathsf T_{\mathbf q}\) and the magnon energies.
 \item
-  Thermodynamics (Section~\ref{sec-lswt-thermodynamics}): defines the Bose--Einstein occupations.
+  \lswtnoteref{LSWT magnon thermodynamics}{Thermodynamics}: defines the Bose--Einstein occupations.
 \item
-  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): owns the boson numbers and the reduced moments \(m_\mu^\alpha\).
+  \lswtnoteref{LSWT magnon thermodynamics}{Magnon Observables}: owns the boson numbers and the reduced moments \(m_\mu^\alpha\).
 \item
   Structure Factor and Spectral Function (Section~\ref{sec-lswt-structure-factor-and-spectral-function}): builds the scattering observables from \(\mathcal C^{\alpha\beta}(\mathbf q,t)\).
 \item
-  \lswtnoteref{LSWT foundations}{Notation and Conventions}: distinguishes the external momentum \(\mathbf q\) from the magnon momentum \(\mathbf k\) and reserves the spin-vertex symbol.
+  \lswtnoteref{LSWT spin Hamiltonian}{Notation and Conventions}: distinguishes the external momentum \(\mathbf q\) from the magnon momentum \(\mathbf k\) and reserves the spin-vertex symbol.
 \end{itemize}
 
 \subsubsection{External Sources}

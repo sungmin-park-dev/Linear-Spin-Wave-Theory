@@ -1,0 +1,3 @@
+name: LSWT magnon thermodynamics
+from: docs/lswt
+summary: Magnon spectra, occupations, reduced ordered moments and thermodynamic quantities, with their derivations.

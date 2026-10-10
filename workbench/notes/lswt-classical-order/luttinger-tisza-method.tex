@@ -9,7 +9,7 @@ LSWT expands about a classical reference configuration, and the expansion is mea
 
 \subsection{Classical Energy as a Quadratic Form}
 
-We consider the bilinear exchange and single-ion terms of Bilinear Spin Hamiltonian (Section~\ref{sec-lswt-bilinear-spin-hamiltonian}) without the Zeeman term. The classical energy is the expectation value of these terms in the spin-coherent product state with unit vectors \(\mathbf n_I\), as defined in LSWT Overview (Section~\ref{sec-lswt-lswt-overview}). For the exchange terms this replaces each spin operator by the classical vector \(S_I\mathbf n_I\). For the single-ion term the coherent-state value is \(\langle\hat S_I^\alpha\hat S_I^\beta+\hat S_I^\beta\hat S_I^\alpha\rangle/2=S_I(S_I-\tfrac12)n_I^\alpha n_I^\beta+\tfrac{S_I}2\delta^{\alpha\beta}\), which differs from \(S_I^2n_I^\alpha n_I^\beta\) at finite spin and reduces to the constant \(\operatorname{Tr}\mathsf D_I/4\) at \(S_I=\tfrac12\). Writing the link sum as an ordered-pair sum gives
+We consider the bilinear exchange and single-ion terms of \lswtnoteref{LSWT spin Hamiltonian}{Bilinear Spin Hamiltonian} without the Zeeman term. The classical energy is the expectation value of these terms in the spin-coherent product state with unit vectors \(\mathbf n_I\), as defined in \lswtnoteref{LSWT spin Hamiltonian}{LSWT Overview}. For the exchange terms this replaces each spin operator by the classical vector \(S_I\mathbf n_I\). For the single-ion term the coherent-state value is \(\langle\hat S_I^\alpha\hat S_I^\beta+\hat S_I^\beta\hat S_I^\alpha\rangle/2=S_I(S_I-\tfrac12)n_I^\alpha n_I^\beta+\tfrac{S_I}2\delta^{\alpha\beta}\), which differs from \(S_I^2n_I^\alpha n_I^\beta\) at finite spin and reduces to the constant \(\operatorname{Tr}\mathsf D_I/4\) at \(S_I=\tfrac12\). Writing the link sum as an ordered-pair sum gives
 
 \[
 E_{\mathrm{cl}}[\{\mathbf n_I\}]
@@ -36,7 +36,7 @@ which every configuration satisfying the strong constraint also satisfies.
 
 \subsection{Momentum-Space Form}
 
-The LT problem uses the unit cell of the Hamiltonian, with sites \(I=(i,a)\) at \(\mathbf r_{ia}=\mathbf R_i+\boldsymbol\delta_a\) and \(a=1,\ldots,N_s\); the magnetic unit cell of the ground state is not known in advance. With the full-position Fourier convention of \lswtnoteref{LSWT derivation}{Momentum-Space BdG Hamiltonian},
+The LT problem uses the unit cell of the Hamiltonian, with sites \(I=(i,a)\) at \(\mathbf r_{ia}=\mathbf R_i+\boldsymbol\delta_a\) and \(a=1,\ldots,N_s\); the magnetic unit cell of the ground state is not known in advance. With the full-position Fourier convention of \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian},
 
 \[
 \mathbf n_{ia}=\frac{1}{\sqrt{N_{\mathrm{uc}}}}\sum_{\mathbf q}\exp(\mathrm i\mathbf q\cdot\mathbf r_{ia})\,\mathbf n_a(\mathbf q),
@@ -126,7 +126,7 @@ If \(\mathsf L_{\mathbf q}-\Lambda\) is positive semidefinite at every \(\mathbf
 
 \subsection{Relation to Linear Spin-Wave Theory}
 
-LSWT requires a reference configuration of unit spins that is stationary under the fixed-length constraint, as described in Classical Order and Local Frame (Section~\ref{sec-lswt-classical-order-and-local-frame}). A configuration that attains the LT bound is a global minimum of the zero-field classical energy. Every harmonic fluctuation about it therefore raises or preserves the energy, and its BdG matrix \(\mathsf H_{\mathbf k}\) is at least positive semidefinite, provided the quadratic boson Hamiltonian uses the same coherent-state value of the single-ion term as the classical energy above (\lswtnoteref{LSWT derivation}{Real-Space Boson Hamiltonian}), as required in \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}. When the bound is not attained, \(\lambda_{\mathrm{LT}}\) still bounds the energy of any candidate configuration obtained by numerical minimization from below, and the minimizing wave vectors indicate the magnetic unit cells to consider.
+LSWT requires a reference configuration of unit spins that is stationary under the fixed-length constraint, as described in Classical Order and Local Frame (Section~\ref{sec-lswt-classical-order-and-local-frame}). A configuration that attains the LT bound is a global minimum of the zero-field classical energy. Every harmonic fluctuation about it therefore raises or preserves the energy, and its BdG matrix \(\mathsf H_{\mathbf k}\) is at least positive semidefinite, provided the quadratic boson Hamiltonian uses the same coherent-state value of the single-ion term as the classical energy above (\lswtnoteref{LSWT boson Hamiltonian}{Real-Space Boson Hamiltonian}), as required in \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}. When the bound is not attained, \(\lambda_{\mathrm{LT}}\) still bounds the energy of any candidate configuration obtained by numerical minimization from below, and the minimizing wave vectors indicate the magnetic unit cells to consider.
 
 \subsection{References}
 
@@ -135,13 +135,13 @@ LSWT requires a reference configuration of unit spins that is stationary under t
 \begin{itemize}
 \tightlist
 \item
-  Bilinear Spin Hamiltonian (Section~\ref{sec-lswt-bilinear-spin-hamiltonian}): defines the exchange and single-ion matrices and the link counting used in the classical energy.
+  \lswtnoteref{LSWT spin Hamiltonian}{Bilinear Spin Hamiltonian}: defines the exchange and single-ion matrices and the link counting used in the classical energy.
 \item
   Classical Order and Local Frame (Section~\ref{sec-lswt-classical-order-and-local-frame}): defines the classical reference configuration.
 \item
-  \lswtnoteref{LSWT derivation}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention.
+  \lswtnoteref{LSWT boson Hamiltonian}{Momentum-Space BdG Hamiltonian}: defines the full-position Fourier convention.
 \item
-  \lswtnoteref{LSWT derivation}{Paraunitary Diagonalization}: states the positive-definiteness requirement on the BdG matrix.
+  \lswtnoteref{LSWT paraunitary diagonalization}{Paraunitary Diagonalization}: states the positive-definiteness requirement on the BdG matrix.
 \end{itemize}
 
 \subsubsection{External Sources}
