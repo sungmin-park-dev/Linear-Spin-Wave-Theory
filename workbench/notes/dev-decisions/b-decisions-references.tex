@@ -423,6 +423,25 @@
 \endgroup
 
 
+\subsection{결정 기록 (D48): 패키지 범위는 반고전 툴킷}\label{decisions-d48-scope}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-10 사용자 결정(``추천대로 하자.'').}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    범위 & 2D 스핀 모형의 반고전 툴킷: 고전 질서와 그 위의 요동, 중심은 LSWT \\
+    안 & 고전 탐색·LT·고전 MC·LL/Langevin 동역학, \texttt{solve\_lswt}, \texttt{solve\_nlswt}(1/S), 관측량·그림 \\
+    밖 & 양자 다체 계산(DMRG, QMC, 텐서망); 3D 격자 \\
+    ED & 작은 클러스터, 스핀파 결과 검증용으로만 \\
+    근거 & LSWT는 고전 바닥 상태가 필요해 한 흐름을 이룸; 양자 다체 도구는 이미 성숙(TeNPy, ITensor, NetKet) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-10 결정}{contract}
+\endgroup
+
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

@@ -14,7 +14,7 @@
 **설계 원칙**:
 - 명확성 우선 — 물리적 의미가 코드에 드러나야 함
 - 관심사 분리 — 시스템 정의 / 솔버 / 관측량(observables) / 시각화
-- `AbstractSolver` 인터페이스로 다른 방법론(real-space BdG, ED, TN 등) 확장 가능
+- 범위는 반고전 방법: 고전 질서와 그 위의 요동(LSWT 중심, 1/S 보정, 고전 MC·스핀 동역학). 양자 다체 계산(DMRG·QMC·TN)은 다루지 않고, ED는 스핀파 결과 검증용으로만 둔다 ([2026-10-10 결정](GOVERNMENT/Court-Precedents/2026-10-10-package-scope-semiclassical.md))
 - `SpinSystem`은 solver-agnostic — LSWT 전용 로직을 넣지 않음
 - Python config 사용 (YAML 아님) — exchange matrix(3×3)를 numpy로 직접 정의
 
@@ -146,12 +146,7 @@ result.data                  # dict (솔버별 고유 데이터)
 
 **Legacy 호환**: `LSWTSolver`는 legacy dict 형식도 받음. `SpinSite`, `Coupling` alias 유지 (점진적 제거 예정).
 
-**향후 목표**:
-```
-SpinSystem ──┬── LSWTSolver(system).solve()  → SolverResult
-             ├── EDSolver(system).solve()    → SolverResult  (미구현)
-             └── BdGSolver(system).solve()   → SolverResult  (미구현)
-```
+**범위 (2026-10-10 결정)**: 같은 `SpinModel` 정의에서 고전 상태 탐색 → `solve_lswt` → `solve_nlswt`(1/S) 순서로 쌓는다. 새 방법은 이 반고전 흐름 안에서만 더하고, ED는 검증용으로 둔다.
 
 ---
 
