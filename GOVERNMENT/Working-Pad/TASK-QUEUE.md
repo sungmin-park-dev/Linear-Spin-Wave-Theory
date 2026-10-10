@@ -17,13 +17,13 @@ updated: 2026-10-10
 
 > **2026-10-10 현재 (다른 세션이 이어받을 때 여기부터):**
 > - 범위: `spin-toolkit`은 2D 스핀 모형의 반고전 툴킷, LSWT 중심이다([D48 결정](../Court-Precedents/2026-10-10-package-scope-semiclassical.md)). 양자 다체 계산(DMRG·QMC·TN)은 범위 밖, ED는 검증용.
-> - 정본: LSWT 이론은 `workbench/notes/lswt-*` 연구노트 7개, 개발 설계·결정은 `dev-design`·`dev-verification`·`dev-decisions`(D01–D48)다([2026-10-08 결정](../Court-Precedents/2026-10-08-lswt-development-research-notes.md)). `docs/lswt/`·`docs/development/`는 보존본이라 고치지 않는다.
+> - 정본: LSWT 이론은 `workbench/notes/lswt-*` 연구노트 7개, 개발 설계·결정은 `dev-design`·`dev-verification`·`dev-decisions`(D01–D49)다([2026-10-08 결정](../Court-Precedents/2026-10-08-lswt-development-research-notes.md)). `docs/lswt/`·`docs/development/`는 보존본이라 고치지 않는다.
 > - 개념노트: 공유 라이브러리 `research-library`에 이 프로젝트용 10개(`workbench/research.yaml`의 `concepts:`)가 있다. 모두 draft이고, 할 일은 각 `concepts/<id>.memo.md`에 있다.
 > - 사용자 검토: 구현·문서 대부분이 일괄 검토(`project-review/2026-10-02-batch-review-guide.md`)를 기다린다. 사용자가 "잠시 보류"라고 했으니 검토를 재촉하지 않고, 검토 없이 할 수 있는 아래 일을 먼저 한다.
 > - 합치기: PR은 CI가 초록이면 사용자가 "병합"이라고 쓸 때 합친다.
 >
 > **다음 작업 (검토 없이 할 수 있는 것, 추천 순서):**
-> 1. `observables/thermal.py` 자화 보정: 지금은 g(S−⟨n⟩)만 쓰고 기울기 각 보정 항(gS sinθ·δθ)이 없다. `methods/magnetization.py`의 M(h)(PR #26, 1/S까지 M = −d(E_cl+E_zp)/dh)와 같은 정의로 맞추고, 두 결과가 T→0에서 일치하는지 테스트를 더한다. 물리 정의가 바뀌므로 변경 계획을 먼저 사용자에게 보인다.
+> 1. ~~`observables/thermal.py` 자화 보정~~ — 2026-10-10 구현(D49, 사용자 "추천대로 진행해"): `magnetization_curve(..., temperatures=)`가 M(h,t) = −∂F/∂h를 내고 t = 0에서 `harmonic`과 같다. `ThermalResult.magnetization`은 기울기 각 보정 없는 모멘트 합으로 두고 문서에 밝혔다. 검증은 `dev-verification` D49 절(독립 닫힌 식 검산 포함), 유도는 `lswt-magnon-thermodynamics`의 Magnetization at Nonzero Temperature 절(draft); D49 열린 항목 중 기준 상태(E_cl 최소화)와 유효 범위 표시(`beyond_lswt`, `gapless`)는 사용자 결정으로 닫았고, 2D Goldstone에서 유한한 M은 설명을 붙여 판정 대기. PR #57.
 > 2. 개념노트 메모 할 일 중 문헌으로 확인할 수 있는 것: 2026-10-10에 넣은 bib 7개(Oguchi 1960 등) 서지 대조, 정사각 격자 Z_c 값 확인. 확인한 것만 본문에 넣는다.
 > 3. 공개 배포(12번): 일괄 검토가 끝난 뒤 TestPyPI, PyPI는 사용자가 "공개"라고 쓸 때만.
 >
@@ -41,8 +41,8 @@ updated: 2026-10-10
 | 5 | issue | NBCP band plot와 남은 LSWT 구현 backlog | draft; NBCP 횡자기장 편극상과 3부분격자 상(0.7·1.0·1.4 T) 밴드 계산·검증 완료(2026-10-01, `data-space/verification/261001-nbcp-*-bands/`); 관측량 묶음(D41 중성자, D45 DOS·S(Q)·M(h)) 구현(PR #23·#25·#26); 남은 것: 측정 데이터 대조(데이터 필요), 공개 배포는 12번 | `issue-notes/open/260810-lswt-implementation-backlog.md` |
 | 6 | idea | 공통 SpinModel IR 표현법 | draft | `idea-proposals/2026-06-04-general-spin-model-ir.md` |
 | 7 | idea | Project Knowledge Philosophy 사본 | draft | `idea-proposals/2026-05-30-project-knowledge-philosophy.md` |
-| 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D48 결정 기록(`dev-decisions` 연구노트), 사용자 검토는 일괄 검토 A·B | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
-| 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–7단계 구현·검증(7단계 시각화: 밴드·스핀 배치·중성자·위상·열역학 그림, D44); 영어 튜토리얼 5편(PR #28); 개발 설계·결정은 `dev-*` 연구노트(D01–D48)가 정본, 사용자 검토 대기(일괄 검토 C3); 범위는 D48(반고전 툴킷) | `../../docs/development/README.md` |
+| 9 | idea | 모델 간 공통 전달 규약 — 필드·단위·검증·NBCP 변위 대응 | in-review; D01–D49 결정 기록(`dev-decisions` 연구노트), 사용자 검토는 일괄 검토 A·B | `idea-proposals/2026-09-23-spin-model-transfer-contract.md` |
+| 10 | development | 2D Spin-System Toolkit 개발 설계와 기능별 폴더 구성 | 0–7단계 구현·검증(7단계 시각화: 밴드·스핀 배치·중성자·위상·열역학 그림, D44); 영어 튜토리얼 5편(PR #28); 개발 설계·결정은 `dev-*` 연구노트(D01–D49)가 정본, 사용자 검토 대기(일괄 검토 C3); 범위는 D48(반고전 툴킷) | `../../docs/development/README.md` |
 | 11 | idea | 단일 Q 나선의 회전틀 LSWT (`IncommensurateStructure`, D34) | in-review; 구현·검증(테스트 21개, 해석식·초격자 대조), 사용자 물리·수학 검토 대기(일괄 검토 B1) | `idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md` |
 | 12 | release | 공개 배포 준비 (0.2.0, TestPyPI → PyPI) | 일괄 검토 대기(`/mnt/project-files/review/2026-10-02-batch-review-guide.md`); 검토 반영 뒤 TestPyPI, PyPI는 사용자가 "공개"라고 쓸 때만 진행 | `../../docs/tutorials/README.md` |
 

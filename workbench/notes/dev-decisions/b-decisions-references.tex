@@ -442,6 +442,30 @@
 \endgroup
 
 
+\subsection{결정 기록 (D49): 유한 온도 자화는 $-\partial F/\partial h$}\label{decisions-d49-thermal-magnetization}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-10 Claude 제안(사용자: ``추천대로 진행해''), 사용자 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    정의 & $M(h,t)=-\partial F/\partial h$, $F=E_{\rm cl}+E_{\rm zp}+t\langle\sum_n\ln(1-e^{-\omega_n/t})\rangle/N_s$; D45의 $M(h)$를 $t>0$으로 잇는다 \\
+    API & \texttt{magnetization\_curve(..., temperatures=None)}; 결과에 \texttt{temperatures}, \texttt{thermal} $(n_h, n_t)$를 기본값과 함께 더함(기존 호출 그대로) \\
+    계산 & \texttt{harmonic}과 같은 상태 분기에서 $h\pm\delta$ 중앙 차분; 고전 상태는 각 장의 $t=0$ 최소(열적 자기일관성 없음, 저온 근사) \\
+    기존 값 & \texttt{ThermalResult.magnetization}$=\sum_i(S_i-\langle n_i\rangle)\hat n_i/N_s$는 그대로 두고, 기울기 각 보정이 없는 모멘트 합이라고 문서에 밝힘 \\
+    Goldstone & 반 칸 이동 메시라 영모드가 메시에 없고, $n_B\,\partial\omega/\partial h$가 유한해 2D에서도 $M$이 유한($\langle n\rangle$은 발산) \\
+    불안정 & LSWT가 불안정한 장에서는 NaN \\
+    \midrule
+    유효 범위 & \texttt{beyond\_lswt} $(n_h,n_t)$와 \texttt{gapless} $(n_h)$: gap이 있으면 열적 $\langle n_i\rangle>S_i$로 표시(\texttt{ThermalResult}와 같은 기준); 영모드·후보가 있으면 $t=0$만 확인하고 $t\ll JS$에서 쓴다고 문서에 밝힘 \\
+    기준 상태 & 사용자 결정(2026-10-10): 고전 상태는 $E_{\rm cl}$를 목적함수로 최소화한다($F$가 아님; 차이는 $O(S^0)$로 생략한 4차 항과 같은 차수) \\
+    \textbf{열린 항목} & 2D Goldstone에서 유한한 $M$: 사용자 질문(``변경된 정의 때문인가'')에 대한 설명 — 정의 변경의 산물이 아니다. 정확한 이론에서 $-\partial F/\partial h=\langle S^z_{\rm tot}\rangle/N$이고, 발산하는 요동은 장 축 둘레 회전이라 $S^z$를 바꾸지 않는다. 모멘트 합은 그 회전의 종방향 감소만, 기울기 각 항은 기울기 평면 안의 2차 성분을 담아 둘이 상쇄된다. 판정 대기 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-10 결정}{contract}
+\endgroup
+
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
