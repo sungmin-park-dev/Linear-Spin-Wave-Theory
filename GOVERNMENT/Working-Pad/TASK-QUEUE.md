@@ -24,7 +24,7 @@ updated: 2026-10-10
 >
 > **다음 작업 (검토 없이 할 수 있는 것, 추천 순서):**
 > 1. ~~`observables/thermal.py` 자화 보정~~ — 2026-10-10 구현(D49, 사용자 "추천대로 진행해"): `magnetization_curve(..., temperatures=)`가 M(h,t) = −∂F/∂h를 내고 t = 0에서 `harmonic`과 같다. `ThermalResult.magnetization`은 기울기 각 보정 없는 모멘트 합으로 두고 문서에 밝혔다. 검증은 `dev-verification` D49 절(독립 닫힌 식 검산 포함), 유도는 `lswt-magnon-thermodynamics`의 Magnetization at Nonzero Temperature 절(draft); D49 열린 항목 중 기준 상태(E_cl 최소화)와 유효 범위 표시(`beyond_lswt`, `gapless`)는 사용자 결정으로 닫았고, 2D Goldstone에서 유한한 M은 설명을 붙여 판정 대기. PR #57.
-> 2. 개념노트 메모 할 일 중 문헌으로 확인할 수 있는 것: 2026-10-10에 넣은 bib 7개(Oguchi 1960 등) 서지 대조, 정사각 격자 Z_c 값 확인. 확인한 것만 본문에 넣는다.
+> 2. ~~개념노트 메모 할 일 중 문헌으로 확인할 수 있는 것~~ — 2026-10-10 (research-library PR #17): bib 7개 중 6개 Crossref 일치, `landauTheory1935`는 DOI가 없어 재수록본으로 저자·제목만 확인. 정사각 Z_c = 1 + C/2S (C = 0.1579)를 적분과 `solve_nlswt`로 확인해 본문에 넣음. 남은 것(메모): Oguchi 원문의 식 위치, O(S⁰) 에너지 E/N = −2J(S + C/2)²의 출처, LL 1935 원 학술지 권·쪽.
 > 3. 공개 배포(12번): 일괄 검토가 끝난 뒤 TestPyPI, PyPI는 사용자가 "공개"라고 쓸 때만.
 >
 > **2026-10-09:** NBCP 연구(그때 순위 4, 8과 NBCP 연구노트·보조 노트)는 별도 저장소 `nbcp-spin-supersolid`로 옮겼다([결정](../Court-Precedents/2026-10-09-nbcp-repository-split.md)). 그 작업은 그 저장소의 TASK-QUEUE에서 관리한다.
