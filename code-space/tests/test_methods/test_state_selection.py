@@ -16,6 +16,7 @@ import pytest
 from model import nbcp
 from spintoolkit.definitions.constants import MU_B_MEV_PER_T
 from spintoolkit.methods import state_selection as sel
+from spintoolkit.methods.classical import classical_energy, refine_classical
 from spintoolkit.models import polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import SpinModel, Term
@@ -126,6 +127,24 @@ def tilted(phase, extra, tilt):
     model, state, conditions = setup(phase, extra, noise=1e-3)
     h = conditions.field[2]
     return model, state, ExternalConditions(field=[tilt * h, 0, h])
+
+
+@pytest.mark.parametrize("phi0, seed", [(0.3, 1), (0.3, 2), (1.0, 1)])
+def test_refinement_reaches_the_minimum_along_a_weakly_pinned_orbit(phi0, seed, monkeypatch):
+    """D50: a 1e-3 in-plane field pins the Y orbit with curvature ~1e-9 against ~1e-2.
+    These starts stopped 0.3-0.7 rad from the minimum on some platforms; every start
+    must reach the same classical energy and a round-off torque."""
+    rng = np.random.default_rng
+    monkeypatch.setattr(np.random, "default_rng", lambda s=None: rng(seed))
+    model, state, conditions = setup("Y", {"JPD": 0.01}, phi0=phi0, noise=1e-3)
+    monkeypatch.setattr(np.random, "default_rng", rng)
+    conditions = ExternalConditions(field=[1e-3 * conditions.field[2], 0, conditions.field[2]])
+    refined = refine_classical(model, state, conditions)
+    assert refined.provenance["refinement"]["max_torque_after"] < 1e-15
+    reference = refine_classical(model, setup("Y", {"JPD": 0.01}, phi0=0.5, noise=1e-3)[1],
+                                 conditions)
+    assert classical_energy(model, refined, conditions) == pytest.approx(
+        classical_energy(model, reference, conditions), abs=1e-15)
 
 
 def test_effective_potential_is_continuous_with_d17():

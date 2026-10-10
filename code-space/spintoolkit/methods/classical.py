@@ -37,7 +37,8 @@ from scipy.optimize import minimize
 from dataclasses import dataclass, field
 
 from spintoolkit.definitions.defaults import (
-    CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS, CLASSICAL_REFINE_RECENTRE,
+    CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS, CLASSICAL_REFINE_ORBIT_FLOOR,
+    CLASSICAL_REFINE_ORBIT_PROBE, CLASSICAL_REFINE_ORBIT_STEPS, CLASSICAL_REFINE_RECENTRE,
     CLASSICAL_REFINE_ROUNDS, CLASSICAL_SEARCH_MAXITER, CLASSICAL_SEARCH_MUTATION,
     CLASSICAL_SEARCH_POPSIZE, CLASSICAL_SEARCH_RECOMBINATION, CLASSICAL_SEARCH_SEED,
     CLASSICAL_SEARCH_TOL)
@@ -321,6 +322,26 @@ def tangent_expansion(model: SpinModel, state: SpinState,
                             float(np.max(np.linalg.norm(torque, axis=1))))
 
 
+def rotation_generators(expansion: TangentExpansion) -> np.ndarray:
+    """Tangent components of ``e_k x n_i`` for the three Cartesian axes: (2n, 3).
+
+    Column ``k`` is the displacement of a rigid rotation of all spins by a
+    small angle about axis ``e_k``, in the coordinates of ``expansion``.
+    """
+    return np.array([[np.cross(axis, n) @ e for axis in np.eye(3)]
+                     for n, frame in zip(expansion.directions, expansion.frames) for e in frame])
+
+
+def _rotate(directions: np.ndarray, rotvec: np.ndarray) -> np.ndarray:
+    """Rotate unit vectors (n, 3) rigidly by the rotation vector ``rotvec`` (Rodrigues)."""
+    angle = float(np.linalg.norm(rotvec))
+    if angle == 0.0:
+        return directions
+    k = rotvec / angle
+    return (directions * np.cos(angle) + np.cross(k, directions) * np.sin(angle)
+            + np.outer(directions @ k, k) * (1.0 - np.cos(angle)))
+
+
 def _with_directions(state: SpinState, keys, directions, provenance) -> SpinState:
     return SpinState(state.model_ref, state.supercell,
                      {key: vector for key, vector in zip(keys, directions)}, provenance)
@@ -337,6 +358,16 @@ def refine_classical(model: SpinModel, state: SpinState,
     ``CLASSICAL_REFINE_RECENTRE`` radians (a fixed tangent chart cannot follow
     large rotations, e.g. along a weakly pinned orbit), followed by Newton steps restricted to the non-flat Hessian directions so
     that exactly flat directions of a degenerate manifold are left alone.
+
+    A Newton step taken linearly in the tangent chart leaves a rotation orbit
+    at second order in the angle. When the minimum lies far along a weakly
+    pinned orbit (soft curvature ~1e-9 against ~1e-2, where L-BFGS-B stops
+    because the energy change falls below round-off), that step is rejected,
+    and a curvature below ``sqrt(eps)`` of the largest is treated as flat.
+    The Newton steps then end with a search along that orbit: rigid rotations
+    about the axis of the energy derivative ``G^T g``, with the stiff
+    directions relaxed at each angle, accepted if they lower the torque (D50).
+    An exactly flat orbit has ``G^T g`` at round-off size and is left alone.
     Intended for states that are already near a minimum, such as the result of
     a global search.
 
@@ -383,19 +414,102 @@ def refine_classical(model: SpinModel, state: SpinState,
         # A large move stretches the tangent chart of the start; re-centre and repeat.
         if np.max(np.abs(result.x), initial=0.0) < CLASSICAL_REFINE_RECENTRE:
             break
+    def newton_step(expansion, frozen=None):
+        H, g = expansion.hessian, expansion.gradient
+        if frozen is not None:              # leave the direction ``frozen`` alone
+            P = np.eye(len(g)) - np.outer(frozen, frozen)
+            H, g = P @ H @ P, P @ g
+        w, v = np.linalg.eigh(H)
+        keep = np.abs(w) > np.sqrt(np.finfo(float).eps) * np.max(np.abs(w))
+        return -v[:, keep] @ ((v[:, keep].T @ g) / w[keep])
+
+    def moved_state(expansion, step, rotvec=None):
+        vectors = expansion.directions + np.einsum("ia,iax->ix", step.reshape(n, 2),
+                                                   expansion.frames)
+        vectors /= np.linalg.norm(vectors, axis=1)[:, None]
+        if rotvec is not None:
+            vectors = _rotate(vectors, rotvec)
+        trial = _with_directions(state, expansion.keys, vectors, state.provenance)
+        return trial, tangent_expansion(model, trial, conditions)
+
+    def polished(trial, frozen_axis=None):
+        """Newton steps from ``trial``; the lowest-torque state of the sequence."""
+        best = trial
+        for _ in range(newton_steps):
+            ex = trial[1]
+            frozen = None
+            if frozen_axis is not None:
+                u = rotation_generators(ex) @ frozen_axis
+                frozen = u / np.linalg.norm(u)
+            trial = moved_state(ex, newton_step(ex, frozen))
+            if trial[1].max_torque < best[1].max_torque:
+                best = trial
+        return best
+
+    def orbit_search(trial):
+        """Minimize along a weakly pinned global rotation (D50).
+
+        The energy derivative with respect to a rigid rotation, ``G^T g``,
+        vanishes identically along an orbit of an exact symmetry and is at
+        round-off size at an accidental degeneracy of a converged state; a
+        larger value marks a weakly pinned orbit whose minimum the tangent
+        chart cannot reach. Downhill along the axis of ``G^T g``, with the
+        stiff directions relaxed by Newton steps at every angle, the first
+        sign change of the relaxed derivative is bracketed by doubling steps
+        and its root found by the Illinois method, so the result is a minimum
+        along the orbit, not a maximum.
+        """
+        ex0 = trial[1]
+        floor = CLASSICAL_REFINE_ORBIT_FLOOR * np.finfo(float).eps * np.max(
+            np.abs(np.linalg.eigvalsh(ex0.hessian)))
+        tau = rotation_generators(ex0).T @ ex0.gradient
+        if np.linalg.norm(tau) <= floor:
+            return trial
+        axis = -tau / np.linalg.norm(tau)           # downhill
+
+        def relaxed(angle):
+            rotated = moved_state(ex0, np.zeros(2 * n), angle * axis)
+            result = polished(rotated, frozen_axis=axis)
+            return result, float(axis @ (rotation_generators(result[1]).T @ result[1].gradient))
+
+        lo, f_lo, best = 0.0, float(axis @ tau), trial  # f < 0 downhill
+        hi = CLASSICAL_REFINE_ORBIT_PROBE
+        while True:
+            result, f_hi = relaxed(hi)
+            if f_hi >= 0.0:
+                break
+            lo, f_lo, best = hi, f_hi, result
+            if hi >= np.pi:
+                return best
+            hi = min(2 * hi, np.pi)
+        side = 0
+        for _ in range(CLASSICAL_REFINE_ORBIT_STEPS):
+            mid = (lo * f_hi - hi * f_lo) / (f_hi - f_lo)
+            result, f_mid = relaxed(mid)
+            best = result
+            if abs(f_mid) <= floor:
+                break
+            if f_mid < 0.0:
+                lo, f_lo = mid, f_mid
+                if side == -1:
+                    f_hi /= 2
+                side = -1
+            else:
+                hi, f_hi = mid, f_mid
+                if side == 1:
+                    f_lo /= 2
+                side = 1
+        return polished(best)
+
     current = tangent_expansion(model, refined, conditions)
     for _ in range(newton_steps):
-        w, v = np.linalg.eigh(current.hessian)
-        keep = np.abs(w) > np.sqrt(np.finfo(float).eps) * np.max(np.abs(w))
-        step = -v[:, keep] @ ((v[:, keep].T @ current.gradient) / w[keep])
-        vectors = current.directions + np.einsum("ia,iax->ix", step.reshape(n, 2), current.frames)
-        trial = _with_directions(state, current.keys,
-                                 vectors / np.linalg.norm(vectors, axis=1)[:, None],
-                                 state.provenance)
-        expansion = tangent_expansion(model, trial, conditions)
+        trial, expansion = moved_state(current, newton_step(current))
         if expansion.max_torque >= current.max_torque:
             break
         refined, current = trial, expansion
+    searched, expansion = orbit_search((refined, current))
+    if expansion.max_torque < current.max_torque and expansion.energy <= current.energy:
+        refined, current = searched, expansion
     record = {"method": "L-BFGS-B + Newton (tangent coordinates)", "rounds": rounds,
               "energy_change": current.energy - before.energy,
               "max_torque_before": before.max_torque, "max_torque_after": current.max_torque}

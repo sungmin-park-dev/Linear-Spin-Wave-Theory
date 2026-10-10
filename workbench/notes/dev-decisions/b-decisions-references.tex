@@ -466,6 +466,27 @@
 \endgroup
 
 
+\subsection{결정 기록 (D50): 약하게 고정된 궤도를 따라 고전 상태를 정제한다}\label{decisions-d50-orbit-refinement}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-10 Claude 제안(사용자: ``추천대로 진행해''), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    증상 & 로컬(Accelerate BLAS)에서만 \texttt{test\_effective\_potential\_is\_continuous\_with\_d17} 실패; 입력 잡음 seed만 바꿔도 통과·실패가 갈림 \\
+    원인 & NBCP Y, $J_{PD}=0.01$, 평면 장 $10^{-3}$: 궤도 곡률 $\sim10^{-9}$ 대 $6.6\times10^{-2}$. L-BFGS-B는 에너지 변화가 반올림 아래라 멈추고, 접선 좌표의 직선 Newton 단계는 궤도를 2차로 벗어나 거부되며, 곡률이 $\sqrt{\epsilon}\max|w|$ 아래면 평탄으로 취급됨. 최소에서 최대 0.3--0.7 rad 떨어진 채 끝남 \\
+    결과 & 상태 정확도 추정이 0.2 rad가 되어 \texttt{unsupported\_manifold}; 수렴 못 한 다른 경우는 \texttt{selected}지만 틀린 각($\phi=1.095$, 정답 $\pi/3$) \\
+    수정 & \texttt{refine\_classical}의 Newton 뒤 궤도 탐색: 강체 회전에 대한 에너지 미분 $G^{\mathsf T}g$가 $10^3\epsilon\max|w|$보다 크면 그 축을 따라 내리막으로 강체 회전, 각 각도에서 그 축만 빼고 Newton 이완, 첫 부호 변화를 배가 단계로 감싸고 Illinois법으로 근 → 극소. torque와 에너지가 함께 줄 때만 채택 \\
+    평탄 궤도 & 정확한 대칭이면 $G^{\mathsf T}g$가 항등적으로 0, 수렴한 상태의 우연 축퇴에서도 반올림 크기라 그대로 둠 \\
+    버린 안 & 선택 단계의 정확도 추정에서 궤도 성분을 빼는 안: 판정은 \texttt{selected}가 되지만 수렴 못 한 상태에서 선택 각이 시작 위치에 끌려감(0.747, 1.095) \\
+    공유 & 회전 생성자 \texttt{rotation\_generators}를 \texttt{methods.classical}로 옮기고 \texttt{state\_selection}이 씀 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-10 결정}{contract}
+\endgroup
+
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
