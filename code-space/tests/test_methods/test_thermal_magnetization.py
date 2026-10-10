@@ -86,6 +86,25 @@ def test_unstable_branch_and_input_checks(model):
     assert np.all(np.isnan(curve.thermal))
     default = magnetization_curve(model, polarized_state(model), [5.0], k_density=8)
     assert default.thermal.shape == (1, 0) and default.temperatures.shape == (0,)
+    assert default.beyond_lswt.shape == (1, 0) and default.gapless.shape == (0,)
     with pytest.raises(ValueError):
         magnetization_curve(model, polarized_state(model), [5.0], k_density=8,
                             temperatures=[-0.1])
+
+
+def test_validity_flags_follow_the_boson_number_only_for_a_gapped_spectrum(model):
+    """Gapped polarized state: <n> > S at high t is flagged. Canted state with a
+    Goldstone mode: <n> diverges at t > 0, so only t = 0 is checked."""
+    t = [0.0, 0.3, 20.0]
+    with pytest.warns(UserWarning, match="exceed S"):
+        gapped = magnetization_curve(model, polarized_state(model), [5.0], k_density=12,
+                                     temperatures=t)
+    assert not gapped.gapless[0]
+    np.testing.assert_array_equal(gapped.beyond_lswt[0], [False, False, True])
+    canted = magnetization_curve(model, neel_state(model, (1, 0, 0)), [1.0], k_density=12,
+                                 temperatures=t)
+    assert canted.gapless[0]
+    assert canted.beyond_lswt.shape == (1, 3) and not np.any(canted.beyond_lswt)
+    unstable = magnetization_curve(model, neel_state(model, (0, 0, 1)), [1.0], k_density=12,
+                                   temperatures=t)
+    assert not np.any(unstable.beyond_lswt) and not unstable.gapless[0]

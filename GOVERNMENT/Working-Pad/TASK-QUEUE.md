@@ -23,7 +23,7 @@ updated: 2026-10-10
 > - 합치기: PR은 CI가 초록이면 사용자가 "병합"이라고 쓸 때 합친다.
 >
 > **다음 작업 (검토 없이 할 수 있는 것, 추천 순서):**
-> 1. ~~`observables/thermal.py` 자화 보정~~ — 2026-10-10 구현(D49, 사용자 "추천대로 진행해"): `magnetization_curve(..., temperatures=)`가 M(h,t) = −∂F/∂h를 내고 t = 0에서 `harmonic`과 같다. `ThermalResult.magnetization`은 기울기 각 보정 없는 모멘트 합으로 두고 문서에 밝혔다. 검증은 `dev-verification` D49 절(독립 닫힌 식 검산 포함), 유도는 `lswt-magnon-thermodynamics`의 Magnetization at Nonzero Temperature 절(draft); 사용자 물리 검토 대기(D49 열린 항목 3개). PR #57.
+> 1. ~~`observables/thermal.py` 자화 보정~~ — 2026-10-10 구현(D49, 사용자 "추천대로 진행해"): `magnetization_curve(..., temperatures=)`가 M(h,t) = −∂F/∂h를 내고 t = 0에서 `harmonic`과 같다. `ThermalResult.magnetization`은 기울기 각 보정 없는 모멘트 합으로 두고 문서에 밝혔다. 검증은 `dev-verification` D49 절(독립 닫힌 식 검산 포함), 유도는 `lswt-magnon-thermodynamics`의 Magnetization at Nonzero Temperature 절(draft); D49 열린 항목 중 기준 상태(E_cl 최소화)와 유효 범위 표시(`beyond_lswt`, `gapless`)는 사용자 결정으로 닫았고, 2D Goldstone에서 유한한 M은 설명을 붙여 판정 대기. PR #57.
 > 2. 개념노트 메모 할 일 중 문헌으로 확인할 수 있는 것: 2026-10-10에 넣은 bib 7개(Oguchi 1960 등) 서지 대조, 정사각 격자 Z_c 값 확인. 확인한 것만 본문에 넣는다.
 > 3. 공개 배포(12번): 일괄 검토가 끝난 뒤 TestPyPI, PyPI는 사용자가 "공개"라고 쓸 때만.
 >
