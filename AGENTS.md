@@ -1,6 +1,6 @@
 # AGENTS.md
 
-> LSWT 이론 문서 정립과 Python 패키지 개발 시 Codex가 따르는 저장소 지침.
+> LSWT 이론 문서 정립과 Python 패키지 개발 시 에이전트(Claude·Codex)가 따르는 저장소 지침. `CLAUDE.md`는 이 파일을 불러온다(`@AGENTS.md`).
 
 ---
 
@@ -45,7 +45,8 @@ project-root/
 │   │   │   ├── map-policies.md
 │   │   │   ├── directory-structure-guide.md
 │   │   │   ├── frontmatter-policy.md
-│   │   │   └── naming-convention.md
+│   │   │   ├── naming-convention.md
+│   │   │   └── lswt-writing-style.md
 │   │   ├── procedures/
 │   │   │   ├── map-procedures.md
 │   │   │   ├── lswt-canonical-document-lifecycle.md
@@ -162,7 +163,7 @@ result.data                  # dict (솔버별 고유 데이터)
 
 ## 작업 원칙
 
-> 이 섹션은 Codex가 이론 문서와 코드 작업 시 반드시 따라야 하는 규칙이다.
+> 이 섹션은 에이전트(Claude·Codex)가 이론 문서와 코드 작업 시 반드시 따라야 하는 규칙이다.
 
 1. **제안 우선**: 파일 생성·수정·삭제 전 반드시 변경 계획을 먼저 제시하고 승인 대기.
 2. **인터페이스 변경은 토의 후 결정**: API(함수명, 데이터 구조, 클래스 인터페이스) 변경은 선 제안 → 토의 → 성민 확정 순서를 따름. 임의로 결정하지 않음.
