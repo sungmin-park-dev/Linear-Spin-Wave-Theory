@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "spin-toolkit"
 dynamic = ["version"]
-description = "Calculation toolkit for 2D spin systems: classical optimization and linear spin-wave theory"
+description = "Semiclassical toolkit for 2D spin models: classical order, linear and nonlinear spin-wave theory"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -13,7 +13,7 @@ requires-python = ">=3.9"
 authors = [
     {name = "Sung-Min Park", email = "sungmin.park.0226@gmail.com"},
 ]
-keywords = ["condensed matter", "magnetism", "spin waves", "magnons", "LSWT"]
+keywords = ["condensed matter", "magnetism", "spin waves", "magnons", "LSWT", "semiclassical"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",

@@ -1,5 +1,5 @@
 title: Spin Wave Theory
-question: 2D 스핀 모형의 선형 스핀파 이론을 정리하고, 그 계산 패키지 spin-toolkit을 검증해 공개한다
+question: 2D 스핀 모형의 선형 스핀파 이론을 정리하고, 이를 중심으로 한 반고전 계산 패키지 spin-toolkit을 검증해 공개한다
 started: 2026-09-30
 agent-status: true
 latex-template: research-note
@@ -23,3 +23,5 @@ concepts:
   - dynamical-structure-factor
   - berry-curvature-and-chern-number-of-bosonic-bands
   - magnon-thermal-hall-effect
+  - order-by-disorder
+  - spin-stiffness

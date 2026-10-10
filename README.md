@@ -8,6 +8,13 @@ compute linear spin-wave theory (LSWT) and its observables from the same
 definition. All quantities are dimensionless: energies are in the unit E0 of
 your coupling constants, fields are `μ_B B / E0` and temperatures `k_B T / E0`.
 
+**Scope.** spin-toolkit is a semiclassical toolkit: it finds classical ordered
+states and computes the fluctuations about them, with linear spin-wave theory
+at the center and its 1/S corrections, classical Monte Carlo and spin dynamics
+around it. Quantum many-body methods (DMRG, quantum Monte Carlo, tensor
+networks) are out of scope; mature packages already cover them. Exact
+diagonalization of small clusters is kept only to check the spin-wave results.
+
 The package grew out of work on the triangular-lattice antiferromagnet
 Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up in
 [`model/nbcp/`](model/nbcp/README.md).
