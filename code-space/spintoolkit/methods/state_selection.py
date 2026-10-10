@@ -76,7 +76,7 @@ from spintoolkit.definitions.defaults import (
     SELECTION_PATH_TOLERANCE, SELECTION_RANK_TOLERANCE, SELECTION_RESIDUAL_FACTOR,
     SELECTION_ROUNDOFF_FACTOR)
 from spintoolkit.methods.classical import (
-    classical_energy, refine_classical, tangent_expansion)
+    classical_energy, refine_classical, rotation_generators, tangent_expansion)
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel
@@ -303,8 +303,7 @@ def rotation_symmetry(model: SpinModel, conditions: ExternalConditions, axis,
 
 def _generators(expansion) -> np.ndarray:
     """Tangent components of ``e_k x n_i`` for the three Cartesian axes: (2n, 3)."""
-    return np.array([[np.cross(axis, n) @ e for axis in np.eye(3)]
-                     for n, frame in zip(expansion.directions, expansion.frames) for e in frame])
+    return rotation_generators(expansion)
 
 
 # ---------------------------------------------------------------------------

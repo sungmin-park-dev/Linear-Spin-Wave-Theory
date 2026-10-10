@@ -42,6 +42,9 @@ CLASSICAL_REFINE_GTOL = 1e-14      # E0 per radian per site, L-BFGS-B gradient t
 CLASSICAL_REFINE_NEWTON_STEPS = 5  # Newton steps after L-BFGS-B
 CLASSICAL_REFINE_ROUNDS = 20       # L-BFGS-B rounds, each re-centred on the previous result
 CLASSICAL_REFINE_RECENTRE = 1e-3   # radians; a larger move in a round triggers another round
+CLASSICAL_REFINE_ORBIT_FLOOR = 1e3  # x eps x max|Hessian|: G^T g above it marks a weakly pinned orbit (D50)
+CLASSICAL_REFINE_ORBIT_PROBE = 1e-3  # radians, first secant step along the orbit
+CLASSICAL_REFINE_ORBIT_STEPS = 30  # secant iterations of the orbit search
 # Global classical search (D32): the differential-evolution settings of the former SpinOptimizer
 CLASSICAL_SEARCH_POPSIZE = 18
 CLASSICAL_SEARCH_TOL = 1e-9
