@@ -526,10 +526,16 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     메시 수렴 ($t=0.3$) & 메시 $17^2$, $34^2$, $68^2$에서 $0.0830818$, 차이 $5\times10^{-10}$, $6\times10^{-13}$ & 같은 메시의 모멘트 합은 0.0785, 0.0702, 0.0620으로 계속 감소(2D 로그 발산) \\
     기울기 각 보정 & $t=0$에서 모멘트 합이 약 $11\%$ 큼 & $h=1$, 메시 $17^2$: 0.0929 대 0.0837 \\
     불안정·입력 & NaN; 음의 $t$는 \texttt{ValueError} & 장에 평행한 Néel \\
+    \midrule
+    \multicolumn{3}{@{}l}{\emph{독립 검산 (2026-10-10, 패키지 코드를 쓰지 않는 닫힌 식)}} \\
+    패키지 대 닫힌 식 & $t>0$에서 $\le2\times10^{-12}$, $t=0$에서 $\le1\times10^{-7}$ & $h=1,2,3$, $t\le0.6$; $t=0$은 Goldstone 꼭짓점의 원뿔 꺾임으로 메시 수렴이 느림 \\
+    분해식 & $M=(S-\langle n\rangle)\sin\theta-\partial_\theta F_{\rm qm}/(8S\cos\theta)$가 $4\times10^{-11}$ & 메시 $100^2$--$400^2$ 모두; $\partial_\theta F_{\rm qm}$는 해석적 미분 \\
+    로그 계수 & 모멘트 합 감소가 메시 두 배당 $\sin\theta\,t\ln2/(4\pi S)$와 일치 & $t=0.3$: $h=1$ 0.00827, $h=2$ 0.01655 \\
+    저온 $t^3$ 법칙 & $\Delta M/[\zeta(3)ht^3/(8\pi c^4)]=1.000$ ($t=0.02$) & $h=1,2,3$; $h=1$, $t=0.16$의 이탈은 $k=0$ 모드($\varepsilon=h$)의 $e^{-h/t}$ 기여 \\
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{기울어진 상에서 $M(t)$는 $t\le0.6$ 범위에서 거의 일정하고($h=1$: 0.0837에서 0.0758, $h=2$: 0.197에서 0.199), 모멘트 합은 $\langle n\rangle$의 열적 증가로 크게 줄어든다. 테스트는 \texttt{code-space/tests/test\_methods/test\_thermal\_magnetization.py}.}
+  \supportingtext{기울어진 상에서 $M(t)$는 $t\le0.6$ 범위에서 거의 일정하고($h=1$: 0.0837에서 0.0758, $h=2$: 0.197에서 0.199), 모멘트 합은 $\langle n\rangle$의 열적 증가로 크게 줄어든다. 테스트는 \texttt{code-space/tests/test\_methods/test\_thermal\_magnetization.py}, 독립 검산은 \texttt{examples/lswt\_d49\_thermal\_magnetization\_check.py}(결과 \texttt{data-space/verification/261010-thermal-magnetization/report.json}), 유도는 연구노트 \texttt{lswt-magnon-thermodynamics}의 Magnetization at Nonzero Temperature 절. 에이전트 검산이며 사용자 물리 검토를 대신하지 않는다.}
   \slidesource{D49}{stage4b}
 \endgroup
 

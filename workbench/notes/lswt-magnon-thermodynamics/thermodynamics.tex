@@ -123,6 +123,62 @@ Limit at \(\varepsilon=0\)
 
 The logarithmic divergences are integrable. In two dimensions \(\int d^2\mathbf q\,\ln|\mathbf q|\) converges near \(\mathbf q=0\) for any \(a>0\), so \(F\), \(U\), \(\mathcal S\), and \(C\) remain finite in the thermodynamic limit. A zero mode at an isolated momentum has vanishing weight in the MBZ integral. On a finite mesh that contains \(\mathbf k_0\), the treatment of that single point is a discretization choice, and the continuum values do not depend on it. Quantities weighted by the occupations without a compensating factor of \(\varepsilon\), such as the boson number and the sublattice moment, can diverge instead; they are treated in Magnon Observables (Section~\ref{sec-lswt-magnon-observables}).
 
+% Added on 2026-10-10 (Claude, development decision D49). Review status: draft; awaiting the user's physics and mathematics review.
+\subsection{Magnetization at Nonzero Temperature}\label{sec-lswt-thermal-magnetization}
+
+A uniform Zeeman field of strength \(h\) along the unit vector \(\mathbf e\) enters the spin Hamiltonian as \(-h\sum_I\mathbf e\cdot\mathbf S_I\); a \(g\)-tensor replaces \(\mathbf e\) by \(\mathsf g^{\mathsf T}\mathbf e\) and changes nothing below. We define the magnetization per site at temperature \(T\) as the field derivative of the free energy \eqref{eq-lswt-free-energy},
+\begin{equation}\label{eq-lswt-thermal-magnetization}
+M(h,T)=-\frac{1}{N_{\mathrm{site}}}\,\frac{\mathrm dF}{\mathrm dh},
+\end{equation}
+in which the classical reference configuration at each \(h\) is the minimum of \(E_{\mathrm{cl}}\) at that field. At \(T=0\), \(F=E_{\mathrm{GS}}\) and \eqref{eq-lswt-thermal-magnetization} reduces to the zero-temperature magnetization \(-\mathrm d(E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}})/\mathrm dh\) of Magnon Observables (Section~\ref{sec-lswt-magnon-observables}).
+
+\subsubsection{Order of the Reference Configuration}
+
+Holding the reference configuration at the minimum of \(E_{\mathrm{cl}}\) rather than of \(F\) is consistent to the order of LSWT. Write \(F(\boldsymbol\theta)=E_{\mathrm{cl}}(\boldsymbol\theta)+F_{\mathrm{qm}}(\boldsymbol\theta)\), where \(\boldsymbol\theta\) collects the classical angles and \(F_{\mathrm{qm}}=F-E_{\mathrm{cl}}\) is the zero-point and thermal magnon free energy of the quadratic Hamiltonian built at \(\boldsymbol\theta\). The classical energy is of order \(S^2\) and \(F_{\mathrm{qm}}\) of order \(S\) at fixed \(k_{\mathrm B}T/S\). Minimizing \(F\) instead of \(E_{\mathrm{cl}}\) shifts the angles by
+\begin{equation}\label{eq-lswt-thermal-angle-shift}
+\delta\boldsymbol\theta(T)=-\big(\partial_{\boldsymbol\theta}^2E_{\mathrm{cl}}\big)^{-1}\partial_{\boldsymbol\theta}F_{\mathrm{qm}},
+\end{equation}
+of order \(S^{-1}\), and lowers \(F\) by \(\tfrac12\,\partial_{\boldsymbol\theta}F_{\mathrm{qm}}\cdot(\partial_{\boldsymbol\theta}^2E_{\mathrm{cl}})^{-1}\partial_{\boldsymbol\theta}F_{\mathrm{qm}}\), of order \(S^0\). This is the order of the quartic Holstein--Primakoff terms that LSWT omits, so \eqref{eq-lswt-thermal-magnetization} is complete to order \(S^0\) without reminimizing the angles. Away from the classical minimum the boson Hamiltonian also has linear terms; they contribute to \(F\) only at second order in their coefficients, which vanish at the minimum, so they do not affect the first derivatives used below.
+
+\subsubsection{Reduced Moment and Canting-Angle Shift}
+
+The total derivative in \eqref{eq-lswt-thermal-magnetization} separates into three parts:
+\[
+\frac{\mathrm dF}{\mathrm dh}
+=\frac{\partial E_{\mathrm{cl}}}{\partial h}\bigg|_{\boldsymbol\theta}
++\frac{\partial F_{\mathrm{qm}}}{\partial h}\bigg|_{\boldsymbol\theta}
++\partial_{\boldsymbol\theta}F_{\mathrm{qm}}\cdot\frac{\mathrm d\boldsymbol\theta_{\mathrm{cl}}}{\mathrm dh},
+\]
+since \(\partial_{\boldsymbol\theta}E_{\mathrm{cl}}=0\) at the classical minimum. The first term is \(-S_\mu\,\mathbf e\cdot\mathbf n_\mu\) summed over sites. For the second, the Hellmann--Feynman theorem for the Gibbs state gives \(\partial F_{\mathrm{qm}}/\partial h|_{\boldsymbol\theta}=\langle\partial\hat H_2/\partial h\rangle\). In the local frame \(\mathbf e\cdot\mathbf S_I=(\mathbf e\cdot\mathbf n_\mu)(S_\mu-\hat n_I)\) plus transverse components linear in the bosons, so the quadratic part of \(\partial\hat H/\partial h\) is \(\sum_I(\mathbf e\cdot\mathbf n_\mu)\hat n_I\) and the second term is \(\sum_I(\mathbf e\cdot\mathbf n_\mu)\langle\hat n_\mu\rangle_T\). For the third, differentiating \(\partial_{\boldsymbol\theta}E_{\mathrm{cl}}=0\) with respect to \(h\) gives \(\mathrm d\boldsymbol\theta_{\mathrm{cl}}/\mathrm dh=-(\partial_{\boldsymbol\theta}^2E_{\mathrm{cl}})^{-1}\partial_h\partial_{\boldsymbol\theta}E_{\mathrm{cl}}\) with \(\partial_h\partial_{\boldsymbol\theta}E_{\mathrm{cl}}=-\sum_IS_\mu\,\mathbf e\cdot\partial_{\boldsymbol\theta}\mathbf n_\mu\). With \eqref{eq-lswt-thermal-angle-shift} and the symmetry of \(\partial_{\boldsymbol\theta}^2E_{\mathrm{cl}}\),
+\begin{equation}\label{eq-lswt-thermal-magnetization-decomposition}
+M(h,T)=\frac{1}{N_{\mathrm{sub}}}\sum_\mu\mathbf e\cdot\Big[\big(S_\mu-\langle\hat n_\mu\rangle_T\big)\,\mathbf n_\mu+S_\mu\,\frac{\partial\mathbf n_\mu}{\partial\boldsymbol\theta}\cdot\delta\boldsymbol\theta(T)\Big].
+\end{equation}
+This is the zero-temperature moment of Magnon Observables (Section~\ref{sec-lswt-magnon-observables}) with the boson number and the angle shift replaced by their thermal values. For a collinear state along \(\mathbf e\) whose angles are fixed by symmetry, \(\partial_{\boldsymbol\theta}F_{\mathrm{qm}}=0\) and \(M\) is the thermal reduced moment alone. For a canted state the second term is of the same order \(S^0\) as the reduction \(\langle\hat n_\mu\rangle_T\), and the reduced moment alone does not give the magnetization at any temperature.
+
+\subsubsection{Goldstone Modes in Two Dimensions}
+
+When the field leaves a continuous symmetry about \(\mathbf e\), as for an isotropic Heisenberg model, the reference configuration breaks it and a Goldstone mode stays at zero energy for every \(h\). In two dimensions \(\langle\hat n_\mu\rangle_T\) then diverges logarithmically at \(T>0\) (Section~\ref{sec-lswt-magnon-observables}), and so does \(\partial_{\boldsymbol\theta}F_{\mathrm{qm}}\): a rotation of the angles away from the minimum gaps or destabilizes the Goldstone mode, whose thermal free energy depends on that gap as \(k_{\mathrm B}T\ln\varepsilon\). The two terms of \eqref{eq-lswt-thermal-magnetization-decomposition} diverge with opposite signs, and \(M\) is finite. The finiteness follows directly from \eqref{eq-lswt-thermal-magnetization}: the thermal part of \(\mathrm dF/\mathrm dh\) along the classical minimum is \(\sum_{\mathbf k,n}n_{\mathrm B}(\varepsilon_{n\mathbf k})\,\mathrm d\varepsilon_{n\mathbf k}/\mathrm dh\), and for a Goldstone mode \(\varepsilon_{n\mathbf k_0+\mathbf q}=c(h)|\mathbf q|\) the summand tends to the constant \(k_{\mathrm B}T\,c'(h)/c(h)\). The magnetization along the field is therefore a finite low-temperature quantity of LSWT in two dimensions, whereas the moment of each sublattice is not.
+
+\subsubsection{Example: Canted Square-Lattice Antiferromagnet}
+
+For the nearest-neighbour Heisenberg antiferromagnet on the square lattice with \(J=1\), lattice constant \(1\), spin \(S\), and \(\mathbf e=\hat{\mathbf z}\), the two sublattices cant toward the field by the angle \(\theta\) out of the plane perpendicular to \(\mathbf e\). In the frame rotated with each sublattice, one boson per site and momenta over the full square Brillouin zone describe the quadratic Hamiltonian at any \(\theta\):
+\[
+A_{\mathbf k}(\theta,h)=-4S\big(2\sin^2\theta-1\big)+h\sin\theta+4S\sin^2\theta\,\gamma_{\mathbf k},
+\qquad
+B_{\mathbf k}(\theta)=-4S\cos^2\theta\,\gamma_{\mathbf k},
+\]
+with \(\gamma_{\mathbf k}=\tfrac12(\cos k_x+\cos k_y)\), \(\varepsilon_{\mathbf k}=(A_{\mathbf k}^2-B_{\mathbf k}^2)^{1/2}\), and \(E_{\mathrm{cl}}/N_{\mathrm{site}}=2S^2(2\sin^2\theta-1)-hS\sin\theta\). The classical minimum \(\sin\theta=h/8S\) gives \(A_{\mathbf k}=4S(1+\sin^2\theta\,\gamma_{\mathbf k})\) and the classical magnetization \(h/8\) up to the saturation field \(h=8S\). The field enters \(A_{\mathbf k}\) only through \(h\sin\theta\), which makes the Hellmann--Feynman step of \eqref{eq-lswt-thermal-magnetization-decomposition} explicit: \(\partial F_{\mathrm{qm}}/\partial h|_\theta=N_{\mathrm{site}}\sin\theta\,\langle\hat n\rangle_T\) and \(\mathrm d\theta_{\mathrm{cl}}/\mathrm dh=(8S\cos\theta)^{-1}\).
+
+The Goldstone mode sits at \((\pi,\pi)\). With \(\gamma\simeq-1+q^2/4\), \(A-B\simeq Sq^2\) and \(A+B\simeq8S\cos^2\theta\), so \(\varepsilon\simeq cq\) with
+\[
+c^2=8S^2\cos^2\theta=8S^2-\frac{h^2}{8}.
+\]
+The thermal summand of \(\langle\hat n\rangle_T\) near \((\pi,\pi)\) is \((A/\varepsilon)\,n_{\mathrm B}\simeq k_{\mathrm B}T/(2Sq^2)\), and its momentum integral gives \(\langle\hat n\rangle_T\simeq(k_{\mathrm B}T/4\pi S)\ln(1/q_{\min})\) for a smallest momentum \(q_{\min}\). The linear Goldstone mode gives \(F_{\mathrm{th}}/N_{\mathrm{site}}\simeq-\zeta(3)(k_{\mathrm B}T)^3/(2\pi c^2)\), and with \(\partial_hc^2=-h/4\),
+\begin{equation}\label{eq-lswt-canted-square-thermal-magnetization}
+M(h,T)-M(h,0)\simeq\frac{\zeta(3)\,h\,(k_{\mathrm B}T)^3}{8\pi c^4}
+\end{equation}
+at low temperature. The magnetization rises as \(T^3\), while each sublattice moment decreases without bound as \(q_{\min}\to0\). The magnon at \(\mathbf k=0\), the uniform precession about the field, has \(\varepsilon=8S\sin\theta=h\) and \(\mathrm d\varepsilon/\mathrm dh=1\); it lowers \(M\) by a term of order \(\exp(-h/k_{\mathrm B}T)\), which \eqref{eq-lswt-canted-square-thermal-magnetization} omits.
+
 \subsection{References}
 
 \subsubsection{Internal Documents}
@@ -136,7 +192,7 @@ The logarithmic divergences are integrable. In two dimensions \(\int d^2\mathbf 
 \item
   \lswtnoteref{LSWT spin Hamiltonian}{LSWT Overview}: states the finite-temperature qualification for two-dimensional ordered states.
 \item
-  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): uses the Bose--Einstein occupations for boson numbers and sublattice moments.
+  Magnon Observables (Section~\ref{sec-lswt-magnon-observables}): uses the Bose--Einstein occupations for boson numbers and sublattice moments, and supplies the zero-temperature moment with the canting-angle shift that Magnetization at Nonzero Temperature extends to \(T>0\).
 \item
   Thermodynamic Derivations (Section~\ref{sec-lswt-thermodynamic-derivations}): is reserved for longer entropy and correlation-matrix derivations.
 \end{itemize}
