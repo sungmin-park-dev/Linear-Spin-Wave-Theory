@@ -14,7 +14,16 @@ Two orders are reported:
 - harmonic: ``E_cl(h) + E_zp(h)``, the first 1/S correction (Zhitomirsky and
   Nikuni, PRB 57, 5013 (1998)). Its derivative contains both the reduction
   of the moment by zero-point fluctuations and the 1/S shift of the canting
-  angle; ``g . (S - <n>) n_i`` alone would miss the latter and is not used.
+  angle; ``g . (S - <n>) n_i`` alone would miss the latter and is not used;
+- thermal (optional, D49): ``M(h, t) = -dF(h, t)/dh`` with
+  ``F = E_cl + E_zp + t <sum_n ln(1 - exp(-omega/t))> / N_s`` (the free
+  energy of :func:`~spintoolkit.observables.thermal.thermal_quantities`). It
+  equals the harmonic value at ``t = 0`` and keeps the canting-angle shift at
+  ``t > 0``; the moment sum ``ThermalResult.magnetization`` does not. The
+  classical state is the zero-temperature one at each field (no thermal
+  self-consistency), so this is a low-temperature result. Near a Goldstone
+  mode the integrand ``n_B d omega/dh`` stays finite in two dimensions, so
+  M is finite where boson numbers diverge.
 
 The derivative is a central difference with step ``step`` at fixed state
 branch (the state is refined at ``h +- step`` from the state at ``h``).
@@ -28,7 +37,7 @@ The ordered moment of each site at harmonic order is ``S_i - <n_i>``
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 from typing import List, Optional, Sequence
 
@@ -59,6 +68,11 @@ class MagnetizationCurve:
         ``<n_i>`` at zero temperature; NaN where unstable.
     states : list of SpinState
         Classical state at each field.
+    temperatures : (nt,) array
+        ``t = k_B T / E0`` of ``thermal``; empty if not requested.
+    thermal : (nh, nt) array
+        ``-dF/dh`` per site at each field and temperature; NaN where LSWT is
+        unstable. Column ``t = 0`` equals ``harmonic``.
     """
 
     fields: np.ndarray
@@ -68,6 +82,8 @@ class MagnetizationCurve:
     spins: np.ndarray
     moment_reduction: np.ndarray
     states: List[SpinState]
+    temperatures: np.ndarray = field(default_factory=lambda: np.zeros(0))
+    thermal: np.ndarray = field(default_factory=lambda: np.zeros((0, 0)))
 
     @property
     def ordered_moments(self) -> np.ndarray:
@@ -82,7 +98,8 @@ def _mesh(state: SpinState, k_density: int) -> tuple:
 
 def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[float],
                         direction: Sequence[float] = (0.0, 0.0, 1.0), k_density: int = 24,
-                        step: float = 1e-4) -> MagnetizationCurve:
+                        step: float = 1e-4, temperatures: Optional[Sequence[float]] = None
+                        ) -> MagnetizationCurve:
     """Classical and harmonic magnetization along a field sweep.
 
     Parameters
@@ -101,6 +118,9 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         :func:`~spintoolkit.methods.phase_competition.compare_states`).
     step : float
         Field step of the central difference.
+    temperatures : sequence of float, optional
+        Dimensionless ``t = k_B T / E0 >= 0``; if given, ``thermal`` holds
+        ``-dF/dh`` at these temperatures.
 
     Returns
     -------
@@ -108,10 +128,14 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
     """
     from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
     from spintoolkit.methods.lswt.run import LSWTError
+    from spintoolkit.observables.thermal import magnon_free_energy
 
     e = np.asarray(direction, dtype=float)
     e = e / np.linalg.norm(e)
     fields = np.asarray(fields, dtype=float)
+    t = np.zeros(0) if temperatures is None else np.asarray(temperatures, dtype=float).ravel()
+    if np.any(~np.isfinite(t)) or np.any(t < 0):
+        raise ValueError("temperatures must be finite and non-negative")
     settings = LSWTSettings(mesh=_mesh(state, k_density))
 
     def conditions(h):
@@ -122,19 +146,21 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         e_cl = float(classical_energy(model, st, conditions(h)))
         try:
             result = solve_lswt(model, st, conditions(h), settings=settings)
-            return st, e_cl, e_cl + float(result.zero_point_energy), result
         except LSWTError:
-            return st, e_cl, float("nan"), None
+            return st, e_cl, float("nan"), np.full(len(t), np.nan), None
+        harm = e_cl + float(result.zero_point_energy)
+        return st, e_cl, harm, harm + magnon_free_energy(result, t), result
 
     spins = None
-    classical, harmonic, reduction, states = [], [], [], []
+    classical, harmonic, thermal, reduction, states = [], [], [], [], []
     current = state
     for h in fields:
-        current, _, _, result = energies(h, current)
-        _, cl_plus, harm_plus, _ = energies(h + step, current)
-        _, cl_minus, harm_minus, _ = energies(h - step, current)
+        current, _, _, _, result = energies(h, current)
+        _, cl_plus, harm_plus, free_plus, _ = energies(h + step, current)
+        _, cl_minus, harm_minus, free_minus, _ = energies(h - step, current)
         classical.append(-(cl_plus - cl_minus) / (2 * step))
         harmonic.append(-(harm_plus - harm_minus) / (2 * step))
+        thermal.append(-(free_plus - free_minus) / (2 * step))
         if result is not None and spins is None:
             spins = np.asarray(result.spins, dtype=float)
         reduction.append(result.boson_numbers if result is not None else None)
@@ -143,4 +169,5 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         spins = np.array([model.site(site).spin for site, _ in states[0].directions])
     reduction = np.array([np.full(len(spins), np.nan) if r is None else r for r in reduction])
     return MagnetizationCurve(fields, e, np.array(classical), np.array(harmonic), spins,
-                              reduction, states)
+                              reduction, states, t,
+                              np.array(thermal).reshape(len(fields), len(t)))

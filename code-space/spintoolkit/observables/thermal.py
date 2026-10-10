@@ -16,6 +16,13 @@ magnon energies, ``n_B`` the Bose factor):
 - boson numbers ``<a_i^dagger a_i>(t)``, moments ``S_i - <n_i>`` and the spin
   magnetization ``sum_i (S_i - <n_i>) n_i / N_s``
 
+The magnetization here is the sum of the reduced moments along the fixed
+classical axes ``n_i``. In a canted state it misses the 1/S shift of the
+canting angle and is not the field derivative of F; the magnetization
+``-dF/dh`` at finite temperature is
+:func:`~spintoolkit.methods.magnetization.magnetization_curve` with
+``temperatures`` (D49). In a collinear state along the field the two agree.
+
 The classical reference state is held fixed (no self-consistency) and magnon
 interactions are absent, so these are low-temperature results. In two
 dimensions a zero mode makes the boson numbers diverge logarithmically at
@@ -64,7 +71,8 @@ class ThermalResult:
     boson_numbers, moments : (nt, Ns) arrays
         NaN at ``t > 0`` when the spectrum is gapless.
     magnetization : (nt, 3) array
-        Spin magnetization per site; NaN at ``t > 0`` when gapless.
+        ``sum_i (S_i - <n_i>) n_i / N_s`` (no g-tensor, no canting-angle
+        shift); NaN at ``t > 0`` when gapless.
     gapless : bool
     decision : str
         "scan" when the scan decided, "user" when ``gapless`` was given.
@@ -91,6 +99,27 @@ class ThermalResult:
     def to_json_dict(self) -> Dict[str, Any]:
         from spintoolkit.methods.result import to_jsonable
         return to_jsonable({k: getattr(self, k) for k in self.__dataclass_fields__})
+
+
+def magnon_free_energy(result, temperatures: Sequence[float]) -> np.ndarray:
+    """Thermal magnon part of F per site, ``t <sum_n ln(1 - exp(-omega/t))> / N_s``.
+
+    Parameters
+    ----------
+    result : LSWTResult
+    temperatures : sequence of float
+        Dimensionless ``t = k_B T / E0 >= 0``.
+
+    Returns
+    -------
+    (nt,) array
+        In E0; zero at ``t = 0``, ``-inf`` at ``t > 0`` if a mesh point is an
+        exact zero mode.
+    """
+    energies = result.eigenvalues[:, :result.num_sites]
+    return np.array([float(result.weights @ np.sum(log_1_m_exp(energies, tk / K_BOLTZMANN_MEV),
+                                                   axis=1)) / result.num_sites
+                     for tk in np.asarray(temperatures, dtype=float).ravel()])
 
 
 def _k_data(result) -> Dict[Any, Any]:
@@ -140,13 +169,11 @@ def thermal_quantities(result, temperatures: Sequence[float],
     k_data = _k_data(result)
     thermo = Thermodynamics()
     thermo.Ns = ns
-    energies = result.eigenvalues[:, :ns]
-    base = result.classical_energy + result.zero_point_energy
+    free = result.classical_energy + result.zero_point_energy + magnon_free_energy(result, t)
     kelvin = t / K_BOLTZMANN_MEV
-    free, internal, entropy, heat = [], [], [], []
+    internal, entropy, heat = [], [], []
     bosons, moments, magnetization = [], [], []
     for tk, T in zip(t, kelvin):
-        free.append(base + float(result.weights @ np.sum(log_1_m_exp(energies, T), axis=1)) / ns)
         internal.append(result.classical_energy
                         + thermo.compute_internal_energy(k_data, Temperature=T))
         entropy.append(thermo.compute_entropy_density(k_data, T) / K_BOLTZMANN_MEV)
@@ -165,6 +192,6 @@ def thermal_quantities(result, temperatures: Sequence[float],
     if np.any(beyond):
         warnings.warn(f"boson numbers exceed S at t = {t[beyond].tolist()}: LSWT is not valid "
                       "there (moments would reverse)", UserWarning, stacklevel=2)
-    return ThermalResult(t, np.array(free), np.array(internal), np.array(entropy),
+    return ThermalResult(t, free, np.array(internal), np.array(entropy),
                          np.array(heat), bosons, np.array(moments),
                          np.array(magnetization), gapless_flag, decision, report.to_dict(), beyond)
