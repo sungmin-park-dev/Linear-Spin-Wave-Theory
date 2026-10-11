@@ -17,6 +17,7 @@ updated: 2026-09-23
 | 패키지 사용법(영어 튜토리얼) | [tutorials/](tutorials/README.md) | 첫 계산부터 중성자·M(h)·위상까지 5편. 각 수치는 해석해·문헌·ED와 대조하고 테스트로 확인한다. |
 | LSWT 원자료 | [sources/](sources/README.md) | 원본 노트·TeX 전사본·검증 근거. 현재 이론 작업이 계속 참조한다. |
 | LSWT 일반 이론 Markdown (보존본) | [archive/2026-10-08-lswt-markdown/](archive/2026-10-08-lswt-markdown/README.md) | 2026-10-08 상태로 보존. 더 고치지 않는다. |
+| LSWT 이론 LaTeX 연구노트 (보존본) | [archive/2026-10-11-lswt-latex-notes/](archive/2026-10-11-lswt-latex-notes/) | 2026-10-11 Markdown 전환 직전 상태와 변환 도구. 더 고치지 않는다. |
 | Toolkit 개발 설계 Beamer (보존본) | [archive/2026-10-08-development-beamer/](archive/2026-10-08-development-beamer/README.md) | 2026-10-08 상태로 보존. 더 고치지 않는다. |
 | 그 밖에 집필을 종료한 문서 | [archive/](archive/README.md) | 이전 문서·스냅샷 |
 
@@ -24,7 +25,7 @@ updated: 2026-09-23
 
 [2026-10-08 결정](../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 내용의 편집 원본은 research-workspace 앱의 연구노트 [`workbench/notes/`](../workbench/notes/)다.
 
-- 일반 이론: `lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`
+- 일반 이론(Markdown `note.md`, [2026-10-11 결정](../GOVERNMENT/Court-Precedents/2026-10-11-lswt-notes-markdown.md)): `lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`
 - 개발 설계와 결정 기록: `dev-design`, `dev-verification`, `dev-decisions`
 - 계산 코드와 결과 데이터는 각각 [examples/](../examples/)와 [data-space/](../data-space/)에서 관리한다.
 
