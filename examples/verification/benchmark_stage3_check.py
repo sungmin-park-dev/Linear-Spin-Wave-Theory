@@ -13,7 +13,7 @@ test_system/test_cluster.py and records the numbers:
 
 Usage
 -----
-    python examples/benchmark_stage3_check.py > report.json
+    python examples/verification/benchmark_stage3_check.py > report.json
 """
 
 import json
@@ -21,7 +21,7 @@ from pathlib import Path
 import sys
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import numpy as np

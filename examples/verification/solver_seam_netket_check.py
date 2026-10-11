@@ -24,7 +24,7 @@ not used by the package.
 
 Usage
 -----
-    python examples/solver_seam_netket_check.py > report.json
+    python examples/verification/solver_seam_netket_check.py > report.json
 """
 
 import json
@@ -33,8 +33,8 @@ import sys
 import time
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT), str(ROOT / 'examples')]
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT), str(ROOT / 'examples' / 'verification')]
 
 import numpy as np
 

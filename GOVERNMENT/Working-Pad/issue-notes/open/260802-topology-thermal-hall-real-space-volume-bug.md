@@ -131,7 +131,7 @@ microW/(m K)라고 쓰고, 통합 thermodynamics 함수는 온도 인자 없는 
 
 ### 독립 모델과 재현 수치
 
-실행 가능한 검증은 `examples/thermal_hall_reference_check.py`에 두었다.
+실행 가능한 검증은 `examples/verification/thermal_hall_reference_check.py`에 두었다.
 Number-conserving, 양정치인 bosonic two-band 모델을 Nambu로 확장해 Colpa
 대각화·현재 curvature를 실행한다. 이것은 물질 모사나 full-spin ED가 아니다.
 
@@ -160,7 +160,7 @@ SI k_B와 hbar를 사용하여 층당 kappa를 계산했다.
   3.05e-14였다. 이 결과는 작은 occupation 전체 범위의 정밀도를 인증하지 않는다.
 
 ```sh
-PYTHONPATH=code-space python examples/thermal_hall_reference_check.py
+PYTHONPATH=code-space python examples/verification/thermal_hall_reference_check.py
 ```
 
 ### 제안 당시 반환 기준과 구현 범위
@@ -282,7 +282,7 @@ length=1일 때 과거 Topology raw 값은 782.3708387603748,
 
 ```sh
 PYTHONPATH=code-space python -m pytest code-space/tests/test_solvers/test_thermal_hall_normalization.py -q
-PYTHONPATH=code-space python examples/thermal_hall_reference_check.py
+PYTHONPATH=code-space python examples/verification/thermal_hall_reference_check.py
 PYTHONPATH=code-space python -m pytest code-space/tests -q
 ```
 
@@ -352,7 +352,7 @@ BZ를 한 번 센다. 과거 primitive BZ 반복의 특수한 Ns 보정은 일�
 
 ### 수렴·면적·legacy 검증
 
-실행 가능한 `examples/bz_chern_reference_check.py`는 5가지 BZ 설정과 N=6,12,24를
+실행 가능한 `examples/verification/bz_chern_reference_check.py`는 5가지 BZ 설정과 N=6,12,24를
 비교한다. 앞 단계의 positive two-band boson 모델을 각 generator의 실제 k에
 평가하며, Nbcp의 1–4 MSL을 물리적으로 재현한 실험은 아니다. Cell orientation이
 음수이면 같은 d(q) 모델의 Cartesian chirality도 반전되므로 아래 Chern/Hall은
@@ -383,7 +383,7 @@ BZ를 한 번 센다. 과거 primitive BZ 반복의 특수한 Ns 보정은 일�
 기존 CommensurateStructure 실패 5개와 legacy SyntaxWarning 2개 외에 추가 실패는 없다.
 
 ```sh
-PYTHONPATH=code-space python examples/bz_chern_reference_check.py
+PYTHONPATH=code-space python examples/verification/bz_chern_reference_check.py
 PYTHONPATH=code-space python -m pytest code-space/tests/test_solvers/test_brillouin_zone_integration.py code-space/tests/test_solvers/test_thermal_hall_normalization.py -q
 PYTHONPATH=code-space python -m pytest code-space/tests -q
 ```
@@ -495,11 +495,11 @@ thermal Hall은 계산하지 않았다. 퇴화가 있으면 total Hall이 반드
 결론도 내리지 않는다. 나머지 밴드와 분리된 group의 projector/합산 응답은 별도로
 검토할 수 있지만, 현재 skip으로 얻은 개별 값을 단순히 더해 정당화할 수는 없다.
 
-재현 스크립트: `examples/band_degeneracy_check.py`. 당시 runtime hash와 숫자는
+재현 스크립트: `examples/verification/band_degeneracy_check.py`. 당시 runtime hash와 숫자는
 `data-space/verification/260911-recalculation-audit/band-degeneracy.json`에 저장했다.
 
 ```sh
-PYTHONPATH=code-space python examples/band_degeneracy_check.py
+PYTHONPATH=code-space python examples/verification/band_degeneracy_check.py
 ```
 
 이것은 **결함 재현**이며 해결 회귀 테스트가 아니다. 라이브러리 변경이 없어 전체
@@ -579,7 +579,7 @@ eps64 = 2.220446049250313e-16
 실행 변경은 `observables/topology.py`, 이를 호출하는
 `observables/thermodynamics.py`의 T=0 포함 공통 처리에 한정한다. `config.py`는
 기존 안내값의 주석만 명확히 했다. Hamiltonian·대각화·BZ generator·legacy 원본은
-바꾸지 않았다. `examples/band_degeneracy_check.py`는 JSON에서 NaN을 null과
+바꾸지 않았다. `examples/verification/band_degeneracy_check.py`는 JSON에서 NaN을 null과
 availability flag로 기록하도록 수정했으며 과거 진단 JSON은 보존했다.
 
 ### 수정 전후 검증
@@ -598,7 +598,7 @@ availability flag로 기록하도록 수정했으며 과거 진단 JSON은 보�
 
 기존 SI·BZ/Chern 72개와 합쳐 **97 passed**다. 전체는 **188 passed, 5 failed,
 legacy SyntaxWarning 2개**이며 기존 `CommensurateStructure`의 5개 실패 외에는
-추가 실패가 없다. `examples/bz_chern_reference_check.py`도 재실행해 5가지 BZ와
+추가 실패가 없다. `examples/verification/bz_chern_reference_check.py`도 재실행해 5가지 BZ와
 N=6,12,24에서 기존 비퇴화 모델의 Chern·Hall 수렴을 유지함을 확인했다.
 
 새 보고서는 `data-space/verification/260911-band-isolation/`에 두며,
@@ -607,8 +607,8 @@ N=6,12,24에서 기존 비퇴화 모델의 Chern·Hall 수렴을 유지함을 �
 
 ```sh
 PYTHONPATH=code-space python -m pytest code-space/tests/test_solvers/test_band_isolation.py code-space/tests/test_solvers/test_thermal_hall_normalization.py code-space/tests/test_solvers/test_brillouin_zone_integration.py -q
-PYTHONPATH=code-space python examples/band_degeneracy_check.py
-PYTHONPATH=code-space python examples/bz_chern_reference_check.py
+PYTHONPATH=code-space python examples/verification/band_degeneracy_check.py
+PYTHONPATH=code-space python examples/verification/bz_chern_reference_check.py
 PYTHONPATH=code-space python -m pytest code-space/tests -q
 ```
 
@@ -622,7 +622,7 @@ PYTHONPATH=code-space python -m pytest code-space/tests -q
 
 ### 비용 측정과 선택
 
-`examples/band_gap_cutoff_check.py`는 production Colpa와 같은 결과를 내는 경로에
+`examples/verification/band_gap_cutoff_check.py`는 production Colpa와 같은 결과를 내는 경로에
 선택적인 진단을 추가해 비교한다. 고정 seed의 complex positive-definite 행렬을
 사용하며, 이미 계산된 Cholesky factor로 시작한다. 반복 순서를 섞고 5회 묶음의
 중앙값을 기록했다. 아래는 k 한 점당 시간이고 실제 NBCP의 전체 실행 시간은 아니다.
@@ -855,7 +855,7 @@ kappa에서는 부분적분 뒤 다음이 남는다.
 - `code-space/spintoolkit/observables/topology.py` — 현재 구현
 - `code-space/spintoolkit/observables/thermodynamics.py` — 공통 SI 정규화와 온도 스캔
 - `code-space/tests/test_solvers/test_thermal_hall_normalization.py` — 독립 회귀 검증
-- `examples/thermal_hall_reference_check.py` — 재현 가능한 해석 모델과 결과 출력
+- `examples/verification/thermal_hall_reference_check.py` — 재현 가능한 해석 모델과 결과 출력
 - `code-space/spintoolkit/system/brillouin_zone.py` — 실제 magnetic cell의 full-BZ 생성
 - `code-space/tests/test_solvers/test_brillouin_zone_integration.py` — BZ/Chern 신규 40개 검사
-- `examples/bz_chern_reference_check.py` — BZ 표본 범위 및 Chern/Hall 수렴 보고서
+- `examples/verification/bz_chern_reference_check.py` — BZ 표본 범위 및 Chern/Hall 수렴 보고서

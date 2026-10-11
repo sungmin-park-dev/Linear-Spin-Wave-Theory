@@ -29,7 +29,7 @@ spintoolkit enters these formulas.
 
 Usage
 -----
-    python examples/lswt_d49_thermal_magnetization_check.py > report.json
+    python examples/verification/lswt_d49_thermal_magnetization_check.py > report.json
 """
 
 import json
@@ -37,7 +37,7 @@ from pathlib import Path
 import sys
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import numpy as np

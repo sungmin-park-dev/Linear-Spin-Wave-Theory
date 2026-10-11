@@ -10,7 +10,7 @@
 
 Usage
 -----
-    python examples/classical_search_check.py SNAPSHOT.npz > report.json
+    python examples/verification/classical_search_check.py SNAPSHOT.npz > report.json
 """
 
 import json
@@ -19,7 +19,7 @@ import sys
 import time
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import numpy as np
@@ -49,7 +49,7 @@ def benchmarks():
 
 
 def snapshot_searches(path):
-    sys.path.insert(0, str(ROOT / 'examples'))
+    sys.path.insert(0, str(ROOT / 'examples' / 'verification'))
     from package_regression_snapshot import BASE, CELLS, FAMILIES, SEARCHES
     stored = np.load(path)
     rows = []

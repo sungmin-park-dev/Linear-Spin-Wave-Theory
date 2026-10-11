@@ -678,7 +678,7 @@ area 정규화 오류를 재현했다. `1e-12`→`1e-22`, `Ns` 곱셈만으로 �
 실행 경로와 온도 스캔에 적용했다. 독립 회귀 32개 통과, 전체 123 passed와
 기존 CommensurateStructure 5 failed를 확인했다.
 [열린 이슈](260802-topology-thermal-hall-real-space-volume-bug.md)에 유도,
-`examples/thermal_hall_reference_check.py`의 수치와 legacy 대비를 기록했다.
+`examples/verification/thermal_hall_reference_check.py`의 수치와 legacy 대비를 기록했다.
 이어서 실제 BZ의 격자 교체·경계 누락/중복 및 Chern의 불필요한 Ns 나눗셈을
 수정했다. 신규 BZ 검사 40개와 이전 Hall 검사 32개 통과, 전체 163 passed와
 기존 5 failed다. 다음 확인은 퇴화·soft mode의 처방이며, A6/A7/A16의 이론

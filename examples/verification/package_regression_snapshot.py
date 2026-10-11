@@ -7,8 +7,8 @@ rename. It computes nothing new: every value comes from existing public calls.
 
 Usage
 -----
-    python examples/package_regression_snapshot.py snapshot OUT.npz
-    python examples/package_regression_snapshot.py compare A.npz B.npz
+    python examples/verification/package_regression_snapshot.py snapshot OUT.npz
+    python examples/verification/package_regression_snapshot.py compare A.npz B.npz
 """
 
 from importlib import import_module
@@ -17,7 +17,7 @@ import sys
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / "code-space"), str(ROOT)]
 
 from model import nbcp  # noqa: E402

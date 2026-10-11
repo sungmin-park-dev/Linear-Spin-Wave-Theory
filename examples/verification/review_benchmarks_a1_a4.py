@@ -14,7 +14,7 @@ A4  triangular 120 degree state: neutron weights against the closed form.
 
 Run from the repository root (S = 2 ED takes about five minutes):
 
-    python examples/review_benchmarks_a1_a4.py [--quick]
+    python examples/verification/review_benchmarks_a1_a4.py [--quick]
 """
 
 from pathlib import Path
@@ -22,7 +22,7 @@ import sys
 import time
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT / 'code-space' / 'tests' / 'test_methods')]
 
 import numpy as np

@@ -68,22 +68,18 @@ project-root/
 │   ├── lswt/                    # 옛 이름 `lswt` 호환 패키지(DeprecationWarning)
 │   └── tests/                   # pytest 테스트
 │
-├── docs/                        # 문서와 참고자료의 통합 진입점
+├── docs/                        # 보관·공개용 문서만 (정본은 workbench/)
 │   ├── README.md
-│   ├── development/             # Toolkit 개발 설계 Beamer; 구현·검증 기록은 부록
-│   ├── lswt/                    # LSWT 일반 이론 Markdown
-│   │   ├── 00-foundations/
-│   │   ├── 01-derivation/
-│   │   ├── 02-observables/
-│   │   ├── 03-examples/
-│   │   ├── 04-appendices/
-│   │   └── sources/             # 원본·전사본·외부 논문·검증 근거
-│   └── archive/                 # 집필을 종료한 문서
+│   ├── tutorials/               # 패키지 사용법 영어 튜토리얼 5편
+│   ├── sources/                 # 원본·전사본·검증 근거 (LSWT 원자료)
+│   └── archive/                 # 정본 역할이 끝난 보존본 (2026-10-08 상태)
+│       ├── 2026-10-08-lswt-markdown/      # 옛 docs/lswt
+│       └── 2026-10-08-development-beamer/ # 옛 docs/development
 │
 ├── model/                       # 모델별 정의·간단한 계산·원시 및 중간 결과
 │   └── nbcp/                    # NBCP 모형 정의 (패키지 회귀 테스트용 고정본)
 │
-├── examples/                    # 실행 예제, 튜토리얼과 검증 스크립트
+├── examples/                    # quickstart.py, gallery.py, tutorials/(튜토리얼 스크립트), verification/(검증 스크립트)
 │
 ├── legacy/                      # 원본 legacy 코드와 과거 연구노트 아카이브
 │   ├── modules/

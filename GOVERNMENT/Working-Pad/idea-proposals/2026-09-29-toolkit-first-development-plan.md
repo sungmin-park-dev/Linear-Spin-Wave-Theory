@@ -138,7 +138,7 @@ code-space/spintoolkit/
 | 5 | 위상량 | Berry 곡률·Chern 수·thermal Hall; 하이젠버그 null test; 0이 아닌 기준 모델 비교(키타에프 편극상은 선택); 기존 real-space volume 이슈 해소 |
 
 **진행 상황.** 0단계는 2026-09-29 완료했다. 테스트는 이전과 같은 결과(호환 테스트 1개를
-4개로 교체해 220 통과 / 같은 5 실패)였고, `examples/package_regression_snapshot.py`로
+4개로 교체해 220 통과 / 같은 5 실패)였고, `examples/verification/package_regression_snapshot.py`로
 비교한 208개 값(40건의 `H(k)`·고전 에너지와 16개 탐색 결과)의 최대 차이는 0이었다.
 기록은 `docs/archive/2026-10-08-development-beamer/verification/package-rename-2026-09-29.json`에 있다.
 

@@ -14,7 +14,7 @@ Figures are written to ``docs/archive/2026-10-08-development-beamer/figures/``; 
 
 Usage
 -----
-    python examples/visualization_stage7_check.py > report.json
+    python examples/verification/visualization_stage7_check.py > report.json
 """
 
 import json
@@ -22,7 +22,7 @@ from pathlib import Path
 import sys
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import matplotlib

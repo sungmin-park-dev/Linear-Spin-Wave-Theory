@@ -14,7 +14,7 @@
 
 Usage
 -----
-    python examples/lswt_stage5a_check.py > report.json
+    python examples/verification/lswt_stage5a_check.py > report.json
 """
 
 import json
@@ -23,7 +23,7 @@ import sys
 import time
 import warnings
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'code-space'), str(ROOT)]
 
 import numpy as np

@@ -71,9 +71,9 @@ def main():
     parser.add_argument("--band-gap-cutoff", type=float, default=DEFAULT_BAND_GAP_CUTOFF,
                         help="Numerical minimum signed gap in meV (default: 1e-8)")
     args = parser.parse_args()
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[2]
     sources = [
-        "examples/band_degeneracy_check.py",
+        "examples/verification/band_degeneracy_check.py",
         "code-space/spintoolkit/methods/lswt/diagonalization.py",
         "code-space/spintoolkit/observables/topology.py",
         "code-space/spintoolkit/definitions/constants.py", "code-space/spintoolkit/definitions/defaults.py", "code-space/spintoolkit/definitions/spin_basis.py",

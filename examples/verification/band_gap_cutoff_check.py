@@ -78,8 +78,8 @@ def main():
         })
         print(size, records[-1]['median_us_per_k'], flush=True)
 
-    root = Path(__file__).resolve().parents[1]
-    sources = ['examples/band_gap_cutoff_check.py', 'examples/band_degeneracy_check.py',
+    root = Path(__file__).resolve().parents[2]
+    sources = ['examples/verification/band_gap_cutoff_check.py', 'examples/verification/band_degeneracy_check.py',
                'code-space/spintoolkit/observables/topology.py', 'code-space/spintoolkit/definitions/constants.py', 'code-space/spintoolkit/definitions/defaults.py', 'code-space/spintoolkit/definitions/spin_basis.py',
                'code-space/spintoolkit/methods/lswt/diagonalization.py']
     report = {
