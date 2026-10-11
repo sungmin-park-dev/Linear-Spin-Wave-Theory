@@ -58,7 +58,7 @@ Short answer: **neither goal is complete.** The computational core is in place a
 | Dependencies | matplotlib and tqdm are required | Make plotting an optional extra |
 | Tests and CI | 91 %; low in the old path (energy 56 %, brillouin_zone 59 %, spin_system 62 %, exchange 43 %). CI on Py 3.9 and 3.12, Linux | Add 3.10 and 3.11; cross-checks against SpinW or Sunny on standard models |
 | Release process | No CHANGELOG, release workflow or tag | CHANGELOG, PyPI publishing workflow |
-| Physics review | D35–D40, 10 docs/lswt drafts, spiral memo, NBCP note | Your review all at once after implementation; a release gate |
+| Physics review | D35–D40, 10 docs/archive/2026-10-08-lswt-markdown drafts, spiral memo, NBCP note | Your review all at once after implementation; a release gate |
 
 ## Recommended order
 

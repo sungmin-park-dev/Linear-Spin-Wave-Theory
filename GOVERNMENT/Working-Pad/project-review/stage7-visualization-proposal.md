@@ -38,7 +38,7 @@ working with a DeprecationWarning until the public-release cleanup (same treatme
 
 ## 4. Review and verification
 
-- Beamer review slides in `docs/development/` (interface, what each figure shows, style), as stage 4d and 6 did.
+- Beamer review slides in `docs/archive/2026-10-08-development-beamer/` (interface, what each figure shows, style), as stage 4d and 6 did.
 - Tests: the plotted line data equals `BandStructure.energies` exactly; NaN stays NaN; zero-mode markers sit at the
   masked k; square Neel and triangular 120 deg benchmark figures in the verification record.
 

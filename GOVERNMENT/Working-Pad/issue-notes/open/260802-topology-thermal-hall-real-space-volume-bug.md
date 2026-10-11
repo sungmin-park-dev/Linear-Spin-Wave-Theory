@@ -7,7 +7,7 @@ status: in-review
 last-edited-by: claude
 created: 2026-08-02
 updated: 2026-09-30
-source: docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
+source: docs/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
 related: code-space/spintoolkit/observables/topology.py
 must-read: GOVERNMENT/Agents-Bylaws/templates/issue-notes-template.md
 ---
@@ -72,7 +72,7 @@ CLAUDE.md 기록과 대조하면:
    단위 변환 계수 `1e-22`의 근거를 확인한다.
 2. 물리적 의도가 불명확하면 임의로 고치지 않고 성민 확인을 받는다
    (프로젝트 규칙 4).
-3. `docs/lswt/02-observables/topological-magnon-quantities.md`의
+3. `docs/archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md`의
    review ledger ID **A7**("Thermal-Hall band sum", 현재 `open`)이 이
    코드 버그와 관련된 이론 검증 항목이다 — 함께 다룬다.
 4. 수정 후 단위와 크기 order를 독립적으로 sanity-check한다(예: 알려진
@@ -729,7 +729,7 @@ toolkit의 공통 LSWT 결과(`solve_lswt`)에서 위상량을 계산하는 경�
 - 5d: 적응형 k 적분(`AdaptiveIntegration`)으로 NBCP의 좁은 회피 교차와 우연 영모드 근처 곡률(적분 함수
   `~1/|q|`, 2D에서 적분 가능)을 수렴시킨다. 균일 192 x 192 값은 1–4%(Y J_Gamma 27%) 어긋나 있었다.
 
-기록: `docs/development/verification/stage5a-berry-chern-2026-09-30.json`, `stage5b-thermal-hall-2026-09-30.json`,
+기록: `docs/archive/2026-10-08-development-beamer/verification/stage5a-berry-chern-2026-09-30.json`, `stage5b-thermal-hall-2026-09-30.json`,
 `stage5c-hall-kernel-2026-09-30.json`, `stage5d-adaptive-integration-2026-09-30.json`.
 
 ## 2026-10-01 NBCP 적용 조건 — 대칭으로 정해지는 0과 그것을 깨는 항
@@ -850,8 +850,8 @@ kappa에서는 부분적분 뒤 다음이 남는다.
 
 ## 참조
 
-- `docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf` — thermal Hall 식의 primary evidence
-- `docs/lswt/02-observables/topological-magnon-quantities.md` — 이론식과 convention owner
+- `docs/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf` — thermal Hall 식의 primary evidence
+- `docs/archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md` — 이론식과 convention owner
 - `code-space/spintoolkit/observables/topology.py` — 현재 구현
 - `code-space/spintoolkit/observables/thermodynamics.py` — 공통 SI 정규화와 온도 스캔
 - `code-space/tests/test_solvers/test_thermal_hall_normalization.py` — 독립 회귀 검증

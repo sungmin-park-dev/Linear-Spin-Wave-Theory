@@ -36,7 +36,7 @@ from spintoolkit.system.conditions import ExternalConditions
 from tests.test_methods.test_berry import haldane, haldane_reference, kitaev
 
 SCAN = ROOT / 'data-space/verification/260912-pseudo-goldstone/scan-N48-P72.json'
-STAGE5B = ROOT / 'docs/development/verification/stage5b-thermal-hall-2026-09-30.json'
+STAGE5B = ROOT / 'docs/archive/2026-10-08-development-beamer/verification/stage5b-thermal-hall-2026-09-30.json'
 
 
 def adaptive(result, ts, gapless=None, **kwargs):

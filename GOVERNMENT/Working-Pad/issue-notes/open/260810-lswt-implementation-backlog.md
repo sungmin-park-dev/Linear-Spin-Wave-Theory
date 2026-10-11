@@ -42,7 +42,7 @@ NBCP band-plot 예제의 선행 작업 중 classical ground-state 최적화와 s
 observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `LSWTResult`를 쓰는 물리량)로 대체되었고,
 `hamiltonian_at`은 `LSWTResult.hamiltonian_at`, k-data의 dataclass 전환은 `LSWTResult`(D24)로 구현되었다.
 격자·자기 구조와 시스템 연결은 `260930-lt-step-and-commensurate-structure-decision.md`로 옮겼고, pytest 기준은
-전체 통과(500개)다. 기존 경로의 정리 시점은 `docs/development` Beamer의 미결 사항에서 추적한다.
+전체 통과(500개)다. 기존 경로의 정리 시점은 `docs/archive/2026-10-08-development-beamer` Beamer의 미결 사항에서 추적한다.
 
 ### 발견 사항
 

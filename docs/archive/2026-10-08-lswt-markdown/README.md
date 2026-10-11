@@ -10,7 +10,7 @@ updated: 2026-09-16
 
 # Linear Spin Wave Theory Documentation
 
-> **2026-10-08부터 보존본.** 이 폴더의 내용은 [2026-10-08 결정](../../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 연구노트 `lswt-foundations`, `lswt-derivation`, `lswt-observables`로 옮겼고, 이후 편집은 연구노트에서 한다. 이 폴더는 그날 상태로 보존하며 더 고치지 않는다.
+> **2026-10-08부터 보존본.** 이 폴더의 내용은 [2026-10-08 결정](../../../GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 연구노트 `lswt-foundations`, `lswt-derivation`, `lswt-observables`로 옮겼고, 이후 편집은 연구노트에서 한다. 이 폴더는 그날 상태로 보존하며 더 고치지 않는다.
 
 [전체 문서](../README.md) · [NBCP 연구](../nbcp/README.md)
 
@@ -20,19 +20,19 @@ updated: 2026-09-16
 
 ### 현재 상태
 
-문서별 작성 범위와 검토 상태는 [Documentation Audit](../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md)에서 확인한다. 사용자가 Human Physics and Mathematics Review를 마치고 frontmatter에 `status: accepted`, `reviewed-by: user`, `reviewed-at`을 기록한 문서만 이론 정본이다.
+문서별 작성 범위와 검토 상태는 [Documentation Audit](../../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md)에서 확인한다. 사용자가 Human Physics and Mathematics Review를 마치고 frontmatter에 `status: accepted`, `reviewed-by: user`, `reviewed-at`을 기록한 문서만 이론 정본이다.
 
 ## 작성·검토 기준
 
 | 확인할 내용 | 기준 문서 |
 |---|---|
-| 예상 독자, 문서 종류별 설명 깊이, 영어 문체와 References | [LSWT Writing Style](../../GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md) |
+| 예상 독자, 문서 종류별 설명 깊이, 영어 문체와 References | [LSWT Writing Style](../../../GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md) |
 | 기호의 의미와 사용 범위, notation convention | [Notation and Conventions](00-foundations/notation-and-conventions.md) |
-| 원본·전사본·참고자료의 위치와 원문 section 대응 | [Source Inventory](sources/README.md) |
-| 원문 보존·재배치, 작업 단위와 완료 기준, 사용자 검토와 출력 | [Canonical Document Lifecycle](../../GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md) |
-| Markdown 정본 원칙과 이전 경로 결정 | [Source Authority](../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), [Docs Authoring Surface](../../GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface.md) |
-| 현재 통합 경로 | [2026-09-16 통합 기록](../../GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md) |
-| 문서별 미해결 사항과 다음 작업 | [Documentation Audit](../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md), [Task Queue](../../GOVERNMENT/Working-Pad/TASK-QUEUE.md) |
+| 원본·전사본·참고자료의 위치와 원문 section 대응 | [Source Inventory](../../sources/README.md) |
+| 원문 보존·재배치, 작업 단위와 완료 기준, 사용자 검토와 출력 | [Canonical Document Lifecycle](../../../GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md) |
+| Markdown 정본 원칙과 이전 경로 결정 | [Source Authority](../../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), [Docs Authoring Surface](../../../GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface.md) |
+| 현재 통합 경로 | [2026-09-16 통합 기록](../../../GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md) |
+| 문서별 미해결 사항과 다음 작업 | [Documentation Audit](../../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md), [Task Queue](../../../GOVERNMENT/Working-Pad/TASK-QUEUE.md) |
 
 각 문서의 역할을 먼저 확인하고 필요한 기준을 읽는다. Writing style과 lifecycle의 `in-review` 상태는 문서 전체가 accepted policy라는 뜻이 아니며, 명시적인 사용자 결정은 작업 기준으로 적용한다. Notation의 미결정 항목은 해당 문서와 audit에서 확인한다.
 
@@ -99,7 +99,7 @@ updated: 2026-09-16
 
 Source가 충돌하거나 물리적 의도가 불명확하면 자동으로 병합하지 않는다.
 운영 상태와 legacy coverage는
-[`260809-lswt-documentation-audit.md`](../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md)에서
+[`260809-lswt-documentation-audit.md`](../../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md)에서
 관리한다.
 
 ## Editing and Publication Boundary
@@ -117,10 +117,10 @@ Source가 충돌하거나 물리적 의도가 불명확하면 자동으로 병�
 
 ### Internal Documents
 
-- [Single Knowledge Canon](../../GOVERNMENT/User-Constitution/single-knowledge-canon.md): defines the repository's single-canon principle.
-- [LSWT Markdown Source Authority](../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md): defines the authority relationship among Markdown, the source PDF, and TeX derivatives.
-- [LSWT Docs Authoring Surface](../../GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface.md): records the earlier authoring location and source-path updates.
-- [LSWT Canonical Document Lifecycle](../../GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md): defines review, acceptance, and derived-output boundaries.
+- [Single Knowledge Canon](../../../GOVERNMENT/User-Constitution/single-knowledge-canon.md): defines the repository's single-canon principle.
+- [LSWT Markdown Source Authority](../../../GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md): defines the authority relationship among Markdown, the source PDF, and TeX derivatives.
+- [LSWT Docs Authoring Surface](../../../GOVERNMENT/Court-Precedents/2026-08-09-lswt-docs-authoring-surface.md): records the earlier authoring location and source-path updates.
+- [LSWT Canonical Document Lifecycle](../../../GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md): defines review, acceptance, and derived-output boundaries.
 
 ### External Sources
 

@@ -1,6 +1,6 @@
 # LSWT Source Map
 
-This directory collects the source evidence used while rewriting the Linear Spin Wave Theory documentation in [`docs/lswt/`](../README.md). These files preserve provenance and support comparison; they do not own the project's current theory claims. Only user-reviewed theory Markdown in the numbered `docs/lswt/` directories can become the accepted LSWT theory canon. Source files are preserved here even when their format is editable.
+This directory collects the source evidence used while rewriting the Linear Spin Wave Theory documentation in [`docs/archive/2026-10-08-lswt-markdown/`](../archive/2026-10-08-lswt-markdown/README.md). These files preserve provenance and support comparison; they do not own the project's current theory claims. Only user-reviewed theory Markdown in the numbered `docs/archive/2026-10-08-lswt-markdown/` directories can become the accepted LSWT theory canon. Source files are preserved here even when their format is editable.
 
 ## Reading Priority
 
@@ -52,25 +52,25 @@ This table is a navigation aid. It identifies the Markdown owner that should rec
 
 | Original note section | Current Markdown owner |
 |---|---|
-| Summary of Notation and Symbols | [`notation-and-conventions.md`](../00-foundations/notation-and-conventions.md) |
-| Introduction to Spin Wave Theory: model and workflow | [`lswt-overview.md`](../00-foundations/lswt-overview.md) |
-| Introduction to Spin Wave Theory: Hamiltonian, Eqs. (1)–(3) | [`bilinear-spin-hamiltonian.md`](../00-foundations/bilinear-spin-hamiltonian.md) |
-| Spin to Boson Transformations | [`holstein-primakoff-expansion.md`](../01-derivation/holstein-primakoff-expansion.md) |
-| Rotations for Spin Models | [`classical-order-and-local-frame.md`](../00-foundations/classical-order-and-local-frame.md) |
-| Bosonic representations for spin Hamiltonian | [`real-space-boson-hamiltonian.md`](../01-derivation/real-space-boson-hamiltonian.md) |
-| Momentum Space Representations | [`momentum-space-bdg-hamiltonian.md`](../01-derivation/momentum-space-bdg-hamiltonian.md) |
-| Diagonalization of Quadratic Boson Hamiltonian; Paraunitary Diagonalization | [`paraunitary-diagonalization.md`](../01-derivation/paraunitary-diagonalization.md) |
-| Physical Quantities in Linear Spin Wave Theory | [`magnon-observables.md`](../02-observables/magnon-observables.md) |
-| Thermodynamics in Linear Spin Wave Theory | [`thermodynamics.md`](../02-observables/thermodynamics.md) and [`thermodynamic-derivations.md`](../04-appendices/thermodynamic-derivations.md) |
-| Correlations in Linear Spin Wave Theory | [`spin-correlations.md`](../02-observables/spin-correlations.md) |
-| Structure Factor; Spectral Function | [`structure-factor-and-spectral-function.md`](../02-observables/structure-factor-and-spectral-function.md) |
-| Skyrmions, Topological Magnons, and Hall Effects | [`topological-magnon-quantities.md`](../02-observables/topological-magnon-quantities.md) |
-| Example: Solving spin system with linear spin wave theory | [`worked-example.md`](../03-examples/worked-example.md) |
-| Restructured TeX appendices: Luttinger–Tisza, paraunitarity proofs, thermodynamic derivations | [`04-appendices/`](../04-appendices) |
+| Summary of Notation and Symbols | [`notation-and-conventions.md`](../archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md) |
+| Introduction to Spin Wave Theory: model and workflow | [`lswt-overview.md`](../archive/2026-10-08-lswt-markdown/00-foundations/lswt-overview.md) |
+| Introduction to Spin Wave Theory: Hamiltonian, Eqs. (1)–(3) | [`bilinear-spin-hamiltonian.md`](../archive/2026-10-08-lswt-markdown/00-foundations/bilinear-spin-hamiltonian.md) |
+| Spin to Boson Transformations | [`holstein-primakoff-expansion.md`](../archive/2026-10-08-lswt-markdown/01-derivation/holstein-primakoff-expansion.md) |
+| Rotations for Spin Models | [`classical-order-and-local-frame.md`](../archive/2026-10-08-lswt-markdown/00-foundations/classical-order-and-local-frame.md) |
+| Bosonic representations for spin Hamiltonian | [`real-space-boson-hamiltonian.md`](../archive/2026-10-08-lswt-markdown/01-derivation/real-space-boson-hamiltonian.md) |
+| Momentum Space Representations | [`momentum-space-bdg-hamiltonian.md`](../archive/2026-10-08-lswt-markdown/01-derivation/momentum-space-bdg-hamiltonian.md) |
+| Diagonalization of Quadratic Boson Hamiltonian; Paraunitary Diagonalization | [`paraunitary-diagonalization.md`](../archive/2026-10-08-lswt-markdown/01-derivation/paraunitary-diagonalization.md) |
+| Physical Quantities in Linear Spin Wave Theory | [`magnon-observables.md`](../archive/2026-10-08-lswt-markdown/02-observables/magnon-observables.md) |
+| Thermodynamics in Linear Spin Wave Theory | [`thermodynamics.md`](../archive/2026-10-08-lswt-markdown/02-observables/thermodynamics.md) and [`thermodynamic-derivations.md`](../archive/2026-10-08-lswt-markdown/04-appendices/thermodynamic-derivations.md) |
+| Correlations in Linear Spin Wave Theory | [`spin-correlations.md`](../archive/2026-10-08-lswt-markdown/02-observables/spin-correlations.md) |
+| Structure Factor; Spectral Function | [`structure-factor-and-spectral-function.md`](../archive/2026-10-08-lswt-markdown/02-observables/structure-factor-and-spectral-function.md) |
+| Skyrmions, Topological Magnons, and Hall Effects | [`topological-magnon-quantities.md`](../archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md) |
+| Example: Solving spin system with linear spin wave theory | [`worked-example.md`](../archive/2026-10-08-lswt-markdown/03-examples/worked-example.md) |
+| Restructured TeX appendices: Luttinger–Tisza, paraunitarity proofs, thermodynamic derivations | [`04-appendices/`](../archive/2026-10-08-lswt-markdown/04-appendices) |
 
 ## Editing Boundary
 
 - Preserve source files as evidence; do not edit them merely to match the current Markdown notation.
-- Apply canonical notation and explanatory changes only in the appropriate `docs/lswt/` theory owner.
+- Apply canonical notation and explanatory changes only in the appropriate `docs/archive/2026-10-08-lswt-markdown/` theory owner.
 - Keep theory acceptance, code verification, and publication as separate review states.
 - Record unresolved sign, index, normalization, and source-lineage questions explicitly instead of inferring an answer from file names.

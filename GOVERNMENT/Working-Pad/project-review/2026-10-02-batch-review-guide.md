@@ -14,7 +14,7 @@
 ### A2. 단일 이온 항의 (1 − 1/2S) 규칙 (D37)
 - 결정: 고전·LSWT 모두 결맞음 상태 값 S(S−½)nᵀAn + (S/2)trA, 즉 계수 (1−1/2S)A. 정규 순서 상수는 더하지 않음.
 - 볼 점: S=1/2에서 단일 이온 항이 상수가 되는 것, D(S^z)² 갭 (2S−1)|D|가 정확해지는 것. 문헌과 다른 코드마다 이 항의 관례가 달라, 같은 입력이라도 값이 다를 수 있음.
-- 위치: `docs/development/appendices/b-decisions-references.tex` D36–D37 프레임
+- 위치: `docs/archive/2026-10-08-development-beamer/appendices/b-decisions-references.tex` D36–D37 프레임
 
 ### A3. Thermal Hall: full-position Bloch 규약 (D29, 이슈 260802)
 - 결정: κ_xy는 각 사이트의 실제 위치로 위상을 잡는 규약으로 계산. Chern 수는 두 규약에서 같음.
@@ -51,7 +51,7 @@
 |---|---|---|
 | C1 | LSWT 이론 draft 10편 물리·수학 검토 (독립 검산으로 오류 14건 수정 완료, 남은 의심 항목 정리됨) | 검토 PDF `/mnt/project-files/lswt-review/2026-10-01-lswt-drafts-review.pdf`, 가이드 `GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md` |
 | C2 | 솔버 seam 스파이크 (ED·TeNPy·NetKet이 같은 토러스에서 1e-14 일치) → closed로 옮겨도 되는지 | `GOVERNMENT/Working-Pad/handoff/open/260607-solver-seam-spike.md` |
-| C3 | 개발 설계 Beamer (D30–D45 결정 기록 포함) | 원본 `docs/development/main.tex`; PDF는 저장소에 없어 원하시면 만들어 드립니다 |
+| C3 | 개발 설계 Beamer (D30–D45 결정 기록 포함) | 원본 `docs/archive/2026-10-08-development-beamer/main.tex`; PDF는 저장소에 없어 원하시면 만들어 드립니다 |
 
 NBCP 논문 점검 항목(Rau 공식 적용 범위, V의 Z₆, Fig. 4(b) 출처 등)은 "NBCP 연구 문서 점검·정교화" 스레드에서 따로 정리돼 있어 여기서는 뺐습니다.
 

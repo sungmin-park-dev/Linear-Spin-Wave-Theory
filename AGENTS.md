@@ -22,7 +22,7 @@
 
 ## 현재 디렉토리 구조
 
-> LSWT 일반 이론과 개발 설계는 `workbench/notes/` 연구노트(2026-10-08부터; `docs/lswt/`·`docs/development/`는 보존본), 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
+> LSWT 일반 이론과 개발 설계는 `workbench/notes/` 연구노트(2026-10-08부터; `docs/archive/2026-10-08-lswt-markdown/`·`docs/archive/2026-10-08-development-beamer/`는 보존본), 실행 예제와 검증 스크립트는 `examples/`에서 관리한다.
 > 설계 사본은 `GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy.md`에 둔다.
 
 ```
@@ -97,20 +97,20 @@ project-root/
 
 ## 이론 문서와 source authority
 
-LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 LaTeX 연구노트에 정리한다. 2026-10-09부터 주제별 7개(`lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`)다(처음 3개 `lswt-foundations`·`lswt-derivation`·`lswt-observables`를 나눔). `docs/lswt/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/development/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
+LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 LaTeX 연구노트에 정리한다. 2026-10-09부터 주제별 7개(`lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`)다(처음 3개 `lswt-foundations`·`lswt-derivation`·`lswt-observables`를 나눔). `docs/archive/2026-10-08-lswt-markdown/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/archive/2026-10-08-development-beamer/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
 
-단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따랐고, 정본의 위치와 작성 경로는 2026-10-08 결정이 연구노트로 바꿨다. 이는 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/lswt/README.md](docs/lswt/README.md)다.
+단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따랐고, 정본의 위치와 작성 경로는 2026-10-08 결정이 연구노트로 바꿨다. 이는 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/archive/2026-10-08-lswt-markdown/README.md](docs/archive/2026-10-08-lswt-markdown/README.md)다.
 
 | 경로 | 역할 |
 |---|---|
-| `docs/lswt/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf` | 원래 기록, 수식과 review annotation을 판정하는 primary evidence |
-| `docs/lswt/sources/01-editable-notes/note_lswt_reviewed.tex` | 원문 section 순서를 유지한 editable transcription |
-| `docs/lswt/sources/01-editable-notes/note_lswt_restructured.tex` | 재배치와 일부 편집이 포함된 structural reference |
+| `docs/sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf` | 원래 기록, 수식과 review annotation을 판정하는 primary evidence |
+| `docs/sources/01-editable-notes/note_lswt_reviewed.tex` | 원문 section 순서를 유지한 editable transcription |
+| `docs/sources/01-editable-notes/note_lswt_restructured.tex` | 재배치와 일부 편집이 포함된 structural reference |
 | 논문 라이브러리 (research-library, 10/7 `02-reference-papers/`에서 옮김) | 유도와 convention을 확인하는 외부 참고문헌 (Toth–Lake: `tothLinear2015`) |
-| `docs/lswt/sources/03-verification-notes/` | 수식, basis convention과 코드의 내부 검증 자료 |
-| 사용자 승인 `workbench/notes/lswt-*` 연구노트 | 현재 LSWT 이론 claim을 소유하는 유일한 theory canon (2026-10-08 전에는 `docs/lswt/` Markdown) |
+| `docs/sources/03-verification-notes/` | 수식, basis convention과 코드의 내부 검증 자료 |
+| 사용자 승인 `workbench/notes/lswt-*` 연구노트 | 현재 LSWT 이론 claim을 소유하는 유일한 theory canon (2026-10-08 전에는 `docs/archive/2026-10-08-lswt-markdown/` Markdown) |
 
-상세 source inventory와 원문 section-to-docs 대응은 `docs/lswt/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 LSWT 연구노트에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
+상세 source inventory와 원문 section-to-docs 대응은 `docs/sources/README.md`에서 확인한다. `reviewed`와 `restructured` TeX를 새로운 단일 TeX master로 자동 병합하지 않으며, 유효한 내용은 primary PDF와 대조한 뒤 해당 LSWT 연구노트에서 통합한다. Source가 충돌하거나 부호, index, conjugation, normalization 또는 적용 조건이 불명확하면 `Unknown` 또는 open review item으로 남긴다. 자동 검사나 코드 수치 일치는 사용자의 Human Physics and Mathematics Review를 대체하지 않는다.
 
 NBCP 연구는 2026-10-09 별도 저장소 `sungmin-park-dev/nbcp-spin-supersolid`로 옮겼다([결정](GOVERNMENT/Court-Precedents/2026-10-09-nbcp-repository-split.md)). 연구노트·보조 노트·원고·계산 스크립트와 결과는 그 저장소가 소유한다. 이 저장소의 `model/nbcp/`와 `data-space/verification/260912-pseudo-goldstone/`는 패키지 회귀 테스트가 쓰는 고정본이다.
 
@@ -172,6 +172,6 @@ result.data                  # dict (솔버별 고유 데이터)
 5. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
 6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/notes/` 연구노트 TeX를 직접 편집하고 PDF는 그로부터 생성한다. LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
 7. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/notes/lswt-*`)를 작성하거나 교정하기 전에 `GOVERNMENT/Agents-Bylaws/policies/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
-8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `docs/lswt/` 검토 상태, `workbench/` 유도 블록·일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
+8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `docs/archive/2026-10-08-lswt-markdown/` 검토 상태, `workbench/` 유도 블록·일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
 
 현재 작업, 우선순위와 진행 상태는 `GOVERNMENT/Working-Pad/TASK-QUEUE.md`에서 확인한다. `AGENTS.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.

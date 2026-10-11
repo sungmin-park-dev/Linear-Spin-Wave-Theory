@@ -10,7 +10,7 @@
    shaded, never interpolated. The stable part is checked against the formula.
 3. Spin configuration of the 120 degree state from (SpinModel, SpinState).
 
-Figures are written to ``docs/development/figures/``; the JSON report to stdout.
+Figures are written to ``docs/archive/2026-10-08-development-beamer/figures/``; the JSON report to stdout.
 
 Usage
 -----
@@ -36,7 +36,7 @@ from spintoolkit.observables.bands import band_structure
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.visualization import plot_bands, plot_spin_configuration
 
-FIGURES = ROOT / 'docs/development/figures'
+FIGURES = ROOT / 'docs/archive/2026-10-08-development-beamer/figures'
 
 
 def drawn_equals_stored(ax, bands):
@@ -90,8 +90,8 @@ def main():
     fig, _ = plot_spin_configuration(tri, state_120(tri), n_repeat=1, figsize=(5, 5),
                                      title='triangular 120°')
     fig.savefig(FIGURES / 'stage7-spin-configuration.png', dpi=150)
-    report['figures'] = ['docs/development/figures/stage7-bands.png',
-                         'docs/development/figures/stage7-spin-configuration.png']
+    report['figures'] = ['docs/archive/2026-10-08-development-beamer/figures/stage7-bands.png',
+                         'docs/archive/2026-10-08-development-beamer/figures/stage7-spin-configuration.png']
     print(json.dumps(report, indent=1, ensure_ascii=False))
 
 

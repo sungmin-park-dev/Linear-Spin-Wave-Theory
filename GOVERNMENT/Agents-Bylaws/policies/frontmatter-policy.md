@@ -26,7 +26,7 @@ Legacy, 보존 원자료와 생성 출력물은 frontmatter가 없어도 허용�
 | `frontmatter-version` | 예 | 현재 `1` |
 | `title` | 예 | 문서 제목 |
 | `section` | GOVERNMENT 필수 | `GOVERNMENT/` 내부 상대 영역. 예: `issue-notes/open`, `templates`, `policies` |
-| `doc-path` | docs 필수 | `docs/` 내부 주제·역할과 하위 폴더를 포함한 경로. 예: `docs/lswt/00-foundations` |
+| `doc-path` | docs 필수 | `docs/` 내부 주제·역할과 하위 폴더를 포함한 경로. 예: `docs/archive/2026-10-08-lswt-markdown/00-foundations` |
 | `status` | 예 | `draft`, `in-review`, `accepted`, `closed` |
 | `last-edited-by` | 예 | `user`, `claude`, `codex`, `system`, `unknown` |
 | `created` | 예 | `YYYY-MM-DD` |
@@ -109,7 +109,7 @@ updated: YYYY-MM-DD
 ---
 frontmatter-version: 1
 title: [Document Title]
-doc-path: docs/lswt/00-foundations
+doc-path: docs/archive/2026-10-08-lswt-markdown/00-foundations
 status: draft
 last-edited-by: codex
 created: YYYY-MM-DD
