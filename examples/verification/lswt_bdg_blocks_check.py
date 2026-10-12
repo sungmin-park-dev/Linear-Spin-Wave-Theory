@@ -28,12 +28,19 @@ and compares them with ``QuadraticBoseHamiltonian`` (D36):
    omega_k^2 = S^2 (J_k - J_Q)((J_{k+Q} + J_{k-Q})/2 - J_Q), with
    J_k = sum_Delta J_Delta exp(i k . Delta), at the minimizing pitch;
    a non-minimizing pitch has imaginary modes with the same omega_k^2 < 0.
+6. Berry curvature at a Goldstone point (research note *LSWT magnon
+   topology*): on the honeycomb lattice with second-neighbour DM along z,
+   the zero-field ferromagnet (quadratic zero mode, B = 0) and the canted
+   antiferromagnet in a field along z (linear U(1) Goldstone mode, B != 0)
+   have bounded curvature near Gamma, vanishing as |k|^4 and |k|^3, and
+   Chern numbers (+1, -1) on a 60 x 60 mesh that avoids Gamma.
 
 Run with ``python examples/verification/lswt_bdg_blocks_check.py``.
 """
 
 import numpy as np
 
+from spintoolkit.models.honeycomb import honeycomb_ferromagnet
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
@@ -261,6 +268,59 @@ def check_square_zero_point(L=200, S=0.5):
     return per_site
 
 
+def _colpa(H, ns):
+    """Return the signed eigenvalues and the paraunitary matrix of ``H``."""
+    sig = np.diag([1.0] * ns + [-1.0] * ns)
+    K = np.linalg.cholesky(H)
+    w, V = np.linalg.eigh(K.conj().T @ sig @ K)
+    order = np.r_[np.argsort(-w)[:ns][::-1], np.argsort(w)[:ns][::-1]]
+    w, V = w[order], V[:, order]
+    return w, np.linalg.solve(K.conj().T, V) @ np.diag(np.sqrt(np.abs(w)))
+
+
+def _curvature(Hq, k, ns):
+    """Kubo-form Berry curvature of the particle bands at ``k``."""
+    H = Hq.at(k[None])[0]
+    dx, dy = [d[0] for d in Hq.derivatives_at(k[None])]
+    lam, T = _colpa(H, ns)
+    X, Y = T.conj().T @ dx @ T, T.conj().T @ dy @ T
+    s = np.r_[np.ones(ns), -np.ones(ns)]
+    om = np.zeros(ns)
+    for n in range(ns):
+        for m in range(2 * ns):
+            if m != n:
+                om[n] += -2 * np.imag(s[n] * s[m] * X[n, m] * Y[m, n]) / (lam[n] - lam[m]) ** 2
+    return lam[:ns], om
+
+
+def check_goldstone_curvature(S=0.5, J=1.0, D=0.2, L=60):
+    results = {}
+    for name, h in (("ferromagnet, h = 0", 0.0), ("canted antiferromagnet, h = 2JS", 2 * J * S)):
+        if h == 0.0:
+            model, dirs = honeycomb_ferromagnet(J=J, D=D, S=S), {"A": (0, 0, 1), "B": (0, 0, 1)}
+        else:
+            ct = h / (6 * J * S)
+            st = np.sqrt(1 - ct**2)
+            model, dirs = honeycomb_ferromagnet(J=-J, D=D, S=S), {"A": (st, 0, ct), "B": (-st, 0, ct)}
+        state = SpinState.from_function(model, np.eye(2, dtype=int), lambda site, c: dirs[site])
+        Hq = QuadraticBoseHamiltonian(model, state, ExternalConditions(field=(0, 0, h)))
+        assert np.abs(Hq.linear_terms).max() < 1e-12
+        u = np.array([np.cos(0.3), np.sin(0.3)])
+        om_a = _curvature(Hq, 1e-2 * u, 2)[1][0]
+        om_b = _curvature(Hq, 1e-3 * u, 2)[1][0]
+        exponent = np.log10(abs(om_a / om_b))
+        recip = 2 * np.pi * np.linalg.inv(model.lattice)
+        area = abs(np.linalg.det(recip))
+        chern = np.zeros(2)
+        for i in range(L):
+            for j in range(L):
+                chern += _curvature(Hq, recip @ ((np.array([i, j]) + 0.5) / L), 2)[1]
+        chern *= area / L**2 / (2 * np.pi)
+        print(f"6. {name}: Omega_1 ~ |k|^{exponent:.2f} near Gamma, Chern = {np.round(chern, 6)}")
+        results[name] = (exponent, chern)
+    return results
+
+
 if __name__ == "__main__":
     assert check_blocks() < 1e-12
     assert check_reciprocal_shift() < 1e-12
@@ -268,4 +328,8 @@ if __name__ == "__main__":
     assert check_classical_hessian() < 1e-6
     worst, negative = check_spiral()
     assert worst < 1e-12 and negative
+    expected = {"ferromagnet, h = 0": 4.0, "canted antiferromagnet, h = 2JS": 3.0}
+    for name, (exponent, chern) in check_goldstone_curvature().items():
+        assert abs(exponent - expected[name]) < 0.05
+        assert np.allclose(chern, [1.0, -1.0], atol=1e-4)
     print("all checks passed")
