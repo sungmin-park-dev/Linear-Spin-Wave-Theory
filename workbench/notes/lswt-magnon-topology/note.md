@@ -124,7 +124,7 @@ so the two forms coincide when the Chern numbers of the physical bands sum to ze
 
 - Classical Order and Local Frame in research note *LSWT classical order*: defines the classical spin directions used by the skyrmion number.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: fixes $\Sigma_3$, $\varepsilon_{n\mathbf k}$, $N_{\mathrm{sub}}$, and the MBZ notation, and lists the thermal-Hall units as not yet fixed.
+- Notation and Conventions in research note *LSWT spin Hamiltonian*: fixes $\Sigma_3$, $\varepsilon_{n\mathbf k}$, $N_{\mathrm{sub}}$, and the MBZ notation, and states the units of the Berry curvature and the per-layer thermal Hall conductivity.
 
 ### External Sources
 

@@ -14,7 +14,7 @@ The magnetic unit cell of an ordered state may contain several crystallographic 
 
 ## Ground-State Energy
 
-The LSWT ground-state energy $E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}$ and the zero-point correction $\Delta E_{\mathrm{zp}}=\frac12\sum_{\mathbf k}(\sum_n\varepsilon_{n\mathbf k}-\operatorname{Tr}\mathsf A_{\mathbf k})$ are derived with the diagonal magnon Hamiltonian in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. The energy per magnetic site is $\mathcal E_{\mathrm{GS}}=E_{\mathrm{GS}}/N_{\mathrm{site}}$. The correction depends on the energies alone, not on $\mathsf T_{\mathbf k}$, and it inherits the provisional trace convention of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*.
+The LSWT ground-state energy $E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}}$ and the zero-point correction $\Delta E_{\mathrm{zp}}=\frac12\sum_{\mathbf k}(\sum_n\varepsilon_{n\mathbf k}-\operatorname{Tr}\mathsf A_{\mathbf k})$ are derived with the diagonal magnon Hamiltonian in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. The energy per magnetic site is $\mathcal E_{\mathrm{GS}}=E_{\mathrm{GS}}/N_{\mathrm{site}}$. The correction depends on the energies alone, not on $\mathsf T_{\mathbf k}$, and its trace subtraction is the exact normalization shown in Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*.
 
 ## Equal-Time Correlation Matrix
 

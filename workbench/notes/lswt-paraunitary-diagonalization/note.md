@@ -45,15 +45,15 @@ In blocks, the first form contains the four conditions $\mathsf P_{\mathbf k}\ma
 
 ## Diagonal Form and the Particle–Hole Structure of the Spectrum
 
-We seek a paraunitary $\mathsf T_{\mathbf k}$ for which $\mathsf D_{\mathbf k}=\mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}$ is diagonal. With the inverse above, this condition is equivalent to an eigenvalue problem:
+We seek a paraunitary $\mathsf T_{\mathbf k}$ for which $\mathsf E_{\mathbf k}=\mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}$ is diagonal. With the inverse above, this condition is equivalent to an eigenvalue problem:
 
 $$
 \mathsf T_{\mathbf k}^{-1}\,\Sigma_3\mathsf H_{\mathbf k}\,\mathsf T_{\mathbf k}
 =\Sigma_3\mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}
-=\Sigma_3\mathsf D_{\mathbf k}.
+=\Sigma_3\mathsf E_{\mathbf k}.
 $$
 
-The columns of $\mathsf T_{\mathbf k}$ are therefore eigenvectors of the non-Hermitian matrix $\Sigma_3\mathsf H_{\mathbf k}$, and the signed diagonal entries $\lambda_{p\mathbf k}=(\Sigma_3)_{pp}(\mathsf D_{\mathbf k})_{pp}$ are its eigenvalues.
+The columns of $\mathsf T_{\mathbf k}$ are therefore eigenvectors of the non-Hermitian matrix $\Sigma_3\mathsf H_{\mathbf k}$, and the signed diagonal entries $\lambda_{p\mathbf k}=(\Sigma_3)_{pp}(\mathsf E_{\mathbf k})_{pp}$ are its eigenvalues.
 
 The BdG matrix relates $\mathbf k$ and $-\mathbf k$. With $\Sigma_1=\sigma_1\otimes\mathsf I_{N_{\mathrm{sub}}}$, which exchanges the particle and hole blocks, the block relations $\mathsf A_{\mathbf k}^\dagger=\mathsf A_{\mathbf k}$ and $\mathsf B_{-\mathbf k}=\mathsf B_{\mathbf k}^{\mathsf T}$ give
 
@@ -115,7 +115,7 @@ The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon v
 
 ## Colpa’s Construction for a Positive-Definite BdG Matrix
 
-A paraunitary $\mathsf T_{\mathbf k}$ that brings $\mathsf H_{\mathbf k}$ to a diagonal form with positive entries exists if and only if $\mathsf H_{\mathbf k}$ is positive definite. If such a $\mathsf T_{\mathbf k}$ exists, $\mathsf H_{\mathbf k}=(\mathsf T_{\mathbf k}^{-1})^\dagger\mathsf D_{\mathbf k}\mathsf T_{\mathbf k}^{-1}$ is congruent to a positive diagonal matrix and is therefore positive definite. Conversely, Colpa’s construction produces $\mathsf T_{\mathbf k}$ from a positive-definite $\mathsf H_{\mathbf k}$. We suppress the momentum index in the rest of this section.
+A paraunitary $\mathsf T_{\mathbf k}$ that brings $\mathsf H_{\mathbf k}$ to a diagonal form with positive entries exists if and only if $\mathsf H_{\mathbf k}$ is positive definite. If such a $\mathsf T_{\mathbf k}$ exists, $\mathsf H_{\mathbf k}=(\mathsf T_{\mathbf k}^{-1})^\dagger\mathsf E_{\mathbf k}\mathsf T_{\mathbf k}^{-1}$ is congruent to a positive diagonal matrix and is therefore positive definite. Conversely, Colpa’s construction produces $\mathsf T_{\mathbf k}$ from a positive-definite $\mathsf H_{\mathbf k}$. We suppress the momentum index in the rest of this section.
 
 A positive-definite $\mathsf H$ has a Cholesky factorization $\mathsf H=\mathsf K\mathsf K^\dagger$ with an invertible lower-triangular $\mathsf K$. The Hermitian matrix $\mathsf K^\dagger\Sigma_3\mathsf K$ is congruent to $\Sigma_3$, so by Sylvester’s law of inertia it has $N_{\mathrm{sub}}$ positive and $N_{\mathrm{sub}}$ negative eigenvalues. We diagonalize it with a unitary matrix $\mathsf V$,
 
@@ -149,7 +149,7 @@ $$
 
 The eigenvalues $\lambda_p$ are those of $\Sigma_3\mathsf H$, because $\Sigma_3\mathsf H=\Sigma_3\mathsf K\mathsf K^\dagger$ is similar to $\mathsf K^\dagger\Sigma_3\mathsf K$ through $\mathsf K^\dagger$. They are the signed energies of the previous section, $\varepsilon_{n\mathbf k}$ on the particle columns and $-\varepsilon_{n,-\mathbf k}$ on the hole columns, and $\Lambda\Sigma_3$ is the diagonal matrix of (4). This also shows that the eigenvalues of $\Sigma_3\mathsf H_{\mathbf k}$ are real when $\mathsf H_{\mathbf k}$ is positive definite.
 
-The construction fixes $\mathsf T_{\mathbf k}$ only up to $\mathsf T_{\mathbf k}\to\mathsf T_{\mathbf k}\mathsf U$, where $\mathsf U$ is paraunitary and commutes with $\Sigma_3\mathsf D_{\mathbf k}$. Such a $\mathsf U$ is block diagonal in the eigenspaces of the signed energies, which do not mix particle and hole columns when all energies are positive, and is unitary within each block. It therefore multiplies each column by a phase and mixes columns only within degenerate bands. The energies and $\Delta E_{\mathrm{zp}}$ do not depend on this freedom; the Berry connection of Topological Magnon Quantities in research note *LSWT magnon topology* does. Hole columns obtained independently at $\mathbf k$ agree with the particle–hole partners of the particle columns at $-\mathbf k$ up to the same freedom.
+The construction fixes $\mathsf T_{\mathbf k}$ only up to $\mathsf T_{\mathbf k}\to\mathsf T_{\mathbf k}\mathsf U$, where $\mathsf U$ is paraunitary and commutes with $\Sigma_3\mathsf E_{\mathbf k}$. Such a $\mathsf U$ is block diagonal in the eigenspaces of the signed energies, which do not mix particle and hole columns when all energies are positive, and is unitary within each block. It therefore multiplies each column by a phase and mixes columns only within degenerate bands. The energies and $\Delta E_{\mathrm{zp}}$ do not depend on this freedom; the Berry connection of Topological Magnon Quantities in research note *LSWT magnon topology* does. Hole columns obtained independently at $\mathbf k$ agree with the particle–hole partners of the particle columns at $-\mathbf k$ up to the same freedom.
 
 ## Positive-Semidefinite and Indefinite BdG Matrices
 
@@ -169,7 +169,7 @@ Adding a small positive shift $\delta\,\mathsf I_{2N_{\mathrm{sub}}}$ makes $\ma
 
 - Notation and Conventions in research note *LSWT spin Hamiltonian*: defines the Nambu spinors $\hat\Psi_{\mathbf k}$ and $\hat\Phi_{\mathbf k}$, the metric $\Sigma_3$, the paraunitary matrix $\mathsf T_{\mathbf k}$, and the energy symbols $\varepsilon_{n\mathbf k}$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, and $E_{\mathrm{GS}}$.
 
-- Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: supplies $\hat H_2$, the BdG blocks $\mathsf A_{\mathbf k}$ and $\mathsf B_{\mathbf k}$, their block relations, and the provisional trace subtraction.
+- Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: supplies $\hat H_2$, the BdG blocks $\mathsf A_{\mathbf k}$ and $\mathsf B_{\mathbf k}$, their block relations, and the trace subtraction, which it shows to be exact.
 
 - Classical Order and Local Frame in research note *LSWT classical order*: defines the classical reference configuration about which $\mathsf H_{\mathbf k}$ is expanded.
 
@@ -447,9 +447,9 @@ A Hermitian matrix is diagonalizable with real eigenvalues, so $\Sigma_3\mathsf 
 
 ## Existence of the Paraunitary Transformation
 
-The three properties construct $\mathsf T$ directly from eigenvectors. Within an eigenspace of $\Sigma_3\mathsf H$ with eigenvalue $\lambda$, the form $\mathbf w^\dagger\Sigma_3\mathbf v$ is definite with the sign of $\lambda$, because (14) holds for every vector of the eigenspace. Gram–Schmidt orthogonalization with respect to this definite form gives a basis with $\mathbf v^\dagger\Sigma_3\mathbf v=\operatorname{sign}\lambda$. Eigenvectors of different eigenvalues are already $\Sigma_3$-orthogonal by (13), since all eigenvalues are real. Collecting the $N_{\mathrm{sub}}$ vectors of positive eigenvalues first and the $N_{\mathrm{sub}}$ vectors of negative eigenvalues second gives a matrix $\mathsf T$ with $\mathsf T^\dagger\Sigma_3\mathsf T=\Sigma_3$. The eigenvalue equation $\Sigma_3\mathsf H\mathsf T=\mathsf T\,\Sigma_3\mathsf D$, with $\mathsf D$ the diagonal matrix of the absolute values of the eigenvalues, then gives $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T^\dagger\Sigma_3\mathsf T\,\Sigma_3\mathsf D=\mathsf D$, a diagonal matrix with positive entries.
+The three properties construct $\mathsf T$ directly from eigenvectors. Within an eigenspace of $\Sigma_3\mathsf H$ with eigenvalue $\lambda$, the form $\mathbf w^\dagger\Sigma_3\mathbf v$ is definite with the sign of $\lambda$, because (14) holds for every vector of the eigenspace. Gram–Schmidt orthogonalization with respect to this definite form gives a basis with $\mathbf v^\dagger\Sigma_3\mathbf v=\operatorname{sign}\lambda$. Eigenvectors of different eigenvalues are already $\Sigma_3$-orthogonal by (13), since all eigenvalues are real. Collecting the $N_{\mathrm{sub}}$ vectors of positive eigenvalues first and the $N_{\mathrm{sub}}$ vectors of negative eigenvalues second gives a matrix $\mathsf T$ with $\mathsf T^\dagger\Sigma_3\mathsf T=\Sigma_3$. The eigenvalue equation $\Sigma_3\mathsf H\mathsf T=\mathsf T\,\Sigma_3\mathsf E$, with $\mathsf E$ the diagonal matrix of the absolute values of the eigenvalues, then gives $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T^\dagger\Sigma_3\mathsf T\,\Sigma_3\mathsf E=\mathsf E$, a diagonal matrix with positive entries.
 
-Conversely, if a paraunitary $\mathsf T$ with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf D$ positive and diagonal exists, then $\mathsf H=(\mathsf T^{-1})^\dagger\mathsf D\,\mathsf T^{-1}$ is congruent to a positive diagonal matrix and is positive definite. A paraunitary transformation to a diagonal form with positive entries therefore exists if and only if $\mathsf H$ is positive definite.
+Conversely, if a paraunitary $\mathsf T$ with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf E$ positive and diagonal exists, then $\mathsf H=(\mathsf T^{-1})^\dagger\mathsf E\,\mathsf T^{-1}$ is congruent to a positive diagonal matrix and is positive definite. A paraunitary transformation to a diagonal form with positive entries therefore exists if and only if $\mathsf H$ is positive definite.
 
 ## Colpa’s Transformation Satisfies Both Conditions
 
@@ -466,13 +466,13 @@ where the last step uses that the diagonal matrices commute and $\Lambda\Sigma_3
 
 ## Freedom in the Transformation
 
-Let $\mathsf T$ and $\mathsf T'$ both be paraunitary with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T'^\dagger\mathsf H\mathsf T'=\mathsf D$, with the same ordering of the diagonal entries. The matrix $\mathsf U=\mathsf T^{-1}\mathsf T'$ is paraunitary by the group property. From $\Sigma_3\mathsf H\mathsf T=\mathsf T\Sigma_3\mathsf D$ and the same relation for $\mathsf T'$,
+Let $\mathsf T$ and $\mathsf T'$ both be paraunitary with $\mathsf T^\dagger\mathsf H\mathsf T=\mathsf T'^\dagger\mathsf H\mathsf T'=\mathsf E$, with the same ordering of the diagonal entries. The matrix $\mathsf U=\mathsf T^{-1}\mathsf T'$ is paraunitary by the group property. From $\Sigma_3\mathsf H\mathsf T=\mathsf T\Sigma_3\mathsf E$ and the same relation for $\mathsf T'$,
 
 $$
-\mathsf U\,\Sigma_3\mathsf D=\mathsf T^{-1}\Sigma_3\mathsf H\mathsf T'=\Sigma_3\mathsf D\,\mathsf U,
+\mathsf U\,\Sigma_3\mathsf E=\mathsf T^{-1}\Sigma_3\mathsf H\mathsf T'=\Sigma_3\mathsf E\,\mathsf U,
 $$
 
-so $\mathsf U$ commutes with the diagonal matrix $\Sigma_3\mathsf D$ of signed energies and is block diagonal in its eigenspaces. When $\mathsf H$ is positive definite, each eigenspace contains only particle columns or only hole columns, because their signed energies have opposite signs. On such a block $\Sigma_3$ is $+\mathsf I$ or $-\mathsf I$, and the paraunitary condition restricted to the block is unitarity. The transformation is therefore unique up to a phase for each nondegenerate column and a unitary mixing within each degenerate set of columns.
+so $\mathsf U$ commutes with the diagonal matrix $\Sigma_3\mathsf E$ of signed energies and is block diagonal in its eigenspaces. When $\mathsf H$ is positive definite, each eigenspace contains only particle columns or only hole columns, because their signed energies have opposite signs. On such a block $\Sigma_3$ is $+\mathsf I$ or $-\mathsf I$, and the paraunitary condition restricted to the block is unitarity. The transformation is therefore unique up to a phase for each nondegenerate column and a unitary mixing within each degenerate set of columns.
 
 ## Particle–Hole Structure of the Transformation
 

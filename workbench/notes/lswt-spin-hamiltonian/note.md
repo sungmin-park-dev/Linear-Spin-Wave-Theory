@@ -318,6 +318,10 @@ Here, $\hat{\mathbf a}_{\mathbf k}$ is a column vector in sublattice order, and 
 | $\mathsf A_{\mathbf k}$, $\mathsf B_{\mathbf k}$ | Normal and anomalous BdG blocks |
 | $\mathsf T_{\mathbf k}$ | Paraunitary Bogoliubov transformation matrix |
 | $\Sigma_3$ | Nambu particle–hole signature metric |
+| $\mathsf E_{\mathbf k}$ | Diagonal Nambu energy matrix $\mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}$, of dimension $2N_{\mathrm{sub}}$ |
+| $\lambda_{p\mathbf k}$ | Signed eigenvalue of $\Sigma_3\mathsf H_{\mathbf k}$, $p=1,\ldots,2N_{\mathrm{sub}}$ |
+| $\Lambda_{\mathbf G}$ | Sublattice phase matrix relating Nambu quantities at $\mathbf k$ and $\mathbf k+\mathbf G$ |
+| $\mathsf V^\alpha$ | Spin vertex: row vector with $2N_{\mathrm{sub}}$ entries, independent of momentum |
 
 For the particle-then-hole ordering above, the Nambu metric is
 
@@ -340,6 +344,17 @@ $$
 \qquad
 \Sigma_3^2=\mathsf I_{2N_{\mathrm{sub}}}.
 $$
+
+The diagonal energy matrix contains the positive magnon energies in both blocks,
+
+$$
+\mathsf E_{\mathbf k}
+=\operatorname{diag}\left(\varepsilon_{1\mathbf k},\ldots,\varepsilon_{N_{\mathrm{sub}}\mathbf k},\varepsilon_{1,-\mathbf k},\ldots,\varepsilon_{N_{\mathrm{sub}},-\mathbf k}\right),
+\qquad
+\lambda_{p\mathbf k}=(\Sigma_3\mathsf E_{\mathbf k})_{pp},
+$$
+
+as derived in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. No separate symbol is used for the $N_{\mathrm{sub}}\times N_{\mathrm{sub}}$ matrix of positive energies at one momentum. The spin vertex $\mathsf V^\alpha$ expresses the transverse part of the spin component $\alpha$ as $\hat S^\alpha_{\mathbf q,\perp}=\mathsf V^\alpha\hat\Psi_{\mathbf q}$; its entries are the spin-weighted laboratory components of the circular basis vectors, and it is defined in Spin Correlations in research note *LSWT spin correlations*. All momentum dependence of the transverse spin operator, including sublattice phases, resides in $\hat\Psi_{\mathbf q}$.
 
 A paraunitary transformation preserves this metric:
 
@@ -367,11 +382,40 @@ $$
 
 The symbol $e_X$ is not used for energy density, to avoid confusion with the exponential base. The source symbol $E_0$ may refer either to the total ground-state energy or to the zero-point correction; these meanings are distinguished as $E_{\mathrm{GS}}$ and $\Delta E_{\mathrm{zp}}$.
 
+## Units
+
+Energies share one unit: the exchange and single-ion matrices, the Zeeman-energy vector $\mathbf h_I$, the magnon energies $\varepsilon_{n\mathbf k}$ and the thermal energy $k_{\mathrm B}T$. Spin operators are dimensionless. In time-dependent expressions we set $\hbar=1$, so frequencies are measured in energy units and times in units of $\hbar$ divided by the energy unit. Positions, lattice vectors and bond displacements share one length unit, and momenta are measured in its inverse; the Berry curvature then carries the square of the length unit. The thermal Hall conductivity of a single layer has the unit $k_{\mathrm B}^2T/\hbar$ and contains no length; a three-dimensional conductivity requires an interlayer spacing, as stated in Magnon Thermal Hall Conductivity in research note *LSWT magnon topology*.
+
 ## Momenta and Fields
 
 The momentum $\mathbf k$ labels internal magnon modes associated with the magnetic translation lattice. The momentum $\mathbf q$ denotes an external momentum transfer, as in neutron scattering. The crystallographic and magnetic Brillouin zones are abbreviated CBZ and MBZ, respectively; the ambiguous abbreviation FBZ is not used.
 
 The applied field $\mathbf B_I$ is measured in tesla. The vector $\mathbf h_I$ is the Zeeman-energy coefficient multiplying the spin operator in the Hamiltonian. The $g$-tensor is written as $\mathsf g_I$. Their relation, including the sign convention for the moment with positive scalar $g$, is defined in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
+
+## Brillouin Zones and Momentum Sums
+
+The MBZ is the Brillouin zone of the magnetic Bravais lattice. With periodic boundary conditions on $N_{\mathrm{uc}}$ magnetic unit cells, it contains $N_{\mathrm{uc}}$ allowed momenta, and sums written over $\mathbf k\in\mathrm{MBZ}$ run over these momenta. When the magnetic unit cell contains $M$ crystallographic unit cells, the MBZ has $1/M$ of the area of the CBZ, $A_{\mathrm{MBZ}}=A_{\mathrm{CBZ}}/M$, and a crystallographic momentum $\mathbf q$ corresponds to the MBZ momentum $\mathbf k=\mathbf q-\mathbf G$ for a magnetic reciprocal-lattice vector $\mathbf G$. In the full-position Fourier convention, Nambu quantities at $\mathbf q$ and at its folded partner $\mathbf k$ are related by the sublattice phase matrix $\Lambda_{\mathbf G}$ of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*, while magnon energies are equal. Observables at an external momentum $\mathbf q$ outside the MBZ are therefore evaluated at the unfolded momentum, without folding, as in Spin Correlations in research note *LSWT spin correlations*.
+
+Extensive quantities are sums over the $N_{\mathrm{uc}}$ momenta and the $N_{\mathrm{sub}}$ bands. Values per magnetic site divide by $N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}$, and in the thermodynamic limit
+
+$$
+\frac{1}{N_{\mathrm{uc}}}\sum_{\mathbf k\in\mathrm{MBZ}}f(\mathbf k)
+\;\longrightarrow\;
+\frac{1}{A_{\mathrm{MBZ}}}\int_{\mathrm{MBZ}}d^2\mathbf k\,f(\mathbf k)
+=\frac{A_{\mathrm{uc}}}{(2\pi)^2}\int_{\mathrm{MBZ}}d^2\mathbf k\,f(\mathbf k),
+$$
+
+where $A_{\mathrm{uc}}=(2\pi)^2/A_{\mathrm{MBZ}}$ is the area of the magnetic unit cell. A finite mesh of $N_k$ momenta approximates the integral; the mesh need not coincide with the $N_{\mathrm{uc}}$ momenta of a particular finite system.
+
+## Magnon Band Labels
+
+At each momentum, the band index orders the positive magnon energies,
+
+$$
+\varepsilon_{1\mathbf k}\le\varepsilon_{2\mathbf k}\le\cdots\le\varepsilon_{N_{\mathrm{sub}}\mathbf k}.
+$$
+
+This label is defined at every momentum, but it does not follow a band through a crossing: at a degeneracy, two labels exchange the branches they follow. A band identity across degeneracies is therefore not defined by the label. Sums over all bands at fixed momentum, such as the zero-point energy and the thermodynamic quantities, do not depend on it. Quantities attached to one band, such as its Berry curvature and Chern number, are defined only for a band separated from the others by a gap on the whole MBZ, or for a group of bands separated from the rest, as in Topological Magnon Quantities in research note *LSWT magnon topology*. The hole entries of $\mathsf E_{\mathbf k}$ follow the labels at $-\mathbf k$.
 
 ## Legacy Source Mapping
 
@@ -388,28 +432,18 @@ This table translates source notation into the notation used above. The source s
 | Real-space $a$, momentum-space $b$, diagonal $\beta$ | Real- and momentum-space $a$, diagonal $b$ | Preserves the operator name under Fourier transformation |
 | $\mathsf J$ for the Nambu metric | $\Sigma_3$ | Distinguishes the metric from exchange matrices |
 | $\mathbf h_j$ called an external magnetic field | Applied field $\mathbf B_I$ and Zeeman-energy vector $\mathbf h_I$ | Separates field and energy units |
-| $R_{\mathbf k}^\alpha$ for a spin-response matrix | Spin vertex $\mathsf V_{\mathbf k}^\alpha$ | Distinguishes the vertex from rotations; its precise definition and dagger convention remain unspecified |
+| $R_{\mathbf k}^\alpha$ for a spin-response matrix | Spin vertex $\mathsf V^\alpha$ | Distinguishes the vertex from rotations; in the full-position convention it does not depend on the momentum |
 | $E_{\mathbf k,\mu}$, $\varepsilon_{n,\mathbf k}$ | $\varepsilon_{n\mathbf k}$ | Distinguishes band and sublattice indices |
 | $E_0$ | $E_{\mathrm{GS}}$ or $\Delta E_{\mathrm{zp}}$ | Separates the two source meanings |
 | $L$, $N$, $m_s$ | $N_{\mathrm{uc}}$, $N_{\mathrm{site}}$, $N_{\mathrm{sub}}$ | Fixes the meaning of each system size |
 
 ## Conventions Not Yet Fixed
 
-The following quantities or conventions are not fully specified. Reserving a symbol does not establish the associated physical definition.
+The following convention is used throughout but awaits acceptance. Reserving a symbol does not establish the associated physical definition.
 
 - Acceptance of the full-position Fourier convention with the phase $\exp(\mathrm i\mathbf k\cdot\mathbf r_{i\mu})$, which Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* adopts and the spin-correlation and topology notes use. The cell convention is not developed; its relation to the full-position convention is stated in Topological Magnon Quantities in research note *LSWT magnon topology*.
 
-- Folding and normalization between the CBZ and MBZ.
-
-- Momentum-dependent magnon-band ordering and band identity.
-
-- Symbols and dimensions for the positive-band energy matrix and the full Nambu diagonal matrix.
-
-- Exact definitions and dagger conventions for the spin-response matrices $\mathsf V_{\mathbf k}^\alpha$, $\mathsf U^\alpha$, and $\mathsf S_{\mathbf k}$.
-
-- Conventions for local circular components in the spin-response formulas; the circular components of the exchange and single-ion matrices are defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*.
-
-- Units for length, real time, and thermal Hall conductivity.
+The other items formerly listed here are fixed in the sections above: the circular components of exchange matrices (Links and Bond Orientation, with the definition in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*), the Brillouin-zone folding and momentum-sum normalization, the band labels, the diagonal energy matrix and the spin vertex, and the units. The normalization of the trace subtraction is fixed in Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*.
 
 ## References
 
