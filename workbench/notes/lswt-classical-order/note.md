@@ -58,7 +58,7 @@ $$
 \mathbf e_I^0=\mathsf R_I\mathbf e_z=\mathbf n_I.
 $$
 
-The superscript $0$ identifies the longitudinal direction, and $\pm$ label the transverse circular vectors. These are classical basis vectors, so they carry no operator hats. The phase convention is explicit in their definitions; contractions used to turn exchange matrices into circular components require a separate component convention.
+The superscript $0$ identifies the longitudinal direction, and $\pm$ label the transverse circular vectors. These are classical basis vectors, so they carry no operator hats. The phase convention is explicit in their definitions. Exchange matrices are contracted with these vectors bilinearly, without complex conjugation, as defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*.
 
 ## References
 

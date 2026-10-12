@@ -235,7 +235,7 @@ $$
 J_{JI}^{\beta\alpha}=J_{IJ}^{\alpha\beta}.
 $$
 
-This relation uses the real Cartesian exchange matrices of the bilinear model. Its expression in a complex circular basis depends on the component convention, which is not fixed here. The relation between the link sum and an ordered-pair sum, together with the separate treatment of on-site interactions, is given in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
+This relation uses the real Cartesian exchange matrices of the bilinear model. In the local circular basis it becomes $\widetilde J_{\bar\ell}^{qp}=\widetilde J_\ell^{pq}$, with the components defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*. The relation between the link sum and an ordered-pair sum, together with the separate treatment of on-site interactions, is given in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
 
 ## Spins and Local Frames
 
@@ -407,9 +407,7 @@ The following quantities or conventions are not fully specified. Reserving a sym
 
 - Exact definitions and dagger conventions for the spin-response matrices $\mathsf V_{\mathbf k}^\alpha$, $\mathsf U^\alpha$, and $\mathsf S_{\mathbf k}$.
 
-- Phase and contraction conventions for local circular components and their response formulas.
-
-- Normalization of zero-point momentum sums and normal-ordering constants.
+- Conventions for local circular components in the spin-response formulas; the circular components of the exchange and single-ion matrices are defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*.
 
 - Units for length, real time, and thermal Hall conductivity.
 

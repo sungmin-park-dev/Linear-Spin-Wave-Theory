@@ -111,7 +111,7 @@ E_{\mathrm{GS}}=E_{\mathrm{cl}}+\Delta E_{\mathrm{zp}},
 N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}. \tag{6}
 $$
 
-The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon vacuum relative to the classical energy $E_{\mathrm{cl}}$; it combines the zero-point energies $\frac12\varepsilon_{n\mathbf k}$ of the oscillators with the trace subtraction in $\hat H_2$. The trace subtraction removes the constant $\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{-\mathbf k}$ that appears when the normal-ordered quadratic Hamiltonian is rewritten in the symmetric Nambu form, which commutes the hole components $\hat a_{-\mathbf k}\hat a_{-\mathbf k}^\dagger$; replacing $\mathsf A_{-\mathbf k}$ by $\mathsf A_{\mathbf k}$ in this constant uses the same inversion closure as above. The normalization of the subtraction relative to the real-space construction, including any constant from Holstein–Primakoff terms that are not normal ordered, is still provisional in Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*; $\Delta E_{\mathrm{zp}}$ inherits that condition. Because $\operatorname{Tr}\mathsf A_{\mathbf k}$ is real and the momentum set is closed under inversion, $\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{\mathbf k}=\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$, so the correction can equally be written as $\frac12\sum_{\mathbf k}\sum_n\varepsilon_{n\mathbf k}-\frac14\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$. The two forms agree after the momentum sum; their summands need not agree at a single momentum.
+The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon vacuum relative to the classical energy $E_{\mathrm{cl}}$; it combines the zero-point energies $\frac12\varepsilon_{n\mathbf k}$ of the oscillators with the trace subtraction in $\hat H_2$. The trace subtraction removes the constant $\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{-\mathbf k}$ that appears when the normal-ordered quadratic Hamiltonian is rewritten in the symmetric Nambu form, which commutes the hole components $\hat a_{-\mathbf k}\hat a_{-\mathbf k}^\dagger$; replacing $\mathsf A_{-\mathbf k}$ by $\mathsf A_{\mathbf k}$ in this constant uses the same inversion closure as above. The real-space quadratic Hamiltonian is normal ordered and has no constant of its own, so this subtraction is exact; Trace Subtraction in Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* shows this, and $E_{\mathrm{cl}}$ there includes the coherent-state single-ion energy. Because $\operatorname{Tr}\mathsf A_{\mathbf k}$ is real and the momentum set is closed under inversion, $\sum_{\mathbf k}\operatorname{Tr}\mathsf A_{\mathbf k}=\frac12\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$, so the correction can equally be written as $\frac12\sum_{\mathbf k}\sum_n\varepsilon_{n\mathbf k}-\frac14\sum_{\mathbf k}\operatorname{Tr}\mathsf H_{\mathbf k}$. The two forms agree after the momentum sum; their summands need not agree at a single momentum.
 
 ## Colpa’s Construction for a Positive-Definite BdG Matrix
 
@@ -136,6 +136,7 @@ $$
 Both requirements follow from the definitions of $\mathsf K$ and $\mathsf V$, using that the diagonal matrices $\Lambda$, $\Sigma_3$, and $(\Lambda\Sigma_3)^{1/2}$ commute and that $(\Lambda\Sigma_3)^{1/2}$ is real:
 
 $$
+\begin{aligned}
 \mathsf T\Sigma_3\mathsf T^\dagger
 &=(\mathsf K^\dagger)^{-1}\mathsf V(\Lambda\Sigma_3)^{1/2}\Sigma_3(\Lambda\Sigma_3)^{1/2}\mathsf V^\dagger\mathsf K^{-1}
 =(\mathsf K^\dagger)^{-1}\mathsf V\Lambda\mathsf V^\dagger\mathsf K^{-1}
@@ -143,6 +144,7 @@ $$
 \mathsf T^\dagger\mathsf H\mathsf T
 &=(\Lambda\Sigma_3)^{1/2}\mathsf V^\dagger\mathsf K^{-1}\,\mathsf K\mathsf K^\dagger\,(\mathsf K^\dagger)^{-1}\mathsf V(\Lambda\Sigma_3)^{1/2}
 =\Lambda\Sigma_3.
+\end{aligned}
 $$
 
 The eigenvalues $\lambda_p$ are those of $\Sigma_3\mathsf H$, because $\Sigma_3\mathsf H=\Sigma_3\mathsf K\mathsf K^\dagger$ is similar to $\mathsf K^\dagger\Sigma_3\mathsf K$ through $\mathsf K^\dagger$. They are the signed energies of the previous section, $\varepsilon_{n\mathbf k}$ on the particle columns and $-\varepsilon_{n,-\mathbf k}$ on the hole columns, and $\Lambda\Sigma_3$ is the diagonal matrix of (4). This also shows that the eigenvalues of $\Sigma_3\mathsf H_{\mathbf k}$ are real when $\mathsf H_{\mathbf k}$ is positive definite.

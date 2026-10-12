@@ -411,10 +411,12 @@ $$
 With $x=\beta\varepsilon\to0^+$, the summands of the thermodynamic quantities have the expansions
 
 $$
+\begin{aligned}
 \varepsilon\,n_{\mathrm B}(\varepsilon)&=k_{\mathrm B}T\left(1-\frac x2+\frac{x^2}{12}+O(x^4)\right),\\
 k_{\mathrm B}T\ln\big(1-\exp(-x)\big)&=k_{\mathrm B}T\left(\ln x-\frac x2+\frac{x^2}{24}+O(x^4)\right),\\
 k_{\mathrm B}\Big[x\,n_{\mathrm B}-\ln\big(1-\exp(-x)\big)\Big]&=k_{\mathrm B}\left(1-\ln x+\frac{x^2}{24}+O(x^4)\right),\\
 k_{\mathrm B}\frac{x^2}{4\sinh^2(x/2)}&=k_{\mathrm B}\left(1-\frac{x^2}{12}+O(x^4)\right).
+\end{aligned}
 $$
 
 They follow from $x/(\exp(x)-1)=1-x/2+x^2/12+O(x^4)$ and $\ln(1-\exp(-x))=\ln x-x/2+x^2/24+O(x^4)$. The energy and heat-capacity summands stay finite, while the free-energy and entropy summands diverge as $\ln x=\ln(\varepsilon/k_{\mathrm B}T)$. Near an isolated zero $\varepsilon_{n\mathbf k}\propto|\mathbf k-\mathbf k_0|^a$ with $a>0$, the divergent part of each summand is proportional to $a\ln|\mathbf k-\mathbf k_0|$, and in two dimensions $\int_{|\mathbf q|<q_0}d^2\mathbf q\,\ln|\mathbf q|=\pi q_0^2(\ln q_0-\frac12)$ is finite. The momentum integrals of $F$ and $\mathcal S$ therefore remain finite in the thermodynamic limit, as stated in Thermodynamics (Section *Thermodynamics*). Finiteness of these integrals does not imply that the magnon-gas description is controlled; that condition involves the boson number, treated below.
