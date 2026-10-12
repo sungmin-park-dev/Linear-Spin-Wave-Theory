@@ -52,15 +52,15 @@ The existence of a spin-coherent reference configuration permits a Holstein–Pr
 
 - **A posteriori self-consistency:** after diagonalization, the local spin reduction $\delta S_I=\langle\hat a_I^\dagger\hat a_I\rangle$ should satisfy $\delta S_I/S_I\ll1$ wherever the harmonic approximation is used.
 
-Failure of a prerequisite invalidates Holstein–Primakoff LSWT about the selected reference, whereas a large spin reduction signals that neglected interaction terms may be important. Neither conclusion rules out every possible spin-wave description. The momentum-space derivation developed here also assumes a commensurate reference configuration with a finite magnetic unit cell; this is a restriction of that derivation rather than a general limitation of SWT.
+Failure of a prerequisite invalidates Holstein–Primakoff LSWT about the selected reference, whereas a large spin reduction signals that neglected interaction terms may be important; their leading effects are treated in research note *LSWT nonlinear spin waves*. Neither conclusion rules out every possible spin-wave description. The momentum-space derivation developed here also assumes a commensurate reference configuration with a finite magnetic unit cell; this is a restriction of that derivation rather than a general limitation of SWT.
 
-In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a symmetry-breaking field, anisotropy that removes the relevant continuous spin-rotation symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff.
+In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature [@merminAbsence1966]. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a symmetry-breaking field, anisotropy that removes the relevant continuous spin-rotation symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff.
 
 ## Reference States Beyond Local Magnetic Order
 
-States without a local magnetic direction require a different reference state. Spin-nematic states with quadrupolar order but no magnetic dipole moment provide a representative example. Flavor-wave theory enlarges the local state space and can describe quadrupolar or higher multipolar order. Bond-operator and cluster-wave theories instead expand about singlet dimers or larger local units. These approaches may retain a harmonic bosonic structure, but their fluctuation variables are not Holstein–Primakoff bosons about local spin directions. Multipolar moments can also coexist with magnetic dipole order, so the absence of a local spin direction is not a defining property of all multipolar phases.
+States without a local magnetic direction require a different reference state. Spin-nematic states with quadrupolar order but no magnetic dipole moment provide a representative example. Flavor-wave theory enlarges the local state space and can describe quadrupolar or higher multipolar order [@munizGeneralized2014]. Bond-operator and cluster-wave theories instead expand about singlet dimers or larger local units [@sachdevBondoperator1990]. These approaches may retain a harmonic bosonic structure, but their fluctuation variables are not Holstein–Primakoff bosons about local spin directions. Multipolar moments can also coexist with magnetic dipole order, so the absence of a local spin direction is not a defining property of all multipolar phases.
 
-A quantum spin liquid has no suitable semiclassical product reference for a local spin-wave expansion. Its low-energy description may instead involve fractionalized spinons and emergent gauge fields. The use of bosonic variables alone therefore does not determine whether a formulation is a spin-wave theory; the reference state and fluctuation expansion must also be specified.
+A quantum spin liquid has no suitable semiclassical product reference for a local spin-wave expansion. Its low-energy description may instead involve fractionalized spinons and emergent gauge fields [@balentsSpin2010]. The use of bosonic variables alone therefore does not determine whether a formulation is a spin-wave theory; the reference state and fluctuation expansion must also be specified.
 
 ## Bilinear Spin Hamiltonians
 
@@ -91,7 +91,7 @@ $$
 
 The inter-site matrix $\mathsf J_\ell$ includes isotropic Heisenberg exchange, antisymmetric Dzyaloshinskii–Moriya interaction, and symmetric anisotropic exchange, including bond-dependent Kitaev-type couplings. The on-site matrix $\mathsf D_I$ represents single-ion anisotropy, and $\mathbf h_I$ is the Zeeman-energy coefficient determined by the applied field and the material-dependent $g$-tensor. Link orientation, counting conventions, and the relation between $\mathbf h_I$, the applied field, and the $g$-tensor are defined in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
 
-Genuine higher-order interactions, such as inter-site biquadratic coupling and four-spin ring exchange, lie outside this bilinear Hamiltonian class. Spin-wave expansions can be constructed for such models, but the resulting harmonic coefficients must be derived from those interactions rather than inferred from the bilinear formulas above.
+Genuine higher-order interactions, such as inter-site biquadratic coupling and four-spin ring exchange, lie outside this bilinear Hamiltonian class. Spin-wave expansions can be constructed for such models [@majumdarEffects2012], but the resulting harmonic coefficients must be derived from those interactions rather than inferred from the bilinear formulas above.
 
 ## References
 
@@ -113,19 +113,19 @@ Genuine higher-order interactions, such as inter-site biquadratic coupling and f
 
 ### External Sources
 
-- T. Holstein and H. Primakoff, [*Field Dependence of the Intrinsic Domain Magnetization of a Ferromagnet*](https://doi.org/10.1103/PhysRev.58.1098), *Physical Review* **58**, 1098–1113 (1940), DOI: `10.1103/PhysRev.58.1098`: introduces the Holstein–Primakoff boson representation.
+- [@holsteinField1940]: introduces the Holstein–Primakoff boson representation.
 
-- S. Toth and B. Lake, [*Linear spin wave theory for single-$Q$ incommensurate magnetic structures*](https://doi.org/10.1088/0953-8984/27/16/166002), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), DOI: `10.1088/0953-8984/27/16/166002`: formulates LSWT using local spin frames and discusses its small-fluctuation regime.
+- [@tothLinear2015]: formulates LSWT using local spin frames and discusses its small-fluctuation regime.
 
-- R. A. Muniz, Y. Kato, and C. D. Batista, [*Generalized spin-wave theory: application to the bilinear-biquadratic model*](https://doi.org/10.1093/ptep/ptu109), *Progress of Theoretical and Experimental Physics* **2014**, 083I01 (2014), DOI: `10.1093/ptep/ptu109`: distinguishes the SU(2) spin-coherent formulation from generalized spin-wave theories for multipolar states.
+- [@munizGeneralized2014]: distinguishes the SU(2) spin-coherent formulation from generalized spin-wave theories for multipolar states.
 
-- L. Balents, [*Spin liquids in frustrated magnets*](https://doi.org/10.1038/nature08917), *Nature* **464**, 199–208 (2010), DOI: `10.1038/nature08917`: reviews quantum spin liquids, fractionalized excitations, and emergent gauge fields.
+- [@balentsSpin2010]: reviews quantum spin liquids, fractionalized excitations, and emergent gauge fields.
 
-- S. Sachdev and R. N. Bhatt, [*Bond-operator representation of quantum spins: Mean-field theory of frustrated quantum Heisenberg antiferromagnets*](https://doi.org/10.1103/PhysRevB.41.9323), *Physical Review B* **41**, 9323–9329 (1990), DOI: `10.1103/PhysRevB.41.9323`: introduces the singlet–triplet bond-operator expansion used for dimerized quantum magnets.
+- [@sachdevBondoperator1990]: introduces the singlet–triplet bond-operator expansion used for dimerized quantum magnets.
 
-- K. Majumdar, D. Furton, and G. S. Uhrig, [*Effects of ring exchange interaction on the Néel phase of two-dimensional, spatially anisotropic, frustrated Heisenberg quantum antiferromagnet*](https://doi.org/10.1103/PhysRevB.85.144420), *Physical Review B* **85**, 144420 (2012), DOI: `10.1103/PhysRevB.85.144420`: provides a spin-wave treatment of a Hamiltonian containing four-spin ring exchange.
+- [@majumdarEffects2012]: provides a spin-wave treatment of a Hamiltonian containing four-spin ring exchange.
 
-- N. D. Mermin and H. Wagner, [*Absence of Ferromagnetism or Antiferromagnetism in One- or Two-Dimensional Isotropic Heisenberg Models*](https://doi.org/10.1103/PhysRevLett.17.1133), *Physical Review Letters* **17**, 1133–1136 (1966), DOI: `10.1103/PhysRevLett.17.1133`: establishes the absence of spontaneous ferro- or antiferromagnetic long-range order at nonzero temperature in the short-range isotropic one- and two-dimensional Heisenberg model.
+- [@merminAbsence1966]: establishes the absence of spontaneous ferro- or antiferromagnetic long-range order at nonzero temperature in the short-range isotropic one- and two-dimensional Heisenberg model.
 
 <!-- Notation and Conventions Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md (status: in-review, source-section: Summary of Notation and Symbols). Review status: in-review; awaiting the user's physics and mathematics review. -->
 
@@ -235,7 +235,7 @@ $$
 J_{JI}^{\beta\alpha}=J_{IJ}^{\alpha\beta}.
 $$
 
-This relation uses the real Cartesian exchange matrices of the bilinear model. Its expression in a complex circular basis depends on the component convention, which is not fixed here. The relation between the link sum and an ordered-pair sum, together with the separate treatment of on-site interactions, is given in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
+This relation uses the real Cartesian exchange matrices of the bilinear model. In the local circular basis it becomes $\widetilde J_{\bar\ell}^{qp}=\widetilde J_\ell^{pq}$, with the components defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*. The relation between the link sum and an ordered-pair sum, together with the separate treatment of on-site interactions, is given in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
 
 ## Spins and Local Frames
 
@@ -318,6 +318,10 @@ Here, $\hat{\mathbf a}_{\mathbf k}$ is a column vector in sublattice order, and 
 | $\mathsf A_{\mathbf k}$, $\mathsf B_{\mathbf k}$ | Normal and anomalous BdG blocks |
 | $\mathsf T_{\mathbf k}$ | Paraunitary Bogoliubov transformation matrix |
 | $\Sigma_3$ | Nambu particle–hole signature metric |
+| $\mathsf E_{\mathbf k}$ | Diagonal Nambu energy matrix $\mathsf T_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\mathsf T_{\mathbf k}$, of dimension $2N_{\mathrm{sub}}$ |
+| $\lambda_{p\mathbf k}$ | Signed eigenvalue of $\Sigma_3\mathsf H_{\mathbf k}$, $p=1,\ldots,2N_{\mathrm{sub}}$ |
+| $\Lambda_{\mathbf G}$ | Sublattice phase matrix relating Nambu quantities at $\mathbf k$ and $\mathbf k+\mathbf G$ |
+| $\mathsf V^\alpha$ | Spin vertex: row vector with $2N_{\mathrm{sub}}$ entries, independent of momentum |
 
 For the particle-then-hole ordering above, the Nambu metric is
 
@@ -340,6 +344,17 @@ $$
 \qquad
 \Sigma_3^2=\mathsf I_{2N_{\mathrm{sub}}}.
 $$
+
+The diagonal energy matrix contains the positive magnon energies in both blocks,
+
+$$
+\mathsf E_{\mathbf k}
+=\operatorname{diag}\left(\varepsilon_{1\mathbf k},\ldots,\varepsilon_{N_{\mathrm{sub}}\mathbf k},\varepsilon_{1,-\mathbf k},\ldots,\varepsilon_{N_{\mathrm{sub}},-\mathbf k}\right),
+\qquad
+\lambda_{p\mathbf k}=(\Sigma_3\mathsf E_{\mathbf k})_{pp},
+$$
+
+as derived in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. No separate symbol is used for the $N_{\mathrm{sub}}\times N_{\mathrm{sub}}$ matrix of positive energies at one momentum. The spin vertex $\mathsf V^\alpha$ expresses the transverse part of the spin component $\alpha$ as $\hat S^\alpha_{\mathbf q,\perp}=\mathsf V^\alpha\hat\Psi_{\mathbf q}$; its entries are the spin-weighted laboratory components of the circular basis vectors, and it is defined in Spin Correlations in research note *LSWT spin correlations*. All momentum dependence of the transverse spin operator, including sublattice phases, resides in $\hat\Psi_{\mathbf q}$.
 
 A paraunitary transformation preserves this metric:
 
@@ -367,11 +382,40 @@ $$
 
 The symbol $e_X$ is not used for energy density, to avoid confusion with the exponential base. The source symbol $E_0$ may refer either to the total ground-state energy or to the zero-point correction; these meanings are distinguished as $E_{\mathrm{GS}}$ and $\Delta E_{\mathrm{zp}}$.
 
+## Units
+
+Energies share one unit: the exchange and single-ion matrices, the Zeeman-energy vector $\mathbf h_I$, the magnon energies $\varepsilon_{n\mathbf k}$ and the thermal energy $k_{\mathrm B}T$. Spin operators are dimensionless. In time-dependent expressions we set $\hbar=1$, so frequencies are measured in energy units and times in units of $\hbar$ divided by the energy unit. Positions, lattice vectors and bond displacements share one length unit, and momenta are measured in its inverse; the Berry curvature then carries the square of the length unit. The thermal Hall conductivity of a single layer has the unit $k_{\mathrm B}^2T/\hbar$ and contains no length; a three-dimensional conductivity requires an interlayer spacing, as stated in Magnon Thermal Hall Conductivity in research note *LSWT magnon topology*.
+
 ## Momenta and Fields
 
 The momentum $\mathbf k$ labels internal magnon modes associated with the magnetic translation lattice. The momentum $\mathbf q$ denotes an external momentum transfer, as in neutron scattering. The crystallographic and magnetic Brillouin zones are abbreviated CBZ and MBZ, respectively; the ambiguous abbreviation FBZ is not used.
 
 The applied field $\mathbf B_I$ is measured in tesla. The vector $\mathbf h_I$ is the Zeeman-energy coefficient multiplying the spin operator in the Hamiltonian. The $g$-tensor is written as $\mathsf g_I$. Their relation, including the sign convention for the moment with positive scalar $g$, is defined in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
+
+## Brillouin Zones and Momentum Sums
+
+The MBZ is the Brillouin zone of the magnetic Bravais lattice. With periodic boundary conditions on $N_{\mathrm{uc}}$ magnetic unit cells, it contains $N_{\mathrm{uc}}$ allowed momenta, and sums written over $\mathbf k\in\mathrm{MBZ}$ run over these momenta. When the magnetic unit cell contains $M$ crystallographic unit cells, the MBZ has $1/M$ of the area of the CBZ, $A_{\mathrm{MBZ}}=A_{\mathrm{CBZ}}/M$, and a crystallographic momentum $\mathbf q$ corresponds to the MBZ momentum $\mathbf k=\mathbf q-\mathbf G$ for a magnetic reciprocal-lattice vector $\mathbf G$. In the full-position Fourier convention, Nambu quantities at $\mathbf q$ and at its folded partner $\mathbf k$ are related by the sublattice phase matrix $\Lambda_{\mathbf G}$ of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*, while magnon energies are equal. Observables at an external momentum $\mathbf q$ outside the MBZ are therefore evaluated at the unfolded momentum, without folding, as in Spin Correlations in research note *LSWT spin correlations*.
+
+Extensive quantities are sums over the $N_{\mathrm{uc}}$ momenta and the $N_{\mathrm{sub}}$ bands. Values per magnetic site divide by $N_{\mathrm{site}}=N_{\mathrm{uc}}N_{\mathrm{sub}}$, and in the thermodynamic limit
+
+$$
+\frac{1}{N_{\mathrm{uc}}}\sum_{\mathbf k\in\mathrm{MBZ}}f(\mathbf k)
+\;\longrightarrow\;
+\frac{1}{A_{\mathrm{MBZ}}}\int_{\mathrm{MBZ}}d^2\mathbf k\,f(\mathbf k)
+=\frac{A_{\mathrm{uc}}}{(2\pi)^2}\int_{\mathrm{MBZ}}d^2\mathbf k\,f(\mathbf k),
+$$
+
+where $A_{\mathrm{uc}}=(2\pi)^2/A_{\mathrm{MBZ}}$ is the area of the magnetic unit cell. A finite mesh of $N_k$ momenta approximates the integral; the mesh need not coincide with the $N_{\mathrm{uc}}$ momenta of a particular finite system.
+
+## Magnon Band Labels
+
+At each momentum, the band index orders the positive magnon energies,
+
+$$
+\varepsilon_{1\mathbf k}\le\varepsilon_{2\mathbf k}\le\cdots\le\varepsilon_{N_{\mathrm{sub}}\mathbf k}.
+$$
+
+This label is defined at every momentum, but it does not follow a band through a crossing: at a degeneracy, two labels exchange the branches they follow. A band identity across degeneracies is therefore not defined by the label. Sums over all bands at fixed momentum, such as the zero-point energy and the thermodynamic quantities, do not depend on it. Quantities attached to one band, such as its Berry curvature and Chern number, are defined only for a band separated from the others by a gap on the whole MBZ, or for a group of bands separated from the rest, as in Topological Magnon Quantities in research note *LSWT magnon topology*. The hole entries of $\mathsf E_{\mathbf k}$ follow the labels at $-\mathbf k$.
 
 ## Legacy Source Mapping
 
@@ -388,30 +432,18 @@ This table translates source notation into the notation used above. The source s
 | Real-space $a$, momentum-space $b$, diagonal $\beta$ | Real- and momentum-space $a$, diagonal $b$ | Preserves the operator name under Fourier transformation |
 | $\mathsf J$ for the Nambu metric | $\Sigma_3$ | Distinguishes the metric from exchange matrices |
 | $\mathbf h_j$ called an external magnetic field | Applied field $\mathbf B_I$ and Zeeman-energy vector $\mathbf h_I$ | Separates field and energy units |
-| $R_{\mathbf k}^\alpha$ for a spin-response matrix | Spin vertex $\mathsf V_{\mathbf k}^\alpha$ | Distinguishes the vertex from rotations; its precise definition and dagger convention remain unspecified |
+| $R_{\mathbf k}^\alpha$ for a spin-response matrix | Spin vertex $\mathsf V^\alpha$ | Distinguishes the vertex from rotations; in the full-position convention it does not depend on the momentum |
 | $E_{\mathbf k,\mu}$, $\varepsilon_{n,\mathbf k}$ | $\varepsilon_{n\mathbf k}$ | Distinguishes band and sublattice indices |
 | $E_0$ | $E_{\mathrm{GS}}$ or $\Delta E_{\mathrm{zp}}$ | Separates the two source meanings |
 | $L$, $N$, $m_s$ | $N_{\mathrm{uc}}$, $N_{\mathrm{site}}$, $N_{\mathrm{sub}}$ | Fixes the meaning of each system size |
 
 ## Conventions Not Yet Fixed
 
-The following quantities or conventions are not fully specified. Reserving a symbol does not establish the associated physical definition.
+The following convention is used throughout but awaits acceptance. Reserving a symbol does not establish the associated physical definition.
 
 - Acceptance of the full-position Fourier convention with the phase $\exp(\mathrm i\mathbf k\cdot\mathbf r_{i\mu})$, which Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* adopts and the spin-correlation and topology notes use. The cell convention is not developed; its relation to the full-position convention is stated in Topological Magnon Quantities in research note *LSWT magnon topology*.
 
-- Folding and normalization between the CBZ and MBZ.
-
-- Momentum-dependent magnon-band ordering and band identity.
-
-- Symbols and dimensions for the positive-band energy matrix and the full Nambu diagonal matrix.
-
-- Exact definitions and dagger conventions for the spin-response matrices $\mathsf V_{\mathbf k}^\alpha$, $\mathsf U^\alpha$, and $\mathsf S_{\mathbf k}$.
-
-- Phase and contraction conventions for local circular components and their response formulas.
-
-- Normalization of zero-point momentum sums and normal-ordering constants.
-
-- Units for length, real time, and thermal Hall conductivity.
+The other items formerly listed here are fixed in the sections above: the circular components of exchange matrices (Links and Bond Orientation, with the definition in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*), the Brillouin-zone folding and momentum-sum normalization, the band labels, the diagonal energy matrix and the spin vertex, and the units. The normalization of the trace subtraction is fixed in Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*.
 
 ## References
 
@@ -578,8 +610,8 @@ Spin–orbit coupling and crystal-field effects can make $\mathsf g_I$ anisotrop
 
 ### External Sources
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its Eq. (1) writes the Zeeman term as $+\mu_B\mathbf H^{\mathsf T}\sum_{mi}\mathsf g_i\mathbf S_{mi}$, which has the physical electron sign and contracts the field with the first index of the $g$-tensor; the Hamiltonian here at field $\mathbf B$ therefore equals Toth–Lake Eq. (1) at field $-\mathbf B$.
+- [@tothLinear2015]: Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its Eq. (1) writes the Zeeman term as $+\mu_B\mathbf H^{\mathsf T}\sum_{mi}\mathsf g_i\mathbf S_{mi}$, which has the physical electron sign and contracts the field with the first index of the $g$-tensor; the Hamiltonian here at field $\mathbf B$ therefore equals Toth–Lake Eq. (1) at field $-\mathbf B$.
 
-- NIST, [Atomic Spectroscopy: Zeeman Effect](https://www.nist.gov/pml/atomic-spectroscopy-compendium-basic-ideas-notation-data-and-formulas/atomic-spectroscopy-zeeman): positive electron spin $g$-factor and the sign of the Zeeman energy shift.
+- [@nistAtomicSpectroscopyZeeman]: positive electron spin $g$-factor and the sign of the Zeeman energy shift.
 
-- NIST, [2022 CODATA recommended values of the fundamental physical constants](https://physics.nist.gov/cuu/Constants/Table/allascii.txt): values of the Bohr magneton and the free-electron $g$ factor.
+- [@nistCODATA2022]: values of the Bohr magneton and the free-electron $g$ factor.

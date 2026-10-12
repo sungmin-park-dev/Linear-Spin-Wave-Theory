@@ -80,7 +80,7 @@ project-root/
 ├── model/                       # 모델별 정의·간단한 계산·원시 및 중간 결과
 │   └── nbcp/                    # NBCP 모형 정의 (패키지 회귀 테스트용 고정본)
 │
-├── examples/                    # quickstart.py, gallery.py, tutorials/(튜토리얼 스크립트), verification/(검증 스크립트)
+├── examples/                    # quickstart.py, gallery.py, tutorials/(튜토리얼 스크립트), worked_examples/(예제 노트의 계산), verification/(검증 스크립트)
 │
 ├── legacy/                      # 원본 legacy 코드와 과거 연구노트 아카이브
 │   ├── modules/
@@ -94,7 +94,7 @@ project-root/
 
 ## 이론 문서와 source authority
 
-LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 연구노트에 정리한다. 2026-10-11부터 이론 연구노트의 본문 형식은 Markdown(`note.md`)이고, 옛 LaTeX 원본은 `docs/archive/2026-10-11-lswt-latex-notes/`에 보존한다([결정](GOVERNMENT/Court-Precedents/2026-10-11-lswt-notes-markdown.md)). 2026-10-09부터 주제별 7개(`lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`)다(처음 3개 `lswt-foundations`·`lswt-derivation`·`lswt-observables`를 나눔). `docs/archive/2026-10-08-lswt-markdown/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/archive/2026-10-08-development-beamer/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
+LSWT 이론 내용은 [2026-10-08 결정](GOVERNMENT/Court-Precedents/2026-10-08-lswt-development-research-notes.md)에 따라 `workbench/notes/`의 영어 연구노트에 정리한다. 2026-10-11부터 이론 연구노트의 본문 형식은 Markdown(`note.md`)이고, 옛 LaTeX 원본은 `docs/archive/2026-10-11-lswt-latex-notes/`에 보존한다([결정](GOVERNMENT/Court-Precedents/2026-10-11-lswt-notes-markdown.md)). 2026-10-09부터 주제별 7개(`lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`)다(처음 3개 `lswt-foundations`·`lswt-derivation`·`lswt-observables`를 나눔). 2026-10-12에 1/S 보정 노트 `lswt-nonlinear-spin-waves`를 더해 8개가 됐고, 같은 날 예제 노트 `lswt-example-*` 4개를 더했다. 예제 노트마다 `examples/worked_examples/`에 계산 스크립트가 있고, `code-space/tests/test_worked_examples.py`가 노트에 적은 숫자를 확인한다. 앱의 주제(`workbench/research.yaml` `topics:`)는 기초 이론 · 관측량 · 선형 너머 · 예제 · 패키지 개발 다섯이다. `docs/archive/2026-10-08-lswt-markdown/` Markdown은 2026-10-08 상태로 보존하고 더 고치지 않는다. 개발 설계와 결정 기록도 같은 결정에 따라 `dev-design`, `dev-verification`, `dev-decisions` 연구노트가 원본이며 `docs/archive/2026-10-08-development-beamer/` Beamer는 보존본이다. 원본의 주장, 수식과 논리 연결을 추적할 수 있도록 보존하면서 문서를 개념별 owner로 나눈다. 재배치와 제외·보류 기록은 lifecycle 절차를 따르며, 물리적 의미나 수학적 타당성이 불명확한 부분을 임의로 고치지 않는다.
 
 단일 정본 원칙은 [2026-08-01 결정](GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md), 현재 작성 경로와 자료 위치는 [2026-09-16 통합 기록](GOVERNMENT/Working-Pad/issue-notes/closed/260916-docs-topic-consolidation.md)을 따랐고, 정본의 위치와 작성 경로는 2026-10-08 결정이 연구노트로 바꿨다. 이는 사용자 승인 구조이며, 이론 내용의 acceptance를 변경하지 않는다. 전체 문서 진입점은 [docs/README.md](docs/README.md), LSWT 읽기 순서는 [docs/archive/2026-10-08-lswt-markdown/README.md](docs/archive/2026-10-08-lswt-markdown/README.md)다.
 

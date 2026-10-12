@@ -1,0 +1,4 @@
+name: 'LSWT example: triangular-lattice antiferromagnet'
+from: workbench/notes (new worked example, 2026-10-12)
+summary: Heisenberg antiferromagnet on the triangular lattice about the coplanar 120-degree state, treated in the rotating frame. BdG coefficients, dispersion with three Goldstone modes and their velocities, ground-state energy and reduced moment, and the folding onto the three-site magnetic cell.
+topics: [ worked-examples ]

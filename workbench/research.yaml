@@ -5,7 +5,7 @@ agent-status: true
 latex-template: research-note
 sources:
   canon:
-    - workbench/notes — LSWT 이론 lswt-* 7개(2026-10-09 주제별로 나눔)와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
+    - workbench/notes — LSWT 이론 lswt-* 8개(2026-10-09 주제별로 나눈 7개 + 2026-10-12 1/S 보정 노트), 예제 lswt-example-* 4개(2026-10-12)와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
     - docs/archive/2026-10-08-lswt-markdown — LSWT 일반 이론 Markdown (2026-10-08 상태로 보존, 더 고치지 않음)
     - docs/archive/2026-10-08-development-beamer/main.tex — 패키지 개발 설계와 결정 기록 D01–D47 Beamer (2026-10-08 상태로 보존, 더 고치지 않음)
   tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md
@@ -32,6 +32,46 @@ topics:
   - id: fundamental-theory-of-spin-wave-theory
     title: Fundamental Theory of Spin Wave Theory
     parts: []
-    description: Description of fundamental theory for spin wave theory
+    description: |-
+      From the spin Hamiltonian to magnon bands
+      - classical order and local frames
+      - Holstein–Primakoff bosons, BdG blocks
+      - paraunitary diagonalization
     preview:
       color: orange
+  - id: spin-wave-observables
+    title: Observables from Spin Waves
+    parts: []
+    description: |-
+      What the magnon bands predict
+      - thermodynamics and ordered moments
+      - spin correlations, neutron scattering
+      - Berry curvature, Chern numbers, thermal Hall
+    preview:
+      color: blue
+  - id: beyond-linear-spin-waves
+    title: Beyond Linear Spin Waves
+    parts: []
+    description: |-
+      1/S corrections to LSWT
+      - cubic and quartic boson terms
+      - energy to order S^0, magnon shifts and decay
+      - pseudo-Goldstone gap
+    preview:
+      color: violet
+  - id: worked-examples
+    title: Worked Examples
+    parts: []
+    description: |-
+      Standard models solved in closed form
+      - each example has a script and a test
+      - the test checks the numbers in the note
+    preview:
+      color: teal
+  - id: toolkit-development
+    title: Toolkit Development
+    parts: []
+    description: |-
+      Design, verification and decisions of spin-toolkit
+    preview:
+      color: gray
