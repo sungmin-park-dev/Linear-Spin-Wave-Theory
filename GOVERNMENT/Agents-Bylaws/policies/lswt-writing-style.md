@@ -10,11 +10,11 @@ updated: 2026-09-16
 
 # LSWT Writing Style Policy
 
-이 문서는 `docs/lswt/`의 reader-facing LSWT 이론 노트를 영어 수학·물리 학술 문체로 작성하고 교정하기 위한 project-specific policy다. 이 문서는 문체와 source formatting만 소유하며, 물리적 claim, notation, source authority, acceptance와 publication lifecycle은 관련 owner document를 따른다.
+이 문서는 `docs/archive/2026-10-08-lswt-markdown/`의 reader-facing LSWT 이론 노트를 영어 수학·물리 학술 문체로 작성하고 교정하기 위한 project-specific policy다. 이 문서는 문체와 source formatting만 소유하며, 물리적 claim, notation, source authority, acceptance와 publication lifecycle은 관련 owner document를 따른다.
 
 ## Purpose and Priority
 
-이 정책은 `docs/lswt/00-foundations/`부터 `docs/lswt/04-appendices/`까지의 theory Markdown에 적용한다. `docs/README.md`, 주제별 README와 governance 문서는 navigation 또는 운영 목적에 맞게 작성하되, terminology와 Markdown formatting 규칙은 가능한 한 공유한다. 코드, issue note, Working-Pad와 사용자 대화는 적용 대상이 아니다.
+이 정책은 `docs/archive/2026-10-08-lswt-markdown/00-foundations/`부터 `docs/archive/2026-10-08-lswt-markdown/04-appendices/`까지의 theory Markdown에 적용한다. `docs/README.md`, 주제별 README와 governance 문서는 navigation 또는 운영 목적에 맞게 작성하되, terminology와 Markdown formatting 규칙은 가능한 한 공유한다. 코드, issue note, Working-Pad와 사용자 대화는 적용 대상이 아니다.
 
 아래에서 **Required**는 반드시 지킬 규칙, **Preferred**는 문맥에 따라 적용하는 학술 문체, **Allowed**는 에이전트가 과잉 교정하지 말아야 할 허용 범위를 뜻한다. `status: in-review`인 동안에는 이 구분을 current working guidance로 적용하되 accepted policy로 보고하지 않는다. 명시적인 사용자 결정과 project owner document는 이 정책보다 우선한다.
 
@@ -55,7 +55,7 @@ updated: 2026-09-16
 - Heading과 opening paragraph는 문서 또는 section의 구체적인 물리적 대상과 범위를 앞에서 밝힌다. Markdown heading에는 수동 section number를 붙이지 않는다.
 - Prose paragraph는 하나의 논리적 역할을 수행하고 Markdown source에서 한 physical line으로 작성한다. Editor의 soft wrap을 사용한다.
 - Display equation은 주변 문장의 문법적 일부로 작성한다. 새 기호, 가정, approximation과 적용 조건은 필요한 지점에서 정의한다.
-- Matrix, vector, operator, index, imaginary unit와 energy notation은 [Notation and Conventions](../../../docs/lswt/00-foundations/notation-and-conventions.md)를 따른다.
+- Matrix, vector, operator, index, imaginary unit와 energy notation은 [Notation and Conventions](../../../docs/archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md)를 따른다.
 - Claim의 강도는 근거 수준을 넘지 않아야 하며, regime과 approximation은 해당 claim 가까이에 둔다.
 - Primary note에 없는 claim은 확인된 scholarly source 또는 documented derivation으로 뒷받침한다. 외부 논문은 `External Sources`, 내부 유도는 `Internal Documents`에 기록하며 citation을 추측하거나 생성하지 않는다.
 - Package, API, implementation plan, task status, agent note와 unresolved review ledger는 theory body에 넣지 않는다.
@@ -142,9 +142,9 @@ Theory note를 사용자 검토에 올리기 전에 다음을 확인한다.
 ## Related Governance and Style References
 
 - [AGENTS.md](../../../AGENTS.md)
-- [Documentation Map](../../../docs/lswt/README.md)
-- [Notation and Conventions](../../../docs/lswt/00-foundations/notation-and-conventions.md)
-- [Source Inventory](../../../docs/lswt/sources/README.md)
+- [Documentation Map](../../../docs/archive/2026-10-08-lswt-markdown/README.md)
+- [Notation and Conventions](../../../docs/archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md)
+- [Source Inventory](../../../docs/sources/README.md)
 - [Single Knowledge Canon](../../User-Constitution/single-knowledge-canon.md)
 - [LSWT Canonical Document Lifecycle](../procedures/lswt-canonical-document-lifecycle.md)
 - [APS Style Basics](https://journals.aps.org/authors/style-basics)

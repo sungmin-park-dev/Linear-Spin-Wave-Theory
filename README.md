@@ -158,8 +158,8 @@ Most design notes are currently in Korean. English tutorials are planned for
 the 0.2 release.
 
 - [Package layout](code-space/spintoolkit/README.md)
-- [Development design and decision log](docs/development/README.md)
-- [LSWT theory notes](docs/lswt/README.md)
+- [Development design and decision log](docs/archive/2026-10-08-development-beamer/README.md)
+- [LSWT theory notes](docs/archive/2026-10-08-lswt-markdown/README.md)
 - [Documentation index](docs/README.md)
 
 ## Related work on NBCP

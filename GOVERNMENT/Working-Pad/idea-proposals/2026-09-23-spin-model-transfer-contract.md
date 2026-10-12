@@ -77,7 +77,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 
 ## 결정 목록
 
-`docs/development` Beamer의 결정 기록과 같은 ID를 쓴다.
+`docs/archive/2026-10-08-development-beamer` Beamer의 결정 기록과 같은 ID를 쓴다.
 
 | ID | 내용 | 상태 | 위치 |
 |---|---|---|---|
@@ -206,7 +206,7 @@ E_cl과 O(S^0)인 E_qm의 합을 자유롭게 최소화하면 manifold에서 O(1
    평평함을 보장하기 때문이다. 선택에 쓴 에너지와 곡률 `C_phi`를 결과에 기록한다.
 
 `examples/nbcp_y_orbit_axis_check.py`로 NBCP Y 상태(B = 0.2 T, N = 6)에서 확인했다.
-결과는 `docs/development/verification/state-selection-2026-09-29.json`에 있다.
+결과는 `docs/archive/2026-10-08-development-beamer/verification/state-selection-2026-09-29.json`에 있다.
 
 | 경우 | 찾은 축 | 궤도 E_cl 변동 | 궤도 E_qm 변동 |
 |---|---|---|---|
@@ -220,7 +220,7 @@ DE 해(기울기 2–3e-7)에서도 축 오차는 1.3e-5 이하였다. 다만 �
 고윳값 6.7e-3)이어서 고정 허용오차로는 영모드로 판정되지 않은 경우가 있었다.
 
 **D17 판정 기준 자료(검토안의 근거).** `examples/nbcp_y_orbit_criteria_check.py`의 결과는
-`docs/development/verification/state-selection-criteria-2026-09-29.json`에 있다.
+`docs/archive/2026-10-08-development-beamer/verification/state-selection-criteria-2026-09-29.json`에 있다.
 
 - 영공간 판정: DE 세 seed로 축퇴 4경우 12건과 대조 2경우 6건(장을 기울여 고전 축퇴를 푼
   경우, 20 h의 편극 상태)을 비교했다. DE 해에 고정 허용오차(최대 고윳값의 1e-6배)를 쓰면
@@ -268,7 +268,7 @@ DE 해(기울기 2–3e-7)에서도 축 오차는 1.3e-5 이하였다. 다만 �
 **D17 구현(2b, D22).** `select_on_manifold(model, state, conditions, quantum_energy, axis=None,
 criteria=SelectionCriteria())`는 다음 순서로 판정하고 `SelectionResult`(판정, 상태, 축, phi,
 후보 상태, 진단, 기준)를 돌려준다. 수치 검증 기록은
-`docs/development/verification/state-selection-stage2b-2026-09-29.json`, 스크립트는
+`docs/archive/2026-10-08-development-beamer/verification/state-selection-stage2b-2026-09-29.json`, 스크립트는
 `examples/nbcp_state_selection_check.py`다.
 
 1. 고전 정밀화(`refine_classical`): 접평면 좌표에서 해석적 기울기로 L-BFGS-B를 돌린 뒤,
@@ -342,7 +342,7 @@ D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E
 - 적용 조건: 단열 분리. Gamma의 곡률(접평면 단위 변위당)이 딱딱한 모드의 최소 강성보다 충분히 작아야
   한다. 이 비를 결과에 기록한다.
 - 확인(`examples/nbcp_effective_potential_check.py`,
-  `docs/development/verification/effective-potential-check-2026-09-30.json`): 기울기 0에서 D17과 같은
+  `docs/archive/2026-10-08-development-beamer/verification/effective-potential-check-2026-09-30.json`): 기울기 0에서 D17과 같은
   위치(Y 3.7e-7 rad, V 0). 강체 궤도 `R_n(phi)`는 고전 고정을 크게 과대평가한다(Y, 1.7°에서 고전 변동
   7.5e-6 대 완화 경로 5.3e-7 meV). 따라서 강체 궤도로 얻은 "1.7°면 고전 고정이 이긴다"는 잠정 판단은
   틀렸고, 완화 경로에서 Gamma 최소는 양자 최소에서 8.9e-3 rad 떨어진 곳에 있다. Y는 면내 알짜
@@ -355,7 +355,7 @@ D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E
   `selected`(Gamma 최소, 순수 최소로부터의 이동량과 대칭 주기 대비 비율을 보고), `no_selection`(정확한
   대칭), `unresolved`, `not_soft`(단열 분리 실패)로 판정한다. 부드러운 좌표 자체와 관련된
   `no_degeneracy`(부드러운 좌표 없음), `axis_required`, `unsupported_manifold`는 그대로 둔다. 단열 비가 0.1을 넘으면 경고만 낸다(판정 불변).
-- 구현(2026-09-30, `0e9247f`; 기록 `docs/development/verification/d28-implementation-2026-09-30.json`):
+- 구현(2026-09-30, `0e9247f`; 기록 `docs/archive/2026-10-08-development-beamer/verification/d28-implementation-2026-09-30.json`):
   `select_on_manifold`는 궤도 방향을 뺀 모든 접평면 방향을 완화한 경로(`soft_path_point`) 36점에서
   `Gamma = E_cl + E_zp`를 fit하고 그 최소를 반환한다. 순수 고전·양자 최소는 후보와 이동량으로 남긴다.
   정밀화한 상태에 궤도 밖 불안정 모드가 있으면(고전 안장점) `no_degeneracy`가 아니라 `not_soft`다.
@@ -485,7 +485,7 @@ source `a`, target `b`인 항의 호핑·이상 항 위상은 `exp(+i k . Delta)
 위치 `R`만 쓰는 격자 게이지와 전체 위치 게이지는 에너지와 Chern 수가 같지만 국소
 Berry 곡률이 다를 수 있다. thermal Hall 전도도는 밴드 에너지 가중치를 곱해
 Berry 곡률을 적분하므로 국소 값의 영향을 받는다. 위치 정보를 포함하는 전체 위치
-게이지를 쓴다. 이 식은 `docs/lswt` 운동량 공간 문서의 식과 같다. 다만 이 결정은
+게이지를 쓴다. 이 식은 `docs/archive/2026-10-08-lswt-markdown` 운동량 공간 문서의 식과 같다. 다만 이 결정은
 툴킷 규약에 한정하며, 이론 정본 notation 문서의 "Not Yet Fixed" 상태를 바꾸지 않는다.
 
 **항의 의미.** 1차 범위의 해밀토니안은 다음과 같다.
@@ -743,7 +743,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 기존 `one_msl`…`four_msl`과 원소 단위로 같았다(4셀 × 5파라미터군, 장·DM·NNN 포함, 최대 차이
 1.7e-16). `d`의 부호를 뒤집으면 Three MSL의 `H(k)`가 1e-3 넘게 달라졌다. 왕복 변환도
 최대 1.7e-17로 같았다. 따라서 이 해석과, BdG 행렬의 행이 생성 연산자 쪽이라는 가정이
-확정되었다. 기록은 `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`.
+확정되었다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/stage2-nbcp-connection-2026-09-29.json`.
 
 ## Rationale
 

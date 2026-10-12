@@ -29,6 +29,7 @@ LSWT 프로젝트의 결정 기록과 판례 레이어.
 | [2026-10-09-nbcp-repository-split](2026-10-09-nbcp-repository-split.md) | NBCP 연구를 별도 저장소로 분리 | accepted |
 | [2026-10-08-lswt-development-research-notes](2026-10-08-lswt-development-research-notes.md) | LSWT 이론 Markdown·개발 Beamer 보존, 이후 내용 원본은 `workbench/notes/` 연구노트 6개 | accepted; 2026-08-01 결정의 정본 위치와 2026-08-09 경로 조항 대체 |
 | [2026-10-10-package-scope-semiclassical](2026-10-10-package-scope-semiclassical.md) | spin-toolkit 범위를 2D 스핀 모형의 반고전 툴킷으로 정함 (LSWT 중심, 양자 다체 계산 제외, ED는 검증용) | accepted |
+| [2026-10-11-lswt-notes-markdown](2026-10-11-lswt-notes-markdown.md) | LSWT 이론 연구노트 `lswt-*` 7개의 본문 형식을 LaTeX에서 Markdown으로 바꿈 (LaTeX 원본은 `docs/archive/`에 보존) | accepted; 2026-10-08 결정의 LaTeX 형식 조항만 대체 |
 
 ## 에이전트 지침
 

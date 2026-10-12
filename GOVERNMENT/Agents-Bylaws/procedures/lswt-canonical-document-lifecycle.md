@@ -62,7 +62,7 @@ NBCP 연구 노트의 내용 원본은 [2026-09-18 결정](../../Court-Precedent
 
 ### 2. Draft authoring
 
-1. LSWT 일반 이론은 대응하는 `docs/lswt/` 번호 폴더의 Markdown에만 작성한다. NBCP 연구 노트는 별도 저장소 `nbcp-spin-supersolid`에서 운영한다.
+1. LSWT 일반 이론은 대응하는 `docs/archive/2026-10-08-lswt-markdown/` 번호 폴더의 Markdown에만 작성한다. NBCP 연구 노트는 별도 저장소 `nbcp-spin-supersolid`에서 운영한다.
 2. 한 claim, 정의, 수식은 하나의 canonical Markdown 파일에서만 소유한다.
 3. 작업 계획, review ledger, code discrepancy는 본문이 아니라 audit 또는
    Working-Pad에 둔다.

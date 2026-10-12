@@ -8,7 +8,7 @@ __pycache__/
 *.egg-info/
 
 # Generated REVTeX control files for the preserved LSWT TeX notes
-docs/lswt/sources/01-editable-notes/*Notes.bib
+docs/sources/01-editable-notes/*Notes.bib
 
 # LaTeX intermediate files from direct editor compiles.
 *.aux

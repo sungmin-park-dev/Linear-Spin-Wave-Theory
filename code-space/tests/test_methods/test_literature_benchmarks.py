@@ -16,7 +16,7 @@ A4 (D41) neutron intensity: triangular 120 degree state against the
     rotating-frame closed form (Chernyshev and Zhitomirsky, PRB 79, 144416
     (2009)) with Q_z != 0, and the Bragg weight m^2/4 at K.
 
-The scripts that produce the full tables are in ``examples/review_benchmarks_a1_a4.py``.
+The scripts that produce the full tables are in ``examples/verification/review_benchmarks_a1_a4.py``.
 """
 
 import numpy as np

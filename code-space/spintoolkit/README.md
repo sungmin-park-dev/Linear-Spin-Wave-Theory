@@ -62,4 +62,4 @@ DeprecationWarning을 내고, `lswt.<경로>`를 같은 `spintoolkit` 모듈 객
 옛 경로로 저장한 pickle도 이 연결로 복원된다.
 
 개발 현황과 이행 검증은
-[개발 기록](../../docs/development/README.md)에서 관리한다.
+[개발 기록](../../docs/archive/2026-10-08-development-beamer/README.md)에서 관리한다.

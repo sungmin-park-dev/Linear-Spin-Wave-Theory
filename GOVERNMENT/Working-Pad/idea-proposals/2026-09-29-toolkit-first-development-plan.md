@@ -21,7 +21,7 @@ related:
 1차 개발의 범위, 패키지 배치, 벤치마크와 구현 단계를 소유한다. 모델·항·상태·계산
 요청·결과의 규약은
 [[GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract|SpinModel 전달 규약]]이
-소유한다. 결정 ID(D03–D15)는 전달 규약의 결정 목록과 `docs/development` Beamer의
+소유한다. 결정 ID(D03–D15)는 전달 규약의 결정 목록과 `docs/archive/2026-10-08-development-beamer` Beamer의
 결정 기록을 따른다. 이 문서는 2026-09-29 전달 규약에서 계획 부분을 분리해 만들었다.
 
 ## 1. 1차 개발 범위(D07)
@@ -138,9 +138,9 @@ code-space/spintoolkit/
 | 5 | 위상량 | Berry 곡률·Chern 수·thermal Hall; 하이젠버그 null test; 0이 아닌 기준 모델 비교(키타에프 편극상은 선택); 기존 real-space volume 이슈 해소 |
 
 **진행 상황.** 0단계는 2026-09-29 완료했다. 테스트는 이전과 같은 결과(호환 테스트 1개를
-4개로 교체해 220 통과 / 같은 5 실패)였고, `examples/package_regression_snapshot.py`로
+4개로 교체해 220 통과 / 같은 5 실패)였고, `examples/verification/package_regression_snapshot.py`로
 비교한 208개 값(40건의 `H(k)`·고전 에너지와 16개 탐색 결과)의 최대 차이는 0이었다.
-기록은 `docs/development/verification/package-rename-2026-09-29.json`에 있다.
+기록은 `docs/archive/2026-10-08-development-beamer/verification/package-rename-2026-09-29.json`에 있다.
 
 1단계는 2026-09-29 완료했다. `SpinModel`·`SpinState`·`ExternalConditions`·
 `CalculationGeometry`와 검증, 고전 에너지·국소장·토크 계산(`methods/classical.py`),
@@ -149,14 +149,14 @@ code-space/spintoolkit/
 정확히 재현하고, NBCP 기본 셀 fixture는 기존 `EnergyFunction`과 1e-15 안에서 일치했다.
 기존 테스트 225개의 결과는 그대로이고 새 테스트 53개가 통과했으며(273 통과 / 같은 5 실패),
 208개 수치 스냅샷의 차이는 0이었다. 기록은
-`docs/development/verification/stage1-common-types-2026-09-29.json`에 있다.
+`docs/archive/2026-10-08-development-beamer/verification/stage1-common-types-2026-09-29.json`에 있다.
 
 2단계는 2026-09-29 완료했다(D21). `model/nbcp/model.py`에 NBCP 모델(`build_model`), 파라미터
 세트(문헌값 `woodland2025`: arXiv:2505.06398 Table 1; 원고값 `park2026_fig4`), 후보 상태
 (`candidate_state`)를 두고, `system/conversion.py`로 기존 `SpinSystem`과 양방향 변환한다.
 변환한 `H(k)`가 기존 네 셀 생성 함수와 원소 단위로 같아(최대 1.7e-16) D13이 확정되었고,
 고전 에너지와 E_qm도 일치했다. 테스트는 348 통과 / 같은 5 실패(새 테스트 72개), 208개
-스냅샷 차이 0이다. 기록은 `docs/development/verification/stage2-nbcp-connection-2026-09-29.json`.
+스냅샷 차이 0이다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/stage2-nbcp-connection-2026-09-29.json`.
 
 2b단계를 2026-09-29 구현하고 검증했다(D22). `methods/classical.py`에 접평면 좌표의 해석적
 Hessian(`tangent_expansion`)과 국소 정밀화(`refine_classical`)를, `methods/state_selection.py`에
@@ -165,7 +165,7 @@ J_PD·J_Gamma 16회(N = 6, 12, 두 모드)가 모두 `selected`이고, 조화 �
 N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 1.64e-12는 해상 기준의 약
 900배로 분해되었다. DE 출발 36회, 삼각격자 120°·정사각 편극 벤치마크, MAGSWT 재현도 확인했다.
 테스트는 373 통과 / 같은 5 실패(새 테스트 29개, 삭제한 `quantum` 테스트 8개), 208개 스냅샷 차이
-0이다. 기록은 `docs/development/verification/state-selection-stage2b-2026-09-29.json`. 물리 근거
+0이다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/state-selection-stage2b-2026-09-29.json`. 물리 근거
 모드의 계수, 장을 기울인 대조군의 `competition` 판정, MAGSWT 유지 여부는 사용자 검토 항목이다.
 
 3단계를 2026-09-30 구현하고 검증했다(D23). `system/cluster.py`가 유한 토러스에 항을 전개하고
@@ -176,7 +176,7 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 확인되었다. 대칭 없는 모델(무작위 J, NBCP+J_PD+J_Gamma)은 Kronecker 곱 구현과 4.6e-14 안에서
 같았고, 4 x 4 정사각 S = 1/2 하이젠버그 바닥 에너지는 사이트당 -0.7017802다. 테스트는 404 통과 /
 같은 5 실패(새 테스트 31개), 208개 스냅샷 차이 0이다. 기록은
-`docs/development/verification/stage3-ed-benchmark-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage3-ed-benchmark-2026-09-30.json`.
 
 4단계는 4a(진입점·결과 머리부·바닥상태), 4b(무차원 열역학), 4c(상관함수·구조인자)로 나눠
 진행한다(D24). 4a를 2026-09-30 구현하고 검증했다. `solve_lswt`가 기존 `LSWTSolver`를 NBCP 1–4 MSL에서
@@ -185,7 +185,7 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 영모드가 반올림으로 양수가 되어 무의미한 값을 내던 경우를 영모드 허용오차로 잡아 오류로 보고한다.
 정사각 S = 1/2 LSWT는 QMC와 에너지 1.7%, 모멘트 1.3%, 삼각 모멘트는 DMRG보다 16% 크다. 테스트는
 421 통과 / 같은 5 실패, 208개 스냅샷 차이 0이다. 기록은
-`docs/development/verification/stage4a-lswt-entry-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage4a-lswt-entry-2026-09-30.json`.
 
 4b를 2026-09-30 구현하고 검증했다(D25). `scan_zero_modes`가 `H(k)`의 최소 고윳값 비로 영모드를 수치적 영,
 후보, 갭으로 나누고, 후보가 있으면 사용자가 `gapless`를 정할 때까지 유한 온도 계산을 멈춘다. 이방성
@@ -194,7 +194,7 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 `thermal_quantities`는 저장된 대각화를 재사용해 무차원 F, U, S, C와 모멘트를 내고, 편극 상태에서 직접
 공식과 1e-13, 열역학 관계와 수치 미분 1e-7 안에서 일치했다. 작은 토러스의 ED 자유 에너지와는
 `e^{-2Δ/t}` 이하의 차이로, 2-마그논 차수부터 달라졌다. 테스트는 437 통과 / 같은 5 실패, 208개 스냅샷
-차이 0이다. 기록은 `docs/development/verification/stage4b-thermal-2026-09-30.json`.
+차이 0이다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/stage4b-thermal-2026-09-30.json`.
 
 4c를 2026-09-30 구현하고 검증했다(D26). `structure_factor`가 저장된 대각화를 재사용해 모드별 한 마그논
 무게와 정확한 Bragg 세기를 내고, U(1) 편극 상태에서 ED 1-마그논 행렬 요소와 1e-15 안에서 일치했다(DM,
@@ -202,14 +202,14 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 결합 상관에서 얻은 에너지 = E_GS(1e-15)를 확인했다. 기존 `observables/correlations.py`는 사이트당 대신
 셀당 정규화와 부격자 위상의 중복 적용 때문에 다른 값을 낸다(진단식과 1e-7 일치); 사용하지 않고
 남겨 두었으며 유지·삭제는 따로 정한다. 테스트는 452 통과 / 같은 5 실패, 208개 스냅샷 차이 0이다. 기록은
-`docs/development/verification/stage4c-structure-factor-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage4c-structure-factor-2026-09-30.json`.
 
 4단계 뒤 기존 코드를 정리했다(D27). 검증되지 않은 `observables/correlations.py`를 삭제하고 동시간 실공간
 상관(`spin_correlation`, 구조인자와 Fourier 쌍으로 1e-13 일치)과 사다리 성분을 새 모듈로 옮겼다. MAGSWT
 격자 탐색을 삭제하고, 그 목적이던 NBCP 고전 궤도 위 에너지 지형은 `orbit_energy_landscape`로 그린다. NBCP
 예제는 고전 탐색 뒤 `select_on_manifold`를 쓴다. 테스트는 457 통과 / 같은 5 실패, 회귀 스냅샷은 남은 144개
 값의 차이 0(삭제한 MAGSWT 탐색 항목 64개 제외)이다. 기록은
-`docs/development/verification/legacy-cleanup-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/legacy-cleanup-2026-09-30.json`.
 
 5a를 2026-09-30 구현하고 검증했다(D29). `berry_curvature`가 저장된 대각화와 해석적 `dH/dk`로 입자 밴드의
 곡률을 계산하고, Chern 수는 Kubo 적분과 FHS 링크 변수가 일치할 때만 받는다. 부호 기준으로 벌집격자
@@ -219,7 +219,7 @@ N = 6에서 1.1%, N = 12에서 0.2% 안에서 일치했다. Y의 J_Gamma 변동 
 삼각 하이젠버그 C = 0. 메시 점 사이의 밴드 교차(기운 정사각 반강자성)는 FHS 링크 겹침으로, 갭 닫힘(D = 0의
 Dirac 점)은 Kubo-FHS 불일치로 NaN 처리한다: 후자에서 FHS만으로는 12 x 12 메시에서 틀린 정수(-1)가 나온다.
 테스트는 489 통과, 144개 스냅샷 차이 0이다. 기록은
-`docs/development/verification/stage5a-berry-chern-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage5a-berry-chern-2026-09-30.json`.
 
 5b를 2026-09-30 구현하고 검증했다(D29). `thermal_hall`이 층당 `kappa_xy/T`(`k_B^2/hbar` 단위)를 쌍 합 형태로
 계산한다. Haldane 마그논에서 독립 2-밴드 계산(d(k)의 차분 곡률, 구적 c2)과 3.8e-11, 기존 SI 경로
@@ -230,7 +230,7 @@ t -> 0 지수적 감소, t -> 무한대 1/t 감소(Chern 합 0), 키타에프 �
 J_Gamma = 0.01 meV)는 작은 회피 교차 근처에 곡률이 몰려(|Omega| 최대 8e3) 균일 메시 수렴이 느리거나 불규칙하다
 (N = 96 -> 192: J_PD 2-10%, Y J_Gamma는 약 2배). 물리적 사용 전 적응형 세분화 등 추가 수렴 확인이 필요하다.
 테스트는 496 통과, 144개 스냅샷 차이 0이다. 기록은
-`docs/development/verification/stage5b-thermal-hall-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage5b-thermal-hall-2026-09-30.json`.
 
 5c를 2026-09-30 구현하고 검증했다(D29). 새 경로와 기존 SI 경로(`Topology.compute_thermal_Hall`,
 `Thermodynamics`의 Hall)가 같은 쌍 합 계산 핵심을 쓴다. 기존 API(k_data 입력, 층당 W/K, 층간격 환산)는 유지하고,
@@ -238,7 +238,7 @@ J_Gamma = 0.01 meV)는 작은 회피 교차 근처에 곡률이 몰려(|Omega| �
 수치는 변경 전과 1.1e-15 안에서 같고, 5b 검증을 다시 돌린 물리값은 6.7e-14 안에서 같다. 테스트는 497 통과
 (기대값 6개 갱신, 1개 추가), 144개 스냅샷 차이 0이다. 이슈 260802의 구현 항목은 해결되었고, NBCP 적용(수렴)·이론
 문서 검토·pseudo-Goldstone이 남는다. 노트 파일은 main의 미커밋 구조 개편이 수정 중이라 그 커밋 뒤에 갱신·이동한다.
-기록은 `docs/development/verification/stage5c-hall-kernel-2026-09-30.json`.
+기록은 `docs/archive/2026-10-08-development-beamer/verification/stage5c-hall-kernel-2026-09-30.json`.
 
 5d를 2026-09-30 구현하고 검증했다. `thermal_hall(..., integration=AdaptiveIntegration())`이 오차 추정 기반 적응형
 cubature(Richardson 중점, Dörfler 표시)로 kappa/T를 적분한다. 좁은 갭의 Haldane(D = 0.01-0.001)에서 균일 2048 x 2048
@@ -246,7 +246,7 @@ cubature(Richardson 중점, Dörfler 표시)로 kappa/T를 적분한다. 좁은 
 매끄러운 경우(D = 0.2)는 균일 격자가 지수적으로 정확해 더 효율적이다. NBCP 4개 경우는 기본 예산(2e5점, 상태당 약
 100 s)에서 1e6점 수렴값을 여섯 자리까지 재현했고, 5b의 균일 192 값은 1-4%(Y J_Gamma는 27%) 어긋나 있었다. Γ의 우연
 영모드 근처에서 적분 함수는 1/|q|로 커지지만 2D에서 적분 가능하므로 LSWT 안에서 kappa는 유한하다. 테스트는 500 통과,
-144개 스냅샷 차이 0이다. 기록은 `docs/development/verification/stage5d-adaptive-integration-2026-09-30.json`.
+144개 스냅샷 차이 0이다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/stage5d-adaptive-integration-2026-09-30.json`.
 
 스펙트럼 일치만으로 올바른 변환이라고 판정하지 않는다. 벡터를 뒤집거나 행렬을
 전치하는 규칙은 실제 식과 대응시킨다.
@@ -275,29 +275,29 @@ ED/TN 실행 가능성은 별도 검증이다.
 `luttinger_tisza`가 J(q) 최소, 후보 셀과 단일 q 강한 제약을 보고한다. 무작위 정합 상태 5종에서 J(q) 에너지 = 고전 에너지
 (1.4e-16), 벤치마크(정사각 FM·Néel, 삼각 K·√3×√3·-3JS²/2, J1-J2 Néel·stripe·퇴화 선, Haldane Γ, 키타에프 평평한 밴드)를
 재현하고 NBCP XXZ는 단일 q로 불만족이다(486 통과). 기록은
-`docs/development/verification/stage6b-luttinger-tisza-2026-09-30.json`. 6b 보정(2026-09-30): LT 이론 부록 유도에서
+`docs/archive/2026-10-08-development-beamer/verification/stage6b-luttinger-tisza-2026-09-30.json`. 6b 보정(2026-09-30): LT 이론 부록 유도에서
 4q*∈G(2q*∉G)인 1/4 파수의 단일 q 조건이 Re(u·u)=0뿐임을 확인했다. 기존 u·u=0 요구가 uudd 같은 비나선 상태를
 거짓 음성으로 판정하던 것을 세 위상 경우로 고쳤다(인터페이스 변경 없음, 벤치마크 동일, 496 통과, 스냅샷 차이 0). 기록은
-`docs/development/verification/stage6b-quarter-wave-vector-2026-09-30.json`, 사용자 확인 대기.
+`docs/archive/2026-10-08-development-beamer/verification/stage6b-quarter-wave-vector-2026-09-30.json`, 사용자 확인 대기.
 
 6c를 구현했다: `classical_search`가 초격자의 모든 스핀을 (theta, phi)로 매개화해 기존 `SpinOptimizer`와 같은 차분 진화를
 돌린 뒤 `refine_classical`로 정밀화한다. 회귀 스냅샷에 저장된 기존 탐색 8건(NBCP xxz·nn_soc, One-Four MSL, 기운 장)에서
 탐색 에너지가 15자리까지 같고(같은 궤적) 정밀화 에너지 차이는 1.4e-17 이하다. 벤치마크(Néel, 120°, 장 속 편극)는 해석값
 그대로다. `SpinOptimizer`와 `EnergyFunction`은 사용 중단 경고를 내며, NBCP 예제는 새 탐색을 쓴다(491 통과, 스냅샷 차이 0).
-기록은 `docs/development/verification/stage6c-classical-search-2026-09-30.json`.
+기록은 `docs/archive/2026-10-08-development-beamer/verification/stage6c-classical-search-2026-09-30.json`.
 
 4d를 2026-09-30 구현하고 검증했다(D33). `band_structure`가 결정 격자의 고대칭 경로에서 자기 셀의 마그논 밴드를 낸다
 (`high_symmetry_points`가 Γ·K·M 등을 정한다). 해석적 분산(정사각 Néel·강자성, 삼각 120°의 접힌 단일 q 분산)과 영모드 밖에서
 4e-14 안에서 일치하고, Goldstone 꼭짓점은 영모드로 표시된다(Jordan 블록의 sqrt(eps) 크기 5e-8). NBCP Y·V는 Γ·K에 우연
 영모드, Four MSL은 갭 0.0746 meV. 그림은 아래 시각화 단계에서 다룬다(495 통과). 기록은
-`docs/development/verification/stage4d-band-structure-2026-09-30.json`.
+`docs/archive/2026-10-08-development-beamer/verification/stage4d-band-structure-2026-09-30.json`.
 
 **7단계(진행): 시각화.** 2026-10-01 사용자가 설계를 승인했다(그림은 observable이 계산한 수치만 그린다). 첫 부분을
 구현했다: `plot_bands(bands)`는 `BandStructure`의 에너지를 그대로 그리고(E0, 표시 단위는 명시한 환산 계수와 축 이름으로만),
 불안정 k는 음영 빈칸, 영모드는 E=0 표시, 자기 셀 밴드는 접힌 채로 둔다. `plot_spin_configuration(model, state)`는
 `to_spin_system`을 거쳐 기존 그리기를 쓰고 `SpinSystem` 입력은 사용 중단 경고를 낸다. 정사각 Néel·삼각 120°에서 그린 선이
 저장된 에너지와 정확히 같고, 포화 아래 편극 상태에서 NaN 구간이 해석식의 음수 구간과 일치한다(502 통과). 기록은
-`docs/development/verification/stage7-visualization-2026-10-01.json`. 다음: NBCP 밴드 그림(arXiv:2505.06398 대조), 극좌표 패널 검토.
+`docs/archive/2026-10-08-development-beamer/verification/stage7-visualization-2026-10-01.json`. 다음: NBCP 밴드 그림(arXiv:2505.06398 대조), 극좌표 패널 검토.
 
 **D30의 남은 일.** 사용 중단한 공개 진입점(`LSWTSolver`, SI Hall API, `SpinOptimizer`, `EnergyFunction`)의 삭제는 공개 배포
 정리 때 한다. 이전 단계의 검증 스크립트(2b, D17 궤도 확인, 회귀 스냅샷)는 기록 재현을 위해 기존 클래스를 계속 쓴다.

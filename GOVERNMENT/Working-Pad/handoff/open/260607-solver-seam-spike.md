@@ -160,7 +160,7 @@ TN-study는 이미 publishable 학습 리포. 그 톤으로 작성:
 
 사용자 위임(2026-10-01)으로, 별도 저장소 대신 이 저장소의 공통 자료형 위에서 seam을 실측했다. 모델을
 `expand_on_torus`(D23, 모든 방법이 공유하는 규칙)로 한 번 전개하고, 같은 사이트·결합(3 x 3 교환 행렬)·사이트 장을
-toolkit ED와 TeNPy 1.1.1 유한 DMRG 어댑터(약 40줄, `examples/solver_seam_tenpy_check.py`)에 넘겼다. TeNPy는 이 검사의
+toolkit ED와 TeNPy 1.1.1 유한 DMRG 어댑터(약 40줄, `examples/verification/solver_seam_tenpy_check.py`)에 넘겼다. TeNPy는 이 검사의
 선택 의존성이고 패키지는 쓰지 않는다. 기록: `data-space/verification/261001-solver-seam-tenpy/report.json`.
 
 | 경우 | 사이트 | DMRG - ED | 정확한 기준 |
@@ -190,7 +190,7 @@ DMRG 두 경우에서 TeNPy가 마지막 정준형 노름 경고(2e-5, 8e-2)를 
 - **S5 결과:** 공통으로 비교 가능한 것은 토러스 총에너지(E0)와 `ResultHeader`(모델 지문, 기하, 조건)다. 관측량 계산은 방법별로
   다르다(ED: 고유벡터, DMRG: MPS). 공통 결과형은 지금의 헤더 + 방법별 본문 구조로 충분하다.
 
-**NQS(NetKet 3.22.4) 추가 확인, 2026-10-01.** 같은 토러스 전개를 약 20줄 NetKet 어댑터(`examples/solver_seam_netket_check.py`)가
+**NQS(NetKet 3.22.4) 추가 확인, 2026-10-01.** 같은 토러스 전개를 약 20줄 NetKet 어댑터(`examples/verification/solver_seam_netket_check.py`)가
 읽는다. 결합은 `sum_ab J_ab S^a S^b`(S = sigma/2), 장은 `-h_i . S_i`로 넣는다. 기록은
 `data-space/verification/261001-solver-seam-netket/report.json`에 있다.
 
