@@ -54,13 +54,13 @@ The existence of a spin-coherent reference configuration permits a Holstein–Pr
 
 Failure of a prerequisite invalidates Holstein–Primakoff LSWT about the selected reference, whereas a large spin reduction signals that neglected interaction terms may be important. Neither conclusion rules out every possible spin-wave description. The momentum-space derivation developed here also assumes a commensurate reference configuration with a finite magnetic unit cell; this is a restriction of that derivation rather than a general limitation of SWT.
 
-In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a symmetry-breaking field, anisotropy that removes the relevant continuous spin-rotation symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff.
+In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature [@merminAbsence1966]. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a symmetry-breaking field, anisotropy that removes the relevant continuous spin-rotation symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff.
 
 ## Reference States Beyond Local Magnetic Order
 
-States without a local magnetic direction require a different reference state. Spin-nematic states with quadrupolar order but no magnetic dipole moment provide a representative example. Flavor-wave theory enlarges the local state space and can describe quadrupolar or higher multipolar order. Bond-operator and cluster-wave theories instead expand about singlet dimers or larger local units. These approaches may retain a harmonic bosonic structure, but their fluctuation variables are not Holstein–Primakoff bosons about local spin directions. Multipolar moments can also coexist with magnetic dipole order, so the absence of a local spin direction is not a defining property of all multipolar phases.
+States without a local magnetic direction require a different reference state. Spin-nematic states with quadrupolar order but no magnetic dipole moment provide a representative example. Flavor-wave theory enlarges the local state space and can describe quadrupolar or higher multipolar order [@munizGeneralized2014]. Bond-operator and cluster-wave theories instead expand about singlet dimers or larger local units [@sachdevBondoperator1990]. These approaches may retain a harmonic bosonic structure, but their fluctuation variables are not Holstein–Primakoff bosons about local spin directions. Multipolar moments can also coexist with magnetic dipole order, so the absence of a local spin direction is not a defining property of all multipolar phases.
 
-A quantum spin liquid has no suitable semiclassical product reference for a local spin-wave expansion. Its low-energy description may instead involve fractionalized spinons and emergent gauge fields. The use of bosonic variables alone therefore does not determine whether a formulation is a spin-wave theory; the reference state and fluctuation expansion must also be specified.
+A quantum spin liquid has no suitable semiclassical product reference for a local spin-wave expansion. Its low-energy description may instead involve fractionalized spinons and emergent gauge fields [@balentsSpin2010]. The use of bosonic variables alone therefore does not determine whether a formulation is a spin-wave theory; the reference state and fluctuation expansion must also be specified.
 
 ## Bilinear Spin Hamiltonians
 
@@ -91,7 +91,7 @@ $$
 
 The inter-site matrix $\mathsf J_\ell$ includes isotropic Heisenberg exchange, antisymmetric Dzyaloshinskii–Moriya interaction, and symmetric anisotropic exchange, including bond-dependent Kitaev-type couplings. The on-site matrix $\mathsf D_I$ represents single-ion anisotropy, and $\mathbf h_I$ is the Zeeman-energy coefficient determined by the applied field and the material-dependent $g$-tensor. Link orientation, counting conventions, and the relation between $\mathbf h_I$, the applied field, and the $g$-tensor are defined in Bilinear Spin Hamiltonian (Section *Bilinear Spin Hamiltonian*).
 
-Genuine higher-order interactions, such as inter-site biquadratic coupling and four-spin ring exchange, lie outside this bilinear Hamiltonian class. Spin-wave expansions can be constructed for such models, but the resulting harmonic coefficients must be derived from those interactions rather than inferred from the bilinear formulas above.
+Genuine higher-order interactions, such as inter-site biquadratic coupling and four-spin ring exchange, lie outside this bilinear Hamiltonian class. Spin-wave expansions can be constructed for such models [@majumdarEffects2012], but the resulting harmonic coefficients must be derived from those interactions rather than inferred from the bilinear formulas above.
 
 ## References
 
@@ -113,19 +113,19 @@ Genuine higher-order interactions, such as inter-site biquadratic coupling and f
 
 ### External Sources
 
-- T. Holstein and H. Primakoff, [*Field Dependence of the Intrinsic Domain Magnetization of a Ferromagnet*](https://doi.org/10.1103/PhysRev.58.1098), *Physical Review* **58**, 1098–1113 (1940), DOI: `10.1103/PhysRev.58.1098`: introduces the Holstein–Primakoff boson representation.
+- [@holsteinField1940]: introduces the Holstein–Primakoff boson representation.
 
-- S. Toth and B. Lake, [*Linear spin wave theory for single-$Q$ incommensurate magnetic structures*](https://doi.org/10.1088/0953-8984/27/16/166002), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), DOI: `10.1088/0953-8984/27/16/166002`: formulates LSWT using local spin frames and discusses its small-fluctuation regime.
+- [@tothLinear2015]: formulates LSWT using local spin frames and discusses its small-fluctuation regime.
 
-- R. A. Muniz, Y. Kato, and C. D. Batista, [*Generalized spin-wave theory: application to the bilinear-biquadratic model*](https://doi.org/10.1093/ptep/ptu109), *Progress of Theoretical and Experimental Physics* **2014**, 083I01 (2014), DOI: `10.1093/ptep/ptu109`: distinguishes the SU(2) spin-coherent formulation from generalized spin-wave theories for multipolar states.
+- [@munizGeneralized2014]: distinguishes the SU(2) spin-coherent formulation from generalized spin-wave theories for multipolar states.
 
-- L. Balents, [*Spin liquids in frustrated magnets*](https://doi.org/10.1038/nature08917), *Nature* **464**, 199–208 (2010), DOI: `10.1038/nature08917`: reviews quantum spin liquids, fractionalized excitations, and emergent gauge fields.
+- [@balentsSpin2010]: reviews quantum spin liquids, fractionalized excitations, and emergent gauge fields.
 
-- S. Sachdev and R. N. Bhatt, [*Bond-operator representation of quantum spins: Mean-field theory of frustrated quantum Heisenberg antiferromagnets*](https://doi.org/10.1103/PhysRevB.41.9323), *Physical Review B* **41**, 9323–9329 (1990), DOI: `10.1103/PhysRevB.41.9323`: introduces the singlet–triplet bond-operator expansion used for dimerized quantum magnets.
+- [@sachdevBondoperator1990]: introduces the singlet–triplet bond-operator expansion used for dimerized quantum magnets.
 
-- K. Majumdar, D. Furton, and G. S. Uhrig, [*Effects of ring exchange interaction on the Néel phase of two-dimensional, spatially anisotropic, frustrated Heisenberg quantum antiferromagnet*](https://doi.org/10.1103/PhysRevB.85.144420), *Physical Review B* **85**, 144420 (2012), DOI: `10.1103/PhysRevB.85.144420`: provides a spin-wave treatment of a Hamiltonian containing four-spin ring exchange.
+- [@majumdarEffects2012]: provides a spin-wave treatment of a Hamiltonian containing four-spin ring exchange.
 
-- N. D. Mermin and H. Wagner, [*Absence of Ferromagnetism or Antiferromagnetism in One- or Two-Dimensional Isotropic Heisenberg Models*](https://doi.org/10.1103/PhysRevLett.17.1133), *Physical Review Letters* **17**, 1133–1136 (1966), DOI: `10.1103/PhysRevLett.17.1133`: establishes the absence of spontaneous ferro- or antiferromagnetic long-range order at nonzero temperature in the short-range isotropic one- and two-dimensional Heisenberg model.
+- [@merminAbsence1966]: establishes the absence of spontaneous ferro- or antiferromagnetic long-range order at nonzero temperature in the short-range isotropic one- and two-dimensional Heisenberg model.
 
 <!-- Notation and Conventions Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md (status: in-review, source-section: Summary of Notation and Symbols). Review status: in-review; awaiting the user's physics and mathematics review. -->
 
@@ -610,8 +610,8 @@ Spin–orbit coupling and crystal-field effects can make $\mathsf g_I$ anisotrop
 
 ### External Sources
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its Eq. (1) writes the Zeeman term as $+\mu_B\mathbf H^{\mathsf T}\sum_{mi}\mathsf g_i\mathbf S_{mi}$, which has the physical electron sign and contracts the field with the first index of the $g$-tensor; the Hamiltonian here at field $\mathbf B$ therefore equals Toth–Lake Eq. (1) at field $-\mathbf B$.
+- [@tothLinear2015]: Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its Eq. (1) writes the Zeeman term as $+\mu_B\mathbf H^{\mathsf T}\sum_{mi}\mathsf g_i\mathbf S_{mi}$, which has the physical electron sign and contracts the field with the first index of the $g$-tensor; the Hamiltonian here at field $\mathbf B$ therefore equals Toth–Lake Eq. (1) at field $-\mathbf B$.
 
-- NIST, [Atomic Spectroscopy: Zeeman Effect](https://www.nist.gov/pml/atomic-spectroscopy-compendium-basic-ideas-notation-data-and-formulas/atomic-spectroscopy-zeeman): positive electron spin $g$-factor and the sign of the Zeeman energy shift.
+- [@nistAtomicSpectroscopyZeeman]: positive electron spin $g$-factor and the sign of the Zeeman energy shift.
 
-- NIST, [2022 CODATA recommended values of the fundamental physical constants](https://physics.nist.gov/cuu/Constants/Table/allascii.txt): values of the Bohr magneton and the free-electron $g$ factor.
+- [@nistCODATA2022]: values of the Bohr magneton and the free-electron $g$ factor.

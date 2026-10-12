@@ -137,7 +137,7 @@ $$
 \mathsf J'_\ell=\mathsf J_\ell\,\mathsf R_{\mathbf c}(\mathbf Q\cdot\boldsymbol d_\ell),
 $$
 
-a real matrix that depends only on the link class. The rotating-frame Hamiltonian is translation invariant on the crystallographic unit cell, with the reference configuration $\mathbf d_\mu$, and the stationarity and stability conditions above and the BdG blocks of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* apply to it with $\mathsf J'_\ell$ in place of $\mathsf J_\ell$. The magnon momentum $\mathbf k$ is then the momentum in the rotating frame. Laboratory spin correlations combine rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$, because $\mathsf R_{\mathbf c}(\phi)$ contains the harmonics $\exp(\pm\mathrm i\phi)$ and $1$ (Toth and Lake, Eq. (40)); their derivation in the conventions of these notes is not included here.
+a real matrix that depends only on the link class. The rotating-frame Hamiltonian is translation invariant on the crystallographic unit cell, with the reference configuration $\mathbf d_\mu$, and the stationarity and stability conditions above and the BdG blocks of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* apply to it with $\mathsf J'_\ell$ in place of $\mathsf J_\ell$. The magnon momentum $\mathbf k$ is then the momentum in the rotating frame. Laboratory spin correlations combine rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$, because $\mathsf R_{\mathbf c}(\phi)$ contains the harmonics $\exp(\pm\mathrm i\phi)$ and $1$ [@tothLinear2015, Eq. (40)]; their derivation in the conventions of these notes is not included here.
 
 When $\mathsf J_\ell$ has components with $s_p+s_q=\pm1$ or $\pm2$, the rotating-frame couplings carry the harmonics $\exp(\mp\mathrm i\mathbf Q\cdot\mathbf R_i)$ or $\exp(\mp2\mathrm i\mathbf Q\cdot\mathbf R_i)$. The rotating-frame Hamiltonian is then not translation invariant, it couples rotating-frame momenta that differ by $\mathbf Q$ or $2\mathbf Q$, and the single-$Q$ spiral is in general not stationary, since the field acquires the same harmonics. A single-$Q$ spin-wave spectrum is not defined in this case. A commensurate $\mathbf Q$ can still be treated on its finite magnetic unit cell with the general construction.
 
@@ -180,9 +180,9 @@ The two factors are, up to $S$, the eigenvalues $A_{\mathbf k}\pm B_{\mathbf k}$
 
 ### External Sources
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Eqs. (3) and (6) define the single-$Q$ structure with cell-position phases and the rotating frame; Eq. (13) states the rotation invariance of the exchange matrices required for it; Eq. (21) gives the rotating-frame exchange; Eq. (40) combines the rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$.
+- [@tothLinear2015]: Eqs. (3) and (6) define the single-$Q$ structure with cell-position phases and the rotating frame; Eq. (13) states the rotation invariance of the exchange matrices required for it; Eq. (21) gives the rotating-frame exchange; Eq. (40) combines the rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$.
 
-- D. H. Lyons and T. A. Kaplan, “Method for Determining Ground-State Spin Configurations,” *Physical Review* **120**, 1580 (1960), [doi:10.1103/PhysRev.120.1580](https://doi.org/10.1103/PhysRev.120.1580): spiral ground states of Bravais lattices with isotropic exchange at the minimum of the exchange Fourier transform.
+- [@lyonsMethod1960]: spiral ground states of Bravais lattices with isotropic exchange at the minimum of the exchange Fourier transform.
 
 <!-- Appendix: Luttinger–Tisza Method Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md (status: draft, source-section: "None in the primary note; the restructured TeX contains only an empty TODO section (app:luttinger-tisza). Content follows Luttinger and Tisza (1946) and Lyons and Kaplan (1960)."). Review status: draft; awaiting the user's physics and mathematics review. -->
 
@@ -279,7 +279,7 @@ where $\mathbf u_a\cdot\mathbf u_a=\sum_\gamma(u_a^\gamma)^2$ carries no complex
 
 - Otherwise the phases take at least three values that are not confined to $\pm1$, and the condition is $\mathbf u_a\cdot\mathbf u_a=0$ and $|\mathbf u_a|^2=2$. Then $\mathbf x_a$ and $\mathbf y_a$ are orthonormal, and each sublattice forms a planar spiral in the plane spanned by $\mathbf x_a$ and $\mathbf y_a$.
 
-When the eigenspace of $\lambda_{\mathrm{LT}}$ at $\mathbf Q$ has more than one dimension, $\mathbf w$ may be any vector in it, and the conditions become equations for its coefficients. For a Bravais lattice ($N_s=1$) with isotropic Heisenberg exchange, $\mathsf L_{\mathbf q}=S^2J(\mathbf q)\,\mathsf I_3$ with $J(\mathbf q)=\frac12\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\exp(\mathrm i\mathbf q\cdot\boldsymbol\Delta)$, where $\boldsymbol\Delta$ runs over all neighbor vectors. Every complex vector is then an eigenvector, a planar spiral always satisfies the strong constraint, and a spiral with wave vector $\mathbf Q$ is a ground state, as shown by Lyons and Kaplan. When several inequivalent wave vectors minimize $J(\mathbf q)$, other ground states, including multiple-wave-vector states, can have the same energy. For the triangular-lattice antiferromagnet with nearest-neighbor exchange $J>0$, $J(\mathbf q)=J\sum_{m=1}^{3}\cos(\mathbf q\cdot\mathbf a_m)$ over the three bond directions has its minimum $-\frac32J$ at the zone corner, and the spiral at that wave vector is the $120^\circ$ state with energy $-\frac32JS^2$ per site.
+When the eigenspace of $\lambda_{\mathrm{LT}}$ at $\mathbf Q$ has more than one dimension, $\mathbf w$ may be any vector in it, and the conditions become equations for its coefficients. For a Bravais lattice ($N_s=1$) with isotropic Heisenberg exchange, $\mathsf L_{\mathbf q}=S^2J(\mathbf q)\,\mathsf I_3$ with $J(\mathbf q)=\frac12\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\exp(\mathrm i\mathbf q\cdot\boldsymbol\Delta)$, where $\boldsymbol\Delta$ runs over all neighbor vectors. Every complex vector is then an eigenvector, a planar spiral always satisfies the strong constraint, and a spiral with wave vector $\mathbf Q$ is a ground state, as shown by Lyons and Kaplan [@lyonsMethod1960]. When several inequivalent wave vectors minimize $J(\mathbf q)$, other ground states, including multiple-wave-vector states, can have the same energy. For the triangular-lattice antiferromagnet with nearest-neighbor exchange $J>0$, $J(\mathbf q)=J\sum_{m=1}^{3}\cos(\mathbf q\cdot\mathbf a_m)$ over the three bond directions has its minimum $-\frac32J$ at the zone corner, and the spiral at that wave vector is the $120^\circ$ state with energy $-\frac32JS^2$ per site.
 
 ## Inequivalent Sublattices and the Generalized Method
 
@@ -293,7 +293,7 @@ E_{\mathrm{cl}}
 \Lambda=\operatorname{diag}(\lambda_1,\ldots,\lambda_{N_s})\otimes\mathsf I_3.
 $$
 
-If $\mathsf L_{\mathbf q}-\Lambda$ is positive semidefinite at every $\mathbf q$, the first term is nonnegative and $E_{\mathrm{cl}}\ge N_{\mathrm{uc}}\sum_a\lambda_a$. The best bound of this form maximizes $\sum_a\lambda_a$ under that condition. Equal multipliers $\lambda_a=\lambda_{\mathrm{LT}}$ recover (2), so the generalized bound is never weaker. Lyons and Kaplan introduced this generalization through adjustable parameters in the weak constraint, which allows crystallographically inequivalent spins.
+If $\mathsf L_{\mathbf q}-\Lambda$ is positive semidefinite at every $\mathbf q$, the first term is nonnegative and $E_{\mathrm{cl}}\ge N_{\mathrm{uc}}\sum_a\lambda_a$. The best bound of this form maximizes $\sum_a\lambda_a$ under that condition. Equal multipliers $\lambda_a=\lambda_{\mathrm{LT}}$ recover (2), so the generalized bound is never weaker. Lyons and Kaplan [@lyonsMethod1960] introduced this generalization through adjustable parameters in the weak constraint, which allows crystallographically inequivalent spins.
 
 ## Scope and Limitations
 
@@ -323,6 +323,6 @@ LSWT requires a reference configuration of unit spins that is stationary under t
 
 ### External Sources
 
-- J. M. Luttinger and L. Tisza, “Theory of Dipole Interaction in Crystals,” *Physical Review* **70**, 954–964 (1946), [doi:10.1103/PhysRev.70.954](https://doi.org/10.1103/PhysRev.70.954): representation of spin arrays as vectors in a many-dimensional space and reduction of the minimum-energy problem to a matrix diagonalization.
+- [@luttingerTheory1946]: representation of spin arrays as vectors in a many-dimensional space and reduction of the minimum-energy problem to a matrix diagonalization.
 
-- D. H. Lyons and T. A. Kaplan, “Method for Determining Ground-State Spin Configurations,” *Physical Review* **120**, 1580 (1960), [doi:10.1103/PhysRev.120.1580](https://doi.org/10.1103/PhysRev.120.1580): generalization with adjustable parameters in the weak constraint for inequivalent spins; spiral ground state for lattices of equivalent spins.
+- [@lyonsMethod1960]: generalization with adjustable parameters in the weak constraint for inequivalent spins; spiral ground state for lattices of equivalent spins.

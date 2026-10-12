@@ -64,7 +64,7 @@ The energy gradient is parallel to the classical spin, whereas the leading trans
 
 ### External Sources
 
-- T. Holstein and H. Primakoff, “Field Dependence of the Intrinsic Domain Magnetization of a Ferromagnet,” *Physical Review* **58**, 1098-1113 (1940), [doi:10.1103/PhysRev.58.1098](https://doi.org/10.1103/PhysRev.58.1098): original source for the Holstein–Primakoff boson representation.
+- [@holsteinField1940]: original source for the Holstein–Primakoff boson representation.
 
 <!-- Real-Space Boson Hamiltonian Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/01-derivation/real-space-boson-hamiltonian.md (status: draft, source-section: Bosonic representations for spin Hamiltonian). Review status: draft; awaiting the user's physics and mathematics review. -->
 
@@ -201,7 +201,7 @@ For an easy-axis term $D(\hat S_I^z)^2$ with $D<0$ and the spin along $z$, only 
 
 ### External Sources
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Eq. (9) defines the complex vector $\mathbf u_j=\mathbf e_j^1+\mathrm i\mathbf e_j^2$ from the first two columns of the local rotation, which is $\sqrt2\,\mathbf e_j^+$ here, and $\mathbf v_j$ from the third column, which is $\mathbf n_j$ here; Eq. (19) gives the corresponding expansion of the spin operator.
+- [@tothLinear2015]: Eq. (9) defines the complex vector $\mathbf u_j=\mathbf e_j^1+\mathrm i\mathbf e_j^2$ from the first two columns of the local rotation, which is $\sqrt2\,\mathbf e_j^+$ here, and $\mathbf v_j$ from the third column, which is $\mathbf n_j$ here; Eq. (19) gives the corresponding expansion of the spin operator.
 
 <!-- Momentum-Space BdG Hamiltonian Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/01-derivation/momentum-space-bdg-hamiltonian.md (status: draft, source-section: Momentum Space Representations). Review status: draft; awaiting the user's physics and mathematics review. -->
 
@@ -340,7 +340,7 @@ $$
 C=1-\Big\langle\sqrt{1-\gamma_{\mathbf k}^2}\Big\rangle\simeq0.157947,
 $$
 
-where $\langle\cdot\rangle$ is the average over the Brillouin zone. Together with $E_{\mathrm{cl}}/N_{\mathrm{site}}=-2JS^2$, this is the known LSWT energy $-2JS^2-0.315895\,JS$ of the square-lattice antiferromagnet (Zheng and Hamer, Sec. IV). A direct numerical evaluation of the general block formulas on a $200\times200$ mesh reproduces the coefficient $-0.315895$ to six digits.
+where $\langle\cdot\rangle$ is the average over the Brillouin zone. Together with $E_{\mathrm{cl}}/N_{\mathrm{site}}=-2JS^2$, this is the known LSWT energy $-2JS^2-0.315895\,JS$ of the square-lattice antiferromagnet [@zhengSpinwave1993, Sec. IV]. A direct numerical evaluation of the general block formulas on a $200\times200$ mesh reproduces the coefficient $-0.315895$ to six digits.
 
 ## References
 
@@ -356,6 +356,6 @@ where $\langle\cdot\rangle$ is the average over the Brillouin zone. Together wit
 
 ### External Sources
 
-- W. Zheng and C. J. Hamer, “Spin-wave theory and finite-size scaling for the Heisenberg antiferromagnet,” *Physical Review B* **47**, 7961 (1993), [doi:10.1103/PhysRevB.47.7961](https://doi.org/10.1103/PhysRevB.47.7961): Sec. IV gives the ground-state energy per site of the square-lattice antiferromagnet, $-2S^2-0.315894842\,S+O(S^0)$ in units of $J$, whose first two terms are the LSWT result of the example.
+- [@zhengSpinwave1993]: Sec. IV gives the ground-state energy per site of the square-lattice antiferromagnet, $-2S^2-0.315894842\,S+O(S^0)$ in units of $J$, whose first two terms are the LSWT result of the example.
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Eqs. (25) and (26) give the BdG blocks as bilinear forms of the vectors $\mathbf u_j$ and $\mathbf v_j$ with the exchange matrices, with Fourier phases of the cell displacement $\mathbf d$ (Eq. (14)) rather than of the full displacement $\boldsymbol\Delta_\ell$ used here, and with their own normalization of the pair sum.
+- [@tothLinear2015]: Eqs. (25) and (26) give the BdG blocks as bilinear forms of the vectors $\mathbf u_j$ and $\mathbf v_j$ with the exchange matrices, with Fourier phases of the cell displacement $\mathbf d$ (Eq. (14)) rather than of the full displacement $\boldsymbol\Delta_\ell$ used here, and with their own normalization of the pair sum.

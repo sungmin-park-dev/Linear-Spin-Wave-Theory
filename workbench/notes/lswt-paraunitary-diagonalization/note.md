@@ -115,7 +115,7 @@ The zero-point correction $\Delta E_{\mathrm{zp}}$ is the energy of the magnon v
 
 ## Colpa’s Construction for a Positive-Definite BdG Matrix
 
-A paraunitary $\mathsf T_{\mathbf k}$ that brings $\mathsf H_{\mathbf k}$ to a diagonal form with positive entries exists if and only if $\mathsf H_{\mathbf k}$ is positive definite. If such a $\mathsf T_{\mathbf k}$ exists, $\mathsf H_{\mathbf k}=(\mathsf T_{\mathbf k}^{-1})^\dagger\mathsf E_{\mathbf k}\mathsf T_{\mathbf k}^{-1}$ is congruent to a positive diagonal matrix and is therefore positive definite. Conversely, Colpa’s construction produces $\mathsf T_{\mathbf k}$ from a positive-definite $\mathsf H_{\mathbf k}$. We suppress the momentum index in the rest of this section.
+A paraunitary $\mathsf T_{\mathbf k}$ that brings $\mathsf H_{\mathbf k}$ to a diagonal form with positive entries exists if and only if $\mathsf H_{\mathbf k}$ is positive definite. If such a $\mathsf T_{\mathbf k}$ exists, $\mathsf H_{\mathbf k}=(\mathsf T_{\mathbf k}^{-1})^\dagger\mathsf E_{\mathbf k}\mathsf T_{\mathbf k}^{-1}$ is congruent to a positive diagonal matrix and is therefore positive definite. Conversely, Colpa’s construction [@colpaDiagonalization1978] produces $\mathsf T_{\mathbf k}$ from a positive-definite $\mathsf H_{\mathbf k}$. We suppress the momentum index in the rest of this section.
 
 A positive-definite $\mathsf H$ has a Cholesky factorization $\mathsf H=\mathsf K\mathsf K^\dagger$ with an invertible lower-triangular $\mathsf K$. The Hermitian matrix $\mathsf K^\dagger\Sigma_3\mathsf K$ is congruent to $\Sigma_3$, so by Sylvester’s law of inertia it has $N_{\mathrm{sub}}$ positive and $N_{\mathrm{sub}}$ negative eigenvalues. We diagonalize it with a unitary matrix $\mathsf V$,
 
@@ -161,7 +161,7 @@ A positive-semidefinite $\mathsf H_{\mathbf k}$ has zero modes, for example Gold
 
 - For $A=B=0$, $\Sigma_3\mathsf H=0$ is diagonalizable, $\mathsf T=\mathsf I$ is paraunitary, and the mode is a boson of zero energy. The Goldstone mode of a Heisenberg ferromagnet at $\mathbf k=0$ and zero field has this form.
 
-Adding a small positive shift $\delta\,\mathsf I_{2N_{\mathrm{sub}}}$ makes $\mathsf H_{\mathbf k}$ positive definite. The energies then converge as $\delta\to0$, but in the first case the entries of $\mathsf T$ grow as $\delta^{-1/4}$, since $\varepsilon=\sqrt{2A\delta+\delta^2}$ while the diagonal entries of $\mathsf T$ scale as $(A/\varepsilon)^{1/2}$. Zero modes usually occur at isolated momenta, where $\varepsilon_{n\mathbf k}\to0$ continuously; they do not change $\Delta E_{\mathrm{zp}}$. Quantities weighted by $1/\varepsilon_{n\mathbf k}$ or by the Bose–Einstein distribution, such as magnon numbers and correlation functions, require separate treatment and are discussed in the observable documents. A complete diagonalization theory for positive-semidefinite quadratic boson Hamiltonians, which brings them to a standard form that includes such zero modes, is given by Colpa (1986).
+Adding a small positive shift $\delta\,\mathsf I_{2N_{\mathrm{sub}}}$ makes $\mathsf H_{\mathbf k}$ positive definite. The energies then converge as $\delta\to0$, but in the first case the entries of $\mathsf T$ grow as $\delta^{-1/4}$, since $\varepsilon=\sqrt{2A\delta+\delta^2}$ while the diagonal entries of $\mathsf T$ scale as $(A/\varepsilon)^{1/2}$. Zero modes usually occur at isolated momenta, where $\varepsilon_{n\mathbf k}\to0$ continuously; they do not change $\Delta E_{\mathrm{zp}}$. Quantities weighted by $1/\varepsilon_{n\mathbf k}$ or by the Bose–Einstein distribution, such as magnon numbers and correlation functions, require separate treatment and are discussed in the observable documents. A complete diagonalization theory for positive-semidefinite quadratic boson Hamiltonians, which brings them to a standard form that includes such zero modes, is given by Colpa [@colpaDiagonalization1986].
 
 ## References
 
@@ -181,9 +181,9 @@ Adding a small positive shift $\delta\,\mathsf I_{2N_{\mathrm{sub}}}$ makes $\ma
 
 ### External Sources
 
-- J. H. P. Colpa, “Diagonalization of the Quadratic Boson Hamiltonian,” *Physica A* **93**, 327–353 (1978), [doi:10.1016/0378-4371(78)90160-7](https://doi.org/10.1016/0378-4371(78)90160-7): paraunitary diagonalization of a positive-definite quadratic boson Hamiltonian through the Cholesky factorization; the construction of (7).
+- [@colpaDiagonalization1978]: paraunitary diagonalization of a positive-definite quadratic boson Hamiltonian through the Cholesky factorization; the construction of (7).
 
-- J. H. P. Colpa, “Diagonalization of the Quadratic Boson Hamiltonian with Zero Modes,” *Physica A* **134**, 377–416 (1986), [doi:10.1016/0378-4371(86)90056-7](https://doi.org/10.1016/0378-4371(86)90056-7), and **134**, 417–442 (1986), [doi:10.1016/0378-4371(86)90057-9](https://doi.org/10.1016/0378-4371(86)90057-9): standard form of positive-semidefinite quadratic boson Hamiltonians with zero modes.
+- [@colpaDiagonalization1986]: standard form of positive-semidefinite quadratic boson Hamiltonians with zero modes.
 
 <!-- Worked Example Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/03-examples/worked-example.md (status: draft, source-section: "Example: Solving spin system with linear spin wave theory (source pp. 25–27)"). Review status: draft; awaiting the user's physics and mathematics review. -->
 
@@ -506,4 +506,4 @@ The vector $\Sigma_1\mathbf t^*$ is therefore a correctly normalized hole column
 
 ### External Sources
 
-- J. H. P. Colpa, “Diagonalization of the Quadratic Boson Hamiltonian,” *Physica A* **93**, 327–353 (1978), [doi:10.1016/0378-4371(78)90160-7](https://doi.org/10.1016/0378-4371(78)90160-7): metric-preserving diagonalization of a positive-definite quadratic boson Hamiltonian through the Cholesky factorization.
+- [@colpaDiagonalization1978]: metric-preserving diagonalization of a positive-definite quadratic boson Hamiltonian through the Cholesky factorization.

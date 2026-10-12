@@ -374,4 +374,4 @@ For Cartesian components, the conjugation relation $[\mathcal C^{\alpha\beta}(\m
 
 ### External Sources
 
-- G. L. Squires, *Introduction to the Theory of Thermal Neutron Scattering*, 3rd ed. (Cambridge University Press, 2012), [doi:10.1017/CBO9781139107808](https://doi.org/10.1017/CBO9781139107808): magnetic neutron cross-section with the projection $\delta_{\alpha\beta}-\hat q_\alpha\hat q_\beta$, detailed balance, and the fluctuation–dissipation relation.
+- [@squiresIntroduction2012]: magnetic neutron cross-section with the projection $\delta_{\alpha\beta}-\hat q_\alpha\hat q_\beta$, detailed balance, and the fluctuation–dissipation relation.
