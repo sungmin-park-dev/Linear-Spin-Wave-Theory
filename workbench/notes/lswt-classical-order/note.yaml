@@ -1,3 +1,4 @@
 name: LSWT classical order
 from: docs/archive/2026-10-08-lswt-markdown
 summary: Classical ordered states, the rotation to local spin frames, stationarity and local stability through the BdG matrix, single-Q spirals in a rotating frame, and the Luttinger-Tisza method for classical ground states.
+topics: [ fundamental-theory-of-spin-wave-theory ]

@@ -1,0 +1,4 @@
+name: 'LSWT example: honeycomb topological magnon bands'
+from: workbench/notes (new worked example, 2026-10-12)
+summary: Honeycomb ferromagnet with second-neighbour Dzyaloshinskii-Moriya interaction about the polarized state. Two magnon bands of Haldane form, the DM gap at the Dirac points, the local stability condition, and Chern numbers of the two bands.
+topics: [ worked-examples ]

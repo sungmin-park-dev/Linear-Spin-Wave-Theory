@@ -1,0 +1,4 @@
+name: 'LSWT example: square-lattice antiferromagnet'
+from: workbench/notes (new worked example, 2026-10-12)
+summary: Heisenberg antiferromagnet on the square lattice about the Neel state. Dispersion, flat zone boundary, spin-wave velocity, ground-state energy and the quantum reduction of the ordered moment in closed form, with the mesh convergence that the Goldstone modes cause.
+topics: [ worked-examples ]

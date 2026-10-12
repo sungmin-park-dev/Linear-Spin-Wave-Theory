@@ -1,0 +1,4 @@
+name: 'LSWT example: square-lattice ferromagnet'
+from: workbench/notes (new worked example, 2026-10-12)
+summary: Heisenberg ferromagnet on the square lattice in a field. Magnon number is conserved, so the dispersion, the vanishing zero-point energy and the thermal reduction of the moment follow in closed form; the field gap and the Mermin-Wagner divergence at zero field.
+topics: [ worked-examples ]
