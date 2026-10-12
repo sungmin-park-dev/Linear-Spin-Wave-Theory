@@ -126,7 +126,7 @@ $$
 \eta_\mu=\frac{\partial E_{\mathrm{zp}}}{\partial\alpha_\mu^*}\bigg|_{\boldsymbol\alpha=0}, \tag{6}
 $$
 
-so the zero-point energy exerts a force on the classical directions, and $\mathsf H_{\mathbf 0}$ is the classical restoring matrix of a uniform deformation (Local Stability and the BdG Matrix in research note *LSWT classical order*). Eq. (5) is then the relaxation of the configuration in the potential $E_{\mathrm{cl}}+E_{\mathrm{zp}}$ to leading order. Eq. (6) is suggested by the following: shifting the bosons by $\boldsymbol\alpha$ changes the quadratic part of $\hat H_2+\hat H_3$ at first order in $\boldsymbol\alpha$ by an operator whose vacuum expectation is $\boldsymbol\eta^\dagger\boldsymbol\alpha+\boldsymbol\alpha^\dagger\boldsymbol\eta$. The equivalence of this shift with a rotation of the classical directions, to the order kept, is checked numerically rather than derived here; the check is listed under Checks.
+so the zero-point energy exerts a force on the classical directions, and $\mathsf H_{\mathbf 0}$ is the classical restoring matrix of a uniform deformation (Local Stability and the BdG Matrix in research note *LSWT classical order*). Eq. (5) is then the relaxation of the configuration in the potential $E_{\mathrm{cl}}+E_{\mathrm{zp}}$ to leading order. The same angle shift, written with the classical Hessian and the gradient of the zero-point energy, gives the rotation of the ordered moment in Magnon Observables in research note *LSWT magnon thermodynamics*. Eq. (6) is suggested by the following: shifting the bosons by $\boldsymbol\alpha$ changes the quadratic part of $\hat H_2+\hat H_3$ at first order in $\boldsymbol\alpha$ by an operator whose vacuum expectation is $\boldsymbol\eta^\dagger\boldsymbol\alpha+\boldsymbol\alpha^\dagger\boldsymbol\eta$. The equivalence of this shift with a rotation of the classical directions, to the order kept, is checked numerically rather than derived here; the check is listed under Checks.
 
 ## Ground-State Energy Through Order $S^0$
 
@@ -222,6 +222,8 @@ The script `examples/verification/lswt_nonlinear_vertices_check.py` checks the d
 - Holstein–Primakoff Expansion, Real-Space Boson Hamiltonian and Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: the leading spin operator, the circular exchange components, the BdG matrix $\mathsf H_{\mathbf k}$ and the single-ion rule whose quadratic order only is fixed.
 
 - Stationarity of the Reference Configuration and Local Stability and the BdG Matrix in research note *LSWT classical order*: the local field $\mathbf H_I$, the torque condition used in the cancellation of the field terms, and $\mathsf H_{\mathbf 0}$ as the classical Hessian of a uniform deformation.
+
+- Magnon Observables in research note *LSWT magnon thermodynamics*: the $1/S$ rotation of the ordered moment, which is the condensate of Eq. (5) written in classical angles.
 
 - Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*: $\mathsf T_{\mathbf k}$, the magnon operators and the zero-point energy.
 

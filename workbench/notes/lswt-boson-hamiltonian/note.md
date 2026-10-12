@@ -91,7 +91,7 @@ $$
 +O(S_I^{-1/2}).
 $$
 
-The omitted terms of the transverse part contain three boson operators, so they contribute to the Hamiltonian only at cubic and higher order. The longitudinal part $S_I-\hat n_I$ is exact. A boson annihilation operator therefore always comes with $\mathbf e_I^-$ and a creation operator with $\mathbf e_I^+$.
+The omitted terms of the transverse part contain three boson operators, so they contribute to the Hamiltonian only at cubic and higher order; these terms are written out in Cubic and Quartic Boson Terms in research note *LSWT nonlinear spin waves*. The longitudinal part $S_I-\hat n_I$ is exact. A boson annihilation operator therefore always comes with $\mathbf e_I^-$ and a creation operator with $\mathbf e_I^+$.
 
 ## Circular Components of the Exchange Matrix
 
