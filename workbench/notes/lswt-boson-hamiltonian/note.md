@@ -340,7 +340,7 @@ $$
 C=1-\Big\langle\sqrt{1-\gamma_{\mathbf k}^2}\Big\rangle\simeq0.157947,
 $$
 
-where $\langle\cdot\rangle$ is the average over the Brillouin zone. Together with $E_{\mathrm{cl}}/N_{\mathrm{site}}=-2JS^2$, this is the known LSWT energy $-2JS^2-0.315895\,JS$ of the square-lattice antiferromagnet (Zheng and Hamer, Sec. IV). A direct numerical evaluation of the general block formulas on a $240\times240$ mesh reproduces the coefficient $-0.315895$ to six digits.
+where $\langle\cdot\rangle$ is the average over the Brillouin zone. Together with $E_{\mathrm{cl}}/N_{\mathrm{site}}=-2JS^2$, this is the known LSWT energy $-2JS^2-0.315895\,JS$ of the square-lattice antiferromagnet (Zheng and Hamer, Sec. IV). A direct numerical evaluation of the general block formulas on a $200\times200$ mesh reproduces the coefficient $-0.315895$ to six digits.
 
 ## References
 

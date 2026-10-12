@@ -60,6 +60,106 @@ $$
 
 The superscript $0$ identifies the longitudinal direction, and $\pm$ label the transverse circular vectors. These are classical basis vectors, so they carry no operator hats. The phase convention is explicit in their definitions. Exchange matrices are contracted with these vectors bilinearly, without complex conjugation, as defined in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*.
 
+## Stationarity of the Reference Configuration
+
+The classical energy $E_{\mathrm{cl}}$ is the energy of the bilinear model with classical spins $\mathbf S_I=S_I\mathbf n_I$ and with the coherent-state value $S_I(S_I-\tfrac12)\mathbf n_I^{\mathsf T}\mathsf D_I\mathbf n_I+\tfrac{S_I}{2}\operatorname{Tr}\mathsf D_I$ of the single-ion term. Its gradient with respect to the classical spin defines the local field
+
+$$
+\mathbf H_I
+=-\frac{\partial E_{\mathrm{cl}}}{\partial\mathbf S_I}
+=\mathbf h_I-\sum_{\ell\in\partial I}S_{I'_\ell}\mathsf J_{II'_\ell}\mathbf n_{I'_\ell}-2\Big(S_I-\frac12\Big)\mathsf D_I\mathbf n_I,
+$$
+
+where $\partial I$ is the set of links incident on $I$, $I'_\ell$ is the opposite endpoint, and $\mathsf J_{II'}$ is oriented as in Link Counting in research note *LSWT spin Hamiltonian*. Under the fixed-length constraint, the configuration is stationary when every spin is parallel or antiparallel to its local field,
+
+$$
+\mathbf n_I\times\mathbf H_I=0\qquad\text{for every site }I.
+$$
+
+This torque-free condition is the Lagrange-multiplier condition of Fluctuations and Classical Stationarity in research note *LSWT boson Hamiltonian*, and it removes the terms linear in the bosons. Stationarity does not imply that the configuration is a minimum.
+
+## Local Stability and the BdG Matrix
+
+The quadratic boson Hamiltonian contains the second variation of the classical energy. For complex amplitudes $\alpha_I$, the classical spins
+
+$$
+\mathbf S_I(\alpha)
+=\big(S_I-|\alpha_I|^2\big)\mathbf e_I^0
++\sqrt{S_I}\big(\mathbf e_I^-\alpha_I+\mathbf e_I^+\alpha_I^*\big)
+$$
+
+are real vectors with $|\mathbf S_I(\alpha)|^2=S_I^2+|\alpha_I|^4$, so the $\alpha_I$ are coordinates on the sphere of radius $S_I$ to second order. They are the classical counterparts of the Holstein–Primakoff bosons in Real-Space Boson Hamiltonian in research note *LSWT boson Hamiltonian*. Inserting $\mathbf S_I(\alpha)$ into the classical energy gives
+
+$$
+E_{\mathrm{cl}}[\alpha]
+=E_{\mathrm{cl}}+E^{(1)}[\alpha]+E^{(2)}[\alpha]+O(|\alpha|^3),
+\qquad
+E^{(2)}[\alpha]=\hat H_2\big|_{\hat a_I\to\alpha_I}
+=\frac12\sum_{\mathbf k}\Psi_{\mathbf k}^\dagger\mathsf H_{\mathbf k}\Psi_{\mathbf k},
+$$
+
+where $\Psi_{\mathbf k}$ collects the Fourier amplitudes $\alpha_{\mathbf k\mu}$ and $\alpha_{-\mathbf k\mu}^*$ in the Nambu order. The second form carries no trace term because the amplitudes commute. The identity holds for any configuration, stationary or not, and for the single-ion term it holds with the coherent-state energy, whose second variation carries the factor $1-1/(2S_I)$ of the boson rule. The BdG matrix $\mathsf H_{\mathbf k}$ is therefore the classical Hessian in Bloch form, and its entries are of order $S$.
+
+At a stationary configuration, $E^{(1)}=0$, and three cases follow:
+
+- If $\mathsf H_{\mathbf k}$ is positive definite at every momentum, the configuration is a strict local minimum against small deformations, and LSWT about it is defined.
+
+- If $\mathsf H_{\mathbf k}$ has a negative direction at some momentum, the configuration is a saddle point. No paraunitary transformation brings $\mathsf H_{\mathbf k}$ to a positive diagonal form, as shown in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*, and the quadratic Hamiltonian has no ground state. LSWT about this configuration is undefined; complex or wrong-signature eigenvalues of $\Sigma_3\mathsf H_{\mathbf k}$ signal the instability and are not magnon energies.
+
+- If $\mathsf H_{\mathbf k}$ is positive semidefinite with zero directions, the harmonic order does not decide stability along them. Zero directions arise from continuous symmetries of the Hamiltonian broken by the configuration (Goldstone modes) or from accidental classical degeneracies; the latter are decided only by higher orders or by fluctuations.
+
+## Single-Q Spirals in a Rotating Frame
+
+A single-$Q$ spiral rotates the spins of successive unit cells about a common axis. With the unit axis vector $\mathbf c$, the right-handed rotation $\mathsf R_{\mathbf c}(\phi)$ by the angle $\phi$ about it, and the directions $\mathbf d_\mu$ of the sublattices in the cell $\mathbf R_i=0$, the configuration is
+
+$$
+\mathbf n_{i\mu}=\mathsf R_{\mathbf c}(\mathbf Q\cdot\mathbf R_i)\,\mathbf d_\mu .
+$$
+
+The phase uses the cell vector $\mathbf R_i$; the same configuration written with the full position, $\mathsf R_{\mathbf c}(\mathbf Q\cdot\mathbf r_{i\mu})\mathbf d'_\mu$, has $\mathbf d'_\mu=\mathsf R_{\mathbf c}(-\mathbf Q\cdot\boldsymbol\delta_\mu)\mathbf d_\mu$. The wave vector $\mathbf Q$ may be incommensurate with the lattice, in which case no finite magnetic unit cell exists.
+
+The rotating frame removes the cell dependence. With $\hat{\mathbf S}_{i\mu}=\mathsf R_{\mathbf c}(\mathbf Q\cdot\mathbf R_i)\hat{\mathbf S}'_{i\mu}$, a link from $(i,\mu)$ to $(j,\nu)$ carries the exchange matrix $\mathsf R_{\mathbf c}(\mathbf Q\cdot\mathbf R_i)^{\mathsf T}\mathsf J_\ell\mathsf R_{\mathbf c}(\mathbf Q\cdot\mathbf R_j)$. Its dependence on $\mathbf R_i$ follows from the circular basis $\mathbf c^\pm$, $\mathbf c^0=\mathbf c$ about the spiral axis, which the rotation multiplies by phases, $\mathsf R_{\mathbf c}(\phi)\mathbf c^\pm=\exp(\mp\mathrm i\phi)\mathbf c^\pm$. The component of the rotated matrix between $\mathbf c^p$ and $\mathbf c^q$ is
+
+$$
+(\mathbf c^p)^{\mathsf T}\mathsf R_{\mathbf c}(\phi_i)^{\mathsf T}\mathsf J_\ell\mathsf R_{\mathbf c}(\phi_j)\mathbf c^q
+=\exp\!\big(-\mathrm i(s_p+s_q)\phi_i\big)\exp\!\big(-\mathrm i s_q\mathbf Q\cdot\boldsymbol d_\ell\big)\,(\mathbf c^p)^{\mathsf T}\mathsf J_\ell\mathbf c^q,
+$$
+
+with $\phi_i=\mathbf Q\cdot\mathbf R_i$, the cell displacement $\boldsymbol d_\ell=\mathbf R_j-\mathbf R_i$, and $s_\pm=\pm1$, $s_0=0$. The cell dependence disappears for every component exactly when $\mathsf J_\ell$ has no components with $s_p+s_q\ne0$, that is, when $\mathsf J_\ell$ commutes with all rotations about $\mathbf c$. Such matrices have the form
+
+$$
+\mathsf J_\ell=a_\ell\big(\mathsf I_3-\mathbf c\mathbf c^{\mathsf T}\big)+b_\ell\,\mathbf c\mathbf c^{\mathsf T}+d_\ell\,[\mathbf c]_\times ,
+$$
+
+an exchange of XXZ type about $\mathbf c$ together with a Dzyaloshinskii–Moriya vector along $\mathbf c$, where $[\mathbf c]_\times$ is the antisymmetric matrix of the cross product with $\mathbf c$. A symmetric single-ion matrix must then have the first two terms only, and the Zeeman-energy vector must be parallel to $\mathbf c$. Under these conditions the rotating-frame exchange is
+
+$$
+\mathsf J'_\ell=\mathsf J_\ell\,\mathsf R_{\mathbf c}(\mathbf Q\cdot\boldsymbol d_\ell),
+$$
+
+a real matrix that depends only on the link class. The rotating-frame Hamiltonian is translation invariant on the crystallographic unit cell, with the reference configuration $\mathbf d_\mu$, and the stationarity and stability conditions above and the BdG blocks of Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* apply to it with $\mathsf J'_\ell$ in place of $\mathsf J_\ell$. The magnon momentum $\mathbf k$ is then the momentum in the rotating frame. Laboratory spin correlations combine rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$, because $\mathsf R_{\mathbf c}(\phi)$ contains the harmonics $\exp(\pm\mathrm i\phi)$ and $1$ (Toth and Lake, Eq. (40)); their derivation in the conventions of these notes is not included here.
+
+When $\mathsf J_\ell$ has components with $s_p+s_q=\pm1$ or $\pm2$, the rotating-frame couplings carry the harmonics $\exp(\mp\mathrm i\mathbf Q\cdot\mathbf R_i)$ or $\exp(\mp2\mathrm i\mathbf Q\cdot\mathbf R_i)$. The rotating-frame Hamiltonian is then not translation invariant, it couples rotating-frame momenta that differ by $\mathbf Q$ or $2\mathbf Q$, and the single-$Q$ spiral is in general not stationary, since the field acquires the same harmonics. A single-$Q$ spin-wave spectrum is not defined in this case. A commensurate $\mathbf Q$ can still be treated on its finite magnetic unit cell with the general construction.
+
+### Example: Spirals on a Bravais Lattice
+
+For one spin per cell with isotropic exchange $J_{\boldsymbol\Delta}$ on the neighbor vectors $\boldsymbol\Delta$, a planar spiral with $\mathbf d\perp\mathbf c$ is torque free for every $\mathbf Q$: the local field $-S\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\mathsf R_{\mathbf c}(\mathbf Q\cdot\boldsymbol\Delta)\mathbf d$ has the component $-S\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\sin(\mathbf Q\cdot\boldsymbol\Delta)$ perpendicular to $\mathbf d$ in the spiral plane, which vanishes because $J_{-\boldsymbol\Delta}=J_{\boldsymbol\Delta}$. With $\mathcal J_{\mathbf k}=\sum_{\boldsymbol\Delta}J_{\boldsymbol\Delta}\exp(\mathrm i\mathbf k\cdot\boldsymbol\Delta)$ summed over all neighbor vectors, which is $2J(\mathbf k)$ of the Luttinger–Tisza appendix, the circular components of $\mathsf J'$ in the local frame of $\mathbf d$ are $\widetilde J'^{00}=J_{\boldsymbol\Delta}\cos\varphi$, $\widetilde J'^{+-}=\tfrac12J_{\boldsymbol\Delta}(1+\cos\varphi)$ and $\widetilde J'^{++}=\tfrac12J_{\boldsymbol\Delta}(1-\cos\varphi)$ with $\varphi=\mathbf Q\cdot\boldsymbol\Delta$. The blocks are then
+
+$$
+A_{\mathbf k}=S\Big[\frac{\mathcal J_{\mathbf k}}2+\frac{\mathcal J_{\mathbf k+\mathbf Q}+\mathcal J_{\mathbf k-\mathbf Q}}4-\mathcal J_{\mathbf Q}\Big],
+\qquad
+B_{\mathbf k}=S\Big[\frac{\mathcal J_{\mathbf k}}2-\frac{\mathcal J_{\mathbf k+\mathbf Q}+\mathcal J_{\mathbf k-\mathbf Q}}4\Big],
+$$
+
+and the single-sublattice result $\varepsilon_{\mathbf k}^2=A_{\mathbf k}^2-|B_{\mathbf k}|^2$ of Worked Example in research note *LSWT paraunitary diagonalization* gives
+
+$$
+\varepsilon_{\mathbf k}^2
+=S^2\big(\mathcal J_{\mathbf k}-\mathcal J_{\mathbf Q}\big)\Big(\frac{\mathcal J_{\mathbf k+\mathbf Q}+\mathcal J_{\mathbf k-\mathbf Q}}2-\mathcal J_{\mathbf Q}\Big).
+$$
+
+The two factors are, up to $S$, the eigenvalues $A_{\mathbf k}\pm B_{\mathbf k}$ of the real $2\times2$ BdG matrix. Both are nonnegative for every $\mathbf k$ exactly when $\mathbf Q$ is a global minimum of $\mathcal J_{\mathbf k}$, which is the Luttinger–Tisza condition of the appendix. For any other $\mathbf Q$, the eigenvalue $S(\mathcal J_{\mathbf k}-\mathcal J_{\mathbf Q})$ is negative at a minimizing wave vector, so the torque-free spiral is a saddle point and LSWT about it is undefined; $\varepsilon_{\mathbf k}^2$ is negative wherever exactly one of the two factors is negative. At a minimizing $\mathbf Q$ that is not half a reciprocal-lattice vector, the energy vanishes at $\mathbf k=0$ and at $\mathbf k=\pm\mathbf Q$: these are the three Goldstone modes of a noncollinear order, the rotation within the spiral plane and the two tilts of the plane. For the triangular-lattice $120^\circ$ state, $\mathcal J_{\mathbf k}=6J\gamma_{\mathbf k}$ with $\gamma_{\mathbf k}=\frac13\sum_m\cos(\mathbf k\cdot\mathbf a_m)$ and $\mathcal J_{\mathbf k\pm\mathbf Q}$ averaging to $-3J\gamma_{\mathbf k}$, so $\varepsilon_{\mathbf k}=3JS\sqrt{(1-\gamma_{\mathbf k})(1+2\gamma_{\mathbf k})}$.
+
 ## References
 
 ### Internal Documents
@@ -68,11 +168,21 @@ The superscript $0$ identifies the longitudinal direction, and $\pm$ label the t
 
 - Bilinear Spin Hamiltonian in research note *LSWT spin Hamiltonian*: defines the laboratory-frame exchange matrices and Zeeman field rotated here.
 
-- Holstein–Primakoff Expansion in research note *LSWT boson Hamiltonian*: uses the local quantization axis to introduce bosonic fluctuations.
+- Holstein–Primakoff Expansion in research note *LSWT boson Hamiltonian*: uses the local quantization axis to introduce bosonic fluctuations and states the Lagrange-multiplier form of stationarity.
+
+- Real-Space Boson Hamiltonian and Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: supply the quadratic Hamiltonian whose classical form is the second variation, and the blocks used for the rotating-frame exchange.
+
+- Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*: shows that a positive paraunitary diagonal form exists only for a positive-definite BdG matrix, and gives the single-sublattice energies used in the spiral example.
+
+- Appendix: Luttinger–Tisza Method (Section *Appendix: Luttinger–Tisza Method*): gives the minimizing wave vectors and the function $J(\mathbf k)$.
+
+- Verification script `examples/verification/lswt_bdg_blocks_check.py`: compares the second variation of the classical energy with the BdG quadratic form on a periodic cluster for a random non-stationary configuration with single-ion terms (relative difference $2\times10^{-8}$, the finite-difference error), and the rotating-frame blocks of a spiral with the closed form above, including the imaginary modes at a non-minimizing pitch ($2\times10^{-14}$).
 
 ### External Sources
 
-- None.
+- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Eqs. (3) and (6) define the single-$Q$ structure with cell-position phases and the rotating frame; Eq. (13) states the rotation invariance of the exchange matrices required for it; Eq. (21) gives the rotating-frame exchange; Eq. (40) combines the rotating-frame correlations at $\mathbf k$ and $\mathbf k\pm\mathbf Q$.
+
+- D. H. Lyons and T. A. Kaplan, “Method for Determining Ground-State Spin Configurations,” *Physical Review* **120**, 1580 (1960), [doi:10.1103/PhysRev.120.1580](https://doi.org/10.1103/PhysRev.120.1580): spiral ground states of Bravais lattices with isotropic exchange at the minimum of the exchange Fourier transform.
 
 <!-- Appendix: Luttinger–Tisza Method Converted on 2026-10-08 from docs/archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md (status: draft, source-section: "None in the primary note; the restructured TeX contains only an empty TODO section (app:luttinger-tisza). Content follows Luttinger and Tisza (1946) and Lyons and Kaplan (1960)."). Review status: draft; awaiting the user's physics and mathematics review. -->
 

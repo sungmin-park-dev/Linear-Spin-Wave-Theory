@@ -11,11 +11,23 @@ and compares them with ``QuadraticBoseHamiltonian`` (D36):
    g-tensors, a random field and a random, non-stationary spin configuration.
    The blocks must agree entry by entry at random momenta.
 2. The full-position convention: ``A_{k+G} = U^dag A_k U`` and
-   ``B_{k+G} = U^dag B_k U`` with ``U = diag exp(i G . delta_mu)``.
+   ``B_{k+G} = U^dag B_k U`` with ``U = diag exp(i G . delta_mu)``, that is
+   ``H_{k+G} = Lambda_G H_k Lambda_G^dag`` with ``Lambda_G = 1_2 (x) U^dag``.
 3. The square-lattice Neel antiferromagnet: the blocks equal the closed forms
    ``A = 4JS 1`` and ``B = -4JS gamma_k sigma_x`` of the note's example, and
-   the zero-point correction with the trace subtraction must approach the series result
+   the zero-point correction with the trace subtraction must approach the
+   series result
    ``Delta E_zp / N = -0.315894842 J S`` (Zheng and Hamer, PRB 47, 7961, 1993).
+4. The classical Hessian: for a random configuration of the model of case 1
+   on a periodic 3 x 3 cluster, the second-order change of the classical
+   energy (with the coherent-state single-ion value) under a deformation with
+   complex amplitudes alpha equals the BdG quadratic form with a -> alpha.
+5. A single-Q spiral in the rotating frame: for the square-lattice Heisenberg
+   model with J1 and J2 along x and ferromagnetic Jy (a spiral along x), the
+   blocks with rotating-frame exchange J R_z(Q . Delta) give
+   omega_k^2 = S^2 (J_k - J_Q)((J_{k+Q} + J_{k-Q})/2 - J_Q), with
+   J_k = sum_Delta J_Delta exp(i k . Delta), at the minimizing pitch;
+   a non-minimizing pitch has imaginary modes with the same omega_k^2 < 0.
 
 Run with ``python examples/verification/lswt_bdg_blocks_check.py``.
 """
@@ -106,14 +118,13 @@ def random_case(rng):
     state = SpinState.from_function(model, np.eye(2, dtype=int), lambda s, c: directions[s])
     field = rng.normal(size=3) * 0.3
     order = list(spins)
-    pos = {s: model.cartesian_position(s) for s in spins}
     note_sites = [(spins[s], directions[s]) for s in order]
     note_bonds = [(order.index(s), order.index(t), model.cartesian_position(t, nt) - model.cartesian_position(s, ns_), J)
                   for s, ns_, t, nt, J in bonds]
     note_onsite = [(order.index(s), onsite[s][0]) for s in order]
     note_fields = [onsite[s][1].T @ field for s in order]                # h = g^T (mu_B B)
     native = QuadraticBoseHamiltonian(model, state, ExternalConditions(field=field))
-    assert [key[0] for key in native.site_keys] == order and pos
+    assert [key[0] for key in native.site_keys] == order
     return native, (note_sites, note_bonds, note_onsite, note_fields)
 
 
@@ -145,7 +156,88 @@ def check_reciprocal_shift():
     return worst
 
 
-def check_square_zero_point(L=240, S=0.5):
+def check_classical_hessian(L=3, eps=1e-4):
+    rng = np.random.default_rng(11)
+    lattice = np.array([[1.0, 0.0], [0.4, 0.9]])
+    note_sites, note_bonds, note_onsite, note_fields = random_case(rng)[1]
+    ns = len(note_sites)
+    frac = [np.array([0.0, 0.0]), np.array([0.35, 0.6])]
+    cells = [(i, j) for i in range(L) for j in range(L)]
+    pos = {(c, m): (np.array(c) + frac[m]) @ lattice for c in cells for m in range(ns)}
+    # links of the cluster: each bond of the cell, translated, with the target cell found from Delta
+    links = []
+    for mu, nu, delta, J in note_bonds:
+        for c in cells:
+            target = pos[(c, mu)] + delta
+            n = np.linalg.solve(lattice.T, target) - frac[nu]
+            cn = (int(round(n[0])) % L, int(round(n[1])) % L)
+            links.append(((c, mu), (cn, nu), J))
+    e = {(c, m): circular_basis(note_sites[m][1]) for c in cells for m in range(ns)}
+    spin = [S for S, _ in note_sites]
+
+    def energy(alpha):
+        vec = {}
+        for key in pos:
+            S, a = spin[key[1]], alpha[key]
+            vec[key] = ((S - abs(a) ** 2) * e[key]["0"]
+                        + np.sqrt(S) * (e[key]["-"] * a + e[key]["+"] * np.conj(a))).real
+        E = sum(vec[I] @ J @ vec[K] for I, K, J in links)
+        for mu, D in note_onsite:
+            S = spin[mu]
+            for c in cells:
+                n = vec[(c, mu)] / np.linalg.norm(vec[(c, mu)])
+                E += S * (S - 0.5) * n @ D @ n
+        E -= sum(note_fields[key[1]] @ vec[key] for key in pos)
+        return E
+
+    alpha = {key: complex(*rng.normal(size=2)) for key in pos}
+    second = (energy({k: eps * v for k, v in alpha.items()}) + energy({k: -eps * v for k, v in alpha.items()})
+              - 2 * energy({k: 0j for k in alpha})) / (2 * eps ** 2)
+    recip = 2 * np.pi * np.linalg.inv(lattice)                 # columns b1, b2
+    quad = 0.0
+    for m1 in range(L):
+        for m2 in range(L):
+            k = recip @ np.array([m1, m2]) / L
+            ak = np.array([sum(np.exp(-1j * k @ pos[(c, m)]) * alpha[(c, m)] for c in cells) for m in range(ns)]) / L
+            amk = np.array([sum(np.exp(1j * k @ pos[(c, m)]) * alpha[(c, m)] for c in cells) for m in range(ns)]) / L
+            A, B = note_blocks(note_sites, note_bonds, note_onsite, note_fields, k)
+            quad += (ak.conj() @ A @ ak + 0.5 * (ak.conj() @ B @ amk.conj() + np.conj(ak.conj() @ B @ amk.conj()))).real
+    rel = abs(second - quad) / abs(quad)
+    print(f"4. classical Hessian: second variation {second:.8f}, BdG form {quad:.8f}, relative difference {rel:.1e}")
+    return rel
+
+
+def rz(phi):
+    c, s_ = np.cos(phi), np.sin(phi)
+    return np.array([[c, -s_, 0], [s_, c, 0], [0, 0, 1]])
+
+
+def check_spiral(S=1.0, J1=1.0, J2=0.7, Jy=-0.5):
+    neighbors = [((1, 0), J1), ((2, 0), J2), ((0, 1), Jy)]                # one per pair
+    def Jk(k):
+        return sum(2 * J * np.cos(k @ np.array(d, float)) for d, J in neighbors)
+    Qstar = np.array([np.arccos(-J1 / (4 * J2)), 0.0])                    # global minimum of J_k
+    rng = np.random.default_rng(3)
+    worst = 0.0
+    negative = False
+    for Q in (Qstar, Qstar + np.array([0.3, -0.1])):
+        bonds = [(0, 0, np.array(d, float), J * np.eye(3) @ rz(Q @ np.array(d, float))) for d, J in neighbors]
+        for k in np.vstack([rng.uniform(-np.pi, np.pi, size=(20, 2)), Qstar, Qstar + [0.1, 0.05]]):
+            H = note_bdg([(S, EX)], bonds, [], [np.zeros(3)], k)
+            w = np.linalg.eigvals(np.diag([1, -1]) @ H)
+            w2 = S ** 2 * (Jk(k) - Jk(Q)) * ((Jk(k + Q) + Jk(k - Q)) / 2 - Jk(Q))
+            if np.allclose(Q, Qstar):
+                assert w2 >= -1e-12
+                worst = max(worst, abs(np.max(w.real) ** 2 - w2))      # omega^2: zero modes
+            elif w2 < 0:
+                negative = True
+                worst = max(worst, abs(np.sort(w.imag)[-1] ** 2 + w2))
+    print(f"5. J1-J2-Jy spiral: max deviation from closed form {worst:.1e}; "
+          f"non-minimizing pitch has imaginary modes: {negative}")
+    return worst, negative
+
+
+def check_square_zero_point(L=200, S=0.5):
     lattice = np.array([[1.0, 1.0], [1.0, -1.0]])        # sqrt2 x sqrt2 Neel cell
     sites = [(S, EZ), (S, -EZ)]
     J = np.eye(3)
@@ -173,4 +265,7 @@ if __name__ == "__main__":
     assert check_blocks() < 1e-12
     assert check_reciprocal_shift() < 1e-12
     assert abs(check_square_zero_point() + 0.315894842) < 2e-4
+    assert check_classical_hessian() < 1e-6
+    worst, negative = check_spiral()
+    assert worst < 1e-12 and negative
     print("all checks passed")
