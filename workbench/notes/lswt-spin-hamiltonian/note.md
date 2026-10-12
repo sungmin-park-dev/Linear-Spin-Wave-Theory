@@ -397,7 +397,7 @@ This table translates source notation into the notation used above. The source s
 
 The following quantities or conventions are not fully specified. Reserving a symbol does not establish the associated physical definition.
 
-- Fourier-transform sign and full-position versus periodic gauge.
+- Acceptance of the full-position Fourier convention with the phase $\exp(\mathrm i\mathbf k\cdot\mathbf r_{i\mu})$, which Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian* adopts and the spin-correlation and topology notes use. The cell convention is not developed; its relation to the full-position convention is stated in Topological Magnon Quantities in research note *LSWT magnon topology*.
 
 - Folding and normalization between the CBZ and MBZ.
 
@@ -537,7 +537,7 @@ $$
 \hat{\boldsymbol\mu}_I=\mu_B\mathsf g_I\hat{\mathbf S}_I,
 $$
 
-so that a field favors spins parallel to it. For electron spins the physical moment is $-\mu_B\mathsf g_I\hat{\mathbf S}_I$. The Hamiltonian below at field $\mathbf B$ therefore equals the electron Hamiltonian at field $-\mathbf B$. Energies, magnon spectra and quantities even in the field are the same in both conventions, whereas quantities odd under time reversal, such as the sign of the thermal Hall conductivity or of a magnon chirality, refer to the reversed field and change sign when expressed in terms of the physical field of an electron system.
+so that a field favors spins parallel to it. For electron spins the physical moment is $-\mu_B\mathsf g_I\hat{\mathbf S}_I$. The Hamiltonian below at field $\mathbf B$ therefore equals the electron Hamiltonian at field $-\mathbf B$. Time reversal maps the electron Hamiltonian at $-\mathbf B$ to the electron Hamiltonian at $\mathbf B$, reversing every classical spin direction, $\mathbf n_I\to-\mathbf n_I$, and every magnon momentum, $\mathbf k\to-\mathbf k$. The two conventions therefore give the same many-body spectrum, free energy and magnetization at a given field, and their magnon dispersions are related by $\varepsilon_{n\mathbf k}\leftrightarrow\varepsilon_{n,-\mathbf k}$, so a nonreciprocal part of the dispersion, odd in $\mathbf k$, changes sign. Quantities odd under time reversal that are not defined through the moment operator, such as the sign of the thermal Hall conductivity or of a magnon chirality, refer to the reversed field and change sign when expressed in terms of the physical field of an electron system.
 
 Here, $\mathsf g_I$ is the dimensionless $g$-tensor. In the isotropic case, $\mathsf g_I=g_I\mathsf I_3$ with $g_I>0$, where $\mathsf I_3$ is the $3\times3$ identity matrix. For an anisotropic coupling, positive $g$ values refer to the principal-axis coupling magnitudes; positivity is not an entrywise condition on the tensor in an arbitrary Cartesian basis.
 
@@ -578,7 +578,7 @@ Spin–orbit coupling and crystal-field effects can make $\mathsf g_I$ anisotrop
 
 ### External Sources
 
-- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its positive Zeeman contraction agrees with the explicit electron-sign convention used here.
+- S. Toth and B. Lake, [Linear spin wave theory for single-Q incommensurate magnetic structures](https://arxiv.org/abs/1402.6069), *Journal of Physics: Condensed Matter* **27**, 166002 (2015), [doi:10.1088/0953-8984/27/16/166002](https://doi.org/10.1088/0953-8984/27/16/166002): Sec. II describes exchange tensors and single-ion anisotropy; Eq. (11) gives the transposed reverse-bond relation. Its Eq. (1) writes the Zeeman term as $+\mu_B\mathbf H^{\mathsf T}\sum_{mi}\mathsf g_i\mathbf S_{mi}$, which has the physical electron sign and contracts the field with the first index of the $g$-tensor; the Hamiltonian here at field $\mathbf B$ therefore equals Toth–Lake Eq. (1) at field $-\mathbf B$.
 
 - NIST, [Atomic Spectroscopy: Zeeman Effect](https://www.nist.gov/pml/atomic-spectroscopy-compendium-basic-ideas-notation-data-and-formulas/atomic-spectroscopy-zeeman): positive electron spin $g$-factor and the sign of the Zeeman energy shift.
 

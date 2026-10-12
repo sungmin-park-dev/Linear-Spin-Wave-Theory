@@ -28,3 +28,10 @@ concepts:
   - nonlinear-spin-wave-theory
   - landau-lifshitz-gilbert-equation
   - mermin-wagner-theorem
+topics:
+  - id: fundamental-theory-of-spin-wave-theory
+    title: Fundamental Theory of Spin Wave Theory
+    parts: []
+    description: Description of fundamental theory for spin wave theory
+    preview:
+      color: orange
