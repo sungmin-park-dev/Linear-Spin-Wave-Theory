@@ -45,13 +45,15 @@ def test_square_heisenberg_oguchi_constant():
 
 
 def test_triangular_heisenberg_order_s0_energy():
-    # Chernyshev and Zhitomirsky, PRB 79, 144416 (2009), Eq. (42):
-    # E/N = -(3/2) J S^2 [1 + 0.436824/(2S) + 0.02141/(2S)^2]; the S^0 term is -0.0080288 J.
-    # The mesh converges to -0.008012 here (0.2% below the published integral).
+    # Chernyshev and Zhitomirsky, PRB 79, 144416 (2009), Eqs. (39)-(42):
+    # E/N = -(3/2) J S^2 [1 + 0.436824/(2S) + (I_4 + 2 I_3)/(2S)^2]. Their formulas evaluated
+    # independently give I_4 + 2 I_3 = 0.0213668, an S^0 term of -0.00801256 J
+    # (examples/verification/lswt_triangular_s0_energy_check.py); the quoted 0.02141 comes
+    # from I_3 = 0.13785(1), 2e-5 above the converged 0.137830.
     model = triangular_heisenberg(S=1.0)
     e = solve_nlswt(model, state_120(model), settings=NLSWTSettings(mesh=(12, 12))).energies
     assert e.zero_point == pytest.approx(-1.5 * 0.436824 / 2, rel=2e-4)
-    assert e.order_s0 == pytest.approx(-0.0080288, rel=5e-3)
+    assert e.order_s0 == pytest.approx(-0.00801256, rel=3e-4)    # mesh 12: -0.0080112
     assert abs(e.tadpole) < 1e-6
     assert e.cubic < 0 < e.hartree_fock
 
