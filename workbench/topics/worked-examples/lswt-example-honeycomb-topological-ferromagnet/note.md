@@ -56,11 +56,29 @@ with a mass $d^z$ of opposite sign at $\mathbf K$ and $-\mathbf K$. The polarize
 
 ## Chern Numbers
 
-When $D\ne0$ the two bands are separated everywhere: their separation $2S\sqrt{J^2|f_{\mathbf k}|^2+4D^2s_{\mathbf k}^2}$ vanishes only where $f_{\mathbf k}=0$, which happens only at $\pm\mathbf K$, where $s_{\mathbf k}\ne0$. At $M=(\pi,\pi/\sqrt3)$, $|f_M|=1$ and $s_M=0$, so the separation there is $2JS$ for every $D$, and the corner gap (4) is the smaller of the two when $|D|<J/(3\sqrt3)$. For $D=0.1\,J$ the corner gap is the smallest separation on the whole zone, which we checked on a $600\times600$ mesh. The Chern numbers of Chern Number of an Isolated Magnon Band in research note *LSWT magnon topology* are then defined. The Chern number cannot change while the bands stay separated, so it can be evaluated for small $|D|$, where the Berry curvature is concentrated near the corners. There each massive Dirac point contributes $\pm\frac12$ to the Chern number of a band, with a sign fixed by the product of the sign of its mass and the winding of the phase of $f_{\mathbf k}$ around it. At $\mathbf K$ and $-\mathbf K$ both the mass and the winding have opposite signs, so the two contributions add, and each band has $|C|=1$ [@haldaneModel1988]. The overall sign depends on the sign of $D$ and on the orientation convention for the Berry curvature. In the convention of research note *LSWT magnon topology*, the computation in Numerical Check gives $C_-=+1$ and $C_+=-1$ for $D>0$, and the signs reverse for $D<0$. The two Chern numbers sum to zero, as the sum rule of that note requires. The thermal Hall conductivity of these bands follows from the formulas of Magnon Thermal Hall Conductivity in the same note and is not repeated here.
+When $D\ne0$ the two bands are separated everywhere: their separation $2S\sqrt{J^2|f_{\mathbf k}|^2+4D^2s_{\mathbf k}^2}$ vanishes only where $f_{\mathbf k}=0$, which happens only at $\pm\mathbf K$, where $s_{\mathbf k}\ne0$. At $M=(\pi,\pi/\sqrt3)$, $|f_M|=1$ and $s_M=0$, so the separation there is $2JS$ for every $D$, and the corner gap (4) is the smaller of the two when $|D|<J/(3\sqrt3)$. For $D=0.1\,J$ the corner gap is the smallest separation on the whole zone, which we checked on a $600\times600$ mesh. The Chern numbers of Chern Number of an Isolated Magnon Band in research note *LSWT magnon topology* are then defined. The Chern number cannot change while the bands stay separated, so it can be evaluated for small $|D|$, where the Berry curvature is concentrated near the corners. Near a corner write $\mathbf k=\pm\mathbf K+\mathbf q$. To first order in $\mathbf q$,
+
+<!-- eq 5: eq-ex-hc-dirac -->
+
+$$
+f_{\mathbf K+\mathbf q}=-\tfrac{\sqrt3}{2}\,(q_x+\mathrm iq_y),
+\qquad
+f_{-\mathbf K+\mathbf q}=\tfrac{\sqrt3}{2}\,(q_x-\mathrm iq_y), \tag{5}
+$$
+
+so that $(d^x,d^y)=\frac{\sqrt3}{2}JS\,(q_x,-q_y)$ near $\mathbf K$ and $\frac{\sqrt3}{2}JS\,(-q_x,-q_y)$ near $-\mathbf K$, while the mass is constant to this order, $d^z_{\pm\mathbf K}=\mp3\sqrt3\,DS$. The linear map $\mathbf q\mapsto(d^x,d^y)$ has the determinant $\eta_{\pm\mathbf K}=\mp\frac34J^2S^2$, so the phase of $f_{\mathbf k}$ winds in opposite directions around the two corners. For a number-conserving two-band block $3JS\,\mathsf I_2+\mathbf d_{\mathbf k}\cdot\boldsymbol\sigma$, the hole columns of the Kubo form (2) of research note *LSWT magnon topology* decouple, and that form reduces to the curvature of a two-level system, $\Omega_{-,\mathbf k}=\frac12\,\hat{\mathbf d}_{\mathbf k}\cdot(\partial_{k_x}\hat{\mathbf d}_{\mathbf k}\times\partial_{k_y}\hat{\mathbf d}_{\mathbf k})$ for the lower band and the opposite for the upper band, with $\hat{\mathbf d}_{\mathbf k}=\mathbf d_{\mathbf k}/|\mathbf d_{\mathbf k}|$. The integral of $\Omega_-$ is therefore half the solid angle swept by $\hat{\mathbf d}_{\mathbf k}$. Across the neighborhood of a corner, within $|\mathbf q|\sim|D|/J$, the linearized $\hat{\mathbf d}$ sweeps one hemisphere, the one on the side of $d^z$, with the orientation of the map $\mathbf q\mapsto(d^x,d^y)$. The corner contributes $\frac12\operatorname{sgn}(\eta\,d^z)$ to $C_-$. Away from the corners $\hat{\mathbf d}_{\mathbf k}$ stays within an angle of order $|D|/J$ of the equator and the curvature is of order $D$, so that part vanishes as $D\to0$. At $\mathbf K$, $\eta<0$ and $d^z=-3\sqrt3\,DS$, and at $-\mathbf K$ both signs reverse. Both corners therefore contribute $\frac12\operatorname{sgn}D$, and
+
+<!-- eq 6: eq-ex-hc-chern -->
+
+$$
+C_-=\operatorname{sgn}D,\qquad C_+=-\operatorname{sgn}D. \tag{6}
+$$
+
+The bands are separated for every $D\ne0$, so (6) holds for every $D\ne0$ and not only in the limit $D\to0$. The two-level form of $\Omega_-$ and the solid-angle count fix the sign in the orientation convention of research note *LSWT magnon topology*, $\Omega=\partial_{k_x}\mathcal A^y-\partial_{k_y}\mathcal A^x$; the opposite orientation reverses both Chern numbers. The computation in Numerical Check gives the same signs. The two Chern numbers sum to zero, as the sum rule of that note requires. The thermal Hall conductivity of these bands follows from the formulas of Magnon Thermal Hall Conductivity in the same note and is not repeated here.
 
 ## Numerical Check
 
-For $J=1$, $D=0.1$ and $S=1/2$, the computed bands agree with (3) along $\Gamma$–$\mathbf K$–$M$–$\Gamma$ to machine precision. At $\mathbf K$ the energies are $1.2402$ and $1.7598$, so the gap is $0.5196=6\sqrt3\,DS$, and the upper band at $\Gamma$ is $3.0000=6JS$. On a $30\times30$ mesh the Kubo integral and the link-variable construction agree on the Chern numbers $(C_-,C_+)=(+1,-1)$ for $D=+0.1$ and $(-1,+1)$ for $D=-0.1$.
+For $J=1$, $D=0.1$ and $S=1/2$, the computed bands agree with (3) along $\Gamma$–$\mathbf K$–$M$–$\Gamma$ to machine precision. At $\mathbf K$ the energies are $1.2402$ and $1.7598$, so the gap is $0.5196=6\sqrt3\,DS$, and the upper band at $\Gamma$ is $3.0000=6JS$. On a $30\times30$ mesh the Kubo integral and the link-variable construction agree on the Chern numbers $(C_-,C_+)=(+1,-1)$ for $D=+0.1$ and $(-1,+1)$ for $D=-0.1$, as (6) requires. The script also evaluates the Dirac count of (6) from finite-difference Jacobians at $\pm\mathbf K$ and obtains $C_-=+1$ and $-1$ for the two signs of $D$.
 
 ## References
 
@@ -68,6 +86,7 @@ For $J=1$, $D=0.1$ and $S=1/2$, the computed bands agree with (3) along $\Gamma$
 
 - Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: the full-position Fourier convention used for (2).
 - Chern Number of an Isolated Magnon Band and Magnon Thermal Hall Conductivity in research note *LSWT magnon topology*: the definition and sign convention of the Chern numbers, and the sum rule.
+- Berry Curvature of Bosonic Bogoliubov Bands in research note *LSWT magnon topology*: the Kubo form used for the two-level curvature in Chern Numbers.
 - Research note *LSWT example: square-lattice ferromagnet*: the exchange part of the boson Hamiltonian.
 - `code-space/examples/worked_examples/honeycomb_topological_ferromagnet.py` and `code-space/tests/test_worked_examples.py`: the numbers of Numerical Check.
 

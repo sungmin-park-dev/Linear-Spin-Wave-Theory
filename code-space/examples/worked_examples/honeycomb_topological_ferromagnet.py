@@ -9,7 +9,9 @@ closed forms of the note:
 
 - two bands ``omega_k = 3 J S -+ S sqrt(J^2 |f_k|^2 + 4 D^2 s_k^2)``,
 - the gap ``6 sqrt(3) D S`` at K,
-- Chern numbers of the two bands for D = +0.1 and D = -0.1.
+- Chern numbers of the two bands for D = +0.1 and D = -0.1, and the
+  analytic count ``C_- = sum_(+-K) sgn(eta d^z) / 2`` from the Dirac expansion,
+  where eta is the determinant of q -> (d^x, d^y) and d^z = 2 D S s_K.
 
 Run from the repository root:
 
@@ -40,6 +42,19 @@ def bands(k, D=D):
     return np.stack([3 * J * S - split, 3 * J * S + split], -1)
 
 
+def dirac_count(D, h=1e-6):
+    """Lower-band Chern number from the massive Dirac points at +-K."""
+    total = 0.0
+    for corner in (K, -K):
+        def d_xy(q):
+            f = sum(np.exp(1j * (corner + q) @ d) for d in NEAREST)
+            return np.array([-J * S * f.real, J * S * f.imag])   # d^x - i d^y = -J S f
+        jacobian = np.column_stack([(d_xy(h * e) - d_xy(-h * e)) / (2 * h) for e in np.eye(2)])
+        mass = 2 * D * S * sum(np.sin(corner @ b) for b in SECOND)
+        total += 0.5 * np.sign(np.linalg.det(jacobian) * mass)
+    return total
+
+
 def main():
     quiet()
     values = {'chern': {}}
@@ -47,6 +62,7 @@ def main():
         model = honeycomb_ferromagnet(J=J, D=d, S=S)
         result = stk.solve_lswt(model, polarized_state(model), settings=stk.LSWTSettings(mesh=(30, 30)))
         values['chern'][d] = [float(c) for c in chern_numbers(result)]
+        values.setdefault('dirac_count', {})[d] = dirac_count(d)
         if d == D:
             M = np.array([np.pi, np.pi / np.sqrt(3)])
             path = band_structure(result, [(0, 0), tuple(K), tuple(M), (0, 0)], points=150)
@@ -61,7 +77,8 @@ def main():
     print(f"omega(K) = {np.round(v['bands_K'], 4)}, gap {v['gap_K']:.4f} vs 6 sqrt(3) D S = "
           f"{v['gap_K_closed']:.4f}; omega_+(Gamma) = {v['top_gamma']:.4f}")
     for d, c in v['chern'].items():
-        print(f"D = {d:+.1f}: Chern numbers (lower, upper) = {c}")
+        print(f"D = {d:+.1f}: Chern numbers (lower, upper) = {c}; "
+              f"Dirac count C_- = {v['dirac_count'][d]:+.0f}")
     return values
 
 
