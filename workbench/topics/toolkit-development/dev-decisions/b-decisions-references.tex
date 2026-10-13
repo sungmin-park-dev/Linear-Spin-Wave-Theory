@@ -487,6 +487,28 @@
 \endgroup
 
 
+\subsection{결정 기록 (D51): 국소 안정성은 연속 $k$와 영모드 강성으로 판정한다}\label{decisions-d51-local-stability}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-13 Claude 결정(2026-10-01 위임: 추천안대로 진행), 사용자 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & \texttt{solve\_lswt}는 메시 점에서만 $H(k)$를 본다. 메시 사이의 불안정, 특히 Goldstone 모드 옆의 음의 강성($\lambda_{\min}\approx\rho k^2$, $\rho<0$)은 오류 없이 지나간다(NBCP 상 경계 계산 2026-10-13에서 V·Y 상의 장파장 불안정으로 확인) \\
+    기준 & 정지 상태의 고전 2차 변분이 모든 $k$에서 $H(k)\succeq0$이면 국소 최소. $H(k)$를 고전 진폭의 2차 형식으로 읽는다(onsite는 D37 coherent-state 값, \texttt{classical\_energy}와 같음) \\
+    영모드 밖 & $\lambda_{\min}/\text{scale}$를 이동·비이동 메시($24^2$)의 낮은 점 6개에서 Nelder--Mead로 연속 $k$ 최소화; 영모드 둘레 반지름 0.02(역격자 단위) 공은 뺀다. 0 근처 값은 새 영모드로 등록하고($\pm k_0$) 다시 찾는다 \\
+    영모드 안 & $H(k_0)$ 영공간 $V_0$에서 축퇴 섭동 2차까지 해석적으로: 선형 항 $L(u)=V_0^\dagger(u\cdot\partial H)V_0$, 강성 $M(u)=\tfrac12V_0^\dagger(uu:\partial^2H)V_0-V_0^\dagger(u\cdot\partial H)WD^{-1}W^\dagger(u\cdot\partial H)V_0$, $\rho_{\min}=\min_u\lambda_{\min}M(u)$. $H$의 1·2차 도함수가 해석적이라 차분 오차가 없다. 공 안을 반지름 4개×방향 24개로 표본 검사 \\
+    판정 & \texttt{unstable}: 음의 고유값, $L\ne0$, $\rho_{\min}<0$ 중 하나. \texttt{marginal}: 음은 없지만 2차가 정하지 못함 — 평탄 강성 방향, $k_0\ne0$ 영모드, $k=0$ 영공간이 깨진 연속 대칭으로 설명되는 수보다 큼(우연 축퇴; NBCP $J_{PD}$·$J_\Gamma$의 3부분격자 궤도, 삼각 하이젠베르크의 장 속 상태), 영모드가 고립되지 않음. \texttt{stable}: 그 밖. \texttt{not stationary}: torque가 허용치보다 크면 판정하지 않음 \\
+    API & 새 함수 \texttt{local\_stability(model, state, conditions=None, *, mesh, seeds, ball\_radius, zero\_tolerance, stiffness\_tolerance, stationarity\_tolerance)} $\to$ \texttt{StabilityReport}(최상위 \texttt{stk.local\_stability}); \texttt{QuadraticBoseHamiltonian.second\_derivatives\_at} 추가. 기존 호출은 그대로 \\
+    근거 & ``정의되지 않으면 정의되지 않음으로'' 원칙: 우연 축퇴 궤도의 안정성은 고차가 정하므로 \texttt{stable}로 부르지 않고 \texttt{marginal}과 이유를 낸다 \\
+    \textbf{열린 항목} & \texttt{solve\_lswt}·\texttt{compare\_states}가 이 검사를 자동으로 부를지(지금은 따로 부름); 우연 축퇴 궤도를 따라 에너지를 직접 재는 고차 판정 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-13 결정}{contract}
+\endgroup
+
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

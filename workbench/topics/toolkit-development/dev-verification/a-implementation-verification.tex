@@ -564,6 +564,30 @@ save_json(r, "lswt.json")  # 머리부 + 요약
 \endgroup
 
 
+\subsection{D51: 연속 $k$ 국소 안정성이 메시가 놓친 장파장 불안정을 찾는다}\label{d51-local-stability}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{정사각 강자성 $J_1=-1$ + $x$ 방향 3차 이웃 $J_3$, $S=1/2$; Goldstone 강성; NBCP 3부분격자 상 · 2026-10-13.}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}P{3.3cm}P{3.4cm}Y@{}}
+    \toprule
+    확인 항목 & 결과 & 범위 \\
+    \midrule
+    강성 대 닫힌 식 & $\rho_{xx}=S(1-4J_3)$와 $2\times10^{-16}$ & $J_3=0.24,\ 0.2505,\ 0.3$ \\
+    최저 고유값 대 닫힌 식 & $\lambda_{\min}=2[E(q)-E(0)]/S$와 $10^{-15}$ & 찾은 $k$에서; $E(q)$는 평평한 나선의 닫힌 식 \\
+    메시가 놓친 불안정 & $J_3=0.2505$: \texttt{unstable}($\rho=-0.001$); 같은 상태의 \texttt{solve\_lswt} 기본 메시는 오류 없음 & 불안정 주머니 $|q|<0.0142$ r.l.u.가 반 칸 이동 $24^2$ 메시 점 사이 \\
+    메시 사이 최소 & $q^*$를 $2\times10^{-9}$ r.l.u.로 & $J_3=0.3$, 메시 $4^2$; $\cos q^*=1/4J_3$ \\
+    독립 에너지 & 100사이트 나선의 \texttt{classical\_energy} 이득 $=$ 닫힌 식($10^{-15}$) & $J_3=0.2505$: $-5.0\times10^{-7}$; 0.3: $-4.1\times10^{-3}$ \\
+    Goldstone 강성 & 정사각 강자성·Néel $\rho=|J|S$ ($10^{-16}$); 삼각 120°는 $\lambda_{\min}/q^2$의 Richardson 외삽과 $10^{-6}$ & 120° 삼중 영모드는 3차에서 $-c|q|^3$로 갈라짐 \\
+    판정 경계 & 포화 아래 편극상 \texttt{unstable}(M점), 위 \texttt{stable}; 삼각 장 속 \texttt{marginal}(우연 축퇴); $J_2=J_1/2$ Néel은 영모드 선이라 \texttt{marginal}; 정지하지 않은 상태는 \texttt{not stationary}; 장 반대 강자성은 $k=0$에서 \texttt{unstable} & 테스트 \texttt{test\_local\_stability.py} 13개 \\
+    NBCP & V($J_\Gamma=0.04$, $h=0.44$; 0.035, 0.42)와 Y($J_{PD}=0.0125$, $h=0.02$) \texttt{unstable}, V($J=0$, 0.40) \texttt{stable}, Y($J_{PD}=0.01$) \texttt{marginal} & 앞의 셋은 긴 초격자 이완으로 에너지가 내려감을 따로 확인(nbcp 저장소 2026-10-13); 한 점 0.4--0.5 s \\
+    \bottomrule
+  \end{tabularx}
+  \par\medskip
+  \supportingtext{스크립트 \texttt{code-space/examples/verification/lswt\_d51\_local\_stability\_check.py}, 결과 \texttt{data-space/verification/261013-local-stability/report.json}. 에이전트 검산이며 사용자 물리 검토를 대신하지 않는다.}
+  \slidesource{D51}{stage4b}
+\endgroup
+
+
 \subsection{4c: 구조인자는 모드별 무게로 내고 ED와 정확히 맞춘다}\label{stage4c-structure-factor}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-09-30 · $S^{ab}(\mathbf q,\omega)=\sum_nW_n^{ab}(\mathbf q)\,\delta(\omega-\omega_n)+N\sum_{\mathbf G}I^{ab}(\mathbf G)\delta_{\mathbf q,\mathbf G}$ · 전체 위치 게이지, 사이트당(D26).}

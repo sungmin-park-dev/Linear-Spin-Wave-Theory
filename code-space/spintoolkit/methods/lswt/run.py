@@ -16,6 +16,9 @@ Round-off can make an exact zero mode slightly positive, so a successful
 Cholesky factorization alone is not accepted; use the default shifted
 mesh, which avoids the zone centre, or request ``"MAGSWT"`` or
 ``"k-dependent"`` explicitly. The shift applied is always recorded.
+Passing the mesh is not a stability test: an instability between mesh points,
+in particular a negative stiffness next to a Goldstone mode, goes unnoticed;
+:func:`~spintoolkit.methods.stability.local_stability` tests continuous ``k`` (D51).
 
 Energies are per site in the energy unit E0 of the model (D20).
 """
