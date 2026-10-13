@@ -108,6 +108,22 @@ At a stationary configuration, $E^{(1)}=0$, and three cases follow:
 
 - If $\mathsf H_{\mathbf k}$ is positive semidefinite with zero directions, the harmonic order does not decide stability along them. Zero directions arise from continuous symmetries of the Hamiltonian broken by the configuration (Goldstone modes) or from accidental classical degeneracies; the latter are decided only by higher orders or by fluctuations.
 
+Positive semidefiniteness is a condition at every momentum of the Brillouin zone, and a test on a finite set of momenta can miss a negative direction between them. A negative direction next to a zero mode is the case a finite set of momenta resolves worst. Let $\mathsf H_{\mathbf k_0}$ have the null space spanned by the orthonormal columns of $\mathsf V_0$, and let $\mathsf W$ and the diagonal matrix $\mathsf D$ hold the remaining eigenvectors and eigenvalues. For $\mathbf k=\mathbf k_0+q\hat{\mathbf u}$ with a unit vector $\hat{\mathbf u}$, degenerate perturbation theory gives the eigenvalues of $\mathsf H_{\mathbf k}$ that vanish at $q=0$ as the eigenvalues of
+
+$$
+q\,\mathsf L(\hat{\mathbf u})+q^2\,\mathsf M(\hat{\mathbf u})+O(q^3),
+\qquad
+\mathsf L(\hat{\mathbf u})=\mathsf V_0^\dagger(\hat{\mathbf u}\cdot\nabla_{\mathbf k}\mathsf H)\mathsf V_0,
+$$
+
+$$
+\mathsf M(\hat{\mathbf u})
+=\frac12\mathsf V_0^\dagger\big[(\hat{\mathbf u}\cdot\nabla_{\mathbf k})^2\mathsf H\big]\mathsf V_0
+-\mathsf V_0^\dagger(\hat{\mathbf u}\cdot\nabla_{\mathbf k}\mathsf H)\mathsf W\mathsf D^{-1}\mathsf W^\dagger(\hat{\mathbf u}\cdot\nabla_{\mathbf k}\mathsf H)\mathsf V_0,
+$$
+
+with all derivatives at $\mathbf k_0$; the second form of $\mathsf M$ is the standard second-order correction when $\mathsf L$ vanishes. A nonzero $\mathsf L(\hat{\mathbf u})$ is Hermitian and changes sign with $\hat{\mathbf u}$, so it gives a negative eigenvalue on one side of $\mathbf k_0$. With $\mathsf L=0$, the lowest eigenvalue of $\mathsf H_{\mathbf k}$ near $\mathbf k_0$ is $q^2\rho(\hat{\mathbf u})$ to leading order, where $\rho(\hat{\mathbf u})$ is the lowest eigenvalue of $\mathsf M(\hat{\mathbf u})$ and plays the role of a stiffness of the zero mode. A negative $\rho(\hat{\mathbf u})$ is a long-wavelength instability: $\mathsf H_{\mathbf k}$ has a negative direction for every small $q$ along $\hat{\mathbf u}$, with an eigenvalue of size $|\rho|q^2$, which is below any fixed numerical tolerance near $\mathbf k_0$. A $\rho(\hat{\mathbf u})$ that vanishes leaves the direction to higher orders, as does a zero direction at $\mathbf k_0=0$ beyond those of the broken continuous symmetries. For example, the polarized state of the square-lattice ferromagnet with nearest-neighbour coupling $J_1<0$ and an antiferromagnetic coupling $J_3>0$ between spins two lattice constants apart along $x$ has, for a flat spiral of wave vector $q\hat{\mathbf x}$, the classical energy per spin $E(q)=S^2(J_1\cos q+J_3\cos2q)$ plus the $q$-independent energy of the bonds along $y$. The pairing blocks of this collinear state vanish, so $\mathsf H_{q\hat{\mathbf x}}$ is the identity times the magnon energy $2[E(q)-E(0)]/S$, and $\rho(\hat{\mathbf x})=S(|J_1|-4J_3)$; for $J_3$ slightly above $|J_1|/4$, the instability is confined to $|q|<q_c$ with $q_c\to0$, and the Goldstone mode at $\mathbf k_0=0$ conceals it from any finite momentum mesh that does not contain points with $|q|<q_c$.
+
 ## Single-Q Spirals in a Rotating Frame
 
 A single-$Q$ spiral rotates the spins of successive unit cells about a common axis. With the unit axis vector $\mathbf c$, the right-handed rotation $\mathsf R_{\mathbf c}(\phi)$ by the angle $\phi$ about it, and the directions $\mathbf d_\mu$ of the sublattices in the cell $\mathbf R_i=0$, the configuration is

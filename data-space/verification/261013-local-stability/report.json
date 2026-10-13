@@ -1,0 +1,145 @@
+{
+  "ferromagnet_j3": [
+    {
+      "J3": 0.24,
+      "mesh": 24,
+      "verdict": "stable",
+      "seconds": 0.22,
+      "rho": 0.019999999999999938,
+      "rho_closed_form": 0.020000000000000018,
+      "lowest_eigenvalue": 0.00034525735639374136,
+      "closed_form_at_same_q": 0.000345257356393569,
+      "lowest_q_x": 0.020000000000002807
+    },
+    {
+      "J3": 0.2505,
+      "mesh": 24,
+      "verdict": "unstable",
+      "seconds": 0.218,
+      "rho": -0.0010000000000001499,
+      "rho_closed_form": -0.0010000000000000009,
+      "lowest_eigenvalue": 1.538054824429047e-05,
+      "closed_form_at_same_q": 1.5380548244126047e-05,
+      "lowest_q_x": 0.020000000000006214,
+      "q_star_closed_form": 0.010057465023778113,
+      "spiral_100_cell": {
+        "q_x": 0.01,
+        "classical_energy_gain": -4.989372499597522e-07,
+        "closed_form_gain": -4.989372486829957e-07
+      },
+      "solve_lswt_default_mesh": "no error (mesh misses the instability)"
+    },
+    {
+      "J3": 0.3,
+      "mesh": 24,
+      "verdict": "unstable",
+      "seconds": 0.111,
+      "rho": -0.09999999999999996,
+      "rho_closed_form": -0.09999999999999998,
+      "lowest_eigenvalue": -0.016666666666666205,
+      "closed_form_at_same_q": -0.01666666666666683,
+      "lowest_q_x": 0.09321474857624013,
+      "q_star_closed_form": 0.09321474933866863,
+      "spiral_100_cell": {
+        "q_x": 0.09,
+        "classical_energy_gain": -0.004148534508126078,
+        "closed_form_gain": -0.004148534508123303
+      },
+      "solve_lswt_default_mesh": "raised: H(k) has a zero or negative mode at 8 of 576 momenta: k=[0.392699, 0.1309] (min eig -0.00319), k=[0.392699, 6.152286] (min eig -0.00319), k=[0.654498, 0.1309] (min eig -0.00715), k=[0.654498, 6.152286] (min eig -0.00715), k=[5.628687, 0.1309] (min eig -0.00715). A zero mode (e.g. Goldstone at the zone centre) needs a mesh that avoids it (shift=True) or an explicit regularization ('MAGSWT', 'k-dependent'); a negative eigenvalue means the reference state is unstable."
+    },
+    {
+      "J3": 0.3,
+      "mesh": 4,
+      "verdict": "unstable",
+      "seconds": 0.104,
+      "rho": -0.09999999999999996,
+      "rho_closed_form": -0.09999999999999998,
+      "lowest_eigenvalue": -0.016666666666666205,
+      "closed_form_at_same_q": -0.01666666666666683,
+      "lowest_q_x": 0.09321474766558047,
+      "q_star_closed_form": 0.09321474933866863,
+      "spiral_100_cell": {
+        "q_x": 0.09,
+        "classical_energy_gain": -0.004148534508126078,
+        "closed_form_gain": -0.004148534508123303
+      },
+      "solve_lswt_default_mesh": "raised: H(k) has a zero or negative mode at 8 of 576 momenta: k=[0.392699, 0.1309] (min eig -0.00319), k=[0.392699, 6.152286] (min eig -0.00319), k=[0.654498, 0.1309] (min eig -0.00715), k=[0.654498, 6.152286] (min eig -0.00715), k=[5.628687, 0.1309] (min eig -0.00715). A zero mode (e.g. Goldstone at the zone centre) needs a mesh that avoids it (shift=True) or an explicit regularization ('MAGSWT', 'k-dependent'); a negative eigenvalue means the reference state is unstable."
+    }
+  ],
+  "goldstone": [
+    {
+      "case": "square ferromagnet",
+      "verdict": "stable",
+      "rho": 0.49999999999999967,
+      "closed_form": 0.5
+    },
+    {
+      "case": "square Neel",
+      "verdict": "stable",
+      "rho": 0.49999999999999967,
+      "closed_form": 0.5
+    }
+  ],
+  "nbcp": [
+    {
+      "case": "V, J_PD = J_Gamma = 0",
+      "h_meV": 0.4,
+      "verdict": "stable",
+      "seconds": 0.385,
+      "zero_mode": {
+        "origin": "goldstone",
+        "rho_min_meV_a2": 0.02829620923991816
+      },
+      "lowest_relative": 0.0005576388306340647,
+      "long_cell_check": "stable (no unstable k)"
+    },
+    {
+      "case": "V, J_Gamma = 0.04",
+      "h_meV": 0.44,
+      "verdict": "unstable",
+      "seconds": 0.443,
+      "zero_mode": {
+        "origin": "accidental",
+        "rho_min_meV_a2": -0.04577843166669866
+      },
+      "lowest_relative": -0.002242406848134221,
+      "long_cell_check": "lower on 51 spins, gain 1.1e-5"
+    },
+    {
+      "case": "V, J_Gamma = 0.035",
+      "h_meV": 0.42,
+      "verdict": "unstable",
+      "seconds": 0.507,
+      "zero_mode": {
+        "origin": "accidental",
+        "rho_min_meV_a2": -0.005142490720235492
+      },
+      "lowest_relative": -0.00015188749207440612,
+      "long_cell_check": "lower on 96 spins, gain 1.7e-7"
+    },
+    {
+      "case": "Y, J_PD = 0.0125",
+      "h_meV": 0.02,
+      "verdict": "unstable",
+      "seconds": 0.505,
+      "zero_mode": {
+        "origin": "accidental",
+        "rho_min_meV_a2": -0.011568449353069488
+      },
+      "lowest_relative": -0.0009353169410618377,
+      "long_cell_check": "lower on 81 spins, gain 1.2e-6"
+    },
+    {
+      "case": "Y, J_PD = 0.01",
+      "h_meV": 0.05,
+      "verdict": "marginal",
+      "seconds": 0.373,
+      "zero_mode": {
+        "origin": "accidental",
+        "rho_min_meV_a2": 0.015015421479370579
+      },
+      "lowest_relative": 0.00026499582030549694,
+      "long_cell_check": "stable over the orbit (phase scan)"
+    }
+  ]
+}

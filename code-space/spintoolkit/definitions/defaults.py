@@ -106,3 +106,13 @@ ZERO_MODE_CANDIDATE_TOLERANCE = 1e-6   # up to this: candidate, the user decides
 ZERO_MODE_MESH_SEEDS = 8               # lowest mesh points used as scan starting points
 ZERO_MODE_SEARCH_THRESHOLD = 1e-2      # minimize lambda_min only from points at or below this
 ZERO_MODE_LINE_DIRECTIONS = 12         # directions probed for lines of zero modes
+
+# =============================================================================
+# Local stability over continuous momenta (D51)
+# =============================================================================
+
+STABILITY_MESH = 24                    # seed mesh per direction (unshifted and half-step shifted)
+STABILITY_SEEDS = 6                    # lowest mesh points minimized over continuous k
+STABILITY_BALL_RADIUS = 0.02           # ball about a zero mode, units of the shortest reciprocal vector
+STABILITY_ZERO_TOLERANCE = 1e-12       # |lambda_min(H)| / scale at or below: zero
+STABILITY_STIFFNESS_TOLERANCE = 1e-8   # |rho| / (scale length^2) at or below: flat

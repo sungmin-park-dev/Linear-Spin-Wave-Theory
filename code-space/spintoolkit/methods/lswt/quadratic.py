@@ -189,3 +189,14 @@ class QuadraticBoseHamiltonian:
                  + np.einsum("kb,bij->kij", (minus * factor).conj(), self._Q))
             out.append(d if len(self._deltas) else np.zeros((len(k),) + self._constant.shape, complex))
         return out[0], out[1]
+
+    def second_derivatives_at(self, momenta) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Analytic ``(d2H/dk_x2, d2H/dk_x dk_y, d2H/dk_y2)`` at momenta ``(m, 2)``."""
+        k, minus = self._phases(momenta)
+        out = []
+        for a, b in ((0, 0), (0, 1), (1, 1)):
+            factor = -self._deltas[:, a] * self._deltas[:, b]       # (-i d_a)(-i d_b) = (+i d_a)(+i d_b)
+            d = (np.einsum("kb,bij->kij", minus * factor, self._P)
+                 + np.einsum("kb,bij->kij", minus.conj() * factor, self._Q))
+            out.append(d if len(self._deltas) else np.zeros((len(k),) + self._constant.shape, complex))
+        return out[0], out[1], out[2]

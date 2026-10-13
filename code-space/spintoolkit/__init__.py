@@ -64,6 +64,7 @@ from spintoolkit.states.incommensurate import IncommensurateStructure
 from spintoolkit.methods.base import AbstractSolver, SolverResult
 from spintoolkit.methods.lswt import LSWTResult, LSWTSettings, solve_lswt
 from spintoolkit.methods.nlswt import NLSWTResult, NLSWTSettings, solve_nlswt
+from spintoolkit.methods.stability import StabilityReport, local_stability
 from spintoolkit.methods.lswt.solver import LSWTSolver
 from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.methods.lswt.energy import EnergyFunction
@@ -85,6 +86,7 @@ __all__ = [
     # Solvers
     'AbstractSolver', 'SolverResult', 'solve_lswt', 'LSWTSettings', 'LSWTResult',
     'solve_nlswt', 'NLSWTSettings', 'NLSWTResult',
+    'local_stability', 'StabilityReport',
     # Deprecated, removed in 0.3 (D43)
     'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',
 ]
