@@ -6,7 +6,7 @@
 ## c-20261012-1437 · 메모 · 전체
 <!-- rw: {"unsorted":true} -->
 
-reference는 모두 reference로 관리해줘.
+현재 문서의 섹션중간에 있는 인용 문서들의 정보는 reference를 통해서 관리해줘.
 
 ### 답 · Claude · 2026-10-12 20:10
 
