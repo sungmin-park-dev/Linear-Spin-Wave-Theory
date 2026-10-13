@@ -76,7 +76,7 @@ class SpiralSymmetryError(ValueError):
             f"rotating-frame LSWT needs a Hamiltonian that is symmetric under rotations about "
             f"the spiral axis; {len(self.violations)} term(s) break it:\n{lines}\n"
             "Without this symmetry the single-Q spiral is not an exact classical state and "
-            "magnons at k mix with k +- 2Q. For a commensurate wave vector use "
+            "magnons at k mix with k +- Q or k +- 2Q. For a commensurate wave vector use "
             "IncommensurateStructure.to_spin_state and solve_lswt on the supercell.")
 
 
