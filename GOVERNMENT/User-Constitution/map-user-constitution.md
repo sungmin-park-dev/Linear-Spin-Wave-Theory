@@ -7,7 +7,7 @@ status: in-review
 last-edited-by: codex
 created: 2026-06-03
 updated: 2026-08-01
-must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
+must-read: archive/government/Agents-Bylaws/templates/map-template.md
 ---
 
 # Map - user-constitution
@@ -33,4 +33,4 @@ LSWT 프로젝트의 사용자 승인 정본 레이어.
 
 ## 참고 문서
 
-- [[GOVERNMENT/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
+- [[archive/government/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준

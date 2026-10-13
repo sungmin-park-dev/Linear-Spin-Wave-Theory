@@ -10,10 +10,10 @@ updated: 2026-10-01
 source_refs:
   - conversation: 2026-10-01 사용자 위임("최고의 spin model 범용 솔빙 패키지를 만들어봐")
   - paper library tothLinear2015 (arXiv:1402.6069v4; was docs/sources/02-reference-papers/1402.6069v4.pdf)
-  - GOVERNMENT/Working-Pad/issue-notes/closed/260930-lt-step-and-commensurate-structure-decision.md
+  - archive/government/Working-Pad/issue-notes/closed/260930-lt-step-and-commensurate-structure-decision.md
 related:
   - GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md
-  - docs/archive/2026-10-08-development-beamer/verification/spiral-rotating-frame-2026-10-01.json
+  - archive/2026-10-08-development-beamer/verification/spiral-rotating-frame-2026-10-01.json
 ---
 
 # 단일 Q 나선의 회전틀 LSWT (D34)
@@ -113,7 +113,7 @@ classical_search(model, supercell) ─ 정합 근사 셀의 전역 탐색(기존
 - 기존 `LSWTSolver`(D30 사용 중단)는 쓰지 않는다. `AbstractMagneticStructure`를 상속하지 않고 `SpinState`와 같은
   frozen dataclass로 바꿨다(기존 스텁 인터페이스는 사용처가 없었다).
 
-## 8. 검증 (`docs/archive/2026-10-08-development-beamer/verification/spiral-rotating-frame-2026-10-01.json`, 테스트 21개)
+## 8. 검증 (`archive/2026-10-08-development-beamer/verification/spiral-rotating-frame-2026-10-01.json`, 테스트 21개)
 
 | 경우 | 대조 | 최대 차이 |
 |---|---|---|

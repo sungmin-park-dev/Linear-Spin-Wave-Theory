@@ -1,6 +1,6 @@
 # 3. Neutron scattering: the square-lattice antiferromagnet
 
-Script: [`examples/tutorials/t03_neutron.py`](../../examples/tutorials/t03_neutron.py)
+Script: [`code-space/examples/tutorials/t03_neutron.py`](../../code-space/examples/tutorials/t03_neutron.py)
 
 This tutorial computes the inelastic neutron intensity I(Q, ω) of the
 spin-1/2 Heisenberg antiferromagnet on the square lattice (J = 1). The Néel

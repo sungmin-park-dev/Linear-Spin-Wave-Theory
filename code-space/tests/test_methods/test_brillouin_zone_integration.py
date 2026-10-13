@@ -12,7 +12,7 @@ from spintoolkit.system.brillouin_zone import BrillouinZone
 from spintoolkit.observables.thermodynamics import Thermodynamics
 from spintoolkit.observables.topology import Topology
 
-EXAMPLE = Path(__file__).resolve().parents[3] / "examples/verification/thermal_hall_reference_check.py"
+EXAMPLE = Path(__file__).resolve().parents[3] / "code-space/examples/verification/thermal_hall_reference_check.py"
 SPEC = importlib.util.spec_from_file_location("bz_reference", EXAMPLE)
 REFERENCE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(REFERENCE)

@@ -60,7 +60,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | 고전 몬테카를로·열 관측량(D40) | `methods/monte_carlo.py`의 `MonteCarlo`, `thermal_averages`, `order_parameter`, `twist_derivatives` |
 | 중성자 세기(D41) | `observables/neutron.py`의 `neutron_intensity`, `NeutronIntensity.broaden`, `powder_average`, `domain_average`, `FormFactor` |
 | 위상 전하·상 경쟁(D42) | `observables/texture.py`의 `skyrmion_charge`, `solid_angle`, `lattice_triangles`; `methods/phase_competition.py`의 `compare_states` |
-| NBCP 모델·파라미터 세트·후보 상태(2단계) | `model/nbcp/model.py` |
+| NBCP 모델·파라미터 세트·후보 상태(2단계) | `code-space/model/nbcp/model.py` |
 
 결과 머리부, JSON 직렬화, 유한 토러스로의 항 전개, Colpa 안정성 진단은 아직 구현하지
 않았다. LSWT는 아직 기존 `SpinSystem`을 입력으로 받는다(2단계에서 연결).
@@ -77,7 +77,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 
 ## 결정 목록
 
-`docs/archive/2026-10-08-development-beamer` Beamer의 결정 기록과 같은 ID를 쓴다.
+`archive/2026-10-08-development-beamer` Beamer의 결정 기록과 같은 ID를 쓴다.
 
 | ID | 내용 | 상태 | 위치 |
 |---|---|---|---|
@@ -95,7 +95,7 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D12 | 선택적 Zeeman 항, `g_(alpha beta)` 인덱스, relative 단위 `mu_B = 1`(D20으로 대체), 상태 검증과 기준 상태 진단의 분리 | 사용자 결정 2026-09-29 | §2–§4 |
 | D13 | 표준 Fourier 부호와 전체 위치 게이지; NBCP 변위는 `r_target = r_source - d` | 사용자 결정 2026-09-29; 2단계에서 `H(k)` 원소 단위로 수치 확정 | §3, §6 |
 | D14 | 상태·계산 요청·결과를 공통·방법별 부분으로 분리; `SpinState`는 정수 초격자 `M` | 사용자 결정 2026-09-29 | §5 |
-| D15 | 표준 벤치마크 모델은 `spintoolkit/models/`, 연구 모델은 `model/<name>/` | 사용자 결정 2026-09-29 | 개발 계획 |
+| D15 | 표준 벤치마크 모델은 `spintoolkit/models/`, 연구 모델은 `code-space/model/<name>/` | 사용자 결정 2026-09-29 | 개발 계획 |
 | D16 | 1단계 API: `Term.bilinear`·`Term.zeeman` 생성 함수, (사이트, 셀)로 찾는 방향 dict, 위반 일괄 보고, `system/conditions.py`·`system/geometry.py`, 최상위 노출, JSON 직렬화는 4단계·`fingerprint`는 지금 | 사용자 결정 2026-09-29 | §2, §5 |
 | D17 | 영점 에너지 상태 선택은 고전 바닥상태 manifold 위에서만: E_cl Hessian 영공간으로 정한 축 `n`의 궤도 `R_n(phi)`에서 E_qm 최소화, 궤도 전체의 E_cl 일정성 검사 | 사용자 결정 2026-09-29 (구현 전) | §1 |
 | D18 | D17 구현 계획: `quantum`(E_cl + E_qm 제약 없는 최소화)은 과거의 실수로 보고 D17 구현과 함께 삭제, 그 전까지 호출 시 경고; MAGSWT 격자 탐색은 유지하고 궤도 탐색으로 재현되는지 검증 뒤 재결정; D17은 2단계 뒤 새 자료형 위에 구현; 3단계 삼각격자 벤치마크는 h = 0과 h > h_sat, 여러 차원 영공간 확장은 후속 | 사용자 결정 2026-09-29 | §1, 개발 계획 |
@@ -123,8 +123,8 @@ NBCP, 사각격자·삼각격자 하이젠버그 등 모델별 생성 함수가 
 | D40 | 유한 토러스 고전 몬테카를로(`methods/monte_carlo.py`, 에너지는 D38 `ClassicalTorus`): 결합 그래프 탐욕 색칠로 같은 색을 한꺼번에 갱신; Metropolis 제안 `S normalize(s/S + σg)`(밀도가 `s·s′`에만 의존해 대칭), onsite 포함 정확한 국소 ΔE; 과완화(국소장 반사, 에너지 보존·자기 역)는 onsite 항이 없는 사이트에만; σ 조정은 측정 전에만. 관측량: 에너지, 비열 `N var(e)/T²`, `m_q`(완전 위치, D13), 상대 비틀림 `E(δ) = Σ_b s_iᵀ J_b R_n(δ u·d_b) s_j`의 강성 `Υ = (⟨E″⟩ − var(E′)/T)/N`(장·onsite 불변). 축에 대해 U(1)이 아닌 교환(NBCP J_PD·J_Γ)에서는 상대 비틀림이 어떤 스핀 배치의 에너지도 아니므로 거부하고, `u1_projection=True`일 때만 각 결합의 U(1) 대칭 부분 `J̄ = (1/2π)∫R_nᵀ J R_n`의 강성을 준다(나머지 — clock 퍼텐셜과 각도 의존 기울기 항 — 는 따로 다뤄야 함), 잭나이프 오차. 근거: 비틀림 미분 = 유한 차분, 투영 = 대칭 부분 모델, 정사각 강자성체 `Υ(0) = |J|S²`, 과완화 에너지 보존, 단일 스핀·단일 이온 분포, 정사각 고온 급수, 몬테카를로 = Langevin 에너지 | Claude 결정 2026-10-01(사용자 위임, NBCP 우선 지정), 사용자 검토 대기 | §5 |
 | D41 | 비편극 중성자 세기(`observables/neutron.py`): 사이트당 `I(Q,ω) = Σ_ab (δ_ab − Q̂_aQ̂_b) S_M^{ab}(Q,ω)`, `S_M`은 스핀 `S_i`를 모멘트 `(g_i/2) F_i(|Q|) S_i`로 바꾼 구조인자(D26 규약, 비탄성·탄성 모두; 나선 D34 경로 포함). `g=2`, `F=1`이면 기존 `StructureFactor.neutron()`. 계수 `(γr₀)² k_f/k_i e^{−2W}`는 장치·시료 몫이라 제외. 2D 층: `S_M`은 `Q_∥`에만 의존하고 `Q_z`는 편극 인자와 `|Q|`(형상인자)에만 들어간다. 스핀 성분은 격자 직교좌표(z는 층 법선). 형상인자는 쌍극자 근사 `⟨j0⟩ + c⟨j2⟩`, `s = Q/4π`(Q는 Å⁻¹, `length_unit`로 환산), Brown(ITC C 4.4.5) 계수 중 Sunny.jl과 periodictable 표가 2e-3 안에서 일치하는 3d 이온만 수록, `c` 기본값 0(스핀만; 유효 스핀-1/2 Co²⁺에는 자유 이온 값도 정확하지 않아 사용자 몫). 에너지 분해능은 `FWHM(ω)`의 Gaussian/Lorentzian, 운동량 분해능은 없음. 분말 평균은 Fibonacci 구면 점 평균(탄성 제외). 도메인은 결정 대칭 R에 대해 `I_R(Q) = I(R⁻¹Q)`(편극 인자 불변, 축벡터 부호 상쇄); R이 층·격자를 보존하는지만 검사하고 해밀토니안·g·장의 대칭 여부는 사용자 책임. 근거: g=2·F=1 환원, 강자성 `W(1+Q̂_z²)`와 비등방 g 닫힌 해, 나선 = 초격자(비등방 g, `Q_z≠0`, 탄성 포함), 자유 스핀 분말 4/3, 분해능 적분 보존, C4 compass 모델 Néel x/y 도메인, NBCP 3.5 T 닫힌 해(`W_xx/W_zz = (a+b)/(a−b)`)와 1e-15 일치 | Claude 결정 2026-10-01(사용자 위임; 두 목표 공통 1순위), 사용자 검토 대기 | §5 |
 | D42 | 스커미온 수와 후보 상태 비교: 주기 삼각분할(주기 패치의 Delaunay, 무게중심이 기본 셀 안인 삼각형, 넓이 = 셀 넓이 검사; 퇴화 시 사용자가 삼각형 지정)의 반시계 삼각형마다 Berg–Lüscher `tan(Ω/2) = n_i·(n_j×n_k)/(1+Σ n·n)`, `Ω ∈ (−2π, 2π)`, `Q = ΣΩ/4π`(자기 셀당, 연속 극한 `(1/4π)∫n·(∂_x n×∂_y n)`; 중심 −z·배경 +z·감김수 +1 스커미온이 −1). 삼중곱 0이고 분모 ≤ 0인 삼각형(세 스핀이 대원 위, 반구 밖: 120° 공면, 반평행 포함)은 Ω가 정의되지 않으므로 Q를 0이 아닌 "정의 안 됨"으로 보고. `compare_states`: 후보마다 고전 정상점 정제, 최대 토크, 셀 크기에 맞춘 메시(`ceil(k_density/√|det M|)`)의 LSWT 안정성, 안정할 때만 `E_cl + E_zp`(불안정 배경은 조화 진공이 없으므로 영점 에너지 없음), 자화·Q; 안정 후보는 조화 에너지 순, 나머지는 고전 에너지 순. 비교는 주어진 후보 안에서만이며 바닥상태 판정이 아님. 근거: 팔분구 π/2, 120° 정의 안 됨, 삼각·정사각 격자 스커미온 ∓1(연속 공식과 부호 일치), 사면체 상태 |Ω| = π·|Q| = 2, 시간 반전 부호 반전·회전 불변, 삼각 Heisenberg S=1/2 `E = −0.5388 J`(Chubukov 등 1994) | Claude 결정 2026-10-01(사용자 위임; 두 목표 공통 2순위), 사용자 검토 대기 | §5 |
-| D43 | 0.2 공개 API와 옛 API 사용 중단 일정: 새 API(`SpinModel`·`SpinState`·`solve_lswt`·`LSWTSettings`·`LSWTResult`, 최상위 `stk.`에서도 접근)만 README·패키지 docstring·예제에 쓴다. 옛 API(`SpinSystem`·`SpinSite`·`Coupling`, `LSWTSolver`, `SpinOptimizer`, `EnergyFunction`, `Topology.compute_thermal_Hall`, 옛 패키지 이름 `lswt`)는 0.2에서 동작하며 DeprecationWarning에 삭제 판 0.3을 명시한다(`spintoolkit/_deprecation.py`의 `REMOVAL_VERSION`). 새 API 내부에서 아직 `SpinSystem`을 만드는 경로(`to_spin_system`, NBCP 셀 위치 읽기, `LSWTSolver`의 dict 입력)는 `internal_use()`로 경고를 내지 않아 새 API 사용자는 경고를 보지 않는다. 근거: README 빠른 시작과 `examples/quickstart.py`를 `-W error::DeprecationWarning`으로 실행하는 테스트(삼각 Heisenberg S=1/2 `E = −0.5388 J`, M점 마그논 `ω = 1.0 J` = `3JS√((1−γ)(1+2γ))`, γ = −1/3) | 사용자 결정 2026-10-01(결정 카드 A: 경고 후 다음 판 삭제) | §1 |
-| D44 | 공개 배포 전 시각화 묶음: `observables.neutron`의 `neutron_path`(경로 위 `I(Q,ω)`, 고정 `Q_z`)·`neutron_slice`(일정 에너지 Cartesian 격자), `system.high_symmetry.zone_boundary`, `visualization`의 `plot_intensity_path`·`plot_intensity_slice`·`plot_powder`·`plot_berry_curvature`·`plot_thermal_hall`·`plot_spin_texture`·`plot_phase_diagram`·`plot_thermodynamics`. 규칙: 그림은 저장된 수치만 그리며(재계산 없음, Berry 곡률은 역격자 주기 이미지로 Wigner–Seitz 칸을 채움) 정의 안 되는 값(NaN: Bragg 벡터의 Goldstone 가중치, 분리 안 된 밴드의 곡률, 안정 후보가 없는 상도표 점, 120° 공면 상태의 Ω)은 회색·빗금·"undefined"로 그리고 0이나 이웃 값으로 채우지 않는다. `<n> > S` 온도 구간은 음영. 색 범위 기본값은 유한값의 99.5 백분위(강도)·최대 |Ω|(대칭). 에너지·온도 표시 단위 변환은 라벨과 함께만. `plot_spin_configuration`은 라벨을 기본 자기 셀에만 달고 화살표 모양을 정리(그림 내용 불변). 근거: 삼각 120° 상태 M점 강도 최대 `ω = 1.0 J`(= `3JS√((1−γ)(1+2γ))`, γ = −1/3; `Q_x = π` 직선 전체가 γ = −1/3이라 일정 에너지 단면에 직선으로 보임), K 열은 NaN, 벌집 DM 강자성체 Chern ±1 제목 표기, 갤러리 `examples/gallery.py` | Claude 결정 2026-10-01(사용자: 공개 배포는 시각화가 갖춰진 뒤), 사용자 검토 대기 | §6 |
+| D43 | 0.2 공개 API와 옛 API 사용 중단 일정: 새 API(`SpinModel`·`SpinState`·`solve_lswt`·`LSWTSettings`·`LSWTResult`, 최상위 `stk.`에서도 접근)만 README·패키지 docstring·예제에 쓴다. 옛 API(`SpinSystem`·`SpinSite`·`Coupling`, `LSWTSolver`, `SpinOptimizer`, `EnergyFunction`, `Topology.compute_thermal_Hall`, 옛 패키지 이름 `lswt`)는 0.2에서 동작하며 DeprecationWarning에 삭제 판 0.3을 명시한다(`spintoolkit/_deprecation.py`의 `REMOVAL_VERSION`). 새 API 내부에서 아직 `SpinSystem`을 만드는 경로(`to_spin_system`, NBCP 셀 위치 읽기, `LSWTSolver`의 dict 입력)는 `internal_use()`로 경고를 내지 않아 새 API 사용자는 경고를 보지 않는다. 근거: README 빠른 시작과 `code-space/examples/quickstart.py`를 `-W error::DeprecationWarning`으로 실행하는 테스트(삼각 Heisenberg S=1/2 `E = −0.5388 J`, M점 마그논 `ω = 1.0 J` = `3JS√((1−γ)(1+2γ))`, γ = −1/3) | 사용자 결정 2026-10-01(결정 카드 A: 경고 후 다음 판 삭제) | §1 |
+| D44 | 공개 배포 전 시각화 묶음: `observables.neutron`의 `neutron_path`(경로 위 `I(Q,ω)`, 고정 `Q_z`)·`neutron_slice`(일정 에너지 Cartesian 격자), `system.high_symmetry.zone_boundary`, `visualization`의 `plot_intensity_path`·`plot_intensity_slice`·`plot_powder`·`plot_berry_curvature`·`plot_thermal_hall`·`plot_spin_texture`·`plot_phase_diagram`·`plot_thermodynamics`. 규칙: 그림은 저장된 수치만 그리며(재계산 없음, Berry 곡률은 역격자 주기 이미지로 Wigner–Seitz 칸을 채움) 정의 안 되는 값(NaN: Bragg 벡터의 Goldstone 가중치, 분리 안 된 밴드의 곡률, 안정 후보가 없는 상도표 점, 120° 공면 상태의 Ω)은 회색·빗금·"undefined"로 그리고 0이나 이웃 값으로 채우지 않는다. `<n> > S` 온도 구간은 음영. 색 범위 기본값은 유한값의 99.5 백분위(강도)·최대 |Ω|(대칭). 에너지·온도 표시 단위 변환은 라벨과 함께만. `plot_spin_configuration`은 라벨을 기본 자기 셀에만 달고 화살표 모양을 정리(그림 내용 불변). 근거: 삼각 120° 상태 M점 강도 최대 `ω = 1.0 J`(= `3JS√((1−γ)(1+2γ))`, γ = −1/3; `Q_x = π` 직선 전체가 γ = −1/3이라 일정 에너지 단면에 직선으로 보임), K 열은 NaN, 벌집 DM 강자성체 Chern ±1 제목 표기, 갤러리 `code-space/examples/gallery.py` | Claude 결정 2026-10-01(사용자: 공개 배포는 시각화가 갖춰진 뒤), 사용자 검토 대기 | §6 |
 | D45 | 표준 LSWT 관측량 그림 보강(사용자 질문 "계산할 물리량이 정해져 있으면 시각화도 정해져 있지 않나"에 대한 점검 결과): `observables.bands.density_of_states`(메시 위 마그논 상태밀도, 사이트당 정규화 ∫g = 1), `observables.neutron.correlation_path`(전역 스핀 틀의 성분 `S^{ab}(q,ω)`, g·형태인자·편극인자 없음), `static_slice`(에너지 적분 세기: 확산 부분은 격자 위 값, Bragg 피크는 자기 역격자 벡터에서 따로; `Q = 0`은 편극인자 정의 안 됨이라 NaN), `broaden_modes`(공용 FWHM 확산), `methods.magnetization.magnetization_curve`(M = −dE/dh; 고전 `E_cl`과 조화 `E_cl + E_zp`의 중심 차분, 이전 장의 상태를 이어 정제; 1/S 보정은 모멘트 감소와 기울기 각 보정을 모두 포함하므로 `g(S−⟨n⟩)` 근사는 쓰지 않음; 불안정 분기는 NaN), 그림 `plot_density_of_states`·`plot_static_structure_factor`·`plot_magnetization_curve`, `plot_intensity_path(intensity_label=...)`. 근거: 삼각 강자성체 DOS 적분 1과 밴드 밖 0, 강자성체 `S^xx` 모드당 S/2·`S^zz = 0`, 정사각 Néel(x) Bragg `(π,π)` 세기 `m²/2`(m = S − ⟨n⟩, 편극인자 1/2), 정사각 반강자성체 고전 `M = h/8J`·`h = 0`에서 0·포화 위 `M = S`와 ⟨n⟩ = 0, 저자장 조화 M < 고전 M, z-Néel(안장점) NaN | Claude 결정 2026-10-01(사용자 질문에 대한 점검), 사용자 검토 대기 | §6 |
 | D46 | 비선형(상호작용) 스핀파 1/S 전개(`methods.nlswt`, `solve_nlswt`): LSWT와 같은 국소 좌표(D36)에서 HP `s^z = S − n`, `s^+ = √(2S)[a − a†aa/(4S)]`로 전개해 보존 수 4개까지 단항식을 자동 생성(`H_n ∼ S^{2−n/2}`, 장은 O(S); 각 보존 수에서 S의 최고 차수만 남으므로 바닥 에너지 O(S⁰)·마그논 에너지 O(S⁰)까지 정확). 바닥 에너지 `E = E_cl + E_zp + ⟨H_4⟩ + E_cubic + E_tadpole`: Wick(HF), 삼중 마그논 생성 꼭짓점 2차 `−6Σ|S^s|²/(ω1+ω2+ω3)`, `H_3` 축약이 남기는 q=0 선형항의 응축 이동 `−½ζ†H(0)⁺ζ`(고전 각도의 1/S 보정과 같음). 마그논: `[T†(δH_HF+δH_tad)T]_nn + Σ_3(k, ω_n)`(붕괴 `2|D^s|²/(ω−ω1−ω2)`, 원천 `−18|S^s|²/(ω+ω1+ω2)`), 선택적 확산 η로 붕괴율. 운동량: 1/3 칸 이동 메시(합에 닫혀 있고 영점 없음) 또는 유한 토러스(이때 식은 정확한 Rayleigh–Schrödinger). 정의되지 않는 경우는 오류로 드러냄: 정지점이 아닌 상태, 메시 위 영 모드, `H(0)` 영 모드 방향의 tadpole(질서-무질서: O(S) 정지점이 아니므로 O(S⁰) 에너지 정의 안 됨), onsite 항(D37 규칙은 2차까지만 유도). Δ² = C_φ/χ는 1/S 선도 차수 관계이므로 정적 2-loop 에너지로 다음 차수 gap을 만들지 않는다(무른 모드의 2-loop 동역학 필요); D47에서 극점 방정식으로 구현). 근거: 2스핀 비공선 자기장 클러스터의 큰 S 정확 대각화 외삽과 에너지 1e-8·마그논 1e-5 일치(4스핀 k=π 포함), 정사각 Heisenberg `−0.012474 J`(Hamer–Zheng–Arndt)와 1/S 모멘트 보정 0, 삼각 Heisenberg O(S⁰) `−0.008012 J`(Chernyshev–Zhitomirsky −0.008029 J, 0.2%)와 모멘트 `S − 0.261 + 0.0055/S`(메시 외삽) | Claude 결정 2026-10-03(사용자: 비선형 스핀파 solver 선택, 위임 범위), 사용자 검토 대기 | §5 |
 | D47 | 유사 Goldstone gap의 다음 차수(`methods.nlswt.pseudo_goldstone_gap`): k=0 극점 방정식 `det[ωσ₃ − H(0) − Σ(ω)] = 0`에서 `H(0) ∼ S`(영 모드 하나: 회전 좌표 x는 자유, 공액 p의 강성 K), 1-loop `Σ₁(ω) ∼ S⁰`(HF + tadpole + 삼중 꼭짓점 버블의 Nambu 행렬 전체, `cubic_self_energy_matrix`), 2-loop `Σ₂ ∼ S⁻¹`. `ω ∼ S^{1/2}`이므로 `Δ² = A + B`, `A = KΣ₁^xx(0)`(= C_φ/χ, O(S)), `B`(O(S⁰))는 Σ₁의 xx 외 성분(pp, xp와 ω 미분, `d²Σ₁^xx/dω²`, 굳은 모드 Schur 보수)과 2-loop 정적 `Σ₂^xx(0)`만으로 정해지며 나머지 Σ₂ 성분은 1/S 더 작다. `Σ₂^xx(0)`는 정적 균일 꼭짓점이므로 x에 대한 Legendre 변환 유효 퍼텐셜의 곡률: 회전 상태 R(φ)에서 ⟨x⟩ = x̄(φ)를 고정한 O(S⁰) 에너지(D46 에너지에서 tadpole만 KKT 구속 최소화, x̄는 HP 역변환으로 상대 1/S까지). `U₁ = E_zp''/x̄₁'² = Σ₁^xx(0)`(Ward 항등식), `U₂ = [E₂'' − 2E_zp''x̄₂'/x̄₁']/x̄₁'²`. Γ''는 역전파자의 x 위 Schur 보수이므로 Σ₁을 통한 x와 다른 모드의 정적 혼합을 이미 포함한다. 극점의 1-loop 행렬이 그 혼합을 다시 주므로 2-loop 1PI 성분은 `Σ₂^xx(0) = U₂ − schur₁`(`schur₁`: `1/(w[H(0)+Σ₁(0)]⁻¹w†)`의 1/S 부분)로 넣는다(빼지 않으면 V에서 J_PD → 0에도 B가 남아 대칭 극한과 모순). 엄밀 차수는 `H(0)/t`, `Σ₁(tω)`, `tΣ₂` 축척 후 `tω² = A + Bt`(t → 0) 적합으로 읽는다. 운동량 합은 1/3 이동 메시를 격자 점군 상으로 평균(단일 메시는 C₃을 깨 육중 φ 의존성이 이산화 오차에 묻힘). 정의되지 않는 경우: 고전적으로 평탄하지 않은 회전, 영 모드가 하나가 아님, T>0, pinning>0에서 gap(진단용 곡률만). 근거: 대각 Σ와 ED 검증된 D46 마그논 자기에너지 1e-12, Ward 항등식 ~3e-6, Goldstone 극한(J_PD=0) A=B=0, A와 C_φ/χ 0.02–0.04%, x 측정 함수 선택 불변(B/A −27.2876/−27.2880/−27.2874), 3스핀 ED O(S⁰) 에너지 1e-8. J_PD → 0에서 V의 B/A가 두 에너지 곡률 비로 수렴(J_PD=0.001, 2% 이내). NBCP(S=1/2, J_PD=0.010 meV): Y(0.2 T) B/A ≈ −27, V(1.4 T) ≈ −20 — 회전 방향 2-loop 곡률이 1-loop E_zp 곡률의 −26배(Y)·−18배(V)이고 J_PD 축소에도 비율이 남음(둘 다 J_PD³). 따라서 S=1/2에서 1/S 급수는 gap(선택되는 방향 포함)을 정하지 못한다고 보고하며 '부호 반전'으로 해석하지 않는다. gap 자체는 ED로 직접 검증하지 못함(유한 클러스터에서 연성 모드는 반정수 차수를 갖는 회전자). 대신 재료를 점검(`examples/nbcp_two_loop_ed_check.py`): φ 고정 국소장을 건 6스핀 토러스에서 S=2–4.5 ED 외삽과 비교해 E₂(φ) 차이 0.2–3%, ⟨a₀⟩의 S^{-1/2} 보정 φ≤0.5에서 외삽 정밀도(~2%) 이내 일치. 큰 회전각의 x̄ 불일치는 HP 역변환 1차 전개 때문(ED/코드 비가 해석식과 0.1% 일치)이며 D47은 φ≤0.04 미분만 사용 | Claude 결정 2026-10-03(사용자: "ㅇ한번 해봐."), 사용자 검토 대기 | §5 |
@@ -206,7 +206,7 @@ E_cl과 O(S^0)인 E_qm의 합을 자유롭게 최소화하면 manifold에서 O(1
    평평함을 보장하기 때문이다. 선택에 쓴 에너지와 곡률 `C_phi`를 결과에 기록한다.
 
 `examples/nbcp_y_orbit_axis_check.py`로 NBCP Y 상태(B = 0.2 T, N = 6)에서 확인했다.
-결과는 `docs/archive/2026-10-08-development-beamer/verification/state-selection-2026-09-29.json`에 있다.
+결과는 `archive/2026-10-08-development-beamer/verification/state-selection-2026-09-29.json`에 있다.
 
 | 경우 | 찾은 축 | 궤도 E_cl 변동 | 궤도 E_qm 변동 |
 |---|---|---|---|
@@ -220,7 +220,7 @@ DE 해(기울기 2–3e-7)에서도 축 오차는 1.3e-5 이하였다. 다만 �
 고윳값 6.7e-3)이어서 고정 허용오차로는 영모드로 판정되지 않은 경우가 있었다.
 
 **D17 판정 기준 자료(검토안의 근거).** `examples/nbcp_y_orbit_criteria_check.py`의 결과는
-`docs/archive/2026-10-08-development-beamer/verification/state-selection-criteria-2026-09-29.json`에 있다.
+`archive/2026-10-08-development-beamer/verification/state-selection-criteria-2026-09-29.json`에 있다.
 
 - 영공간 판정: DE 세 seed로 축퇴 4경우 12건과 대조 2경우 6건(장을 기울여 고전 축퇴를 푼
   경우, 20 h의 편극 상태)을 비교했다. DE 해에 고정 허용오차(최대 고윳값의 1e-6배)를 쓰면
@@ -268,7 +268,7 @@ DE 해(기울기 2–3e-7)에서도 축 오차는 1.3e-5 이하였다. 다만 �
 **D17 구현(2b, D22).** `select_on_manifold(model, state, conditions, quantum_energy, axis=None,
 criteria=SelectionCriteria())`는 다음 순서로 판정하고 `SelectionResult`(판정, 상태, 축, phi,
 후보 상태, 진단, 기준)를 돌려준다. 수치 검증 기록은
-`docs/archive/2026-10-08-development-beamer/verification/state-selection-stage2b-2026-09-29.json`, 스크립트는
+`archive/2026-10-08-development-beamer/verification/state-selection-stage2b-2026-09-29.json`, 스크립트는
 `examples/nbcp_state_selection_check.py`다.
 
 1. 고전 정밀화(`refine_classical`): 접평면 좌표에서 해석적 기울기로 L-BFGS-B를 돌린 뒤,
@@ -342,7 +342,7 @@ D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E
 - 적용 조건: 단열 분리. Gamma의 곡률(접평면 단위 변위당)이 딱딱한 모드의 최소 강성보다 충분히 작아야
   한다. 이 비를 결과에 기록한다.
 - 확인(`examples/nbcp_effective_potential_check.py`,
-  `docs/archive/2026-10-08-development-beamer/verification/effective-potential-check-2026-09-30.json`): 기울기 0에서 D17과 같은
+  `archive/2026-10-08-development-beamer/verification/effective-potential-check-2026-09-30.json`): 기울기 0에서 D17과 같은
   위치(Y 3.7e-7 rad, V 0). 강체 궤도 `R_n(phi)`는 고전 고정을 크게 과대평가한다(Y, 1.7°에서 고전 변동
   7.5e-6 대 완화 경로 5.3e-7 meV). 따라서 강체 궤도로 얻은 "1.7°면 고전 고정이 이긴다"는 잠정 판단은
   틀렸고, 완화 경로에서 Gamma 최소는 양자 최소에서 8.9e-3 rad 떨어진 곳에 있다. Y는 면내 알짜
@@ -355,7 +355,7 @@ D28은 부드러운 좌표 phi의 1-loop 유효 퍼텐셜 `Gamma(phi) = E_cl + E
   `selected`(Gamma 최소, 순수 최소로부터의 이동량과 대칭 주기 대비 비율을 보고), `no_selection`(정확한
   대칭), `unresolved`, `not_soft`(단열 분리 실패)로 판정한다. 부드러운 좌표 자체와 관련된
   `no_degeneracy`(부드러운 좌표 없음), `axis_required`, `unsupported_manifold`는 그대로 둔다. 단열 비가 0.1을 넘으면 경고만 낸다(판정 불변).
-- 구현(2026-09-30, `0e9247f`; 기록 `docs/archive/2026-10-08-development-beamer/verification/d28-implementation-2026-09-30.json`):
+- 구현(2026-09-30, `0e9247f`; 기록 `archive/2026-10-08-development-beamer/verification/d28-implementation-2026-09-30.json`):
   `select_on_manifold`는 궤도 방향을 뺀 모든 접평면 방향을 완화한 경로(`soft_path_point`) 36점에서
   `Gamma = E_cl + E_zp`를 fit하고 그 최소를 반환한다. 순수 고전·양자 최소는 후보와 이동량으로 남긴다.
   정밀화한 상태에 궤도 밖 불안정 모드가 있으면(고전 안장점) `no_degeneracy`가 아니라 `not_soft`다.
@@ -485,7 +485,7 @@ source `a`, target `b`인 항의 호핑·이상 항 위상은 `exp(+i k . Delta)
 위치 `R`만 쓰는 격자 게이지와 전체 위치 게이지는 에너지와 Chern 수가 같지만 국소
 Berry 곡률이 다를 수 있다. thermal Hall 전도도는 밴드 에너지 가중치를 곱해
 Berry 곡률을 적분하므로 국소 값의 영향을 받는다. 위치 정보를 포함하는 전체 위치
-게이지를 쓴다. 이 식은 `docs/archive/2026-10-08-lswt-markdown` 운동량 공간 문서의 식과 같다. 다만 이 결정은
+게이지를 쓴다. 이 식은 `archive/2026-10-08-lswt-markdown` 운동량 공간 문서의 식과 같다. 다만 이 결정은
 툴킷 규약에 한정하며, 이론 정본 notation 문서의 "Not Yet Fixed" 상태를 바꾸지 않는다.
 
 **항의 의미.** 1차 범위의 해밀토니안은 다음과 같다.
@@ -710,7 +710,7 @@ Berry 위상이 정확히 π여서 ±π 가지와 FHS 정수가 반올림으로 
 | `methods/lswt/energy.py` | J 항을 각 레코드마다 더하고 사이트별 장 계수 h 항을 뺌 | 중복계수·에너지 정규화의 회귀 검증; `h_a = mu_B g_a^T B` 변환 |
 | `methods/lswt/hamiltonian.py` | 저장된 displacement로 Fourier 위상을 직접 계산함 | 변위 해석(아래)과 Fourier 위상·basis 변환을 함께 검증 |
 | `methods/optimization.py` | classical 최적화 경로 제공; MAGSWT 격자 탐색은 D27에서 삭제. `angle_setting=None` 결함은 `8f4dd1e`에서 수정; `quantum`과 전용 BFGS 함수는 2b에서 삭제(D18, D22), 알 수 없는 이름은 `ValueError` | 상태 선택에 사용한 에너지를 결과에 기록; MAGSWT 처리는 재현 확인(2b) 뒤 사용자 결정 |
-| `model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | `model/nbcp/model.py`가 모델(`build_model`)과 상태(`candidate_state`)를 분리해 제공; 기존 함수는 유지 |
+| `code-space/model/nbcp/unit_cells.py` | 후보 자기단위격자와 결합·상태를 함께 생성, 각도 생략 시 난수 사용 | `code-space/model/nbcp/model.py`가 모델(`build_model`)과 상태(`candidate_state`)를 분리해 제공; 기존 함수는 유지 |
 
 **NBCP 결합 변위의 해석(D13).** `SpinSystem.Coupling` 설명은 displacement를
 source→target이라고 적는다. 두 해석을 네 후보 셀에서 검사했다.
@@ -743,7 +743,7 @@ Three MSL 외의 셀에서 방향을 결정할 수 없다.
 기존 `one_msl`…`four_msl`과 원소 단위로 같았다(4셀 × 5파라미터군, 장·DM·NNN 포함, 최대 차이
 1.7e-16). `d`의 부호를 뒤집으면 Three MSL의 `H(k)`가 1e-3 넘게 달라졌다. 왕복 변환도
 최대 1.7e-17로 같았다. 따라서 이 해석과, BdG 행렬의 행이 생성 연산자 쪽이라는 가정이
-확정되었다. 기록은 `docs/archive/2026-10-08-development-beamer/verification/stage2-nbcp-connection-2026-09-29.json`.
+확정되었다. 기록은 `archive/2026-10-08-development-beamer/verification/stage2-nbcp-connection-2026-09-29.json`.
 
 ## Rationale
 

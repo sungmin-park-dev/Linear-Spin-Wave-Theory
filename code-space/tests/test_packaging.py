@@ -43,7 +43,7 @@ def _run_strict(code: str) -> None:
 
 def test_quickstart_runs_without_deprecation_warnings():
     """The README quick start uses only the new API (D43)."""
-    script = ROOT / "examples" / "quickstart.py"
+    script = ROOT / "code-space" / "examples" / "quickstart.py"
     _run_strict(f"import runpy; runpy.run_path({str(script)!r}, run_name='__main__')")
 
 

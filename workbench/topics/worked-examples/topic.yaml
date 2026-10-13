@@ -1,0 +1,8 @@
+title: Worked Examples
+parts: []
+description: |-
+  Standard models solved in closed form
+  - each example has a script and a test
+  - the test checks the numbers in the note
+preview:
+  color: teal

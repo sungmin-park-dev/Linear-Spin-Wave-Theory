@@ -13,7 +13,7 @@ last-edited-by: claude
 
 > **대체됨 (2026-09-30, 사용자 승인):** 이 노트의 규약 질문(사이트 번호, 결합 세기, 자기 구조, 브릴루앙 영역,
 > 솔버 경계)은 전달 규약(`2026-09-23-spin-model-transfer-contract.md`)의 결정으로 정리되었다: D13(Fourier 규약과
-> 변위), D23(토러스 전개 규칙), D24–D29(LSWT 결과·물리량). 이론 문서 위치는 `docs/archive/2026-10-08-lswt-markdown`로 정해졌다
+> 변위), D23(토러스 전개 규칙), D24–D29(LSWT 결과·물리량). 이론 문서 위치는 `archive/2026-10-08-lswt-markdown`로 정해졌다
 > (Court-Precedents 2026-08-01, 2026-08-09, 통합 기록 260916). 아래 본문은 당시 기록으로 보존한다.
 
 이 문서는 이 프로젝트를 LSWT 중심 패키지에서 범용 2D 스핀 시스템 시뮬레이션 도구로 옮겨가기 위해 함께 정리하는 작업 노트다.
@@ -218,4 +218,4 @@ research-space/theory/lswt/
 - 적극적으로 수정할 LSWT 정본 문서는 `research-space/theory/lswt/`에 새로
   정리한다.
 - LSWT 정본화 중 계속 대조할 원자료는 `research-space/sources/lswt/`에 둔다.
-- 거의 보지 않을 과거 LaTeX/PDF 자료는 `legacy/research-notes/lswt/`에 둔다.
+- 거의 보지 않을 과거 LaTeX/PDF 자료는 `archive/legacy/research-notes/lswt/`에 둔다.

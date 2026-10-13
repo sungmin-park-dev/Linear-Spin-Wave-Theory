@@ -7,7 +7,7 @@ status: in-review
 last-edited-by: claude
 created: 2026-06-03
 updated: 2026-09-30
-must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
+must-read: archive/government/Agents-Bylaws/templates/map-template.md
 ---
 
 # Map - handoff
@@ -30,7 +30,7 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 | 파일 | 목적 | 결과 |
 |---|---|---|
-| [[GOVERNMENT/Working-Pad/handoff/closed/260603-next-chat-general-2d-spin-tool\|260603-next-chat-general-2d-spin-tool]] | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | superseded; 전달 규약·1차 개발 계획·toolkit 0–5단계로 수행 |
+| [[archive/government/Working-Pad/handoff/closed/260603-next-chat-general-2d-spin-tool\|260603-next-chat-general-2d-spin-tool]] | LSWT를 범용 2D spin-system simulation tool로 전환하기 위한 다음 대화 계획 | superseded; 전달 규약·1차 개발 계획·toolkit 0–5단계로 수행 |
 
 ## 에이전트 지침
 
@@ -40,5 +40,5 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 ## 참고 문서
 
-- [[GOVERNMENT/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
-- [[GOVERNMENT/Agents-Bylaws/templates/handoff-template|handoff-template]] — handoff 작성 기준
+- [[archive/government/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
+- [[archive/government/Agents-Bylaws/templates/handoff-template|handoff-template]] — handoff 작성 기준

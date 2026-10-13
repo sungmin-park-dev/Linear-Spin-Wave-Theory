@@ -187,8 +187,8 @@ quantum_cad/
 | `programs/` (army-competition·tex-corps) | 사업 이니셔티브 | `biz-space/programs/` |
 | `qcad-workspace/research/` (papers·concepts·notes) | 연구 | `research-space/` |
 | `qcad-codespace/` | 코드 | `code-space/` (개명) |
-| `agent-knowledge/wiki/decisions/` | Operating-Episodic | `GOVERNMENT/Court-Precedents/` |
-| `agent-knowledge/wiki/` (나머지) | Operating-Procedural | `GOVERNMENT/Agents-Bylaws/` |
+| `agent-knowledge/wiki/decisions/` | Operating-Episodic | `workbench/decisions/` |
+| `agent-knowledge/wiki/` (나머지) | Operating-Procedural | `archive/government/Agents-Bylaws/` |
 | `agent-knowledge/working-pad/` | Operating-Working | `GOVERNMENT/Working-Pad/` |
 | `repo-scripts/` (check-frontmatter·generate-agents·sync) | Operating-tools | `GOVERNMENT/Agents-Bylaws/tools/` |
 
@@ -226,11 +226,11 @@ ai-automation-dashboard/
 |---|---|---|
 | `user-vault/project-definition/` | Content | `product-space/definition/` |
 | `project-wiki/project-roadmap/` | Content | `product-space/roadmap/` |
-| `user-vault/decisions/` | Operating | `GOVERNMENT/Court-Precedents/` |
+| `user-vault/decisions/` | Operating | `workbench/decisions/` |
 | `user-vault/principles/` (순수 원칙) | Operating-Semantic | `User-Constitution/principles/` |
 | `user-vault/principles/` (절차성: writing-style·surface-pattern·md-policy) | Operating-Procedural | `Agents-Bylaws/policies/` |
-| `project-wiki/agents-playbook/` | Operating | `GOVERNMENT/Agents-Bylaws/` |
-| `project-wiki/user-instructions/` | Operating | `GOVERNMENT/Agents-Bylaws/` |
+| `project-wiki/agents-playbook/` | Operating | `archive/government/Agents-Bylaws/` |
+| `project-wiki/user-instructions/` | Operating | `archive/government/Agents-Bylaws/` |
 | `working-pad/*` | Operating | `GOVERNMENT/Working-Pad/` |
 | 방법론 문서(philosophy·layer-aware·cross-repo) | Operating(일차 역할) | `GOVERNMENT/User-Constitution/` |
 | `product-workspace/` | 코드 | `code-space/` (개명) |
@@ -249,9 +249,9 @@ ai-automation-dashboard/
 Linear-Spin-Wave-Theory/
   GOVERNMENT/         ← 미설치 (추후 활성화 시 추가)
   code-space/         ← lswt/ + tests/ (패키지 + 테스트)
-  doc-space/          ← docs/ + examples/ (API 문서 + 사용 예시)
+  doc-space/          ← docs/ + code-space/examples/ (API 문서 + 사용 예시)
   research-space/     ← spin wave 이론 정리, LSWT 알고리즘 이해
-  legacy/
+  archive/legacy/
 ```
 
 ---

@@ -1,0 +1,4 @@
+name: LSWT magnon thermodynamics
+from: archive/2026-10-08-lswt-markdown
+summary: Magnon spectra, occupations, reduced ordered moments and thermodynamic quantities, with their derivations.
+topics: [ spin-wave-observables ]

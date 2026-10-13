@@ -148,7 +148,7 @@ def test_verbose_small_gap_warning_keeps_resolved_results():
 
 def test_gapped_curvature_matches_preserved_legacy(monkeypatch):
     root = Path(__file__).resolve().parents[3]
-    monkeypatch.syspath_prepend(str(root / "legacy"))
+    monkeypatch.syspath_prepend(str(root / "archive" / "legacy"))
     legacy = import_module("modules.LinearSpinWaveTheory.lswt_topology")
     arguments = local_two_level(1e-4)
     actual, _ = compute_berry_curvature(*arguments)

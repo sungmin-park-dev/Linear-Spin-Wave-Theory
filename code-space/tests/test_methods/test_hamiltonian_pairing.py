@@ -144,7 +144,7 @@ def test_momentum_derivative_matches_spin_operator_reference(model, axis):
 def test_legacy_swap_is_detected_only_by_coefficient_reference(model, monkeypatch):
     """Load the preserved legacy implementation and isolate its anomalous-block swap."""
     root = Path(__file__).resolve().parents[3]
-    monkeypatch.syspath_prepend(str(root / "legacy"))
+    monkeypatch.syspath_prepend(str(root / "archive" / "legacy"))
     legacy_class = import_module("modules.LinearSpinWaveTheory.lswt_Hamiltonian").LSWT_HAMILTONIAN
     spin_info, couplings, complex_pairing = model
     legacy = legacy_class(spin_info, couplings)

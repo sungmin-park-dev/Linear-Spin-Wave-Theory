@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-TUTORIALS = ROOT / "examples" / "tutorials"
+TUTORIALS = ROOT / "code-space" / "examples" / "tutorials"
 
 
 def run(name, capsys):

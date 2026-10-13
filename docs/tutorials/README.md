@@ -2,7 +2,7 @@
 
 Five short tutorials that take you from a first calculation to topology and
 neutron spectra. Each one has a companion script in
-[`examples/tutorials/`](../../examples/tutorials/) that prints every number
+[`code-space/examples/tutorials/`](../../code-space/examples/tutorials/) that prints every number
 quoted in the text, and `code-space/tests/test_tutorials.py` checks those
 numbers on every commit. Each tutorial compares the package with a closed-form
 result, the literature or exact diagonalization, so you also see how to
@@ -20,7 +20,7 @@ Run every script from the repository root, for example
 
 ```bash
 pip install .
-python examples/tutorials/t01_first_calculation.py
+python code-space/examples/tutorials/t01_first_calculation.py
 ```
 
 The figures go to `data-space/tutorials/`.

@@ -9,7 +9,7 @@ created: 2026-10-01
 updated: 2026-10-01
 related:
   - GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md
-  - docs/archive/2026-10-08-lswt-markdown/README.md
+  - archive/2026-10-08-lswt-markdown/README.md
 ---
 
 # LSWT draft 물리·수학 검토 가이드
@@ -22,11 +22,11 @@ related:
 
 ## 권장 검토 순서
 
-1. [Paraunitary Diagonalization](../../../../docs/archive/2026-10-08-lswt-markdown/01-derivation/paraunitary-diagonalization.md) → [Appendix: Paraunitarity Proofs](../../../../docs/archive/2026-10-08-lswt-markdown/04-appendices/paraunitarity-proofs.md) → [Worked Example](../../../../docs/archive/2026-10-08-lswt-markdown/03-examples/worked-example.md). 뒤의 모든 observable이 여기 정의(T, Σ3, 입자–홀 구조, ΔE_zp)를 쓴다. Worked example은 일반 식을 한 band 닫힌 식으로 확인하는 용도다.
-2. [Magnon Observables](../../../../docs/archive/2026-10-08-lswt-markdown/02-observables/magnon-observables.md), [Thermodynamics](../../../../docs/archive/2026-10-08-lswt-markdown/02-observables/thermodynamics.md), [Appendix: Thermodynamic Derivations](../../../../docs/archive/2026-10-08-lswt-markdown/04-appendices/thermodynamic-derivations.md).
-3. [Topological Magnon Quantities](../../../../docs/archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md). Bloch 규약 문단은 코드·이슈 260802(PR #14)의 결론과 맞췄다.
-4. [Spin Correlations](../../../../docs/archive/2026-10-08-lswt-markdown/02-observables/spin-correlations.md), [Structure Factor and Spectral Function](../../../../docs/archive/2026-10-08-lswt-markdown/02-observables/structure-factor-and-spectral-function.md).
-5. [Appendix: Luttinger–Tisza Method](../../../../docs/archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md).
+1. [Paraunitary Diagonalization](../../../../archive/2026-10-08-lswt-markdown/01-derivation/paraunitary-diagonalization.md) → [Appendix: Paraunitarity Proofs](../../../../archive/2026-10-08-lswt-markdown/04-appendices/paraunitarity-proofs.md) → [Worked Example](../../../../archive/2026-10-08-lswt-markdown/03-examples/worked-example.md). 뒤의 모든 observable이 여기 정의(T, Σ3, 입자–홀 구조, ΔE_zp)를 쓴다. Worked example은 일반 식을 한 band 닫힌 식으로 확인하는 용도다.
+2. [Magnon Observables](../../../../archive/2026-10-08-lswt-markdown/02-observables/magnon-observables.md), [Thermodynamics](../../../../archive/2026-10-08-lswt-markdown/02-observables/thermodynamics.md), [Appendix: Thermodynamic Derivations](../../../../archive/2026-10-08-lswt-markdown/04-appendices/thermodynamic-derivations.md).
+3. [Topological Magnon Quantities](../../../../archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md). Bloch 규약 문단은 코드·이슈 260802(PR #14)의 결론과 맞췄다.
+4. [Spin Correlations](../../../../archive/2026-10-08-lswt-markdown/02-observables/spin-correlations.md), [Structure Factor and Spectral Function](../../../../archive/2026-10-08-lswt-markdown/02-observables/structure-factor-and-spectral-function.md).
+5. [Appendix: Luttinger–Tisza Method](../../../../archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md).
 
 ## 2026-10-01에 고친 확인된 오류
 
@@ -124,7 +124,7 @@ related:
 
 ## 문서 범위 밖에서 발견한 항목 (코드·notation)
 
-이 thread는 `docs/archive/2026-10-08-lswt-markdown`만 고쳤다. 아래는 다른 소유자에게 넘길 항목이다.
+이 thread는 `archive/2026-10-08-lswt-markdown`만 고쳤다. 아래는 다른 소유자에게 넘길 항목이다.
 
 - **코드 docstring과 시험(topology):** PR #14에서 해결했다. `berry.py` docstring과 D29 문구를 "gauge 불변"에서 Bloch 규약 설명으로 고쳤고, C3를 깬 모델에서 cell 규약 값이 계의 성질이 아님을 보이는 회귀 시험을 추가했다.
 - **LT on-site 항:** 문서의 L_q는 S_a²D_a를 포함하지만 `lt_matrix`는 bilinear 항만 더한다(모델이 BILINEAR와 ZEEMAN만 받음, D30). audit의 "stage 6b `lt_matrix`와 같은 정의"는 on-site 항이 없을 때만 맞다.

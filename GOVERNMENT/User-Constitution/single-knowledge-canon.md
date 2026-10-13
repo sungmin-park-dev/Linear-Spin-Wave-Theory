@@ -29,6 +29,6 @@ master로 관리하지 않는다.
 
 각 지식 영역은 Court-Precedents 결정에서 정본 형식과 범위를 구체적으로
 지정한다. LSWT 이론에는
-`GOVERNMENT/Court-Precedents/2026-08-01-lswt-markdown-source-authority.md`를
+`workbench/decisions/2026-08-01-lswt-markdown-source-authority.md`를
 적용한다.
 

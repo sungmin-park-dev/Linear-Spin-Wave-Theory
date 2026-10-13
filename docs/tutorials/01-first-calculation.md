@@ -1,6 +1,6 @@
 # 1. First calculation: the triangular-lattice antiferromagnet
 
-Script: [`examples/tutorials/t01_first_calculation.py`](../../examples/tutorials/t01_first_calculation.py)
+Script: [`code-space/examples/tutorials/t01_first_calculation.py`](../../code-space/examples/tutorials/t01_first_calculation.py)
 
 We compute the spin-wave spectrum and ground-state energy of the spin-1/2
 Heisenberg antiferromagnet on the triangular lattice,
