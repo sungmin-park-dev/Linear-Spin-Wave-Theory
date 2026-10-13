@@ -15,3 +15,4 @@ updated: 2026-10-13
 | 번호 | 항목 | 판정 | 날짜 | 비고 |
 |---|---|---|---|---|
 | 1 | D34 단일 Q 나선의 회전틀 LSWT | 승인 ("ok") | 2026-10-13 | 사용자 질문(축 회전과 교환 조건의 뜻, 일반적 처리인지)에 따라 `lswt-classical-order`에 "When the Rotation Condition Fails" 절과 검산 스크립트 `examples/verification/lswt_spiral_harmonics_check.py`를 더함(PR #63) |
+| 2 | D35 결정 대칭과 대칭 허용 결합 | 승인 ("승인하자.") | 2026-10-13 | 축 벡터 R_s = det(R)R, 시간 반전 제외, 대칭 깨는 계수 거부, 자기 이온만의 대칭은 상한 |
