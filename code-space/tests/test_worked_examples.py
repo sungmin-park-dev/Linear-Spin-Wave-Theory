@@ -1,7 +1,7 @@
 """The worked-example scripts agree with the closed forms of their research notes.
 
-Each script in ``examples/worked_examples`` solves one model with the package
-and with the closed forms of its note in ``workbench/notes/lswt-example-*``.
+Each script in ``code-space/examples/worked_examples`` solves one model with the package
+and with the closed forms of its note in ``workbench/topics/worked-examples/lswt-example-*``.
 The tests check that the two agree and that the numbers quoted in the note
 are the ones the script computes, so that a change of the package or of the
 note that breaks the example fails here.
@@ -15,8 +15,8 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-EXAMPLES = ROOT / "examples" / "worked_examples"
-NOTES = ROOT / "workbench" / "notes"
+EXAMPLES = ROOT / "code-space" / "examples" / "worked_examples"
+NOTES = ROOT / "workbench" / "topics" / "worked-examples"
 
 
 @pytest.fixture(autouse=True)

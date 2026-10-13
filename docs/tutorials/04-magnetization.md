@@ -1,6 +1,6 @@
 # 4. Magnetization curve at 1/S order, checked by exact diagonalization
 
-Script: [`examples/tutorials/t04_magnetization.py`](../../examples/tutorials/t04_magnetization.py)
+Script: [`code-space/examples/tutorials/t04_magnetization.py`](../../code-space/examples/tutorials/t04_magnetization.py)
 
 This tutorial computes the magnetization M(h) of the spin-1/2 square-lattice
 Heisenberg antiferromagnet (J = 1, g = 1) in a field along z, then compares

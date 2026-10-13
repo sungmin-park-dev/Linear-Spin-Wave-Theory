@@ -17,7 +17,7 @@ diagonalization of small clusters is kept only to check the spin-wave results.
 
 The package grew out of work on the triangular-lattice antiferromagnet
 Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up in
-[`model/nbcp/`](model/nbcp/README.md).
+[`code-space/model/nbcp/`](code-space/model/nbcp/README.md).
 
 ## Features
 
@@ -49,7 +49,7 @@ pip install ".[dev]"     # adds pytest and tqdm
 ## Quick start
 
 The spin-1/2 Heisenberg antiferromagnet on the triangular lattice, in units
-of J. The script is [`examples/quickstart.py`](examples/quickstart.py).
+of J. The script is [`code-space/examples/quickstart.py`](code-space/examples/quickstart.py).
 
 ```python
 import numpy as np
@@ -96,12 +96,12 @@ example) and a `stk.SpinState` for the ordered configuration, or find one with
 Five tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
 first calculation to neutron spectra, the magnetization curve at 1/S order
 (checked against exact diagonalization) and magnon topology. Every number in
-them is printed by a script in `examples/tutorials/` and checked by the test
+them is printed by a script in `code-space/examples/tutorials/` and checked by the test
 suite.
 
 ## Gallery
 
-Every figure below comes from [`examples/gallery.py`](examples/gallery.py),
+Every figure below comes from [`code-space/examples/gallery.py`](code-space/examples/gallery.py),
 using one call per plot from `spintoolkit.visualization`. Quantities that are
 physically undefined are drawn in grey, never as zero: for example, the
 Goldstone weight at the Bragg vector K, or a phase-diagram point where no
@@ -131,8 +131,8 @@ python -m pytest code-space/tests -q
 The tests compare against closed-form results (ferromagnet and Néel magnons,
 triangular-lattice zero-point energy, free-spin powder averages), exact
 diagonalization of small clusters, and the earlier implementation in
-`legacy/`. The NBCP research calculations moved to their own repository,
-`nbcp-spin-supersolid`, on 2026-10-09; the NBCP model in `model/nbcp/` stays
+`archive/legacy/`. The NBCP research calculations moved to their own repository,
+`nbcp-spin-supersolid`, on 2026-10-09; the NBCP model in `code-space/model/nbcp/` stays
 here as a regression fixture.
 
 ## Known limitations
@@ -158,8 +158,8 @@ Most design notes are currently in Korean. English tutorials are planned for
 the 0.2 release.
 
 - [Package layout](code-space/spintoolkit/README.md)
-- [Development design and decision log](docs/archive/2026-10-08-development-beamer/README.md)
-- [LSWT theory notes](docs/archive/2026-10-08-lswt-markdown/README.md)
+- [Development design and decision log](archive/2026-10-08-development-beamer/README.md)
+- [LSWT theory notes](archive/2026-10-08-lswt-markdown/README.md)
 - [Documentation index](docs/README.md)
 
 ## Related work on NBCP

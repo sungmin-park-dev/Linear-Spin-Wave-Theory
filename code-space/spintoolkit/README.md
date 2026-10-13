@@ -27,7 +27,7 @@
 이번 이동에서 변경하지 않았다. 단위·출처를 포함하는 별도 데이터 파일은
 후속 설계 범위다.
 
-모델 고유 구성은 저장소의 `model/<name>/`에 둔다. 향후 ED·TN 구현은
+모델 고유 구성은 저장소의 `code-space/model/<name>/`에 둔다. 향후 ED·TN 구현은
 `methods/`의 독립 하위 패키지로 추가한다. 빈 구현 폴더는 만들지 않는다.
 
 ## 현재 경계와 다음 단계
@@ -62,4 +62,4 @@ DeprecationWarning을 내고, `lswt.<경로>`를 같은 `spintoolkit` 모듈 객
 옛 경로로 저장한 pickle도 이 연결로 복원된다.
 
 개발 현황과 이행 검증은
-[개발 기록](../../docs/archive/2026-10-08-development-beamer/README.md)에서 관리한다.
+[개발 기록](../../archive/2026-10-08-development-beamer/README.md)에서 관리한다.

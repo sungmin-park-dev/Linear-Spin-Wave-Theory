@@ -1,6 +1,6 @@
 # 5. Topology: Berry curvature, Chern numbers and the magnon thermal Hall effect
 
-Script: [`examples/tutorials/t05_topology.py`](../../examples/tutorials/t05_topology.py)
+Script: [`code-space/examples/tutorials/t05_topology.py`](../../code-space/examples/tutorials/t05_topology.py)
 
 The honeycomb ferromagnet with a next-nearest-neighbour Dzyaloshinskii–Moriya
 (DM) interaction is the magnon analogue of the Haldane model:

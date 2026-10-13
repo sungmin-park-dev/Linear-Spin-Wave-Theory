@@ -1,6 +1,6 @@
 # 2. Your own model: the square-lattice J1–J2 Heisenberg model
 
-Script: [`examples/tutorials/t02_own_model.py`](../../examples/tutorials/t02_own_model.py)
+Script: [`code-space/examples/tutorials/t02_own_model.py`](../../code-space/examples/tutorials/t02_own_model.py)
 
 This tutorial builds a model from scratch, finds its classical ground state
 without a guess, and ranks candidate orders. The model is
@@ -112,5 +112,5 @@ A state that is a stationary point but not a minimum has negative magnon
 energies. It is reported as `unstable`, and its harmonic energy is NaN, not a
 number to compare. Near J2 = J1/2 neither state is stable at harmonic order,
 and a phase diagram should leave that region undefined. See
-`examples/gallery.py` (`j1j2_phase_diagram`) for the full scan drawn with
+`code-space/examples/gallery.py` (`j1j2_phase_diagram`) for the full scan drawn with
 `plot_phase_diagram`.

@@ -28,7 +28,7 @@ CONFIG = {"Jxy": 0.076, "Jz": 0.125, "h": (0.03, -0.04, 0.2)}
 @pytest.fixture
 def legacy(monkeypatch):
     root = Path(__file__).resolve().parents[3]
-    monkeypatch.syspath_prepend(str(root / "legacy"))
+    monkeypatch.syspath_prepend(str(root / "archive" / "legacy"))
     cells = import_module("modules.SpinSystem.nbcp_unitcells")
     energy = import_module("modules.Tools.analysis_tools")
     return cells.NBCP_UNIT_CELL, energy.Create_Energy_Function

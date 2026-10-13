@@ -1,4 +1,0 @@
-name: Toolkit implementation and verification
-from: docs/archive/2026-10-08-development-beamer/main.tex
-summary: Implementation status, numerical comparisons, migration issues and open items (Beamer appendix A).
-topics: [ toolkit-development ]

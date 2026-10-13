@@ -7,7 +7,7 @@ status: in-review
 last-edited-by: claude
 created: 2026-06-03
 updated: 2026-09-30
-must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
+must-read: archive/government/Agents-Bylaws/templates/map-template.md
 ---
 
 # Map - idea-proposals
@@ -41,6 +41,6 @@ must-read: GOVERNMENT/Agents-Bylaws/templates/map-template.md
 
 ## 참고 문서
 
-- [[GOVERNMENT/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
-- [[GOVERNMENT/Agents-Bylaws/templates/idea-proposals-template|idea-proposals-template]] — idea proposal 작성 기준
+- [[archive/government/Agents-Bylaws/templates/map-template|map-template]] — map 작성 기준
+- [[archive/government/Agents-Bylaws/templates/idea-proposals-template|idea-proposals-template]] — idea proposal 작성 기준
 - [[GOVERNMENT/Working-Pad/TASK-QUEUE|TASK-QUEUE]] — 활성 작업 큐

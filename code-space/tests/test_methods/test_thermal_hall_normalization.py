@@ -17,7 +17,7 @@ import pytest
 from spintoolkit.observables.thermodynamics import Thermodynamics
 from spintoolkit.observables.topology import Topology
 
-EXAMPLE = Path(__file__).resolve().parents[3] / "examples/verification/thermal_hall_reference_check.py"
+EXAMPLE = Path(__file__).resolve().parents[3] / "code-space/examples/verification/thermal_hall_reference_check.py"
 SPEC = importlib.util.spec_from_file_location("thermal_hall_reference", EXAMPLE)
 REFERENCE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(REFERENCE)
