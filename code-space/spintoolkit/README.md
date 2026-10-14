@@ -16,11 +16,11 @@
 | `methods/optimization.py` | 기존 `SpinSystem` 기반 고전 스핀상태 탐색(`SpinOptimizer`; 새 자료형용 전역 탐색으로 옮긴 뒤 사용 중단 예정, D30) |
 | `methods/classical.py` | `SpinModel`의 항만 읽는 고전 에너지·국소장·토크 |
 | `methods/lswt/` | 새 진입점 `solve_lswt`(D24), 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`). 기존 `LSWTSolver`는 사용 중단(D30) |
-| `methods/nlswt/` | 비선형 스핀파 `solve_nlswt`(D46): HP 4차 전개, O(S⁰) 바닥 에너지, 1/S 마그논 에너지; `pseudo_goldstone_gap`(D47): 유사 Goldstone gap의 다음 차수; `NLSWTResult.decay_rates`(D57): 넓힘 없는 두 마그논 붕괴율(황금률, 삼각형 적분); `NLSWTResult.spectral_function`(D58): 마그논 스펙트럼 함수(on-shell 기본, Dyson 선택) |
+| `methods/nlswt/` | 비선형 스핀파 `solve_nlswt`(D46): HP 4차 전개, O(S⁰) 바닥 에너지, 1/S 마그논 에너지; `pseudo_goldstone_gap`(D47): 유사 Goldstone gap의 다음 차수; `NLSWTResult.decay_rates`(D57): 넓힘 없는 두 마그논 붕괴율(황금률, 삼각형 적분); `NLSWTResult.spectral_function`(D58): 마그논 스펙트럼 함수(on-shell 기본, Dyson 선택); `structure.py`(D59): O(S⁰) 스핀 연산자 전개와 상관함수 |
 | `methods/stability.py` | 고전 상태의 국소 안정성 `local_stability`(D51): 연속 k에서 `H(k)`의 최소 고유값과 영모드 둘레 강성 ρ(해석적 2차 전개). 판정 `stable`·`unstable`·`marginal`·`not stationary`. 2차가 못 정하는 영모드는 고차 판정(D54): 접은 셀에서 우연 영모드 방향 고전 에너지, 평평한 강성 방향의 `H(k)` 고차 항. 고전 축퇴 다양체는 `marginal`. 단일 Q 나선(`IncommensurateStructure`)은 회전틀 H(k)로(D55) |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
 | `models/` | 표준 벤치마크 해밀토니안(사각·삼각격자 하이젠버그)과 해석적 기준 스핀 배열 |
-| `observables/` | 보스 통계, 열역학, 위상, 상관함수. `two_magnon.py`: 상호작용 없는 종방향 두 마그논 연속체(O(S⁰), t = 0, D56)와 두 마그논 연속체 아래 끝 `two_magnon_threshold`(D57). `interacting_spectrum.py`: 입은 한 마그논 봉우리 + 두 마그논 연속체 S(q,ω)(D58) |
+| `observables/` | 보스 통계, 열역학, 위상, 상관함수. `two_magnon.py`: 상호작용 없는 종방향 두 마그논 연속체(O(S⁰), t = 0, D56)와 두 마그논 연속체 아래 끝 `two_magnon_threshold`(D57). `interacting_spectrum.py`: 입은 한 마그논 봉우리 + 두 마그논 연속체 S(q,ω)(D58), 완전한 O(S⁰) S(q,ω) `structure_factor_s0`와 유한 토러스 최종 상태 `structure_factor_states`(D59) |
 | `visualization/` | 스핀 배열과 계산 결과 표시 |
 
 `definitions/constants.py`에는 물리상수, `defaults.py`에는 계산 기본값과

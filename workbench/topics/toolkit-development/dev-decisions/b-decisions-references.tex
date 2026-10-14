@@ -650,6 +650,29 @@
   \slidesource{2026-10-14 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D59): 동적 구조인자를 $O(S^0)$까지 빠짐없이 계산한다}\label{decisions-d59-structure-s0}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 선택(``완전한 S⁰ 스펙트럼''), 구현은 Claude 결정, 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & D58의 $\sum_nW_nA_n+S_2$에는 같은 차수의 두 항이 빠져 있었다: 한 마그논 가중치의 $1/S$ 보정과, 비공선 상태에서 3차 꼭짓점이 섞는 한·두 마그논 간섭 \\
+    스핀 연산자 & 해밀토니안과 같은 HP 절단과 같은 응축(D46)으로 $S^a_q=(\mathsf A+\delta\mathsf A)\psi_q+L^a_q$. $\delta\mathsf A$: $s^+$의 $-a^\dagger aa/4S$의 HF 축약($2\langle a^\dagger a\rangle a+\langle aa\rangle a^\dagger$)과 $-n\,a^\dagger a$ 속 응축 $\alpha$(정렬 모멘트의 $1/S$ 회전) \\
+    상관함수 & $\chi=\mathsf ag\mathsf a^\dagger+\delta\mathsf a g\mathsf a^\dagger+{\rm h.c.}+\mathsf agMg\mathsf a^\dagger+\mathsf ag\mathsf T^\dagger\sigma_3K+{\rm h.c.}+\chi_{LL}$. $M$은 HF·tadpole·3차 자기에너지의 남부 전체 행렬, $K=\langle\langle j;L^\dagger\rangle\rangle$은 운동방정식 $\langle\langle\psi;L^\dagger\rangle\rangle=G_0\sigma_3\langle\langle j;L^\dagger\rangle\rangle$에서. $\Pi,K,\tilde K,\chi_{LL}$은 연산자 $(j,L)$의 자유 두 마그논 거품 하나의 블록 \\
+    최종 상태 & 한 마그논: 극 $\varepsilon+d_j$($d_j$는 $M_{gg}(\varepsilon)$ 고유값), 잔여 = LSWT 가중치 + 준입자 잔여($M'$) + 연산자 보정 + 띠간·비정상 자기에너지에 의한 고유벡터 회전 + 간섭. 두 마그논: $\tfrac12|c_L+\mathsf ag(E_P)\mathsf T^\dagger\sigma_3X|^2$(종방향 + 가상 마그논을 거친 가로 성분; 교차항이 간섭, 제곱이 연속체 속 꼬리) \\
+    열역학 극한 & 거품은 삼각형 적분(D57) 행렬 밀도의 코시 변환. 극 부분을 빼면 유한한 나머지가 남고, 이를 넓힘 0·양의 주파수에서 계산해(두 마그논 상태만 기여, 음주파수 구조 배제) $\eta$ 로렌츠 함수로 다시 변환한다. 극은 $R_j/(z-\varepsilon-d_j)$로 재합: 붕괴하는 마그논은 ${\rm Im}\,d=-\Gamma$(D57)이고 잔여가 복소수(Fano 비대칭). 그 밖에서는 엄밀한 $O(S^0)$ \\
+    겹친 띠 & 정확히 겹친 묶음은 $M_{gg}$를 대각화해 투영자 $P_j$로 나눈다. 대칭으로 생긴 겹침에서는 $M'$과 $P_j$가 교환해 정확하다 \\
+    범위 & 쌍 에너지는 LSWT 값(두 마그논 상호작용·속박 상태는 더 높은 차수). $t=0$, 실험실 틀. $O(S^0)$ 가중치가 LSWT와 비슷해지면(예: $S=1/2$ 붕괴 문턱 근처) 통제되지 않으며, 음의 잔여나 넓힘 너머의 음의 스펙트럼이 그 신호다. 붕괴하는 마그논의 복소 잔여는 봉우리에서 먼 곳에 천천히 줄어드는 분산형 꼬리를 남긴다(on-shell 인공물) \\
+    검산 & 두 스핀 클러스터(3차·tadpole 있음)의 큰 $S$ 정확 대각화($S=10\dots31$): 한 마그논 $O(S^0)$ 가중치 4개가 $3\times10^{-4}$, 두 마그논 상태 6개가 $10^{-4}$ 안에서 일치($q=0$과 역격자 벡터). Néel 합 규칙 $\sum\langle S^aS^a\rangle=S(S+1)$의 $S^0$ 항 $10^{-12}$. 강자성 보정 0. Néel 연속체 = D56(3\%). 붕괴 없는 기울어진 반강자성 $h=0.5h_c$: 열역학 극한과 메시 합이 2\% 안. 삼각 120° $S=5$: 극 위치·폭 = D58 on-shell, 가중치 10--15\% 감소. 붕괴하는 띠($\varepsilon=11.75$, $\Gamma\approx0.078$): $\varepsilon+i0$의 엄밀한 잔여는 격자 $36\dots144$에서 LSWT의 $0.71\dots0.92$로 수렴하지 않고, 선폭 평균 무게는 격자 $48\dots96$에서 $0.886\dots0.908$. 창 $10.5<\omega<13$의 전체 스펙트럼 적분은 3\% 안 \\
+    붕괴하는 띠의 무게 & $\mathsf M'(\varepsilon+i0)$은 두 마그논 밀도의 van Hove 구조를 따라 선보다 날카롭다. 보고하는 무게와 한 마그논 선은 $\mathsf M'$, 비대각 $\mathsf M$, $\mathsf K$를 $\varepsilon+i\Gamma$에서 계산(선폭 평균)하고, 위치와 폭은 $\mathsf M_{gg}(\varepsilon+i0)$. 차이는 $\Gamma\,\partial^2\Pi$ 차수로 $1/S$ 정확도 밖. 전체는 엄밀한 식, 연속체 = 전체 $-$ 선이라 붕괴하는 선 근처 몇 $\Gamma$ 안의 선·연속체 나눔은 관례이고, 그 창의 연속체 모양은 격자에 따라 선 무게의 몇 \% 흔들린다 \\
+    API & \texttt{observables.interacting\_spectrum.structure\_factor\_s0(nlswt\_result, q\_points, omega, eta, component, grid, levels)}(연속 극한), \texttt{structure\_factor\_states(nlswt\_result, q\_points)}(유한 토러스 최종 상태); \texttt{methods.nlswt.structure}; \texttt{engine.cauchy\_transform}, 여러 함수용 \texttt{triangle\_density}, \texttt{NonlinearSpinWaves.bilinear\_pair\_amplitudes} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

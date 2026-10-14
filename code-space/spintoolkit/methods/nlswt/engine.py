@@ -209,50 +209,67 @@ def _vectors(mesh_vectors: np.ndarray, op, q: np.ndarray, create: bool, ns: int)
     return np.exp(1j * q @ r)[:, None] * mesh_vectors[:, row, :ns]
 
 
+def _triangle_vertices(f: np.ndarray):
+    """Vertex values of ``f`` and flat grid indices of the two triangles of each square.
+
+    Each triangle's vertices are sorted by ``f``; arrays of shape (2 N1 N2, 3).
+    """
+    n1, n2 = f.shape
+    idx = np.arange(n1 * n2).reshape(n1, n2)
+    corners = [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)]
+    I = np.concatenate([np.stack([np.roll(idx, (-a, -b), (0, 1)).ravel() for a, b in tri], axis=1)
+                        for tri in corners])
+    F = f.ravel()[I]
+    order = np.argsort(F, axis=1)
+    return np.take_along_axis(F, order, 1), np.take_along_axis(I, order, 1)
+
+
 def _sorted_triangles(f: np.ndarray, g: np.ndarray):
     """Vertex values of the two triangles of each grid square, sorted by ``f``; (2 N1 N2, 3) each."""
-    corners = [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)]
-    F = np.concatenate([np.stack([np.roll(f, (-a, -b), (0, 1)).ravel() for a, b in tri], axis=1)
-                        for tri in corners])
-    G = np.concatenate([np.stack([np.roll(g, (-a, -b), (0, 1)).ravel() for a, b in tri], axis=1)
-                        for tri in corners])
-    order = np.argsort(F, axis=1)
-    return np.take_along_axis(F, order, 1), np.take_along_axis(G, order, 1)
+    F, I = _triangle_vertices(f)
+    return F, g.ravel()[I]
 
 
 def triangle_density(f: np.ndarray, g: np.ndarray, levels: Sequence[float]) -> np.ndarray:
     """``rho(x) = int du dv g(u, v) delta(x - f(u, v))`` over the unit torus at each level x.
 
-    ``f`` and ``g`` are (N1, N2) node values of a periodic grid. Each grid
-    square is cut into two triangles; on each, ``f`` and ``g`` are linear, and
-    the integral is exact for that interpolation: the weight
-    ``int delta(x - f) dA`` of the level line times the mean of ``g`` on it
-    (the two-dimensional analogue of the tetrahedron method).
+    ``f`` is the (N1, N2) node values of a periodic grid and ``g`` the node
+    values of one function, shape (N1, N2), or of several, (N1, N2, C), real
+    or complex. Each grid square is cut into two triangles; on each, ``f``
+    and ``g`` are linear, and the integral is exact for that interpolation:
+    the weight ``int delta(x - f) dA`` of the level line times the mean of
+    ``g`` on it (the two-dimensional analogue of the tetrahedron method).
+
+    Returns
+    -------
+    (levels,) or (levels, C) array
     """
     n1, n2 = f.shape
-    F, G = _sorted_triangles(f, g)
+    g = np.asarray(g)
+    single = g.ndim == 2
+    flat = g.reshape(n1 * n2, -1)
+    F, I = _triangle_vertices(f)
     f1, f2, f3 = F.T
-    g1, g2, g3 = G.T
-    out = np.zeros(len(levels))
+    G = [flat[I[:, v]] for v in range(3)]
+    out = np.zeros((len(levels), flat.shape[1]), dtype=np.result_type(flat.dtype, float))
     with np.errstate(divide="ignore", invalid="ignore"):
         for i, x in enumerate(np.asarray(levels, dtype=float)):
             low = (f1 < x) & (x <= f2)
             high = (f2 < x) & (x <= f3)
-            total = 0.0
+            w = np.zeros((len(f1), 3))
             if np.any(low):
                 a, b, c = f1[low], f2[low], f3[low]
                 t12, t13 = (x - a) / (b - a), (x - a) / (c - a)
-                ga = g1[low]
-                mean = 0.5 * (ga + t12 * (g2[low] - ga) + ga + t13 * (g3[low] - ga))
-                total += np.sum(2 * (x - a) / ((b - a) * (c - a)) * mean)
+                coef = (x - a) / ((b - a) * (c - a))          # 2 (x - a)/((b - a)(c - a)) * 1/2
+                w[low] = coef[:, None] * np.stack([2 - t12 - t13, t12, t13], axis=1)
             if np.any(high):
                 a, b, c = f1[high], f2[high], f3[high]
                 t13, t23 = (x - a) / (c - a), (x - b) / (c - b)
-                ga, gb = g1[high], g2[high]
-                mean = 0.5 * (ga + t13 * (g3[high] - ga) + gb + t23 * (g3[high] - gb))
-                total += np.sum(2 * (c - x) / ((c - a) * (c - b)) * mean)
-            out[i] = total
-    return out * 0.5 / (n1 * n2)
+                coef = (c - x) / ((c - a) * (c - b))
+                w[high] = coef[:, None] * np.stack([1 - t13, 1 - t23, t13 + t23], axis=1)
+            out[i] = w[:, 0] @ G[0] + w[:, 1] @ G[1] + w[:, 2] @ G[2]
+    out *= 0.5 / (n1 * n2)
+    return out[:, 0] if single else out
 
 
 def triangle_delta_integral(f: np.ndarray, g: np.ndarray) -> float:
@@ -267,16 +284,59 @@ def hilbert_transform(x: np.ndarray, rho: np.ndarray, omega: Sequence[float]) ->
     (each segment gives ``(rho_0 + s (w - x_0)) ln|(w - x_0)/(w - x_1)| - s (x_1 - x_0)``);
     the imaginary part is ``-pi rho(w)``. ``rho`` vanishes outside ``x``.
     """
-    x, rho = np.asarray(x, dtype=float), np.asarray(rho, dtype=float)
-    w = np.asarray(omega, dtype=float)[:, None]
-    x0, x1, r0, r1 = x[:-1], x[1:], rho[:-1], rho[1:]
-    s = (r1 - r0) / (x1 - x0)
-    with np.errstate(divide="ignore", invalid="ignore"):
-        log = np.log(np.abs(w - x0)) - np.log(np.abs(w - x1))
-    log = np.where(np.isfinite(log), log, 0.0)
-    real = np.sum((r0 + s * (w - x0)) * log - s * (x1 - x0), axis=1)
-    imag = -np.pi * np.interp(w[:, 0], x, rho, left=0.0, right=0.0)
-    return real + 1j * imag
+    return cauchy_transform(x, rho, np.asarray(omega, dtype=float))
+
+
+def cauchy_transform(x: np.ndarray, rho: np.ndarray, z, derivative: bool = False) -> np.ndarray:
+    """``F(z) = int dx' rho(x') / (z - x')`` (or ``F'(z)``) for ``rho`` piecewise linear on ``x``.
+
+    ``rho`` has shape (L,) or (L, C) (several densities on the same grid,
+    real or complex) and vanishes outside ``x``. Each segment contributes
+    ``(rho_0 + s (z - x_0)) [ln(z - x_0) - ln(z - x_1)] - s (x_1 - x_0)``,
+    exact for the linear interpolant. Complex ``z`` off the real axis uses
+    the complex logarithm; real ``z`` means ``z + i0`` (principal value, and
+    ``-i pi rho(z)``, or ``-i pi rho'(z)`` for the derivative).
+
+    Returns
+    -------
+    (nz,) or (nz, C) array
+    """
+    x = np.asarray(x, dtype=float)
+    rho = np.asarray(rho)
+    single = rho.ndim == 1
+    r = rho.reshape(len(x), -1)
+    z = np.atleast_1d(np.asarray(z))
+    real = not np.iscomplexobj(z) or np.all(np.imag(z) == 0)
+    x0, x1 = x[:-1], x[1:]
+    r0, r1 = r[:-1], r[1:]
+    s = (r1 - r0) / (x1 - x0)[:, None]
+    if real:
+        w = np.real(z).astype(float)[:, None]
+        with np.errstate(divide="ignore", invalid="ignore"):
+            log = np.log(np.abs(w - x0)) - np.log(np.abs(w - x1))
+            log = np.where(np.isfinite(log), log, 0.0)
+            inv = np.where(w == x0, 0.0, 1.0 / (w - x0)) - np.where(w == x1, 0.0, 1.0 / (w - x1))
+    else:
+        w = z.astype(complex)[:, None]
+        log = np.log(w - x0) - np.log(w - x1)
+        inv = 1.0 / (w - x0) - 1.0 / (w - x1)
+    if derivative:
+        out = log @ s + inv @ r0 + (inv * (w - x0)) @ s
+    else:
+        out = log @ r0 + (log * (w - x0)) @ s - ((x1 - x0) @ s)[None, :]
+    if real:
+        out = out.astype(complex)
+        w0 = np.real(z).astype(float)
+        if derivative:
+            seg = np.clip(np.searchsorted(x, w0) - 1, 0, len(x) - 2)
+            inside = (w0 > x[0]) & (w0 < x[-1])
+            out = out - 1j * np.pi * np.where(inside[:, None], s[seg], 0.0)
+        else:
+            for c in range(r.shape[1]):
+                out[:, c] += -1j * np.pi * (np.interp(w0, x, r[:, c].real, left=0.0, right=0.0)
+                                             + 1j * np.interp(w0, x, np.imag(r[:, c]), left=0.0,
+                                                              right=0.0))
+    return out[:, 0] if single else out
 
 def _group_cubic(cubic):
     """Merge cubic monomials that differ only by a common translation is not needed; keep list."""
@@ -622,6 +682,49 @@ class NonlinearSpinWaves:
                         rho_src[n] += triangle_density(f_src, source[:, n, a, b].reshape(n1, n2), x)
         return Ek[0], x, rho_dec, rho_src
 
+    def _commutator_terms(self, k: np.ndarray):
+        """``j_a = [psi_a(k), H_3]`` as ``(a, f, y, z)``: ``j_a = sum f y z`` per cell (N^{1/2} stripped)."""
+        ns = self.ns
+        out = []
+        for c, mono in self.expansion.orders[3]:
+            for x in range(3):
+                s, dagger, r = mono[x]
+                y, z = [mono[i] for i in range(3) if i != x]
+                # [a_s(k), a_s^+(r)] = e^{-ik.r};  [a_s^+(-k), a_s(r)] = -e^{-ik.r}  (N^{-1/2} stripped)
+                a, sign = (s, 1.0) if dagger else (ns + s, -1.0)
+                out.append((a, sign * c * np.exp(-1j * k @ np.asarray(r, dtype=float)), y, z))
+        return out
+
+    def bilinear_pair_amplitudes(self, terms, size: int, q1, T1, qx, Tx, qy, Ty):
+        """Two-magnon amplitudes of operators ``O_a = sum_cells f y z`` at total momentum ``k``.
+
+        ``terms`` lists ``(a, f, y, z)``: operator ``O_a`` contains the
+        two-boson monomial ``f y z`` (``f`` carrying the ``exp(-i k . r)`` of
+        the translation sum). Returns ``c`` (pairs ``(q1, n1), (qx, n2)``
+        annihilated, ``q1 + qx = k``) and ``d`` (pairs ``(q1, n1), (qy, n2)``
+        created, ``q1 + qy = -k``), each (m, size, Ns, Ns) and symmetric under
+        exchange of the two magnons, so that
+        ``O_a = 1/2 sum_{q1 n1 n2} [c_a b b + d_a b^+ b^+] + ...`` with the
+        N^{1/2} of the momentum sum stripped as in :meth:`_decay`.
+        """
+        ns = self.ns
+        m = len(q1)
+        c = np.zeros((m, size, ns, ns), dtype=complex)
+        d = np.zeros((m, size, ns, ns), dtype=complex)
+        memo: Dict = {}
+
+        def amp(op, label, q, T, create):
+            if (op, label) not in memo:
+                memo[(op, label)] = _vectors(T, op, q, create, ns)
+            return memo[(op, label)]
+
+        for a, f, y, z in terms:
+            c[:, a] += f * (amp(y, 1, q1, T1, False)[:, :, None] * amp(z, 2, qx, Tx, False)[:, None, :]
+                            + amp(z, 1, q1, T1, False)[:, :, None] * amp(y, 2, qx, Tx, False)[:, None, :])
+            d[:, a] += f * (amp(y, 3, q1, T1, True)[:, :, None] * amp(z, 4, qy, Ty, True)[:, None, :]
+                            + amp(z, 3, q1, T1, True)[:, :, None] * amp(y, 4, qy, Ty, True)[:, None, :])
+        return c, d
+
     def _pair_amplitudes(self, k):
         """Two-magnon amplitudes of ``j_a = [psi_a(k), H_3]`` in the original Nambu basis.
 
@@ -641,27 +744,8 @@ class NonlinearSpinWaves:
         qx, qy = k - q1, -k - q1
         Ex, Tx = self._bogoliubov(qx)
         Ey, Ty = self._bogoliubov(qy)
-        m = len(q1)
-        X = np.zeros((m, 2 * ns, ns, ns), dtype=complex)
-        Y = np.zeros((m, 2 * ns, ns, ns), dtype=complex)
-        memo: Dict = {}
-
-        def amp(op, label, q, T, create):
-            if (op, label) not in memo:
-                memo[(op, label)] = _vectors(T, op, q, create, ns)
-            return memo[(op, label)]
-
-        for c, mono in self.expansion.orders[3]:
-            for x in range(3):
-                s, dagger, r = mono[x]
-                y, z = [mono[i] for i in range(3) if i != x]
-                # [a_s(k), a_s^+(r)] = e^{-ik.r};  [a_s^+(-k), a_s(r)] = -e^{-ik.r}  (N^{-1/2} stripped)
-                a, sign = (s, 1.0) if dagger else (ns + s, -1.0)
-                f = sign * c * np.exp(-1j * k[0] @ np.asarray(r, dtype=float))
-                X[:, a] += f * (amp(y, 1, q1, T1, False)[:, :, None] * amp(z, 2, qx, Tx, False)[:, None, :]
-                                + amp(z, 1, q1, T1, False)[:, :, None] * amp(y, 2, qx, Tx, False)[:, None, :])
-                Y[:, a] += f * (amp(y, 3, q1, T1, True)[:, :, None] * amp(z, 4, qy, Ty, True)[:, None, :]
-                                + amp(z, 3, q1, T1, True)[:, :, None] * amp(y, 4, qy, Ty, True)[:, None, :])
+        X, Y = self.bilinear_pair_amplitudes(self._commutator_terms(k[0]), 2 * ns,
+                                             q1, T1, qx, Tx, qy, Ty)
         out = (X, E1[:, :, None] + Ex[:, None, :], Y, E1[:, :, None] + Ey[:, None, :])
         cache[key] = out
         return out
