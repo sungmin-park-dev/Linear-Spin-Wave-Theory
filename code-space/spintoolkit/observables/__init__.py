@@ -7,8 +7,8 @@ e.g. ``from spintoolkit.observables import structure_factor, thermal_quantities`
 from .bands import BandStructure, DensityOfStates, band_structure, density_of_states
 from .berry import (BerryCurvature, ThermalHall, TopologyError, berry_curvature, chern_numbers,
                     thermal_hall)
-from .interacting_spectrum import (dressed_structure_factor, structure_factor_s0,
-                                   structure_factor_states)
+from .interacting_spectrum import (InteractingPath, dressed_structure_factor, interacting_path,
+                                   structure_factor_s0, structure_factor_states)
 from .neutron import (FormFactor, NeutronIntensity, NeutronPath, NeutronSlice, StaticSlice,
                       correlation_path, domain_average, neutron_intensity, neutron_path,
                       neutron_slice, powder_average, static_slice)
@@ -23,7 +23,8 @@ __all__ = [
     'BandStructure', 'DensityOfStates', 'band_structure', 'density_of_states',
     'BerryCurvature', 'ThermalHall', 'TopologyError', 'berry_curvature', 'chern_numbers',
     'thermal_hall',
-    'dressed_structure_factor', 'structure_factor_s0', 'structure_factor_states',
+    'InteractingPath', 'dressed_structure_factor', 'interacting_path', 'structure_factor_s0',
+    'structure_factor_states',
     'FormFactor', 'NeutronIntensity', 'NeutronPath', 'NeutronSlice', 'StaticSlice',
     'correlation_path', 'domain_average', 'neutron_intensity', 'neutron_path', 'neutron_slice',
     'powder_average', 'static_slice',

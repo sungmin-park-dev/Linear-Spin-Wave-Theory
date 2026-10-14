@@ -255,3 +255,51 @@ def plot_static_structure_factor(spectrum, ax: Optional[plt.Axes] = None, *, cma
         ax.legend(loc="upper right", fontsize=7, framealpha=0.8)
     ax.set_title("energy-integrated: diffuse (colour) and Bragg (circles)", fontsize=9)
     return ax
+
+
+def plot_spectrum_cut(spectrum, index: int, ax: Optional[plt.Axes] = None, *,
+                      energy_scale: float = 1.0, energy_label: str = DEFAULT_ENERGY_LABEL,
+                      lswt: bool = True) -> plt.Axes:
+    """Draw the parts of the order-S^0 ``S(q, w)`` at one momentum of a path.
+
+    Parameters
+    ----------
+    spectrum : InteractingPath
+        Output of :func:`~spintoolkit.observables.interacting_spectrum.interacting_path`.
+    index : int
+        Path point.
+    energy_scale, energy_label
+        As in :func:`~spintoolkit.visualization.bands.plot_bands`; spectra
+        are divided by the scale so that their integrals are unchanged.
+    lswt : bool
+        Also draw the LSWT one-magnon spectrum with the same broadening.
+
+    Notes
+    -----
+    The total, the one-magnon lines and the continuum (the rest) are drawn
+    as computed; the continuum can dip below zero within a few line widths
+    of a decaying magnon, where the split is a convention (D59). A path
+    point where the spectrum is undefined raises ``ValueError``.
+    """
+    scale = _check_scale(energy_scale, energy_label)
+    total = np.asarray(spectrum.intensity[index], dtype=float)
+    if not np.all(np.isfinite(total)):
+        raise ValueError(f"S(q, w) is not defined at path point {index} (zero mode)")
+    if ax is None:
+        _, ax = plt.subplots(figsize=(5.2, 3.4))
+    omega = np.asarray(spectrum.omega) * scale
+    ax.fill_between(omega, 0, total / scale, color="0.85", lw=0)
+    ax.plot(omega, total / scale, color="k", lw=1.2, label="total")
+    ax.plot(omega, np.asarray(spectrum.one_magnon[index]) / scale, color="C0", lw=1.0,
+            label="one magnon")
+    ax.plot(omega, np.asarray(spectrum.continuum[index]) / scale, color="C3", lw=1.0,
+            label="two-magnon continuum")
+    if lswt:
+        ax.plot(omega, np.asarray(spectrum.lswt[index]) / scale, color="0.4", lw=0.8, ls="--",
+                label="LSWT")
+    ax.axhline(0, color="0.5", lw=0.5)
+    ax.set_xlabel(energy_label)
+    ax.set_ylabel(r"$S(\mathbf{q},\omega)$ per site")
+    ax.set_xlim(omega[0], omega[-1])
+    ax.legend(frameon=False, fontsize="small")
+    return ax

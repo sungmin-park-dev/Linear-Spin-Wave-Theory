@@ -156,7 +156,7 @@ results in research.
 
 ## Documentation
 
-- [Tutorials](docs/tutorials/README.md): five English tutorials, from a first calculation to topology
+- [Tutorials](docs/tutorials/README.md): six English tutorials, from a first calculation to topology and interacting spin waves
 - [Theory notes](workbench/topics/): LSWT and 1/S theory as English research notes, with worked examples
 - [Documentation index](docs/README.md)
 - [Package layout](code-space/spintoolkit/README.md) (Korean)

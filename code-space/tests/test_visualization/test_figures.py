@@ -151,3 +151,26 @@ def test_dos_static_and_magnetization_plots_draw_their_data(triangle):
     curve = magnetization_curve(model, neel_state(model, (1, 0, 0)), [0.0, 2.0], k_density=8)
     axes = plot_magnetization_curve(curve)
     np.testing.assert_array_equal(axes[0].get_lines()[1].get_ydata(), curve.harmonic)
+
+
+def test_interacting_path_marks_zero_modes_and_draws_cuts():
+    from spintoolkit.methods.nlswt import NLSWTSettings, solve_nlswt
+    from spintoolkit.models import neel_state, square_heisenberg
+    from spintoolkit.observables import interacting_path
+    from spintoolkit.visualization import plot_spectrum_cut
+
+    model = square_heisenberg(S=1.0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        result = solve_nlswt(model, neel_state(model), settings=NLSWTSettings(mesh=(6, 6)))
+        omega = np.linspace(0.0, 8.0, 200)
+        path = interacting_path(result, omega, 0.2, path=("Γ", "X"), points=3, grid=(12, 12))
+    assert np.all(np.isnan(path.intensity[0]))                 # Goldstone mode at Gamma
+    assert np.all(np.isfinite(path.intensity[1:]))
+    assert np.all(path.negative_weight[1:] == 0)
+    with pytest.raises(ValueError, match="not defined"):
+        plot_spectrum_cut(path, 0)
+    ax = plot_spectrum_cut(path, 1)
+    assert len(ax.lines) == 5                                   # four spectra and the zero line
+    ax = plot_intensity_path(path)
+    assert ax.get_xticklabels()[0].get_text() == "Γ"

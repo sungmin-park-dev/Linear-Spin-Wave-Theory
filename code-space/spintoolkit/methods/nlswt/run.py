@@ -82,12 +82,15 @@ class NLSWTResult:
         Momenta of all loop sums.
     solver : NonlinearSpinWaves
         The perturbation theory, for magnon energies at other momenta.
+    lattice : (2, 2) array
+        Primitive lattice of the model (rows), for named momentum paths.
     """
 
     header: ResultHeader
     energies: NonlinearEnergies
     k_points: np.ndarray
     solver: NonlinearSpinWaves = field(repr=False, compare=False)
+    lattice: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
 
     @property
     def ground_state_energy(self) -> float:
@@ -355,4 +358,4 @@ def solve_nlswt(model: SpinModel, state: SpinState,
     header = ResultHeader.build(
         "nlswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0)", diagnostics)
-    return NLSWTResult(header, energies, k, solver)
+    return NLSWTResult(header, energies, k, solver, np.asarray(model.lattice, dtype=float))

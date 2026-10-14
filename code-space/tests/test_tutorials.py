@@ -69,3 +69,13 @@ def test_topology(capsys):
     assert "D = 0: [nan nan]" in out
     assert "T = 0.5: kappa_xy / T = -0.1290" in out
     assert "D -> -D: [0.0009 0.0754 0.129  0.1131]" in out
+
+
+def test_interacting(capsys):
+    (_, _, path), out = run("t06_interacting", capsys)
+    assert "E_(S^0) = -0.008012  total = -0.546820" in out
+    assert "1/S       [1.0885 1.0885 0.7313]" in out
+    assert "decay     [0.1597 0.1597 0.    ]" in out
+    assert "undefined path points (Goldstone modes): 3" in out
+    assert "path points where the expansion is not controlled: [16]" in out
+    assert "total 2.061  one magnon 1.530  continuum 0.531  (LSWT 2.052)" in out

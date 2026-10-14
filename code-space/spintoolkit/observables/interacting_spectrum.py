@@ -20,7 +20,8 @@ Zero temperature, lab-frame (commensurate) states.
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Sequence, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, Optional, Sequence, Tuple
 import warnings
 
 import numpy as np
@@ -150,7 +151,9 @@ def structure_factor_s0(nlswt_result, q_points, omega, eta: float,
         (nq, Ns, 3, 3) complex residues (LSWT weight + order-S^0
         correction; Hermitian for a stable magnon; for a decaying magnon
         averaged over its line width, see the Notes); ``lswt_energy`` and
-        ``lswt_weight``.
+        ``lswt_weight``; ``negative_weight`` (nq,): the fraction of the
+        total spectrum on ``omega`` that is negative, a diagnostic of the
+        expansion (zero where it is controlled).
 
     Notes
     -----
@@ -158,6 +161,11 @@ def structure_factor_s0(nlswt_result, q_points, omega, eta: float,
     part is negative, or a total spectrum below zero beyond the broadening,
     means that the 1/S corrections exceed the LSWT terms (typically S = 1/2
     near a decay threshold); the expansion is then not controlled there.
+    The same happens within a self-energy width of a strongly decaying
+    magnon: the strict term ``a g M(w) g a^+`` follows the van Hove
+    singularities of the two-magnon density with the factor
+    ``1 / (w - E)^2``, which gives large spikes of either sign that a
+    resummation would smooth. ``negative_weight`` reports it.
 
     For a decaying magnon the strict residue at ``E + i0`` follows the van
     Hove structure of the two-magnon density and does not converge with
@@ -220,7 +228,11 @@ def structure_factor_s0(nlswt_result, q_points, omega, eta: float,
             for j, n in enumerate(group):
                 energy[i, n] = E0 + shifts[j]
                 weight[i, n] = W[j]
-    out.update(energy=energy, weight=weight, lswt_energy=lswt_energy, lswt_weight=lswt_weight)
+    total = out["total"]
+    with np.errstate(invalid="ignore", divide="ignore"):
+        negative = np.sum(np.maximum(-total, 0.0), axis=1) / np.sum(np.abs(total), axis=1)
+    out.update(energy=energy, weight=weight, lswt_energy=lswt_energy, lswt_weight=lswt_weight,
+               negative_weight=negative)
     return out
 
 
@@ -288,3 +300,90 @@ def structure_factor_states(nlswt_result, q_points) -> Dict[str, list]:
         out["two_magnon_energy"].append(np.array(energies))
         out["two_magnon_weight"].append(np.array(weights))
     return out
+
+
+@dataclass(frozen=True)
+class InteractingPath:
+    """Order-S^0 ``S(q, w)`` along a momentum path (:func:`interacting_path`).
+
+    Attributes
+    ----------
+    Q : (m, 2) array
+        Cartesian momenta.
+    distance : (m,) array
+    labels : list of str
+    label_distances : (n,) array
+    omega : (nw,) array
+    intensity : (m, nw) array
+        Total spectrum; NaN at momenta where it is not defined (zero modes).
+    one_magnon, continuum, lswt : (m, nw) arrays
+        As in :func:`structure_factor_s0`.
+    energy : (m, Ns) complex array
+        Pole positions (``-Im`` the decay rate).
+    negative_weight : (m,) array
+        Diagnostic of :func:`structure_factor_s0`.
+    """
+
+    Q: np.ndarray
+    distance: np.ndarray
+    labels: list
+    label_distances: np.ndarray
+    omega: np.ndarray
+    intensity: np.ndarray
+    one_magnon: np.ndarray
+    continuum: np.ndarray
+    lswt: np.ndarray
+    energy: np.ndarray
+    negative_weight: np.ndarray
+
+
+def interacting_path(nlswt_result, omega, eta: float, path: Sequence[Any] = ("Γ", "K", "M", "Γ"),
+                     points: int = 60, component: Optional[str] = None,
+                     grid: Tuple[int, int] = (48, 48), levels: int = 400) -> InteractingPath:
+    """:func:`structure_factor_s0` along a piecewise-straight path.
+
+    Parameters
+    ----------
+    nlswt_result : NLSWTResult
+    omega, eta, component, grid, levels
+        As in :func:`structure_factor_s0`.
+    path : sequence of str or (2,) array_like
+        Names of the primitive zone or Cartesian momenta, as in
+        :func:`~spintoolkit.observables.neutron.neutron_path`.
+    points : int
+        Momenta along the path. Each costs one two-magnon bubble on ``grid``.
+
+    Returns
+    -------
+    InteractingPath
+        Momenta where the spectrum is not defined (a zero mode at ``q`` or
+        in a pair) are NaN; they are typically the Bragg vectors of a
+        Goldstone mode.
+    """
+    from spintoolkit.observables.bands import _path_momenta, _vertices
+    from spintoolkit.system.high_symmetry import high_symmetry_points
+
+    lattice = getattr(nlswt_result, "lattice", None)
+    if lattice is None:
+        raise ValueError("the result has no primitive lattice (produced by solve_nlswt?)")
+    labels, vertices = _vertices(path, high_symmetry_points(np.asarray(lattice, dtype=float)))
+    q, distance, label_distances = _path_momenta(vertices, points)
+    w = np.asarray(omega, dtype=float)
+    ns = nlswt_result.solver.ns
+    keys = ("total", "one_magnon", "continuum", "lswt")
+    out = {key: np.full((len(q), len(w)), np.nan) for key in keys}
+    energy = np.full((len(q), ns), np.nan + 0j)
+    negative = np.full(len(q), np.nan)
+    for i, qi in enumerate(q):
+        try:
+            one = structure_factor_s0(nlswt_result, [qi], w, eta, component, grid, levels)
+        except ValueError as exc:
+            if "zero mode" not in str(exc):
+                raise
+            continue
+        for key in keys:
+            out[key][i] = one[key][0]
+        energy[i] = one["energy"][0]
+        negative[i] = one["negative_weight"][0]
+    return InteractingPath(q, distance, labels, label_distances, w, out["total"],
+                           out["one_magnon"], out["continuum"], out["lswt"], energy, negative)
