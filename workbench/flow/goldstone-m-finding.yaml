@@ -1,0 +1,27 @@
+format: 1
+kind: finding
+progress: active
+short: Finite M in 2D
+title: 2D Goldstone 상에서도 M = −∂F/∂h는 유한하다
+topics:
+- spin-wave-observables
+date: '2026-10-10'
+from:
+- id: thermal-m-ana
+  type: support
+fields:
+  statement: 'In the canted phase with a 2D Goldstone mode the moment sum decreases logarithmically with the mesh, but $-\partial F/\partial h$ converges: it equals $\langle S^z_{tot}\rangle/N$ in the exact theory, and the divergent rotation about the field axis does not change $S^z$, so the moment-sum and canting-angle terms cancel.'
+  condition: Square-lattice canted antiferromagnet, $t>0$, meshes $17^2$ to $68^2$; log coefficient $\sin\theta\,t\ln2/(4\pi S)$ matched.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-thermodynamics/note.md
+  text: Goldstone Modes in Two Dimensions
+  checks: []
+- kind: paper
+  ref: merminAbsence1966
+  text: Mermin-Wagner
+  checks: []
+sources:
+- workbench/log/2026-10-10.md 18:34, 18:47, 20:47 (item 2)
+guesses:
+- Active because the log says the explanation awaits the user's judgment.

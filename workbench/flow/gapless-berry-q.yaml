@@ -1,0 +1,16 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: Berry w/o gap?
+title: 갭이 없는데 Berry 곡률과 Chern 수를 계산할 수 있는가
+topics:
+- spin-wave-observables
+date: '2026-10-14'
+from:
+- id: goldstone-points-ana
+  type: origin
+fields:
+  question: Without a gap at the Goldstone point, can the Berry curvature be computed, and is the Chern number of a Goldstone band defined?
+sources:
+- workbench/log/2026-10-14.md 13:30 (user question)

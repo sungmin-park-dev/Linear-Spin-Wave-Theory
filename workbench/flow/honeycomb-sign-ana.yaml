@@ -1,0 +1,32 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Chern sign = sgn D
+title: 벌집 DM 강자성 마그논 Chern 수의 부호를 해석적으로 유도한다
+topics:
+- worked-examples
+- spin-wave-observables
+date: '2026-10-13'
+from:
+- id: worked-examples-calc
+  type: origin
+- id: fhs-kubo-criteria
+  type: use
+fields:
+  goal: Derive the sign of the Chern numbers, which the worked example had fixed only numerically.
+  setup: 'Dirac expansion at $\pm K$: $f_{\pm K+q}=\mp(\sqrt3/2)(q_x\pm iq_y)$, Jacobian $\eta=\mp(3/4)J^2S^2$, mass $d^z=\mp3\sqrt3DS$.'
+  result: Each corner adds $\tfrac12\operatorname{sgn}(\eta d^z)=\tfrac12\operatorname{sgn}D$, so $C_-=\operatorname{sgn}D$, $C_+=-\operatorname{sgn}D$ for all $D\neq0$; agrees with Kubo and link variables, Dirac coefficients checked by finite differences in the test.
+evidence:
+- kind: analytic
+  file: workbench/topics/worked-examples/lswt-example-honeycomb-topological-ferromagnet/note.md
+  text: Chern Numbers
+  checks: []
+- kind: paper
+  ref: haldaneModel1988
+  text: Haldane model
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 21:30 (sign only numerical)
+- workbench/log/2026-10-13.md 23:59 (second entry)
+- commit 4945c00

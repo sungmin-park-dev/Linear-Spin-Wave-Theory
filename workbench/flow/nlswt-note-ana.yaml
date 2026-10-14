@@ -1,0 +1,30 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: 1/S theory note
+title: '1/S 보정을 연구노트로 유도한다: 3·4차 항, 꼭짓점, tadpole'
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-12'
+from:
+- id: nlswt-expansion
+  type: support
+- id: boson-blocks-ana
+  type: use
+fields:
+  goal: Write the theory behind solve_nlswt in the notes.
+  setup: HP expansion with the $\bar a^\dagger\bar a\bar a/4S$ term, $H_n\propto S^{2-n/2}$, bond-wise $H_3,H_4$ in circular components.
+  result: $H_3$ contains only $\tilde J^{0\pm},\tilde J^{\pm0}$ and vanishes for axially symmetric collinear states; vertices, tadpole, ground-state energy and magnon energies written; five cases where the expansion is undefined listed. $H_3,H_4$ formulas match the package to $2\times10^{-16}$.
+evidence:
+- kind: analytic
+  file: workbench/topics/beyond-linear-spin-waves/lswt-nonlinear-spin-waves/note.md
+  text: Cubic and Quartic Boson Terms; Vertices
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_nonlinear_vertices_check.py
+  text: vertex check
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 19:40
+- commit e947e2d

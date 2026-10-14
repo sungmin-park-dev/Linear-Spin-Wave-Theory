@@ -1,0 +1,33 @@
+format: 1
+kind: calc
+progress: done
+result: solved
+short: Continuous-k test
+title: 연속 k와 영모드 강성으로 국소 안정성을 판정한다 (D51)
+topics:
+- fundamental-theory-of-spin-wave-theory
+- toolkit-development
+date: '2026-10-13'
+from:
+- id: mesh-instability-q
+  type: origin
+- id: stability-hessian-ana
+  type: use
+fields:
+  goal: A general test `local_stability` returning stable, unstable, marginal or not stationary.
+  setup: 'Minimize the lowest eigenvalue of $H(k)$ over continuous $k$; around zero modes a degenerate second-order expansion: linear term $L\neq0$ unstable, stiffness $\rho_{\min}<0$ long-wavelength unstable, $\rho=0$ or accidental degeneracy marginal.'
+  result: 'Square ferromagnet + J3: $\rho=S(1-4J_3)$ to $10^{-16}$; $J_3=0.2505$ passes the default mesh but is unstable; three NBCP points agree with long supercell relaxations. compare_states calls it by default (D53), solve_lswt does not.'
+evidence:
+- kind: calc
+  file: code-space/examples/verification/lswt_d51_local_stability_check.py
+  text: D51 check
+  checks: []
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: Local Stability and the BdG Matrix
+  checks: []
+sources:
+- workbench/log/2026-10-13.md 23:30
+- workbench/log/2026-10-14.md 14:10 (D53)
+- commit 8864a49
+- commit 1df0b6e

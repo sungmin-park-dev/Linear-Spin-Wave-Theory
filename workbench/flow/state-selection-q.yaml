@@ -1,0 +1,26 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: Pick among states?
+title: 고전적으로 축퇴된 상태 중 영점 에너지로 어떻게 고르는가
+topics:
+- toolkit-development
+- beyond-linear-spin-waves
+date: '2026-09-29'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: When classical states are degenerate along an accidental direction, how should the zero-point energy select one without leaving the order of LSWT?
+  motivation: Free minimization of $E_{\rm cl}+E_{\rm qm}$ (the removed `quantum` path) moves the state by $O(1/S)$ and leaves a linear boson term.
+evidence:
+- kind: other
+  title: D17-D18
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D17, D18 and the selection rule
+  checks: []
+sources:
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D17, D18, state-selection-rule)
+guesses:
+- Phrased as a question by the agent from the D17 rationale.

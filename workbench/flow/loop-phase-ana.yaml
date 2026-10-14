@@ -1,0 +1,28 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Loop Berry phase
+title: '적분 가능성과 정수성은 다르다: Goldstone 점 둘레 Berry 위상'
+topics:
+- spin-wave-observables
+date: '2026-10-14'
+from:
+- id: gapless-berry-q
+  type: origin
+fields:
+  goal: Separate integrability of $\Omega$ from quantization of $C$ at a Goldstone point.
+  setup: 'Remove a disk $D_r$ around $k_0$: $2\pi C=2\pi m-\gamma(r)$; $C$ is an integer only if $\gamma(r)\to0$ mod $2\pi$ (a massless Dirac point gives $\pi$).'
+  result: In both honeycomb models the loop phase vanishes like the flux, $r^6$ (ferromagnet) and $r^5$ (canted), although the paraunitary vector norm grows like $r^{-1/2}$ in the canted case; no general proof.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+  text: Goldstone Points
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: check 6
+  checks: []
+sources:
+- workbench/log/2026-10-14.md 13:30
+- commit 2649f01

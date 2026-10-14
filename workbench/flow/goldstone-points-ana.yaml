@@ -1,0 +1,28 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Goldstone points
+title: 'Goldstone 점에서 Berry 곡률과 κ: B = 0과 B ≠ 0'
+topics:
+- spin-wave-observables
+date: '2026-10-12'
+from:
+- id: zero-modes-q
+  type: origin
+fields:
+  goal: Decide whether $\Omega$ and $\kappa_{xy}$ are defined when a band touches zero.
+  setup: $c_2\to\pi^2/3$ is bounded; $B=0$ (axial ferromagnet) vs $B\neq0$; honeycomb with second-neighbour DM $0.2J$, $S=1/2$.
+  result: $\kappa$ is defined if $\Omega$ is bounded near $k_0$. For $B=0$ the curvature is that of the Hermitian $A_k$ and the sum rule follows; for $B\neq0$ no general argument (open). Numerically $\Omega_1\propto|k|^4$ (ferromagnet) and $|k|^3$ (canted), Chern $(+1,-1)$ on $60\times60$.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+  text: Goldstone Points
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: check 6
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 18:30
+- commit 2aaa1e1

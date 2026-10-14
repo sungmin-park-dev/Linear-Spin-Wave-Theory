@@ -1,0 +1,25 @@
+format: 1
+kind: question
+progress: active
+short: Thermal Hall norm?
+title: thermal Hall 계산의 면적·단위·반환 기준이 맞는가
+topics:
+- spin-wave-observables
+- toolkit-development
+date: '2026-08-02'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: Are the area normalization (real_space_volume), the unit conversion and the returned quantity of the magnon thermal Hall conductivity correct?
+  motivation: An old note recorded a missing factor $N_s$ and a wrong conversion factor in topology.py; the values had never been rederived.
+evidence:
+- kind: other
+  file: GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md
+  text: problem statement and later conclusion
+  checks: []
+sources:
+- GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md
+- GOVERNMENT/Working-Pad/TASK-QUEUE.md (row 3)
+guesses:
+- Marked active because the issue note is still open (in-review) in TASK-QUEUE row 3.

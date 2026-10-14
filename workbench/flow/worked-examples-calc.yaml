@@ -1,0 +1,36 @@
+format: 1
+kind: calc
+progress: done
+result: solved
+short: Four worked models
+title: 표준 모형 네 개를 닫힌 식으로 풀고 노트의 숫자를 테스트로 묶는다
+topics:
+- worked-examples
+date: '2026-10-12'
+from:
+- id: boson-blocks-ana
+  type: use
+- id: spiral-frame-ana
+  type: use
+- id: zc-literature
+  type: use
+fields:
+  goal: Give each theory step a worked example whose numbers are checked by a test.
+  setup: Square ferromagnet in a field, square Neel, triangular 120 degree (rotating frame), honeycomb ferromagnet with DM; scripts in code-space/examples/worked_examples, test_worked_examples.py; moments extrapolated from meshes $n,2n$.
+  result: Square AFM $C=0.157947$, $\Delta S=0.196602$, $c=2\sqrt2JS$; triangular $\Delta S=0.261303$; honeycomb gap $6\sqrt3DS$ and Chern $(+1,-1)$; package equals closed forms and the note numbers equal the script numbers.
+evidence:
+- kind: calc
+  file: workbench/topics/worked-examples/lswt-example-square-antiferromagnet/note.md
+  text: square AFM
+  checks: []
+- kind: calc
+  file: workbench/topics/worked-examples/lswt-example-triangular-antiferromagnet/note.md
+  text: triangular AFM
+  checks: []
+- kind: calc
+  file: code-space/tests/test_worked_examples.py
+  text: tests
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 21:30
+- commit 030560a

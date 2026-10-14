@@ -1,0 +1,27 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: Gapped-limit Chern
+title: Goldstone 띠의 Chern 수는 작은 갭을 연 극한으로 정의한다
+topics:
+- spin-wave-observables
+date: '2026-10-14'
+from:
+- id: loop-phase-ana
+  type: support
+fields:
+  statement: Following the standard definition (Chern numbers for separated bands only), the Chern number of a Goldstone band is the limit after a small symmetry-breaking gap; the loop phase is the check that the limit is well defined. Both models give $(+1,-1)$ in the gapped limit, equal to the integral avoiding $\Gamma$.
+  condition: Ferromagnet gapped by $h=0.05,0.01$; canted antiferromagnet by $-KS^xS^x$, $K=0.05,0.005$ ($\Gamma$ gap $\propto\sqrt K$). At $S=1/2$ a single-ion anisotropy is a constant and cannot open the gap.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+  text: Goldstone Points
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: check 6
+  checks: []
+sources:
+- workbench/log/2026-10-14.md 13:30 (second user question)
+- commit 4fcb408
