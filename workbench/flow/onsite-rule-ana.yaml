@@ -1,0 +1,32 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Single-ion rule
+title: 단일 이온 항은 결맞음 상태 값 (1−1/2S)A로 넣는다 (D37)
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-01'
+from:
+- id: project-q
+  type: origin
+fields:
+  goal: How should a single-ion term $\mathbf S_i^TA\mathbf S_i$ enter the classical energy and LSWT?
+  setup: Spin coherent-state expectation; comparison with exact single-spin spectra up to $S=20$ and torus ED.
+  result: Use $S(S-\tfrac12)\mathbf n^TA\mathbf n+\tfrac S2\operatorname{tr}A$, i.e. the coefficient $(1-\tfrac1{2S})A$, without a transverse normal-ordering constant; the easy-axis gap $(2S-1)|D|$ is exact and one-magnon bands match ED to $10^{-11}$.
+evidence:
+- kind: analytic
+  title: D37
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D36-D37 table
+  checks: []
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-boson-hamiltonian/note.md
+  text: Single-Ion Term
+  checks: []
+sources:
+- commit 08ffb6e
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D36-D37)
+- GOVERNMENT/Working-Pad/issue-notes/open/261012-batch-review-ledger.md (item 3)
+guesses:
+- The batch-review ledger records a user verdict on D37 on 2026-10-13; it is not entered as a check here.

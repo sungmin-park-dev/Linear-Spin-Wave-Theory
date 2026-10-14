@@ -1,0 +1,30 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: Zero-mode weights
+title: 영모드 운동량의 한 마그논 가중치는 방향 무관 극한이 있을 때만 값을 낸다 (D52)
+topics:
+- spin-wave-observables
+- toolkit-development
+date: '2026-10-14'
+from:
+- id: zero-modes-q
+  type: origin
+fields:
+  statement: At a zero-mode momentum the one-magnon weight is the limit checked along 8 directions times 3 radii, reported when it converges independently of direction (sums only for modes that become degenerate). At nuclear Bragg vectors of the 120 degree state and at Neel $q=0$ it is 0 ($S^z_{tot}$ conservation); at magnetic Bragg vectors the Goldstone weight diverges and stays NaN.
+  condition: $t=0$; applied branch by branch in spiral_structure_factor.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-spin-correlations/note.md
+  text: One-Magnon Weights
+  checks: []
+- kind: other
+  title: D52
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D52 table
+  checks: []
+sources:
+- workbench/log/2026-10-14.md 14:10, 14:55
+- commit 12ff241
+- commit 5e179bd

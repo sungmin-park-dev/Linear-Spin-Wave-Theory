@@ -1,0 +1,31 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Five fixes
+title: 연구노트로 옮기기 전 점검에서 이론 노트 다섯 곳을 고친다
+topics:
+- fundamental-theory-of-spin-wave-theory
+- spin-wave-observables
+date: '2026-10-08'
+from:
+- id: drafts-check-ana
+  type: origin
+- id: onsite-rule-ana
+  type: use
+fields:
+  goal: Fix the statements found wrong in the check before the theory moved into research notes.
+  setup: 'Five items: canting-angle shift of the moment, Luttinger-Tisza on-site term, Jordan-block sentence, Zeeman sign, real-space on-site rule.'
+  result: 'Moments in canted states include the rotation $S(\partial n/\partial\theta)\delta\theta$ with $\delta\theta=-(\partial^2E_{\rm cl})^{-1}\partial\Delta E_{\rm zp}$; LT uses the D37 value; Jordan-block statement limited to positive-semidefinite $H$; $H_Z=-\mu_B\mathbf B^Tg\mathbf S$; easy-axis gap $(2S-1)|D|$. Left open: the code magnetization in thermal.py still lacks the rotation term.'
+evidence:
+- kind: analytic
+  title: log 2026-10-08 12:45
+  file: workbench/log/2026-10-08.md
+  text: five fixes
+  checks: []
+sources:
+- workbench/log/2026-10-08.md 12:01, 12:45
+- commit 3901c51
+- workbench/decisions/2026-10-08-lswt-development-research-notes.md (item 5)
+guesses:
+- The check that found the errors is in a project shared folder outside the repo (lswt-review/2026-10-08-lswt-workspace-check.md); origin set to the earlier draft check as the same review line.

@@ -1,0 +1,35 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Rotating-frame Q
+title: 단일 Q 나선을 회전틀에서 원시 셀 LSWT로 푼다 (D34)
+topics:
+- fundamental-theory-of-spin-wave-theory
+- toolkit-development
+date: '2026-10-01'
+from:
+- id: project-q
+  type: origin
+fields:
+  goal: Solve single-Q spirals, including incommensurate ones, without a magnetic supercell.
+  setup: Rotating frame $J'=J R_n(2\pi\,\mathbf q\cdot\Delta\mathbf n)$ on the primitive cell; allowed only when every term commutes with the axis rotation (axial XXZ, axial DM, field along the axis).
+  result: Triangular 120 degree, DM and cone spirals agree with supercell LSWT in energy, bands and $S^{ab}(\mathbf q,\omega)$ to round-off; the incommensurate J1-J2 chain matches the analytic pitch and $\omega(\mathbf k)$ to $10^{-14}$. Otherwise `SpiralSymmetryError`.
+evidence:
+- kind: paper
+  ref: tothLinear2015
+  text: rotating-frame method
+  checks: []
+- kind: analytic
+  title: D34
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D34 table
+  checks: []
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: Single-Q Spirals in a Rotating Frame
+  checks: []
+sources:
+- commit 06f2985
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D34)
+- GOVERNMENT/Working-Pad/idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md

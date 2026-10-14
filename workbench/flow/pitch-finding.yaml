@@ -1,0 +1,26 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: Stable only at min
+title: 단일 Q 나선은 모든 Q에서 토크가 0이지만 전역 최소에서만 안정하다
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-12'
+from:
+- id: stability-hessian-ana
+  type: support
+fields:
+  statement: On a Bravais lattice $\varepsilon^2=S^2(\mathcal J_k-\mathcal J_Q)((\mathcal J_{k+Q}+\mathcal J_{k-Q})/2-\mathcal J_Q)$; the torque vanishes for every $Q$ but the spiral is stable only at the global minimum of $\mathcal J_Q$, with three Goldstone modes. The D34 pitch-extremum check is therefore only a necessary condition.
+  condition: Isotropic exchange, single-Q spiral in the rotating frame.
+evidence:
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: 'Example: Spirals on a Bravais Lattice'
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: check 5 (closed form 2e-14, imaginary modes off the minimum)
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 17:40

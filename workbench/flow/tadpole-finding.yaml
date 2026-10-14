@@ -1,0 +1,29 @@
+format: 1
+kind: finding
+progress: active
+short: Tadpole = dE_zp
+title: tadpole 계수는 영점 에너지가 고전 방향에 주는 힘이다
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-12'
+from:
+- id: nlswt-note-ana
+  type: support
+- id: pre-move-fixes
+  type: use
+fields:
+  statement: '$\eta_\mu=\partial E_{zp}/\partial\alpha_\mu^*$: the condensate shift $\psi=-H_0^{-1}\zeta$ is the $1/S$ correction of the classical directions, the same content as $\delta\theta=-(\partial^2E_{\rm cl})^{-1}\partial E_{zp}$ in the thermodynamics note. It vanishes along a symmetric zero mode and, for an accidental one, only at a stationary point of $E_{zp}$ (order by disorder).'
+  condition: Stationary reference state; checked on $12\times12$ to $5\times10^{-11}$; derivation given only in outline.
+evidence:
+- kind: analytic
+  file: workbench/topics/beyond-linear-spin-waves/lswt-nonlinear-spin-waves/note.md
+  text: The Tadpole and the 1/S Shift of the Classical Directions
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_nonlinear_vertices_check.py
+  text: tadpole = gradient of E_zp
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 19:40, 20:40
+guesses:
+- Active because the log says the equivalence of rotation and condensate shift is shown only numerically.

@@ -1,0 +1,31 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: FHS+Kubo agree
+title: Chern 수는 FHS와 Kubo가 일치할 때만 받는다 (D31)
+topics:
+- spin-wave-observables
+- toolkit-development
+date: '2026-09-30'
+from:
+- id: thermal-hall-q
+  type: origin
+fields:
+  statement: 'FHS link variables and the Kubo formula fail in opposite directions (FHS gives some integer when a gap closes, Kubo converges slowly for small gaps), so a Chern number is accepted only when both agree; otherwise NaN. Thresholds: band gap $10^{-8}E_0$, link overlap $10^{-3}$, agreement 0.1, FHS admissibility $10^{-6}$ rad.'
+  condition: Isolated magnon bands on a momentum mesh; Haldane-type example with $D=10^{-2}$ to $10^{-4}$ and $D=0$.
+evidence:
+- kind: calc
+  title: D31
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D31 table and Haldane example
+  checks: []
+- kind: paper
+  ref: fukuiChern2005
+  text: FHS link-variable method
+  checks: []
+sources:
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D31)
+- commit e09314c
+guesses:
+- Linked to the thermal Hall question because D29/D31 are the stage-5 topology decisions that resolved its implementation (TASK-QUEUE row 3); the sources do not say so directly.

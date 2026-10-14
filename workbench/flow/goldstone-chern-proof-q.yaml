@@ -1,0 +1,17 @@
+format: 1
+kind: question
+progress: open
+short: General proof?
+title: Goldstone 띠의 Chern 수가 정수라는 일반 증명이 있는가
+topics:
+- spin-wave-observables
+date: '2026-10-14'
+from:
+- id: gapped-limit-finding
+  type: origin
+fields:
+  question: Does the loop Berry phase around a Goldstone point vanish in general, so that the gapped-limit Chern number equals the integral avoiding $k_0$, also for $B\neq0$?
+  motivation: Shown only for two honeycomb models; the $B\neq0$ Kubo numerators are not settled by a general argument.
+sources:
+- workbench/log/2026-10-14.md 13:30 ("일반 증명은 아직 없음"), 14:40 (separate thread)
+- workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md (Goldstone Points)

@@ -116,7 +116,7 @@ def a4():
           f'inelastic at K: {bragg.intensities[0]}')
     gamma_point = neutron_intensity(result, [[0.0, 4 * np.pi / np.sqrt(3), 0.0]])
     print(f'  inelastic at the nuclear Bragg vector (0, 4pi/sqrt3): {gamma_point.intensities[0]} '
-          '(closed-form limit 0)')
+          '(the direction-independent limit; closed form 0)')
 
 
 if __name__ == '__main__':

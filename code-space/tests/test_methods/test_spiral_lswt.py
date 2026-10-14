@@ -157,6 +157,32 @@ def test_triangular_bragg_peaks(triangular):
     assert np.allclose(a.elastic[3], 0) and np.allclose(a.elastic[:3, 2, 2], 0)
 
 
+def test_triangular_zero_mode_limits_equal_supercell(triangular):
+    """D52 branch by branch: at the nuclear Bragg vector every branch has a zero mode and a
+    limit, as in the supercell; at the magnetic Bragg vector K the Goldstone weight diverges."""
+    model, spiral, result, supercell = triangular
+    B = reciprocal(model.lattice)
+    K = spiral.cartesian_wave_vector(model)
+    q = np.array([B[1], B[0] + B[1], K, 0.3 * B[0]])
+    with pytest.warns(UserWarning, match="limit"):
+        a = spiral_structure_factor(result, q)
+    with pytest.warns(UserWarning, match="limit"):
+        b = structure_factor(supercell, q)
+    np.testing.assert_array_equal(a.zero_mode, [True, True, True, False])
+    np.testing.assert_array_equal(a.limit, b.limit)
+    np.testing.assert_array_equal(a.limit, [True, True, False, False])
+    for i in (0, 1):
+        np.testing.assert_allclose(a.weights[i].sum(axis=0), b.weights[i].sum(axis=0),
+                                   atol=1e-9)
+        np.testing.assert_allclose(a.weights[i], 0, atol=1e-9)    # conserved total S^z etc.
+    # At K only the branch whose Goldstone weight diverges is NaN; the supercell, which cannot
+    # separate the branches, has no limit at the whole momentum.
+    assert np.any(np.isnan(a.weights[2])) and not np.all(np.isnan(a.weights[2]))
+    assert np.all(np.isnan(b.weights[2]))
+    assert_same_spectrum(spiral_structure_factor(result, q[[0, 1, 3]]),
+                         structure_factor(supercell, q[[0, 1, 3]]))
+
+
 # ----------------------------------------------------------------------------
 # 2. Incommensurate J1-J2 spiral
 # ----------------------------------------------------------------------------

@@ -1,0 +1,27 @@
+format: 1
+kind: question
+progress: active
+short: Theory + toolkit
+title: LSWT 이론을 하나의 검증된 정본으로 정리하고, 그 위에 반고전 패키지를 검증해 공개할 수 있는가
+topics:
+- fundamental-theory-of-spin-wave-theory
+- toolkit-development
+date: '2026-08-01'
+fields:
+  question: Can the linear spin-wave theory of 2D spin models be written as one reviewed canon, and a semiclassical package (spin-toolkit) built on it be verified against that canon and the literature and released?
+  motivation: The goal stated in research.yaml; the 2026-08-01 decision names the intended flow as theory, code, publication.
+evidence:
+- kind: other
+  file: workbench/research.yaml
+  text: research question
+  checks: []
+- kind: other
+  file: workbench/decisions/2026-08-01-lswt-markdown-source-authority.md
+  text: 'Context: theory, code, web publication'
+  checks: []
+sources:
+- workbench/research.yaml (question)
+- workbench/decisions/2026-08-01-lswt-markdown-source-authority.md (Context)
+guesses:
+- 'The project question is taken from research.yaml (written later, started: 2026-09-30); the date 2026-08-01 is the earliest decision in the repo that states this goal.'
+- Phrased as a question by the agent.

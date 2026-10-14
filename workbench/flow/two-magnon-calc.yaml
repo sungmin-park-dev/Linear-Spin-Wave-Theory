@@ -1,0 +1,32 @@
+format: 1
+kind: calc
+progress: done
+result: solved
+short: Two-magnon cont.
+title: 종방향 두 마그논 연속체를 O(S⁰)에서 계산한다 (D56)
+topics:
+- spin-wave-observables
+- beyond-linear-spin-waves
+date: '2026-10-14'
+from:
+- id: nlswt-note-ana
+  type: use
+fields:
+  goal: Add the longitudinal two-magnon continuum left for later in D26.
+  setup: Two-creation part of $\delta S=-n\,a^\dagger a$; non-interacting, $t=0$, laboratory frame; one-magnon 1/S corrections and decay of the same order not included.
+  result: Static sum agrees with real-space Wick contraction to $10^{-16}$ (Neel, 120 degree); zero for the ferromagnet; Neel pair energies $\omega(k)+\omega(k+q)$.
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-spin-correlations/note.md
+  text: Two-Magnon Continuum
+  checks: []
+- kind: calc
+  file: code-space/tests/test_observables/test_two_magnon.py
+  text: tests
+  checks: []
+sources:
+- workbench/log/2026-10-14.md 16:10
+- commit 83157c3
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D26, D56)
+guesses:
+- The use edge from the 1/S note reflects the order counting; the log only says the user chose this item.

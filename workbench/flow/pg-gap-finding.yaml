@@ -1,0 +1,33 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 1/S gap unclear
+title: 유사 Goldstone gap의 다음 차수는 S = 1/2에서 선도 차수보다 크다 (D47)
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-03'
+from:
+- id: nlswt-expansion
+  type: use
+- id: one-loop-potential
+  type: use
+fields:
+  statement: With $\Delta^2=A+B$ and $A=C_\phi/\chi$ the leading order, the next order gives $B/A\approx-27$ (Y) and $-20$ (V) at $S=1/2$, so the $1/S$ series does not fix the pseudo-Goldstone gap there.
+  condition: NBCP Y and V states; two-loop static self-energy; Goldstone limit $A=B=0$ and $A$ vs $C_\phi/\chi$ to 0.04 % checked.
+evidence:
+- kind: calc
+  title: D47
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D47 table
+  checks: []
+- kind: analytic
+  file: workbench/topics/beyond-linear-spin-waves/lswt-nonlinear-spin-waves/note.md
+  text: Accidental Zero Modes and the Pseudo-Goldstone Gap
+  checks: []
+sources:
+- commit 0cd01d2 (#37)
+- commit cd20029
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D47)
+guesses:
+- The NBCP application of this result moved to nbcp-spin-supersolid on 2026-10-09.

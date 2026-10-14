@@ -1,0 +1,32 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Broken rotation
+title: 회전 조건이 깨지면 단일 Q 나선이 어떻게 무너지는가
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-13'
+from:
+- id: spiral-frame-ana
+  type: origin
+fields:
+  goal: 'Answer the review question on D34: what the axis-rotation condition means and what happens when a term breaks it.'
+  setup: Phase of circular components $e^{-i(s_p+s_q)\phi_i}$ for one-site and Zeeman terms; in-plane field and in-plane easy axis on a Bravais planar spiral.
+  result: Breaking terms carry first or second harmonics, the rotating-frame torque varies from cell to cell, and the stationary state is a distorted spiral (components at $2Q$ for an in-plane field, $3Q$ for an in-plane easy axis); LSWT then needs a magnetic cell or an approximant. The condition is the stated requirement of the method, not a toolkit choice.
+evidence:
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: When the Rotation Condition Fails
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_spiral_harmonics_check.py
+  text: harmonics check
+  checks: []
+- kind: paper
+  ref: tothLinear2015
+  text: Eq. (13)
+  checks: []
+sources:
+- commit 591a89e
+- GOVERNMENT/Working-Pad/issue-notes/open/261012-batch-review-ledger.md (item 1)

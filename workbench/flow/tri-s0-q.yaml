@@ -1,0 +1,24 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 0.2% triangular?
+title: 삼각격자 S⁰ 바닥 에너지가 Chernyshev–Zhitomirsky 값과 왜 0.2% 다른가
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-12'
+from:
+- id: nlswt-note-ana
+  type: origin
+fields:
+  question: Why does the package S^0 ground-state energy of the triangular antiferromagnet ($-0.0080125J$) differ by 0.2 % from the literature value $-0.0080288J$?
+  motivation: The mesh converges ($-0.0080112/-0.0080123/-0.0080125$ for 12/18/24) while the HF and cubic parts still move by $10^{-3}$.
+evidence:
+- kind: paper
+  ref: chernyshevSpin2009
+  text: Eq. (39)-(42)
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 19:40
+guesses:
+- The difference was first noted in D46 (2026-10-03); dated here when it was written as unresolved in the note.

@@ -1,0 +1,31 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Beyond 2nd order
+title: 2차가 정하지 못한 영모드를 고차 항으로 판정한다 (D54)
+topics:
+- fundamental-theory-of-spin-wave-theory
+- toolkit-development
+date: '2026-10-14'
+from:
+- id: local-stability-calc
+  type: origin
+- id: zero-modes-q
+  type: use
+fields:
+  goal: Decide the marginal zero modes of D51.
+  setup: Flat-stiffness directions from the exact higher-order $k$ dependence of $H(k)$; accidental zero modes by folding their momentum to $k=0$ and relaxing the stiff directions in the classical energy.
+  result: Easy-plane ferromagnet at the critical field $S^2\delta\theta^4/2$, antiferromagnet at saturation $JS^2\theta^4$, single-ion Neel softening field drops at fourth order (first-order spin flop), $J_3=1/4$ ferromagnet $q^4$; XXZ critical field, triangular in a field and NBCP Y stay marginal (flat manifold, fluctuations decide).
+evidence:
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: Local Stability (two paragraphs)
+  checks: []
+- kind: calc
+  file: code-space/tests/test_methods/test_local_stability.py
+  text: tests
+  checks: []
+sources:
+- workbench/log/2026-10-14.md 14:40
+- commit f9504ce

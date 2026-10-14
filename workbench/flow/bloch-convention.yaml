@@ -1,0 +1,31 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: Full-position κ
+title: thermal Hall은 full-position Bloch 규약에서만 물리적이다
+topics:
+- spin-wave-observables
+date: '2026-10-01'
+from:
+- id: thermal-hall-q
+  type: origin
+fields:
+  statement: The full-position and cell Bloch conventions differ by the position operator, not by a band gauge. Chern numbers agree in both, but $\kappa_{xy}$ does not, and only the full-position value is physical (rewriting a sublattice into another cell changes only the cell-convention value).
+  condition: Bosonic BdG bands with sublattices; equal values when $C_3$ is preserved.
+evidence:
+- kind: calc
+  title: Bloch convention check
+  file: GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+  text: 'C3-broken boson honeycomb, 120^2 mesh, T=2: full-position 0.02662, cell 0.03536'
+  checks: []
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+  text: Magnon Thermal Hall Conductivity
+  checks: []
+sources:
+- commit a91372f
+- commit 16523a3 (#17)
+- GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md (topology row)
+guesses:
+- A first correction called it a gauge dependence and the user rejected it; this dot records the corrected result only.

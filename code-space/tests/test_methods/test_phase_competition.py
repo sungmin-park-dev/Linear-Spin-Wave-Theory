@@ -35,6 +35,29 @@ def test_triangular_heisenberg_ranking():
     np.testing.assert_allclose(fm.magnetization, [0, 0, 0.5])
     assert fm.skyrmion.integer == 0
     assert reports[1].to_dict()["harmonic_energy"] is None
+    assert best.stability.verdict == "stable"
+    assert reports[0].to_dict()["local_stability"]["verdict"] == "stable"
+
+
+def test_instability_between_mesh_points_marks_the_candidate_unstable():
+    """Square ferromagnet with J3 = 0.2505 along x: negative stiffness rho = S (1 - 4 J3).
+
+    The unstable pocket |q| < 0.014 r.l.u. falls between the mesh points, so the
+    mesh-only test passes it (D53).
+    """
+    from spintoolkit.system.model import Site, SpinModel, Term
+    terms = [Term.bilinear(("A", (0, 0)), ("A", (1, 0)), -np.eye(3)),
+             Term.bilinear(("A", (0, 0)), ("A", (0, 1)), -np.eye(3)),
+             Term.bilinear(("A", (0, 0)), ("A", (2, 0)), 0.2505 * np.eye(3))]
+    model = SpinModel(np.eye(2), [Site("A", (0, 0), 0.5)], terms, {"model_id": "fm_j3"})
+    candidates = {"fm": polarized_state(model)}
+    mesh_only, = compare_states(model, candidates, local_stability=False)
+    assert mesh_only.status == "stable" and mesh_only.stability is None
+    assert mesh_only.to_dict()["local_stability"] is None
+    checked, = compare_states(model, candidates)
+    assert checked.status == "unstable" and np.isnan(checked.harmonic_energy)
+    assert checked.stability.verdict == "unstable"
+    assert "between mesh points" in checked.message
 
 
 def test_mesh_density_is_matched():

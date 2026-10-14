@@ -103,7 +103,14 @@ def test_sum_rules_on_the_extended_mesh(model, state):
     assert inelastic == pytest.approx(np.mean(result.spins * (1 + 2 * n)), abs=1e-13)
     with pytest.warns(UserWarning, match="zero mode"):
         at_bragg = structure_factor(result, bragg_vectors)       # Goldstone modes sit here
-    assert np.all(at_bragg.zero_mode) and np.all(np.isnan(at_bragg.energies))
+    assert np.all(at_bragg.zero_mode)
+    # At nuclear Bragg vectors the conserved total S^z makes the one-magnon weight vanish
+    # as q -> G from every direction; at the other magnetic ones the Goldstone weights diverge.
+    nuclear = np.all(np.abs(np.mod(np.array(bragg_vectors) @ result.lattice.T / (2 * np.pi) + 0.5, 1)
+                            - 0.5) < 1e-9, axis=1)
+    assert list(at_bragg.limit) == list(nuclear)
+    np.testing.assert_allclose(at_bragg.weights[nuclear], 0, atol=1e-10)
+    assert np.all(np.isnan(at_bragg.energies[~nuclear]))
     elastic = np.sum(np.real(np.trace(at_bragg.elastic, axis1=1, axis2=2)))
     assert elastic == pytest.approx(np.mean((result.spins - n) ** 2), abs=1e-13)
     total = inelastic + elastic
@@ -142,6 +149,7 @@ def test_bragg_intensities():
     with pytest.warns(UserWarning, match="zero mode"):
         sf = structure_factor(result, [[np.pi, np.pi], [0.0, 0.0], [0.3, 0.2]])
     assert list(sf.zero_mode) == [True, True, False]
+    assert list(sf.limit) == [False, True, False]                 # q = 0: weight -> 0
     m = 0.5 - result.boson_numbers[0]
     assert list(sf.bragg) == [True, True, False]
     assert np.real(sf.elastic[0, 2, 2]) == pytest.approx(m ** 2, abs=1e-14)
