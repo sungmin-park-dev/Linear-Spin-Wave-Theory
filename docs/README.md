@@ -26,7 +26,7 @@ updated: 2026-09-23
 
 [2026-10-08 결정](../workbench/decisions/2026-10-08-lswt-development-research-notes.md)에 따라 내용의 편집 원본은 research-workspace 앱의 연구노트 [`workbench/topics/`](../workbench/topics/)(주제 폴더 안)다.
 
-- 일반 이론(Markdown `note.md`, [2026-10-11 결정](../workbench/decisions/2026-10-11-lswt-notes-markdown.md)): `lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`
+- 일반 이론(Markdown `note.md`, [2026-10-11 결정](../workbench/decisions/2026-10-11-lswt-notes-markdown.md)): `lswt-spin-hamiltonian`, `lswt-classical-order`, `lswt-boson-hamiltonian`, `lswt-paraunitary-diagonalization`, `lswt-magnon-thermodynamics`, `lswt-spin-correlations`, `lswt-magnon-topology`; 1/S 보정 `lswt-nonlinear-spin-waves`; 예제 노트 `lswt-example-*` 4개(계산은 `code-space/examples/worked_examples/`)
 - 개발 설계와 결정 기록: `dev-design`, `dev-verification`, `dev-decisions`
 - 계산 코드와 결과 데이터는 각각 [code-space/examples/](../code-space/examples/)와 [data-space/](../data-space/)에서 관리한다.
 

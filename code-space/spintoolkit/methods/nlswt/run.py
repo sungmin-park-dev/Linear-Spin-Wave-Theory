@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from math import gcd
+import warnings
 from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
@@ -93,17 +94,21 @@ class NLSWTResult:
         """``E_cl + E_zp + E_(S^0)`` per site."""
         return self.energies.total
 
-    def magnon_energies(self, k_points, broadening: float = 0.0) -> Dict[str, np.ndarray]:
+    def magnon_energies(self, k_points, eta: float = 0.0, *,
+                        broadening: Optional[float] = None) -> Dict[str, np.ndarray]:
         """Magnon energies through order S^0 (on-shell 1/S correction).
 
         Parameters
         ----------
         k_points : (m, 2) array_like
             Cartesian momenta.
-        broadening : float
-            ``eta`` in ``Sigma_3(k, w + i eta)``; zero is exact on a finite
+        eta : float
+            Broadening in ``Sigma_3(k, w + i eta)``; zero is exact on a finite
             torus, a small positive value regularizes the principal value where
             ``w`` crosses the two-magnon continuum on a mesh.
+        broadening : float, optional
+            Deprecated name of ``eta`` (the name used by the other spectral
+            functions); removed in 0.3.
 
         Returns
         -------
@@ -113,7 +118,11 @@ class NLSWTResult:
             ``decay_rate`` = -Im cubic (meaningful with a broadening; the
             quasiparticle half width at order S^0).
         """
-        lswt, static, cubic = self.solver.magnon_energies(k_points, broadening)
+        if broadening is not None:
+            warnings.warn("magnon_energies(broadening=) is deprecated; use eta=", DeprecationWarning,
+                          stacklevel=2)
+            eta = broadening
+        lswt, static, cubic = self.solver.magnon_energies(k_points, eta)
         return {"lswt": lswt, "hartree_fock_tadpole": static, "cubic": cubic,
                 "total": lswt + static + cubic.real, "decay_rate": -cubic.imag}
 

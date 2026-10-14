@@ -26,9 +26,9 @@ Na₂BaCo(PO₄)₂ (NBCP). That model is the main validation case and is set up
 | Model | Sites, bilinear exchange (any 3×3 matrix), single-ion terms, Zeeman coupling with a g-tensor; symmetry detection on the layer group |
 | Classical states | Energy, torques, global search on a magnetic supercell, Luttinger–Tisza, Monte Carlo, Landau–Lifshitz and Langevin dynamics |
 | LSWT | `solve_lswt` for commensurate states (Colpa diagonalization, zero-point energy, stability check); rotating-frame LSWT for single-Q spirals |
-| Interacting spin waves | `solve_nlswt`: ground-state energy to order S^0 (Hartree-Fock, cubic, tadpole) and on-shell 1/S magnon energies with decay rates; exact large-S perturbation theory on a finite torus; `pseudo_goldstone_gap`: next-order (two-loop) pseudo-Goldstone gap |
-| Observables | Band structures and density of states; magnetization curve M(h) with the 1/S correction and moment reduction; thermodynamics; dynamical structure factor; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
-| Comparison | `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy |
+| Interacting spin waves | `solve_nlswt`: ground-state energy to order S^0 (Hartree-Fock, cubic, tadpole) and on-shell 1/S magnon energies; decay rates without broadening (golden rule, triangle integration) and the magnon spectral function; the dynamical structure factor through order S^0 (`structure_factor_s0`: corrected one-magnon weights, two-magnon continuum and their interference); exact large-S perturbation theory on a finite torus; `pseudo_goldstone_gap`: next-order (two-loop) pseudo-Goldstone gap |
+| Observables | Band structures and density of states; magnetization curve M(h) with the 1/S correction and moment reduction, also at finite temperature; thermodynamics; dynamical structure factor; longitudinal two-magnon continuum (zero and finite temperature) and its threshold; unpolarized neutron intensity with form factor, resolution, powder and domain averages; Berry curvature, Chern numbers, magnon thermal Hall; skyrmion number |
+| Stability and comparison | `local_stability` checks a state at continuous momenta and resolves zero modes (Goldstone stiffness, higher orders, single-Q spirals); `compare_states` ranks candidate states by classical and harmonic (E_cl + E_zp) energy with that check |
 | Figures | Bands and density of states, neutron maps (path, constant energy, powder, energy-integrated with Bragg peaks, single spin components), magnetization curves, Berry curvature, thermal Hall, spin textures with skyrmion density, phase diagrams, thermodynamics, spin configurations |
 | Exact diagonalization | Small clusters, for checking LSWT |
 
@@ -143,8 +143,10 @@ here as a regression fixture.
   rotations about the spiral axis; otherwise the solver raises an error rather
   than returning an approximation. Multi-Q structures and topology of spiral
   magnons are not supported.
-- LSWT is a harmonic expansion about an ordered state. Interactions between
-  magnons (1/S corrections beyond the zero-point energy) are not included.
+- Magnon interactions are included only perturbatively in 1/S (`solve_nlswt`:
+  zero temperature, commensurate states). Where the corrections are comparable
+  to the LSWT terms, as at S = 1/2 near a decay threshold, the expansion is not
+  controlled; two-magnon bound states are beyond this order.
 - Thermal Hall integrals in models whose Berry curvature concentrates near
   small avoided crossings (NBCP, for example) converge slowly on a uniform
   mesh; use `AdaptiveIntegration` and check convergence.
@@ -154,13 +156,14 @@ results in research.
 
 ## Documentation
 
-Most design notes are currently in Korean. English tutorials are planned for
-the 0.2 release.
-
-- [Package layout](code-space/spintoolkit/README.md)
-- [Development design and decision log](archive/2026-10-08-development-beamer/README.md)
-- [LSWT theory notes](archive/2026-10-08-lswt-markdown/README.md)
+- [Tutorials](docs/tutorials/README.md): five English tutorials, from a first calculation to topology
+- [Theory notes](workbench/topics/): LSWT and 1/S theory as English research notes, with worked examples
 - [Documentation index](docs/README.md)
+- [Package layout](code-space/spintoolkit/README.md) (Korean)
+
+Design notes and the decision log (D01–D60) are in Korean, in
+`workbench/topics/toolkit-development/`. Earlier snapshots are kept in
+`archive/` and are no longer edited.
 
 ## Related work on NBCP
 

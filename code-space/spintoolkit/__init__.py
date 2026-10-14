@@ -65,10 +65,16 @@ from spintoolkit.methods.base import AbstractSolver, SolverResult
 from spintoolkit.methods.lswt import LSWTResult, LSWTSettings, solve_lswt
 from spintoolkit.methods.nlswt import NLSWTResult, NLSWTSettings, solve_nlswt
 from spintoolkit.methods.stability import StabilityReport, local_stability
+from spintoolkit.methods.lswt import solve_spiral_lswt
+from spintoolkit.methods.nlswt import pseudo_goldstone_gap
+from spintoolkit.methods.ed import solve_ed
+from spintoolkit.methods.classical import classical_search
+from spintoolkit.methods.phase_competition import compare_states
+from spintoolkit.methods.magnetization import magnetization_curve
 from spintoolkit.methods.lswt.solver import LSWTSolver
 from spintoolkit.methods.optimization import SpinOptimizer
 from spintoolkit.methods.lswt.energy import EnergyFunction
-from spintoolkit import models
+from spintoolkit import models, observables
 
 __all__ = [
     '__version__', '__author__', '__email__',
@@ -82,11 +88,12 @@ __all__ = [
     'ExternalConditions', 'CalculationGeometry',
     'LayerCrystal', 'CrystalSymmetry', 'find_symmetry',
     'SpinState', 'SpinStateError', 'validate_spin_state', 'IncommensurateStructure',
-    'models',
+    'models', 'observables',
     # Solvers
     'AbstractSolver', 'SolverResult', 'solve_lswt', 'LSWTSettings', 'LSWTResult',
     'solve_nlswt', 'NLSWTSettings', 'NLSWTResult',
-    'local_stability', 'StabilityReport',
+    'local_stability', 'StabilityReport', 'solve_spiral_lswt', 'pseudo_goldstone_gap',
+    'solve_ed', 'classical_search', 'compare_states', 'magnetization_curve',
     # Deprecated, removed in 0.3 (D43)
     'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',
 ]

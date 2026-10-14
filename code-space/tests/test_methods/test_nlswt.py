@@ -114,6 +114,9 @@ def test_finite_torus_is_exact_large_s_perturbation_theory():
     e = result.energies
     assert abs(e.cubic) > 1e-3 and abs(e.tadpole) > 1e-4      # noncollinear in a field
     magnons = result.magnon_energies(np.zeros((1, 2)))
+    with pytest.warns(DeprecationWarning, match="eta"):
+        old_name = result.magnon_energies(np.zeros((1, 2)), broadening=0.0)
+    assert np.allclose(old_name["total"], magnons["total"])
     w = magnons["lswt"][0]
     correction = magnons["hartree_fock_tadpole"][0] + magnons["cubic"][0].real
 
