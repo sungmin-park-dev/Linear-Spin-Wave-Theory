@@ -85,12 +85,14 @@ Limits: the search is a local minimization from mesh seeds and can miss a
 very narrow negative pocket between seeds; inside a ball only the quadratic
 term and the sampled radii are tested, so a negative quartic term between the
 sampled radii of a flat direction is not resolved by step 2 (step 3 tests
-it). The amplitude test samples directions of the accidental subspace (8
+it). A single-Q spiral (D55) is tested in its rotating frame, where the
+model is translation invariant on the primitive cell for any pitch; models
+not U(1) symmetric about the spiral axis are refused as in D34. The amplitude test samples directions of the accidental subspace (8
 for two dimensions, basis vectors and pairs up to six) and relaxes only the
 stiff ones, so a fall confined between sampled directions can be missed;
 "flat" means flat within the floor, not proved exact. Zero modes on lines
-are not tested beyond harmonic order. Incommensurate structures (D34) are
-not handled.
+are not tested beyond harmonic order, nor are accidental zero modes at an
+incommensurate ``k0`` (no finite cell folds them).
 """
 
 from __future__ import annotations
@@ -109,6 +111,7 @@ from spintoolkit.definitions.defaults import (
 from spintoolkit.methods.classical import (_compile, _energy_and_fields, rotation_generators,
                                            tangent_expansion, tangent_frames, torques)
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
+from spintoolkit.states.incommensurate import IncommensurateStructure, rotation_matrix
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import SpinModel
@@ -266,6 +269,11 @@ class StabilityReport:
         for c in self.higher_order:
             text += (f"; beyond harmonic ({c.kind}) at q={np.round(c.fractional, 6).tolist()}: "
                      f"{c.outcome}" + (f", order {c.order:.2f}" if np.isfinite(c.order) else ""))
+        gradient = self.settings.get("pitch_gradient")
+        tolerance = self.settings.get("stationarity_tolerance", 0.0)
+        if gradient is not None and np.linalg.norm(gradient) > tolerance:
+            text += (f"; spiral pitch not at an energy extremum (|dE/dQ| = "
+                     f"{np.linalg.norm(gradient):.3g} E0): a twisted spiral")
         if self.reasons:
             text += "; " + "; ".join(self.reasons)
         return text
@@ -281,7 +289,7 @@ class StabilityReport:
                             "summary": self.summary()})
 
 
-def local_stability(model: SpinModel, state: SpinState,
+def local_stability(model: SpinModel, state,
                     conditions: Optional[ExternalConditions] = None, *,
                     mesh: int = STABILITY_MESH, seeds: int = STABILITY_SEEDS,
                     ball_radius: float = STABILITY_BALL_RADIUS,
@@ -294,8 +302,17 @@ def local_stability(model: SpinModel, state: SpinState,
     Parameters
     ----------
     model : SpinModel
-    state : SpinState
-        Commensurate classical state on its magnetic supercell.
+    state : SpinState or IncommensurateStructure
+        Commensurate classical state on its magnetic supercell, or a single-Q
+        spiral (D55). A spiral is tested in its rotating frame
+        (:func:`~spintoolkit.methods.lswt.spiral.rotating_frame_model`), whose
+        ``H(k)`` is the exact second variation for any pitch; momenta in the
+        report are then rotating-frame momenta in the primitive reciprocal
+        basis, and lab rotations about axes perpendicular to the spiral axis
+        are Goldstone modes at ``k = +-Q``. ``settings["pitch_gradient"]``
+        holds ``dE/dQ``: without those perpendicular symmetries a spiral of
+        the wrong pitch is a twisted state that can be locally stable, so
+        the verdict does not say the pitch minimizes the energy.
     conditions : ExternalConditions, optional
     mesh : int
         Seed mesh ``mesh x mesh`` of the magnetic reciprocal cell, used
@@ -323,16 +340,40 @@ def local_stability(model: SpinModel, state: SpinState,
     -------
     StabilityReport
     """
-    if not isinstance(state, SpinState):
-        raise TypeError("local_stability needs a commensurate SpinState; incommensurate "
-                        "structures (D34) are not handled")
     conditions = conditions or ExternalConditions()
-    validate_spin_state(state, model)
+    spiral: Optional[IncommensurateStructure] = None
+    goldstone_p: List[np.ndarray] = []
+    perpendicular = np.zeros((3, 0))
+    if isinstance(state, IncommensurateStructure):
+        from spintoolkit.methods.lswt.spiral import rotating_frame_model
+        from spintoolkit.observables.zero_modes import _symmetry_axes
+
+        spiral = state
+        n = spiral.rotation_axis
+        axes = _symmetry_axes(model, conditions)
+        if axes.size:
+            u, sv, _ = np.linalg.svd((np.eye(3) - np.outer(n, n)) @ axes, full_matrices=False)
+            perpendicular = u[:, sv > 1e-8]
+        from spintoolkit.methods.lswt.spiral import spiral_energy_gradient
+        pitch_gradient = spiral_energy_gradient(model, spiral, conditions)
+        model, state = rotating_frame_model(model, spiral, conditions)
+        if perpendicular.shape[1]:                          # lab rotations about axes _|_ n
+            q = np.mod(spiral.wave_vector, 1.0)
+            goldstone_p = [q, np.mod(-q, 1.0)]
+    elif not isinstance(state, SpinState):
+        raise TypeError("local_stability needs a SpinState or a single-Q "
+                        "IncommensurateStructure")
+    else:
+        validate_spin_state(state, model)
     settings = {"mesh": int(mesh), "seeds": int(seeds), "ball_radius": float(ball_radius),
                 "zero_tolerance": float(zero_tolerance),
                 "stiffness_tolerance": float(stiffness_tolerance),
                 "stationarity_tolerance": float(stationarity_tolerance),
                 "higher_order": bool(higher_order)}
+    if spiral is not None:
+        # dE/dQ of the lab model: a twisted spiral can be locally stable at a pitch
+        # that is not an energy extremum (only without the perpendicular symmetries).
+        settings["pitch_gradient"] = np.asarray(pitch_gradient, dtype=float).tolist()
     torque = max(float(np.linalg.norm(t)) for t in torques(model, state, conditions).values())
     nan2 = np.full(2, np.nan)
     if torque > stationarity_tolerance:
@@ -381,6 +422,9 @@ def local_stability(model: SpinModel, state: SpinState,
 
     if abs(relative[0]) <= zero_tolerance:                  # grid[0] is the zone centre
         add_centre(np.zeros(2))
+    for g in goldstone_p:                                   # spiral: lab Goldstones at +-Q
+        if abs(lowest(g)) <= zero_tolerance:
+            add_centre(g)
 
     def outside(p) -> bool:
         return all(distance(p, c) > radius for c in centres)
@@ -425,9 +469,10 @@ def local_stability(model: SpinModel, state: SpinState,
         if at_origin and origin_counts is None:
             from spintoolkit.observables.zero_modes import _symmetry_origin
             origin_counts = _symmetry_origin(model, state, conditions)
+        at_q = any(distance(centre, g) < 1e-9 for g in goldstone_p)
         expansions.append(_expand(hamiltonian, to_k(centre), centre, scale, length, radius,
                                   zero_tolerance, stiffness_tolerance, at_origin,
-                                  origin_counts))
+                                  origin_counts, at_q))
     for z in expansions:
         where = f"q={np.round(z.fractional, 6).tolist()}"
         if z.status == "linear":
@@ -458,7 +503,7 @@ def local_stability(model: SpinModel, state: SpinState,
             if accidental:
                 checks.append(_amplitude_check(model, state, conditions,
                                                np.array([z.fractional for z in accidental]),
-                                               scale))
+                                               scale, spiral, perpendicular))
             open_reasons = _higher_order_reasons(checks)
             unstable = any(c.outcome == FALLS for c in checks)
         reasons.extend(open_reasons)
@@ -572,7 +617,9 @@ def _folded(model: SpinModel, state: SpinState, fractional: np.ndarray) -> Optio
 
 
 def _amplitude_check(model: SpinModel, state: SpinState, conditions: ExternalConditions,
-                     fractional: np.ndarray, scale: float) -> HigherOrderCheck:
+                     fractional: np.ndarray, scale: float,
+                     spiral: Optional[IncommensurateStructure] = None,
+                     perpendicular: np.ndarray = np.zeros((3, 0))) -> HigherOrderCheck:
     """Classical energy per spin along accidental zero modes, stiff directions relaxed.
 
     On the folded cell the Hessian null space at ``k = 0`` minus the
@@ -584,6 +631,10 @@ def _amplitude_check(model: SpinModel, state: SpinState, conditions: ExternalCon
     its leading term decides (:func:`_leading`). Relaxing the stiff
     directions makes the quartic coefficient the effective one, with the
     cubic couplings to stiff modes included.
+
+    For a spiral, ``model`` and ``state`` are the rotating frame; a lab
+    rotation about an axis ``m`` perpendicular to ``n`` acts on the spin of
+    cell ``R`` about ``R_n(-phi_R) m`` and is removed with the rest.
     """
     from spintoolkit.observables.zero_modes import _symmetry_axes
 
@@ -599,8 +650,18 @@ def _amplitude_check(model: SpinModel, state: SpinState, conditions: ExternalCon
     null = np.abs(w) <= 1e-8 * max(float(np.max(np.abs(w))), scale)
     N, stiff = v[:, null], v[:, ~null]
     axes = _symmetry_axes(model, conditions)
-    if axes.size and N.shape[1]:
-        G = rotation_generators(expansion) @ axes
+    G = rotation_generators(expansion) @ axes if axes.size else np.zeros((2 * n, 0))
+    if spiral is not None and perpendicular.shape[1]:
+        columns = []
+        for m in perpendicular.T:
+            column = []
+            for (site, cell), d, frame in zip(compiled.keys, expansion.directions,
+                                              expansion.frames):
+                axis = rotation_matrix(spiral.rotation_axis, -spiral.phase(cell)) @ m
+                column.extend(np.cross(axis, d) @ e for e in frame)
+            columns.append(column)
+        G = np.column_stack([G, np.array(columns).T])
+    if G.shape[1] and N.shape[1]:
         u, sv, _ = np.linalg.svd(G, full_matrices=False)
         G = u[:, sv > 1e-8 * max(1.0, float(sv.max(initial=0.0)))]
         rest = N - G @ (G.T @ N)
@@ -665,7 +726,7 @@ def _lowest_eigenvalues(hamiltonian: QuadraticBoseHamiltonian, k: np.ndarray,
 
 
 def _expand(hamiltonian, k0, p0, scale, length, radius, zero_tolerance, stiffness_tolerance,
-            at_origin, origin_counts) -> ZeroModeExpansion:
+            at_origin, origin_counts, at_spiral_q=False) -> ZeroModeExpansion:
     """Linear term, stiffness and ball samples about the zero mode ``k0``."""
     w, v = np.linalg.eigh(hamiltonian.at(k0)[0])
     null = np.abs(w) <= zero_tolerance * scale
@@ -717,7 +778,11 @@ def _expand(hamiltonian, k0, p0, scale, length, radius, zero_tolerance, stiffnes
         status = "flat"
     else:
         status = "positive"
-    if not at_origin:
+    if at_spiral_q and not at_origin:
+        # Rotating frame of a spiral: lab rotations about the two axes perpendicular to n
+        # give one zero mode at +Q and its partner at -Q.
+        origin = "goldstone" if nullity <= 1 else "accidental (k != 0)"
+    elif not at_origin:
         origin = "accidental (k != 0)"
     else:
         broken = int(origin_counts.get("broken_symmetries", 0)) if origin_counts else 0

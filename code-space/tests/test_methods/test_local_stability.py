@@ -14,6 +14,7 @@ from spintoolkit.methods.stability import (MARGINAL, NOT_STATIONARY, STABLE, UNS
                                            local_stability)
 from spintoolkit.models import (neel_state, polarized_state, square_heisenberg, state_120,
                                 triangular_heisenberg)
+from spintoolkit.states.incommensurate import IncommensurateStructure
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import Site, SpinModel, Term
@@ -256,3 +257,93 @@ def test_flat_stiffness_rises_at_quartic_order_in_q():
     assert check.kind == "momentum" and check.outcome == "rises"
     assert check.order == pytest.approx(4.0, abs=1e-2)
     assert local_stability(model, polarized_state(model), higher_order=False).verdict == MARGINAL
+
+
+# ---------------------------------------------------------------------------
+# Single-Q spirals in the rotating frame (D55)
+# ---------------------------------------------------------------------------
+
+def spiral_chain(Jz_ratio=1.0, J2=0.4):
+    """Square lattice J1 = 1 and J2 along x (XXZ), ferromagnetic Jy = -0.5 along y."""
+    xxz = np.diag([1.0, 1.0, Jz_ratio])
+    terms = [Term.bilinear(("A", (0, 0)), ("A", (1, 0)), xxz),
+             Term.bilinear(("A", (0, 0)), ("A", (2, 0)), J2 * xxz),
+             Term.bilinear(("A", (0, 0)), ("A", (0, 1)), -0.5 * np.eye(3))]
+    return SpinModel(np.eye(2), [Site("A", (0, 0), S)], terms,
+                     {"model_id": f"spiral_chain_{Jz_ratio}_{J2}"})
+
+
+Q_CHAIN = np.arccos(-1 / (4 * 0.4)) / (2 * np.pi)      # cos(2 pi q) = -J1 / (4 J2)
+
+
+def test_triangular_120_spiral_matches_its_supercell():
+    """The 120 deg state as a spiral: one Goldstone mode at k = 0 and the two lab rotations
+    perpendicular to the axis at k = +-K of the rotating frame, all positive."""
+    model = triangular_heisenberg()
+    spiral = IncommensurateStructure.planar(model, [1 / 3, 2 / 3], (0, 0, 1))
+    report = local_stability(model, spiral)
+    assert report.verdict == STABLE
+    momenta = sorted(tuple(z.fractional) for z in report.zero_modes)
+    assert np.allclose(momenta, [(0, 0), (1 / 3, 2 / 3), (2 / 3, 1 / 3)], atol=1e-9)
+    assert all(z.origin == "goldstone" and z.status == "positive" for z in report.zero_modes)
+    assert local_stability(model, state_120(model)).verdict == STABLE
+
+
+def test_incommensurate_spiral_at_the_energy_minimum_is_stable():
+    model = spiral_chain()
+    spiral = IncommensurateStructure.planar(model, [Q_CHAIN, 0.0], (0, 0, 1))
+    report = local_stability(model, spiral)
+    assert report.verdict == STABLE
+    assert len(report.zero_modes) == 3                 # k = 0 and +-Q of the rotating frame
+
+
+def test_spiral_with_the_wrong_pitch_has_a_linear_term():
+    """Torques vanish for any pitch, but dE/dq != 0 appears as a linear term at the Goldstone
+    modes +-Q, and the true pitch lowers the energy."""
+    model = spiral_chain()
+    report = local_stability(model, IncommensurateStructure.planar(model, [0.3, 0.0], (0, 0, 1)))
+    assert report.verdict == UNSTABLE
+    assert any("linear term" in reason for reason in report.reasons)
+
+
+def test_spiral_against_its_anisotropy():
+    """Easy plane about the axis: only the U(1) Goldstone mode is left and the spiral is stable.
+    Easy axis: a spiral in the hard plane is unstable."""
+    model = spiral_chain(Jz_ratio=0.9)
+    spiral = IncommensurateStructure.planar(model, [Q_CHAIN, 0.0], (0, 0, 1))
+    report = local_stability(model, spiral)
+    assert report.verdict == STABLE and len(report.zero_modes) == 1
+    model = spiral_chain(Jz_ratio=1.1)
+    spiral = IncommensurateStructure.planar(model, [Q_CHAIN, 0.0], (0, 0, 1))
+    assert local_stability(model, spiral).verdict == UNSTABLE
+
+
+def test_conical_spiral_in_an_axial_field_is_stable():
+    """Cone of the J1-J2 chain: cos(theta) = h / (S (J(0) - J(Q))); the field leaves only the
+    U(1) Goldstone mode about the axis."""
+    model = SpinModel(spiral_chain().lattice, spiral_chain().sites,
+                      list(spiral_chain().terms) + [Term.zeeman("A", np.eye(3))],
+                      {"model_id": "spiral_chain_field"})
+    J0 = 2 * (1.0 + 0.4 - 0.5)
+    JQ = 2 * (np.cos(2 * np.pi * Q_CHAIN) + 0.4 * np.cos(4 * np.pi * Q_CHAIN) - 0.5)
+    cos_theta = 0.4
+    conditions = ExternalConditions(field=(0, 0, cos_theta * S * (J0 - JQ)))
+    cone = IncommensurateStructure(model.fingerprint(), [Q_CHAIN, 0.0], (0, 0, 1),
+                                   {"A": [np.sqrt(1 - cos_theta ** 2), 0, cos_theta]})
+    report = local_stability(model, cone, conditions)
+    assert report.max_torque < 1e-12
+    assert report.verdict == STABLE and len(report.zero_modes) == 1
+
+
+def test_twisted_easy_plane_spiral_can_be_locally_stable():
+    """Without the perpendicular rotations the spins cannot leave the plane locally, so a small
+    change of pitch is a metastable twist; the report says the pitch is not an extremum."""
+    model = spiral_chain(Jz_ratio=0.9)
+    report = local_stability(model, IncommensurateStructure.planar(model, [Q_CHAIN + 0.02, 0.0],
+                                                                   (0, 0, 1)))
+    assert report.verdict == STABLE
+    assert np.linalg.norm(report.settings["pitch_gradient"]) > 1e-3
+    assert "twisted spiral" in report.summary()
+    exact = local_stability(model, IncommensurateStructure.planar(model, [Q_CHAIN, 0.0], (0, 0, 1)))
+    assert np.linalg.norm(exact.settings["pitch_gradient"]) < 1e-12
+    assert "twisted" not in exact.summary()
