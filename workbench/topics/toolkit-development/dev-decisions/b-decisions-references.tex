@@ -589,6 +589,26 @@
 \endgroup
 
 
+\subsection{결정 기록 (D56): 종방향 두 마그논 연속체는 상호작용 없는 $O(S^0)$ 항으로 따로 낸다}\label{decisions-d56-two-magnon}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 선택(``두 마그논 연속체''), 구현은 Claude 결정, 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & 구조인자는 한 마그논($O(S)$)과 탄성만 낸다. 중성자 실험의 연속체 세기 중 종방향 두 마그논($O(S^0)$)이 빠져 있다 \\
+    식 & $\delta S_i^a\supset-n_i^a a_i^\dagger a_i$. $L^b(q)^\dagger$의 두 생성 부분 $C^b_{nn'}(k)=-N^{-1/2}\sum_i n_i^b T_{N_s+i,N_s+n}(-k-q)T_{i,N_s+n'}(k)$, 대칭화 $A=C_{nn'}(k)+C_{n'n}(-k-q)$, $S_2^{ab}(q,\omega)=\tfrac12\sum_{k,nn'}A^{a*}A^b\,\delta(\omega-E_{N_s+n}(-k-q)-E_{N_s+n'}(k))$. 에너지는 $T$의 hole 열 고윳값으로 읽어 띠 이름표 대응을 가정하지 않는다 \\
+    범위 & 상호작용 없는 연속체만. 같은 차수의 한 마그논 에너지·가중치 1/S 보정, 다음 HP 항의 가로 가중치 보정, 비공선 상태의 마그논 붕괴는 포함하지 않으며 docstring과 노트에 밝힌다. $t=0$만($t>0$의 열 마그논 산란 $b^\dagger b$는 \texttt{NotImplementedError}). 실험실 틀 결과만 \\
+    영모드 & 내부 운동량 메시는 반 칸 이동 메시. $k$ 또는 $-k-q$에 영모드가 있는 점은 빼고 \texttt{excluded}에 센다(측도 0, 가중치는 적분 가능) \\
+    검산 & 같은 토러스에서 실공간 Wick 수축 $\langle\delta n\,\delta n\rangle_c=\langle a^\dagger a\rangle\langle aa^\dagger\rangle+\langle a^\dagger a^\dagger\rangle\langle aa\rangle$과 정적 합이 $10^{-16}$에서 일치(정사각 Néel, 삼각 120°). 장 속 강자성: 0. Néel 쌍 에너지 $=\omega(k)+\omega(k+q)$, 가중치는 엇갈림 축 $zz$만. 스펙트럼 적분 = 정적 합 \\
+    API & 새 함수 \texttt{observables.two\_magnon.two\_magnon\_continuum(result, q\_points, mesh=(24, 24), temperature=0.0)} $\to$ \texttt{TwoMagnonContinuum}(\texttt{energies}, \texttt{weights}, \texttt{static()}, \texttt{spectrum()}); 한 마그논 \texttt{StructureFactor}와 합치지 않고 따로 둔다(차수와 범위가 다르므로) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

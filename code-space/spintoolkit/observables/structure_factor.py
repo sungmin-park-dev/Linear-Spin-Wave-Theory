@@ -21,7 +21,8 @@ To the order of LSWT the result has two parts:
   ``I^{ab}(G) = F^a(G) F^b(G)^* / N_s^2``, ``F(G) = sum_i m_i exp(-i G . tau_i)``.
 
 The longitudinal two-magnon continuum is one order higher (O(S^0)) and is not
-included. Temperatures are ``t = k_B T / E0``; energies are in E0.
+included here; :func:`~spintoolkit.observables.two_magnon.two_magnon_continuum`
+gives its non-interacting form (D56). Temperatures are ``t = k_B T / E0``; energies are in E0.
 
 The stored diagonalization of the LSWT result is reused for momenta on its
 mesh; other momenta are diagonalized with the same regularization policy.
