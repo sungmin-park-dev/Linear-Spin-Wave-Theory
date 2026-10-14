@@ -15,8 +15,9 @@ reports, with the same model, field and per-spin normalization:
   :func:`~spintoolkit.methods.stability.local_stability`, on by default,
   D53). A state that passes the mesh but is ``unstable`` between mesh points
   (e.g. a negative Goldstone stiffness) is reported as ``unstable`` without
-  zero-point energy, for the same reason; ``marginal`` and ``not stationary``
-  verdicts are attached but do not change the status;
+  zero-point energy, for the same reason (including a fall beyond harmonic
+  order, D54); ``marginal`` and ``not stationary`` verdicts are attached but
+  do not change the status;
 - ``E_cl + E_zp`` for the stable candidates;
 - magnetization per spin and skyrmion number (:mod:`~spintoolkit.observables.texture`).
 

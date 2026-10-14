@@ -119,3 +119,7 @@ STABILITY_SEEDS = 6                    # lowest mesh points minimized over conti
 STABILITY_BALL_RADIUS = 0.02           # ball about a zero mode, units of the shortest reciprocal vector
 STABILITY_ZERO_TOLERANCE = 1e-12       # |lambda_min(H)| / scale at or below: zero
 STABILITY_STIFFNESS_TOLERANCE = 1e-8   # |rho| / (scale length^2) at or below: flat
+STABILITY_AMPLITUDE = 0.2              # largest amplitude (rad) of the beyond-harmonic test (D54)
+STABILITY_AMPLITUDE_FLOOR = 1e-11      # |energy change per spin| / scale at or below: unresolved zero
+STABILITY_FOLD_DENOMINATOR = 6         # largest denominator of a zero mode q folded to k = 0
+STABILITY_FOLD_SPINS = 144             # largest folded cell for the beyond-harmonic test
