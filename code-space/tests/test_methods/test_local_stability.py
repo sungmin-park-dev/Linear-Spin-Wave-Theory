@@ -163,3 +163,96 @@ def test_negative_mode_at_the_zone_centre():
     report = local_stability(model, polarized_state(model), ExternalConditions(field=(0, 0, -1.0)))
     assert report.verdict == UNSTABLE and report.zero_modes == ()
     assert report.lowest * report.scale == pytest.approx(-1.0, abs=1e-9)
+
+
+# ---------------------------------------------------------------------------
+# Beyond harmonic order (D54)
+# ---------------------------------------------------------------------------
+
+def square_xxz(J, Jz, spin=S, onsite=None):
+    """Square lattice ``J (SxSx + SySy) + Jz SzSz`` with a Zeeman term and an optional onsite term."""
+    terms = [Term.bilinear(("A", (0, 0)), ("A", o), np.diag([J, J, Jz])) for o in [(1, 0), (0, 1)]]
+    terms.append(Term.zeeman("A", np.eye(3)))
+    if onsite is not None:
+        terms.append(Term.onsite("A", onsite))
+    return SpinModel(np.eye(2), [Site("A", (0, 0), spin)], terms,
+                     {"model_id": f"square_xxz_{J}_{Jz}_{spin}"})
+
+
+def amplitude_coefficient(report):
+    """Leading coefficient c of the energy change per spin c a^4 at the smallest amplitude."""
+    (check,) = report.higher_order
+    a = check.amplitude / 2 ** 4
+    return check.lowest * report.scale / a ** 4
+
+
+def test_easy_plane_ferromagnet_at_its_critical_field_rises_at_quartic_order():
+    """Uniform tilt: 2 S^2 delta cos^2(t) - h S cos(t) is flat at second order for h = 4 S delta
+    and rises as (S^2 delta / 2) t^4."""
+    delta = 0.2
+    model = square_xxz(-1.0, -1.0 + delta)
+    conditions = ExternalConditions(field=(0, 0, 4 * S * delta))
+    harmonic = local_stability(model, polarized_state(model), conditions, higher_order=False)
+    assert harmonic.verdict == MARGINAL and harmonic.higher_order == ()
+    report = local_stability(model, polarized_state(model), conditions)
+    assert report.verdict == STABLE and report.reasons == ()
+    (check,) = report.higher_order
+    assert check.kind == "amplitude" and check.outcome == "rises"
+    assert check.order == pytest.approx(4.0, abs=1e-2)
+    assert amplitude_coefficient(report) == pytest.approx(S ** 2 * delta / 2, rel=1e-3)
+
+
+def test_saturated_antiferromagnet_folds_the_zone_corner_mode():
+    """At h_sat = 8 J S the zero mode is at (pi, pi); folded to k = 0 the canting energy
+    2 J S^2 cos(2t) - h S cos(t) rises as J S^2 t^4."""
+    model = square_heisenberg()
+    report = local_stability(model, polarized_state(model), ExternalConditions(field=(0, 0, 4.0)))
+    assert report.verdict == STABLE
+    (check,) = report.higher_order
+    assert np.allclose(check.fractional, [[0.5, 0.5]]) and check.spins == 4
+    assert amplitude_coefficient(report) == pytest.approx(S ** 2, rel=1e-3)
+
+
+def test_single_ion_antiferromagnet_falls_at_its_spinodal():
+    """Easy-axis single-ion anisotropy: the Neel state softens at h = 0.9 where the energy falls
+    at quartic order (the spin flop is first order)."""
+    model = square_xxz(1.0, 1.0, spin=1.0, onsite=np.diag([0, 0, -0.1]))
+    report = local_stability(model, neel_state(model), ExternalConditions(field=(0, 0, 0.9)))
+    assert report.verdict == UNSTABLE
+    (check,) = report.higher_order
+    assert check.outcome == "falls" and check.order == pytest.approx(4.0, abs=1e-2)
+    assert any("falls at order" in reason for reason in report.reasons)
+
+
+@pytest.mark.parametrize("case", ["xxz", "triangular", "nbcp"])
+def test_classically_degenerate_manifolds_stay_marginal(case):
+    """Exact classical degeneracies: the XXZ antiferromagnet at its bicritical field, the
+    triangular antiferromagnet in a field and the NBCP Y orbit with J_PD."""
+    if case == "xxz":
+        model = square_xxz(1.0, 1.3)
+        conditions = ExternalConditions(field=(0, 0, 4 * S * np.sqrt(1.3 ** 2 - 1)))
+        state = neel_state(model)
+    elif case == "triangular":
+        model, conditions = triangular_heisenberg(), ExternalConditions(field=(0, 0, 1.0))
+        state = classical_search(model, [[1, 1], [-1, 2]], conditions).state
+    else:
+        model = nbcp.build_model({"Jxy": 0.076, "Jz": 0.125, "JPD": 0.01})
+        conditions = ExternalConditions(field=(0, 0, 0.05))
+        state = classical_search(model, nbcp.SUPERCELLS["three_msl"], conditions).state
+    report = local_stability(model, state, conditions)
+    assert report.verdict == MARGINAL
+    (check,) = report.higher_order
+    assert check.kind == "amplitude" and check.outcome == "flat"
+    assert any("classically degenerate" in reason for reason in report.reasons)
+
+
+def test_flat_stiffness_rises_at_quartic_order_in_q():
+    """J3 = 1/4: rho_xx = 0 and the energy along x rises as q^4 / 8 per spin, a minimum."""
+    model = ferro_with_j3(0.25)
+    report = local_stability(model, polarized_state(model))
+    assert report.zero_modes[0].status == "flat"
+    assert report.verdict == STABLE
+    (check,) = report.higher_order
+    assert check.kind == "momentum" and check.outcome == "rises"
+    assert check.order == pytest.approx(4.0, abs=1e-2)
+    assert local_stability(model, polarized_state(model), higher_order=False).verdict == MARGINAL

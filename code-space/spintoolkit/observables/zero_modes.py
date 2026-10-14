@@ -155,9 +155,8 @@ def _gap(H: np.ndarray) -> Optional[float]:
     return float(np.min(energies[:n]))
 
 
-def _symmetry_origin(model, state, conditions) -> Dict[str, Any]:
-    """Broken continuous symmetries and classical flat directions at k = 0."""
-    from spintoolkit.methods.classical import tangent_expansion
+def _symmetry_axes(model, conditions) -> np.ndarray:
+    """Axes (3, n_sym) of the global spin rotations that leave the energy invariant."""
     from spintoolkit.system.model import BILINEAR, ZEEMAN
 
     def cross(n):
@@ -175,7 +174,14 @@ def _symmetry_origin(model, state, conditions) -> Dict[str, Any]:
     L = np.column_stack(columns)
     _, s, vt = np.linalg.svd(L)
     tolerance = 1e-10 * max(1.0, s.max(initial=0.0))
-    symmetry_axes = vt[np.sum(s > tolerance):].T                   # (3, n_sym)
+    return vt[np.sum(s > tolerance):].T
+
+
+def _symmetry_origin(model, state, conditions) -> Dict[str, Any]:
+    """Broken continuous symmetries and classical flat directions at k = 0."""
+    from spintoolkit.methods.classical import tangent_expansion
+
+    symmetry_axes = _symmetry_axes(model, conditions)              # (3, n_sym)
     expansion = tangent_expansion(model, state, conditions)
     generators = np.array([[np.cross(axis, n) @ e for axis in np.eye(3)]
                            for n, frame in zip(expansion.directions, expansion.frames)

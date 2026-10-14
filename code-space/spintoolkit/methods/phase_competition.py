@@ -10,7 +10,14 @@ reports, with the same model, field and per-spin normalization:
   ``ceil(k_density / sqrt(|det M|))`` magnetic ones). A state whose ``H(k)``
   is not positive definite on that mesh is reported as ``unstable`` with no
   zero-point energy: an unstable quadratic background has no harmonic
-  vacuum (NBCP note, section 3). Stability is tested on the mesh only;
+  vacuum (NBCP note, section 3);
+- the continuous-k local stability test (D51,
+  :func:`~spintoolkit.methods.stability.local_stability`, on by default,
+  D53). A state that passes the mesh but is ``unstable`` between mesh points
+  (e.g. a negative Goldstone stiffness) is reported as ``unstable`` without
+  zero-point energy, for the same reason (including a fall beyond harmonic
+  order, D54); ``marginal`` and ``not stationary`` verdicts are attached but
+  do not change the status;
 - ``E_cl + E_zp`` for the stable candidates;
 - magnetization per spin and skyrmion number (:mod:`~spintoolkit.observables.texture`).
 
@@ -40,6 +47,9 @@ class CandidateReport:
 
     ``status`` is ``"stable"`` or ``"unstable"``; ``zero_point_energy``,
     ``harmonic_energy`` and ``lowest_magnon`` are NaN unless stable.
+    ``stability`` is the continuous-k :class:`~spintoolkit.methods.stability.StabilityReport`
+    (verdict ``stable``, ``unstable``, ``marginal`` or ``not stationary``),
+    or None when the test was switched off.
     """
 
     name: str
@@ -54,6 +64,7 @@ class CandidateReport:
     magnetization: np.ndarray
     skyrmion: SkyrmionCharge
     mesh: tuple
+    stability: Optional[Any] = None
 
     def to_dict(self) -> Dict[str, Any]:
         def num(x):
@@ -66,7 +77,8 @@ class CandidateReport:
                 "harmonic_energy": num(self.harmonic_energy),
                 "lowest_magnon": num(self.lowest_magnon),
                 "magnetization": np.round(self.magnetization, 12).tolist(),
-                "skyrmion": self.skyrmion.to_dict(), "mesh": list(self.mesh)}
+                "skyrmion": self.skyrmion.to_dict(), "mesh": list(self.mesh),
+                "local_stability": None if self.stability is None else self.stability.to_dict()}
 
 
 def magnetic_mesh(state: SpinState, k_density: int) -> tuple:
@@ -77,7 +89,7 @@ def magnetic_mesh(state: SpinState, k_density: int) -> tuple:
 
 def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
                    conditions: Optional[ExternalConditions] = None, k_density: int = 24,
-                   refine: bool = True) -> List[CandidateReport]:
+                   refine: bool = True, local_stability: bool = True) -> List[CandidateReport]:
     """Rank candidate states by classical and harmonic (LSWT) energy.
 
     Parameters
@@ -90,6 +102,10 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
     refine : bool
         Refine every candidate to a stationary point first
         (:func:`~spintoolkit.methods.classical.refine_classical`).
+    local_stability : bool
+        Run the continuous-k local stability test on every candidate
+        (default True). An ``unstable`` verdict marks a mesh-stable candidate
+        unstable; False keeps the mesh-only test.
 
     Returns
     -------
@@ -99,6 +115,8 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
     """
     from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
     from spintoolkit.methods.lswt.run import LSWTError
+    from spintoolkit.methods.stability import UNSTABLE
+    from spintoolkit.methods.stability import local_stability as stability_test
 
     conditions = conditions or ExternalConditions()
     reports = []
@@ -116,12 +134,17 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
             lowest = float(np.min(result.bands()))
         except LSWTError as error:
             status, message = "unstable", str(error).splitlines()[0][:200]
+        stability = stability_test(model, state, conditions) if local_stability else None
+        if status == "stable" and stability is not None and stability.verdict == UNSTABLE:
+            status, e_zp, lowest = "unstable", float("nan"), float("nan")
+            detail = "; ".join(stability.reasons) or stability.summary()
+            message = f"unstable between mesh points (local_stability): {detail}"[:200]
         spins = np.array([model.site(site).spin for site, _ in state.directions])
         moments = spins[:, None] * np.array(list(state.directions.values()))
         reports.append(CandidateReport(
             name, state, e_cl, torque, status, message, e_zp,
             e_cl + e_zp if status == "stable" else float("nan"), lowest,
-            moments.mean(axis=0), skyrmion_charge(model, state), mesh))
+            moments.mean(axis=0), skyrmion_charge(model, state), mesh, stability))
     stable = sorted((r for r in reports if r.status == "stable"), key=lambda r: r.harmonic_energy)
     other = sorted((r for r in reports if r.status != "stable"), key=lambda r: r.classical_energy)
     return stable + other

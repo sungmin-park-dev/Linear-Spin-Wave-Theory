@@ -354,7 +354,7 @@
     항목 & 결정 \\
     \midrule
     그림 & 중성자 경로·일정 에너지·분말 지도, Berry 곡률과 Chern 수, thermal Hall, 스핀 텍스처와 입체각 밀도, 상도표, 열역학 곡선 \\
-    정의 안 됨 & NaN(Bragg 벡터의 Goldstone 가중치, 분리 안 된 밴드, 안정 후보 없음, 공면 120°의 $\Omega$)은 회색·빗금·``undefined''; 0이나 이웃 값으로 채우지 않음 \\
+    정의 안 됨 & NaN(방향에 무관한 극한이 없는 영모드 가중치 — 자기 Bragg 벡터의 Goldstone 등, D52; 분리 안 된 밴드, 안정 후보 없음, 공면 120°의 $\Omega$)은 회색·빗금·``undefined''; 0이나 이웃 값으로 채우지 않음 \\
     표시 & 저장된 수치만 그림; 단위 변환은 라벨과 함께만; $\langle n\rangle>S$ 구간 음영 \\
     검증 & 120° 상태 M점 $\omega=1.0J$, $Q_x=\pi$ 직선 $\gamma=-1/3$; 벌집 DM Chern $\pm1$; \texttt{code-space/examples/gallery.py} \\
     \bottomrule
@@ -502,10 +502,69 @@
     판정 & \texttt{unstable}: 음의 고유값, $L\ne0$, $\rho_{\min}<0$ 중 하나. \texttt{marginal}: 음은 없지만 2차가 정하지 못함 — 평탄 강성 방향, $k_0\ne0$ 영모드, $k=0$ 영공간이 깨진 연속 대칭으로 설명되는 수보다 큼(우연 축퇴; NBCP $J_{PD}$·$J_\Gamma$의 3부분격자 궤도, 삼각 하이젠베르크의 장 속 상태), 영모드가 고립되지 않음. \texttt{stable}: 그 밖. \texttt{not stationary}: torque가 허용치보다 크면 판정하지 않음 \\
     API & 새 함수 \texttt{local\_stability(model, state, conditions=None, *, mesh, seeds, ball\_radius, zero\_tolerance, stiffness\_tolerance, stationarity\_tolerance)} $\to$ \texttt{StabilityReport}(최상위 \texttt{stk.local\_stability}); \texttt{QuadraticBoseHamiltonian.second\_derivatives\_at} 추가. 기존 호출은 그대로 \\
     근거 & ``정의되지 않으면 정의되지 않음으로'' 원칙: 우연 축퇴 궤도의 안정성은 고차가 정하므로 \texttt{stable}로 부르지 않고 \texttt{marginal}과 이유를 낸다 \\
-    \textbf{열린 항목} & \texttt{solve\_lswt}·\texttt{compare\_states}가 이 검사를 자동으로 부를지(지금은 따로 부름); 우연 축퇴 궤도를 따라 에너지를 직접 재는 고차 판정 \\
+    \textbf{열린 항목} & 고차 판정은 D54에서 더함. 자동 호출은 D53에서 정함(\texttt{compare\_states}만) \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-10-13 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D52): 영모드 운동량의 한 마그논 가중치는 방향에 무관한 극한이 있을 때만 값으로 낸다}\label{decisions-d52-zero-mode-limit}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 결정(``추천대로 하자''), 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & $H(q)$에 영모드가 있는 $q$에서 $\mathsf T_q$가 없어 가중치를 모두 NaN으로 냈다. 120° 상태의 핵 Bragg 벡터처럼 가중치가 $q\to G$에서 0으로 가는 곳(보존되는 $S^z$ 총합; A4 닫힌 식)도 NaN이 되어, 정의된 값을 ``정의되지 않음''으로 보고했다 \\
+    규칙 & 영모드 운동량 $q_0$에서 $q_0+\delta u$의 가중치를 방향 8개, 반지름 $\delta,\delta/2,\delta/4$($\delta=10^{-4}$×가장 짧은 자기 역격자 벡터)에서 계산. 극한 에너지가 같은 모드는 묶어 합만 쓴다(그 점에서는 합만 정의됨). 모든 방향에서 묶음 가중치가 수렴하고(반지름을 반으로 줄일 때 변화가 줄어듦; $1/\delta$ 발산은 변화가 두 배) 선형 외삽 값이 방향끼리 $10^{-6}$ 안에서 같으면 그 값을 낸다. 아니면 NaN \\
+    결과 & 120° 핵 Bragg 벡터·Néel $q=0$: 가중치 0($10^{-13}$). 자기 Bragg 벡터(120° $K$, Néel $(\pi,\pi)$)의 Goldstone 가중치는 발산하므로 NaN 유지. $t>0$에서 영모드의 Bose 인자는 발산하므로 NaN \\
+    API & \texttt{StructureFactor.limit}(bool 배열) 추가; \texttt{zero\_mode}는 그대로 ``$H(q)$에 영모드가 있음''. 극한인 점의 묶음 가중치는 첫 모드에, 나머지는 0. \texttt{correlation\_path}는 극한이 없는 점만 NaN. 상수 \texttt{ZERO\_MODE\_LIMIT\_*}. 나선 회전틀 \texttt{spiral\_structure\_factor}는 가지($m=0,\pm1$)마다 같은 극한을 쓴다(2026-10-14 추가): 영모드가 있는 가지가 모두 극한을 가지면 \texttt{limit}; 발산하는 가지만 NaN, 다른 가지는 그대로 \\
+    근거 & 0을 하드코딩하지 않는다. 극한이 존재하고 방향에 무관할 때만 채우므로 ``정의되지 않으면 정의되지 않음으로'' 원칙과 맞다. 닫힌 식은 테스트에만 쓴다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D53): \texttt{compare\_states}는 국소 안정성 검사를 기본으로 부르고, \texttt{solve\_lswt}는 부르지 않는다}\label{decisions-d53-compare-stability}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 결정(``추천대로 하자'').}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    \texttt{solve\_lswt} & 부르지 않는다. 불안정한 상태의 스펙트럼을 일부러 볼 때가 있고, 연속 $k$ 최소화는 비용이 든다. 메시 통과가 안정성 검사가 아니라는 점은 docstring이 \texttt{local\_stability}를 안내한다 \\
+    \texttt{compare\_states} & 새 인자 \texttt{local\_stability=True}(기본). 후보마다 D51 판정을 \texttt{CandidateReport.stability}와 \texttt{to\_dict()["local\_stability"]}에 붙인다. 메시는 통과했지만 판정이 \texttt{unstable}이면(메시 사이·Goldstone 옆 음의 강성) \texttt{status="unstable"}, 영점 에너지 NaN: 불안정한 2차 배경에는 조화 진공이 없다(D42와 같은 이유). \texttt{marginal}·\texttt{not stationary}는 붙이기만 하고 상태를 바꾸지 않는다 \\
+    근거 & \texttt{compare\_states}는 바닥 상태 후보를 고르는 함수라, 메시가 놓친 불안정한 후보를 안정으로 순위에 올리면 물리적으로 틀린 답이 된다. 끄면(\texttt{False}) 예전 메시 판정 \\
+    시험 & 정사각 강자성 $J_3=0.2505$: 메시만으로는 \texttt{stable}, 기본값으로는 \texttt{unstable}; 삼각 120°는 \texttt{stable} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
+
+\subsection{결정 기록 (D54): 2차가 정하지 못한 영모드는 고차 항으로 판정한다}\label{decisions-d54-higher-order-stability}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 Claude 결정(사용자 ``1,2번은 진행하자''), 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & D51은 평탄 강성 방향, $k_0\ne0$ 영모드, 우연 축퇴를 모두 \texttt{marginal}로 둔다. 고차에서 올라가는 상태(국소 최소), 내려가는 상태(안장점), 정확히 평평한 고전 축퇴 다양체가 구분되지 않는다 \\
+    평탄 강성 & $H(k)$는 $k$에 대해 정확하므로 고차 항도 조화 진폭의 문제다. $\lambda_{\min}(H(k_0+q))$를 $q$ 방향 360개(가장 낮은 곳 근처 다듬기)에서 최소로 하여 $|q|=r,r/2,\dots,r/16$($r$=D51 공 반지름)에서 잰다 \\
+    우연 영모드 & 진폭의 문제. $k_0$를 $k=0$으로 접는 초격자(분모 6 이하, 스핀 144개 이하)에서 고전 헤시안 영공간에서 에너지를 바꾸지 않는 전역 회전의 생성자를 뺀 부분공간을 잡는다. 그 방향(1차원: 1개, 2차원: 8개, 6차원까지: 기저와 쌍)과 반대 방향으로 스핀당 rms 각 $0.2,0.1,\dots,0.0125$ rad만큼 움직이고, 나머지 단단한 방향은 L-BFGS로 이완한 스핀당 에너지 변화를 잰다. 이완 덕에 4차 계수는 단단한 모드와의 3차 결합을 포함한 유효값이다 \\
+    읽는 법 & 바닥값(scale의 $10^{-11}$, 운동량은 \texttt{zero\_tolerance})을 넘는 가장 작은 진폭에서 부호, 그 위 진폭과의 비로 차수 $p=\log_2[f(2a)/f(a)]$. 어느 방향에서든 내려가면(홀수 3차 포함) \texttt{unstable}; 모든 방향에서 올라가면 그 영모드는 해가 없음(다른 문제가 없으면 \texttt{stable}); 어떤 방향에서 가장 큰 진폭까지 바닥값 아래면 고전 축퇴 다양체로 \texttt{marginal}(요동이 정함: order by disorder); 두 연속 진폭에서 같은 부호로 $p\ge2.5$가 안 나오면 미해결로 \texttt{marginal} \\
+    검산 & 쉬운 평면 강자성 임계장 $h=4S\delta$: $S^2\delta\theta^4/2$와 $10^{-3}$. 정사각 반강자성 포화장: $(\pi,\pi)$ 영모드를 4스핀 셀로 접어 $JS^2\theta^4$. $S=1$ 쉬운 축 단일 이온 Néel의 연화장 $h=0.9$: 4차로 내려감(1차 spin flop). XXZ 반강자성 $h=4S\sqrt{J_z^2-J_\perp^2}$, 장 속 삼각 하이젠베르크, NBCP Y($J_{PD}=0.01$): 평평(고전 축퇴). 정사각 강자성 $J_3=1/4$: $q^4$로 올라감 \\
+    API & \texttt{local\_stability(..., higher\_order=True)}(끄면 D51 판정); \texttt{StabilityReport.higher\_order}(\texttt{HigherOrderCheck}: kind, fractional, spins, directions, outcome, order, lowest, amplitude). 판정 이름은 그대로. 상수 \texttt{STABILITY\_AMPLITUDE}·\texttt{\_FLOOR}·\texttt{\_FOLD\_DENOMINATOR}·\texttt{\_FOLD\_SPINS}. \texttt{compare\_states}는 D53대로 \texttt{unstable}만 상태를 바꾸므로 고차에서 내려가는 후보도 불안정으로 뺀다 \\
+    근거 & ``정의되지 않으면 정의되지 않음으로'': 고차가 정하는 것은 정하고, 고전적으로 정해지지 않는 것(축퇴 다양체)은 \texttt{marginal}로 남기되 이유를 ``요동이 정함''으로 구체화한다. ``평평''은 바닥값 안에서 평평하다는 뜻이지 정확함을 증명한 것이 아니다 \\
+    한계 & 부분공간 방향을 표본으로만 보므로 표본 사이에만 있는 내리막은 놓칠 수 있다. 영모드 선(고립되지 않은 영모드)과 비정합 $k_0$는 고차 판정하지 않는다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
 \endgroup
 
 

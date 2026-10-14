@@ -238,7 +238,8 @@ class NeutronIntensity:
         Signed mode energies as in :class:`StructureFactor`.
     intensities : (nq, nmodes) array
         ``sum_ab (delta_ab - Q_a Q_b / Q^2) W_M^{ab}`` of each mode, per site
-        (NaN where ``H(Q_par)`` has a zero mode, and at ``Q = 0``).
+        (NaN at ``Q = 0`` and where ``H(Q_par)`` has a zero mode whose weights
+        have no direction-independent limit; see :class:`StructureFactor`).
     elastic : (nq,) array
         Bragg intensity with the same factors, the coefficient of
         ``N delta_{Q_par, G} delta(w)``.
@@ -576,7 +577,8 @@ def correlation_path(result, omega, fwhm, component: str = "zz",
     solver = spiral_structure_factor if hasattr(result, "rotating") else structure_factor
     sf = solver(result, q, temperature, zero_modes, gapless)
     weights = np.real(sf.weights[:, :, a, b])
-    weights[sf.zero_mode] = np.nan
+    limit = np.zeros(len(q), dtype=bool) if sf.limit is None else sf.limit
+    weights[sf.zero_mode & ~limit] = np.nan
     omega = np.asarray(omega, dtype=float)
     intensity = broaden_modes(sf.energies, weights, omega, fwhm, shape)
     Q = np.column_stack([q, np.zeros(len(q))])

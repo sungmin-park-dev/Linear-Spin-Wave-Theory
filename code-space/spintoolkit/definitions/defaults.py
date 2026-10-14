@@ -106,6 +106,9 @@ ZERO_MODE_CANDIDATE_TOLERANCE = 1e-6   # up to this: candidate, the user decides
 ZERO_MODE_MESH_SEEDS = 8               # lowest mesh points used as scan starting points
 ZERO_MODE_SEARCH_THRESHOLD = 1e-2      # minimize lambda_min only from points at or below this
 ZERO_MODE_LINE_DIRECTIONS = 12         # directions probed for lines of zero modes
+ZERO_MODE_LIMIT_DIRECTIONS = 8         # structure factor: directions sampled about a zero-mode q
+ZERO_MODE_LIMIT_RADIUS = 1e-4          # first radius, units of the shortest magnetic reciprocal vector
+ZERO_MODE_LIMIT_TOLERANCE = 1e-6       # agreement of the limits, relative to max(1, |value|)
 
 # =============================================================================
 # Local stability over continuous momenta (D51)
@@ -116,3 +119,7 @@ STABILITY_SEEDS = 6                    # lowest mesh points minimized over conti
 STABILITY_BALL_RADIUS = 0.02           # ball about a zero mode, units of the shortest reciprocal vector
 STABILITY_ZERO_TOLERANCE = 1e-12       # |lambda_min(H)| / scale at or below: zero
 STABILITY_STIFFNESS_TOLERANCE = 1e-8   # |rho| / (scale length^2) at or below: flat
+STABILITY_AMPLITUDE = 0.2              # largest amplitude (rad) of the beyond-harmonic test (D54)
+STABILITY_AMPLITUDE_FLOOR = 1e-11      # |energy change per spin| / scale at or below: unresolved zero
+STABILITY_FOLD_DENOMINATOR = 6         # largest denominator of a zero mode q folded to k = 0
+STABILITY_FOLD_SPINS = 144             # largest folded cell for the beyond-harmonic test
