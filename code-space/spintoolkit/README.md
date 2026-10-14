@@ -17,7 +17,7 @@
 | `methods/classical.py` | `SpinModel`의 항만 읽는 고전 에너지·국소장·토크 |
 | `methods/lswt/` | 새 진입점 `solve_lswt`(D24), 보손 해밀토니안, Colpa 대각화, 에너지 평가(이전 `methods/spin_wave/`). 기존 `LSWTSolver`는 사용 중단(D30) |
 | `methods/nlswt/` | 비선형 스핀파 `solve_nlswt`(D46): HP 4차 전개, O(S⁰) 바닥 에너지, 1/S 마그논 에너지; `pseudo_goldstone_gap`(D47): 유사 Goldstone gap의 다음 차수 |
-| `methods/stability.py` | 고전 상태의 국소 안정성 `local_stability`(D51): 연속 k에서 `H(k)`의 최소 고유값과 영모드 둘레 강성 ρ(해석적 2차 전개). 판정 `stable`·`unstable`·`marginal`·`not stationary`. 2차가 못 정하는 영모드는 고차 판정(D54): 접은 셀에서 우연 영모드 방향 고전 에너지, 평평한 강성 방향의 `H(k)` 고차 항. 고전 축퇴 다양체는 `marginal` |
+| `methods/stability.py` | 고전 상태의 국소 안정성 `local_stability`(D51): 연속 k에서 `H(k)`의 최소 고유값과 영모드 둘레 강성 ρ(해석적 2차 전개). 판정 `stable`·`unstable`·`marginal`·`not stationary`. 2차가 못 정하는 영모드는 고차 판정(D54): 접은 셀에서 우연 영모드 방향 고전 에너지, 평평한 강성 방향의 `H(k)` 고차 항. 고전 축퇴 다양체는 `marginal`. 단일 Q 나선(`IncommensurateStructure`)은 회전틀 H(k)로(D55) |
 | `definitions/` | 물리상수, 수치 기본값, 스핀 기저 변환 규약 |
 | `models/` | 표준 벤치마크 해밀토니안(사각·삼각격자 하이젠버그)과 해석적 기준 스핀 배열 |
 | `observables/` | 보스 통계, 열역학, 위상, 상관함수 |
