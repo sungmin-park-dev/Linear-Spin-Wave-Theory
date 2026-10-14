@@ -209,6 +209,40 @@ def _vectors(mesh_vectors: np.ndarray, op, q: np.ndarray, create: bool, ns: int)
     return np.exp(1j * q @ r)[:, None] * mesh_vectors[:, row, :ns]
 
 
+def triangle_delta_integral(f: np.ndarray, g: np.ndarray) -> float:
+    """``int du dv g(u, v) delta(f(u, v))`` over the unit torus, linear on triangles.
+
+    ``f`` and ``g`` are (N1, N2) node values of a periodic grid. Each grid
+    square is cut into two triangles; on each, ``f`` and ``g`` are linear, and
+    the integral is exact for that interpolation: the weight
+    ``int delta(f) dA`` of the zero line times the mean of ``g`` on it (the
+    two-dimensional analogue of the tetrahedron method).
+    """
+    n1, n2 = f.shape
+    corner = [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)]
+    total = 0.0
+    for triangle in corner:
+        F = np.stack([np.roll(f, (-a, -b), (0, 1)).ravel() for a, b in triangle], axis=1)
+        G = np.stack([np.roll(g, (-a, -b), (0, 1)).ravel() for a, b in triangle], axis=1)
+        order = np.argsort(F, axis=1)
+        F, G = np.take_along_axis(F, order, 1), np.take_along_axis(G, order, 1)
+        f1, f2, f3 = F.T
+        g1, g2, g3 = G.T
+        low = (f1 < 0) & (f2 >= 0)
+        high = (f2 < 0) & (f3 >= 0)
+        out = np.zeros(len(f1))
+        with np.errstate(divide="ignore", invalid="ignore"):
+            t12, t13, t23 = -f1 / (f2 - f1), -f1 / (f3 - f1), -f2 / (f3 - f2)
+            w_low = -2 * f1 / ((f2 - f1) * (f3 - f1))
+            g_low = 0.5 * (g1 + t12 * (g2 - g1) + g1 + t13 * (g3 - g1))
+            w_high = 2 * f3 / ((f3 - f1) * (f3 - f2))
+            g_high = 0.5 * (g1 + t13 * (g3 - g1) + g2 + t23 * (g3 - g2))
+        out[low] = (w_low * g_low)[low]
+        out[high] = (w_high * g_high)[high]
+        total += float(np.sum(out))
+    return total * 0.5 / (n1 * n2)
+
+
 def _group_cubic(cubic):
     """Merge cubic monomials that differ only by a common translation is not needed; keep list."""
     return [(c, m) for c, m in cubic if abs(c) > 0]
@@ -473,6 +507,40 @@ class NonlinearSpinWaves:
         S = self._source([kk, q1, q2s], [Tkk, T1, T2s])[:, n]
         source = np.sum(-18 * np.abs(S) ** 2 / (omega + E1[:, :, None] + E2s[:, None, :]))
         return complex((decay + source) / nk)
+
+    def decay_rate(self, k, grid: Sequence[int] = (64, 64)) -> Tuple[np.ndarray, np.ndarray]:
+        """Golden-rule decay rate ``Gamma_n(k) = -Im Sigma_3^nn(k, w_n(k) + i0)`` (D57).
+
+        ``Gamma_n(k) = pi <sum_{n1 n2} 2 |D_{n1 n2; n}(q, k - q)|^2
+        delta(w_n(k) - w_n1(q) - w_n2(k - q))>_q``, the ``eta -> 0`` limit of
+        the decay part of :meth:`cubic_self_energy`, with the average over the
+        magnetic zone done by linear interpolation on triangles of an
+        ``N1 x N2`` grid offset by one third of a step (no broadening).
+
+        Returns
+        -------
+        energies, rates : (Ns,) arrays
+            LSWT energies ``w_n(k)`` and ``Gamma_n(k)`` (order S^0).
+        """
+        n1, n2 = (int(n) for n in grid)
+        k = np.asarray(k, dtype=float).reshape(1, 2)
+        Ek, Tk = self._bogoliubov(k)
+        u = np.array([((i + 1 / 3) / n1, (j + 1 / 3) / n2) for i in range(n1) for j in range(n2)])
+        q1 = u @ self.mesh.reciprocal
+        q2 = k - q1
+        E1, T1 = self._bogoliubov(q1)
+        E2, T2 = self._bogoliubov(q2)
+        m = len(q1)
+        D = self._decay(q1, q2, np.broadcast_to(k, (m, 2)), T1, T2,
+                        np.broadcast_to(Tk, (m,) + Tk.shape[1:]))
+        weight = 2 * np.abs(D) ** 2                                    # (m, n1, n2, n)
+        rates = np.zeros(self.ns)
+        for n in range(self.ns):
+            for a in range(self.ns):
+                for b in range(self.ns):
+                    f = (E1[:, a] + E2[:, b] - Ek[0, n]).reshape(n1, n2)
+                    rates[n] += triangle_delta_integral(f, weight[:, a, b, n].reshape(n1, n2))
+        return Ek[0], np.pi * rates
 
     def _pair_amplitudes(self, k):
         """Two-magnon amplitudes of ``j_a = [psi_a(k), H_3]`` in the original Nambu basis.

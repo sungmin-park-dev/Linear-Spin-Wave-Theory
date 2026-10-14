@@ -609,6 +609,26 @@
 \endgroup
 
 
+\subsection{결정 기록 (D57): 마그논 붕괴율은 넓힘 없이 황금률을 삼각형 적분으로 계산한다}\label{decisions-d57-decay}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 선택(``마그논 붕괴''), 구현은 Claude 결정, 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & D46의 붕괴율 $-\mathrm{Im}\,\Sigma_3(k,\omega_n(k)+i\eta)$은 메시 위 극점의 합이라 인위적 넓힘 $\eta$와 메시에 함께 의존한다. 물리량인 $\eta\to0$ 극한이 없었다 \\
+    식 & $\Gamma_n(k)=\pi\langle\sum_{n_1n_2}2|D_{n_1n_2;n}(q,k-q)|^2\,\delta(\omega_n(k)-\omega_{n_1}(q)-\omega_{n_2}(k-q))\rangle_q$. D46과 같은 대칭화 꼭짓점 $D$(대형 $S$ ED로 검증됨), LSWT 에너지로 계산하는 on-shell Born 근사, 상대 차수 $1/S$ \\
+    적분 & 자기 브릴루앙 영역을 $N_1\times N_2$ 격자(1/3칸 이동)의 삼각형으로 나누고, 에너지 차와 $2|D|^2$를 삼각형마다 선형 보간해 델타 함수를 정확히 적분한다(3차원 사면체법의 2차원판). 연속체 아래에서는 정확히 0 \\
+    문턱 & \texttt{two\_magnon\_threshold}: 두 마그논 연속체 아래 끝 $\min_{q,n_1,n_2}\omega_{n_1}(q)+\omega_{n_2}(k-q)$를 격자 최소와 Nelder--Mead 정밀화로 구한다. 운동학 조건일 뿐 충분조건이 아니다: 병진$\times$스핀 회전 대칭이 펼친 운동량을 보존하면 열린 통로의 꼭짓점이 0이다(기울어진 정사각 반강자성의 접힌 위 띠) \\
+    한계 & 연속체 끝 근처에서는 자기에너지가 특이해져 Born 근사가 깨진다(Zhitomirsky--Chernyshev 2013). 격자 한 칸보다 좁은 붕괴 영역은 0으로 나오므로 격자를 키워야 한다. 자기무모순 극 방정식은 풀지 않는다(더 높은 차수를 섞으므로) \\
+    검산 & 삼각형 적분 $=$ 해석적 상태밀도. 기울어진 정사각 반강자성 $h=0.9h_c$에서 $\eta=0.1$, $24\times24$ 메시의 $-\mathrm{Im}\,\Sigma_3$와 10\% 안에서 일치. 같은 상태에서 Goldstone 가지가 대각선 방향으로 볼록해지는 장 $0.755929\,h_c$($2/\sqrt7$과 $10^{-6}$ 안에서 같음, 수치로 찾음)는 Zhitomirsky--Chernyshev 1999의 $h^*\approx0.76h_c$와 맞고, $0.7$, $0.74h_c$에서 $\Gamma=0$, $0.9h_c$에서 $\Gamma>0$. 3차 항이 없는 Néel: 0. 삼각 120°: 연속체 아래 띠는 0, $48\to96$ 격자에서 5\% 안 \\
+    API & \texttt{NLSWTResult.decay\_rates(k\_points, grid=(64, 64))} $\to$ \texttt{\{lswt, decay\_rate\}}; \texttt{NonlinearSpinWaves.decay\_rate}; \texttt{observables.two\_magnon.two\_magnon\_threshold(result, k\_points, grid=(48, 48))}. 기존 \texttt{magnon\_energies(..., broadening)}은 그대로 둔다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
