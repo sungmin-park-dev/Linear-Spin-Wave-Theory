@@ -28,12 +28,15 @@ and compares them with ``QuadraticBoseHamiltonian`` (D36):
    omega_k^2 = S^2 (J_k - J_Q)((J_{k+Q} + J_{k-Q})/2 - J_Q), with
    J_k = sum_Delta J_Delta exp(i k . Delta), at the minimizing pitch;
    a non-minimizing pitch has imaginary modes with the same omega_k^2 < 0.
-6. Berry curvature at a Goldstone point (research note *LSWT magnon
+6. Berry curvature and loop Berry phase at a Goldstone point (research note *LSWT magnon
    topology*): on the honeycomb lattice with second-neighbour DM along z,
    the zero-field ferromagnet (quadratic zero mode, B = 0) and the canted
    antiferromagnet in a field along z (linear U(1) Goldstone mode, B != 0)
    have bounded curvature near Gamma, vanishing as |k|^4 and |k|^3, and
-   Chern numbers (+1, -1) on a 60 x 60 mesh that avoids Gamma.
+   Chern numbers (+1, -1) on a 60 x 60 mesh that avoids Gamma. The Berry
+   phase around a circle of radius r about Gamma vanishes like the flux
+   through it (r^6 and r^5), so there is no Dirac-like pi offset and the
+   Chern numbers are integers.
 
 Run with ``python code-space/examples/verification/lswt_bdg_blocks_check.py``.
 """
@@ -293,6 +296,19 @@ def _curvature(Hq, k, ns):
     return lam[:ns], om
 
 
+def _loop_phase(Hq, r, points=400):
+    """Berry phase of the lowest particle band around a circle of radius ``r`` about Gamma.
+
+    The discrete Wilson loop uses the Nambu metric, ``prod <t_i| Sigma_3 |t_i+1>``,
+    so a pi offset (as at a massless Dirac point) would show up directly.
+    """
+    sig = np.diag([1.0, 1.0, -1.0, -1.0])
+    vectors = [_colpa(Hq.at((r * np.array([np.cos(t), np.sin(t)]))[None])[0], 2)[1][:, 0]
+               for t in np.linspace(0, 2 * np.pi, points, endpoint=False)]
+    product = np.prod([vectors[i].conj() @ sig @ vectors[(i + 1) % points] for i in range(points)])
+    return float(-np.angle(product))
+
+
 def check_goldstone_curvature(S=0.5, J=1.0, D=0.2, L=60):
     results = {}
     for name, h in (("ferromagnet, h = 0", 0.0), ("canted antiferromagnet, h = 2JS", 2 * J * S)):
@@ -309,6 +325,7 @@ def check_goldstone_curvature(S=0.5, J=1.0, D=0.2, L=60):
         om_a = _curvature(Hq, 1e-2 * u, 2)[1][0]
         om_b = _curvature(Hq, 1e-3 * u, 2)[1][0]
         exponent = np.log10(abs(om_a / om_b))
+        loop = {r: _loop_phase(Hq, r) for r in (1e-1, 1e-4)}
         recip = 2 * np.pi * np.linalg.inv(model.lattice)
         area = abs(np.linalg.det(recip))
         chern = np.zeros(2)
@@ -316,8 +333,9 @@ def check_goldstone_curvature(S=0.5, J=1.0, D=0.2, L=60):
             for j in range(L):
                 chern += _curvature(Hq, recip @ ((np.array([i, j]) + 0.5) / L), 2)[1]
         chern *= area / L**2 / (2 * np.pi)
-        print(f"6. {name}: Omega_1 ~ |k|^{exponent:.2f} near Gamma, Chern = {np.round(chern, 6)}")
-        results[name] = (exponent, chern)
+        print(f"6. {name}: Omega_1 ~ |k|^{exponent:.2f} near Gamma, Chern = {np.round(chern, 6)}, "
+              f"loop Berry phase {loop[1e-1]:.1e} (r = 0.1), {loop[1e-4]:.1e} (r = 1e-4)")
+        results[name] = (exponent, chern, loop)
     return results
 
 
@@ -329,7 +347,8 @@ if __name__ == "__main__":
     worst, negative = check_spiral()
     assert worst < 1e-12 and negative
     expected = {"ferromagnet, h = 0": 4.0, "canted antiferromagnet, h = 2JS": 3.0}
-    for name, (exponent, chern) in check_goldstone_curvature().items():
+    for name, (exponent, chern, loop) in check_goldstone_curvature().items():
         assert abs(exponent - expected[name]) < 0.05
         assert np.allclose(chern, [1.0, -1.0], atol=1e-4)
+        assert abs(loop[1e-1]) < 1e-6 and abs(loop[1e-4]) < 1e-15   # no pi offset at Gamma
     print("all checks passed")
