@@ -237,7 +237,7 @@ $$
 \mathcal S^{\beta\alpha}(-\mathbf q,-\omega)=\exp(-\beta\omega)\,\mathcal S^{\alpha\beta}(\mathbf q,\omega). \tag{14}
 $$
 
-The dynamic structure factor in (13) contains the elastic scattering, of order $S^2$ with its $O(S)$ moment reduction and, for a canted reference configuration, the $O(S)$ term from the rotation of the moments described in Magnon Observables in research note *LSWT magnon thermodynamics*, and the one-magnon scattering, of order $S$. The two-magnon continuum from the connected longitudinal correlation is of order $S^0$ and is not included. At a zero mode, for example a Goldstone mode at a magnetic Bragg vector, the one-magnon weights can diverge as $\varepsilon_{n\mathbf q}\to0$, because the entries of $\mathsf T_{\mathbf q}$ grow as described in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. They need not diverge. Where a zero mode sits at a momentum $\mathbf q_0$ whose one-magnon weight is fixed by a conservation law, the weight vanishes as $\mathbf q\to\mathbf q_0$; for the 120° state at a nuclear Bragg vector the conserved $\sum_i\hat S_i^z$ gives zero weight in the limit. At $\mathbf q_0$ itself $\mathsf T_{\mathbf q_0}$ does not exist, so the weight there is taken as the limit $\mathbf q\to\mathbf q_0$ when that limit exists and is the same from every direction, with the weights of modes that become degenerate at $\mathbf q_0$ summed, since only their sum is defined there. Where the limit diverges or depends on the direction, as for the Goldstone weights at a magnetic Bragg vector, the weight is undefined.
+The dynamic structure factor in (13) contains the elastic scattering, of order $S^2$ with its $O(S)$ moment reduction and, for a canted reference configuration, the $O(S)$ term from the rotation of the moments described in Magnon Observables in research note *LSWT magnon thermodynamics*, and the one-magnon scattering, of order $S$. The two-magnon continuum from the connected longitudinal correlation is of order $S^0$ and is not included in (13); its non-interacting form is given in Two-Magnon Continuum. At a zero mode, for example a Goldstone mode at a magnetic Bragg vector, the one-magnon weights can diverge as $\varepsilon_{n\mathbf q}\to0$, because the entries of $\mathsf T_{\mathbf q}$ grow as described in Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*. They need not diverge. Where a zero mode sits at a momentum $\mathbf q_0$ whose one-magnon weight is fixed by a conservation law, the weight vanishes as $\mathbf q\to\mathbf q_0$; for the 120° state at a nuclear Bragg vector the conserved $\sum_i\hat S_i^z$ gives zero weight in the limit. At $\mathbf q_0$ itself $\mathsf T_{\mathbf q_0}$ does not exist, so the weight there is taken as the limit $\mathbf q\to\mathbf q_0$ when that limit exists and is the same from every direction, with the weights of modes that become degenerate at $\mathbf q_0$ summed, since only their sum is defined there. Where the limit diverges or depends on the direction, as for the Goldstone weights at a magnetic Bragg vector, the weight is undefined.
 
 ### Broadening
 
@@ -254,6 +254,28 @@ L_\eta(x)=\frac{1}{\pi}\frac{\eta}{x^2+\eta^2}, \tag{15}
 $$
 
 and the elastic $\delta(\omega)$ is replaced by $L_\eta(\omega)$. The Lorentzian has unit area and full width at half maximum $2\eta$, so the frequency integral $\mathcal S^{\alpha\beta}(\mathbf q)$ is unchanged. The broadening is not part of LSWT; other line shapes, such as a Gaussian resolution function, enter in the same way.
+
+## Two-Magnon Continuum
+
+The longitudinal part of the spin operator carries the boson number, $\hat S_I^\alpha\supset-n_I^\alpha\hat a_I^\dagger\hat a_I$ with $\mathbf n_I=\mathbf e_I^0$. Its connected correlation is of order $S^0$, one order below the one-magnon weights. In the harmonic ground state the operator $\hat a_I^\dagger\hat a_I$ connects the vacuum only to states with two magnons, so it gives a continuum rather than sharp lines. With the per-site Fourier convention of (13) and the Bogoliubov spinor $\hat\psi_{\mathbf k}=\mathsf T_{\mathbf k}\hat\phi_{\mathbf k}$, in which $\hat\phi_{\mathbf k,N_{\mathrm s}+n}$ creates a magnon of energy $E_{\mathbf k,N_{\mathrm s}+n}$, the part of the longitudinal operator $\hat L^\beta(\mathbf q)^\dagger=-N^{-1/2}\sum_I n_I^\beta e^{\mathrm i\mathbf q\cdot\mathbf r_I}\hat a_I^\dagger\hat a_I$ that creates two magnons is
+
+$$
+\sum_{\mathbf k}\sum_{nn'}C^\beta_{nn'}(\mathbf k)\,\hat\phi_{-\mathbf k-\mathbf q,N_{\mathrm s}+n}\hat\phi_{\mathbf k,N_{\mathrm s}+n'},
+\qquad
+C^\beta_{nn'}(\mathbf k)=-\frac1{\sqrt N}\sum_\mu n_\mu^\beta\,[\mathsf T_{-\mathbf k-\mathbf q}]_{N_{\mathrm s}+\mu,N_{\mathrm s}+n}[\mathsf T_{\mathbf k}]_{\mu,N_{\mathrm s}+n'}.
+$$
+
+At zero temperature the continuum is
+
+$$
+S_2^{\alpha\beta}(\mathbf q,\omega)=\frac12\sum_{\mathbf k}\sum_{nn'}A^\alpha_{nn'}(\mathbf k)^*A^\beta_{nn'}(\mathbf k)\,\delta\big(\omega-E_{-\mathbf k-\mathbf q,N_{\mathrm s}+n}-E_{\mathbf k,N_{\mathrm s}+n'}\big),
+\qquad
+A_{nn'}(\mathbf k)=C_{nn'}(\mathbf k)+C_{n'n}(-\mathbf k-\mathbf q),
+$$
+
+where the factor $1/2$ and the symmetrized amplitude count each pair of magnons once. Its frequency integral is the equal-time connected correlation, which Wick's theorem gives in real space as $\langle\hat n_I\hat n_J\rangle_{\mathrm c}=\langle\hat a_I^\dagger\hat a_J\rangle\langle\hat a_I\hat a_J^\dagger\rangle+\langle\hat a_I^\dagger\hat a_J^\dagger\rangle\langle\hat a_I\hat a_J\rangle$. The ferromagnet in a field has no pairing and no continuum, because its harmonic ground state is the exact vacuum. In the Néel state, the continuum is polarized along the staggered axis, and its pairs lie at $\varepsilon_{\mathbf k}+\varepsilon_{\mathbf k+\mathbf q}$.
+
+The continuum is not the complete correction of order $S^0$. At the same order the magnon interactions shift the one-magnon energies and weights, and the next Holstein–Primakoff terms of the transverse operator correct the one-magnon weights; in noncollinear states the cubic vertex also lets a magnon decay into the two-magnon continuum. The expression above is the non-interacting continuum alone. At finite temperature the number operator also scatters thermal magnons, with terms $\hat b^\dagger\hat b$ at energies $\varepsilon_{\mathbf k+\mathbf q}-\varepsilon_{\mathbf k}$, which are not included here.
 
 ## Magnetic Neutron Scattering Intensity
 
