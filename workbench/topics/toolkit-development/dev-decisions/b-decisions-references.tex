@@ -673,6 +673,26 @@
   \slidesource{2026-10-14 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D60): 두 마그논 연속체를 유한 온도로 넓힌다}\label{decisions-d60-two-magnon-thermal}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 개발 순서에 따른 항목(사용자 "순서대로 알아서 진행"), 구현은 Claude 결정, 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & D56의 종방향 연속체는 $t=0$만 다뤘고 $t>0$은 거부했다. 유한 온도에서는 열 마그논의 산란($b^\dagger b$)과 쌍 소멸이 더해진다 \\
+    식 & $\hat L^\beta(\mathbf q)^\dagger$를 $\mathsf T$의 모든 $2N_s$ 열로 쓰고 자유 보손의 열평형 Wick 정리: $S_2=\tfrac12\sum A^*A\,f_\sigma f_\tau\,\delta(\omega-e_\sigma-e_\tau)$, 생성 연산자 $e=+E$, $f=1+n_B$, 소멸 연산자 $e=-E$, $f=n_B$. 쌍 생성 $(1+n_1)(1+n_2)$, 산란 $\pm(\varepsilon_1-\varepsilon_2)$에서 $(1+n_1)n_2$, 쌍 소멸 $n_1n_2$ \\
+    온도 단위 & \texttt{thermal\_quantities}와 같이 $t=k_BT$를 모델 에너지 단위로 \\
+    영모드 & $t>0$에서 영모드 근처 산란 무게가 $n_B|A|^2$로 커져 2차원 영역 합이 로그 발산(Mermin--Wagner, 보손 수와 같음). 따라서 영모드 판정은 D25와 같은 방식(\texttt{scan\_zero\_modes}, 후보가 있으면 \texttt{gapless} 지정 요구)이고, 간격 없는 스펙트럼이면 무게를 NaN으로 보고하고 경고한다. 메시 값으로 채우지 않는다 \\
+    범위 & 상호작용 없는 연속체. 고전 상태 고정, 1/S 보정 없음. 연결 상관만이라 Bragg 벡터의 열적 모멘트 감소(탄성 부분)는 포함하지 않는다. D59의 상호작용 구조인자는 여전히 $t=0$ \\
+    검산 & 쉬운 축 Néel($J_z/J=1.05$, 장 $0.05$, 간격 있음): 등시간 합 = 열 수축의 실공간 Wick 계산 $10^{-13}$($t=0.3,1$). 상세 균형 $\sum W(-\mathbf q)=\sum W(\mathbf q)e^{-e/t}$가 $10^{-10}$. $t\to0$ = D56. 장 속 강자성: 산란만, $\langle n_k(1+n_{k+q})\rangle$와 $10^{-12}$. 간격 없는 Néel은 NaN \\
+    API & \texttt{two\_magnon\_continuum(result, q\_points, mesh, temperature, zero\_modes, gapless)}; 결과 \texttt{settings}에 \texttt{gapless}, \texttt{gapless\_decision} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}
