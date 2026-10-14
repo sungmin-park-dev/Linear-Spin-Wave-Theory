@@ -194,3 +194,71 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     energies = np.where(np.isnan(energies), 0.0, energies)
     return TwoMagnonContinuum(q, energies, weights, k, excluded,
                               {"mesh": [int(m) for m in mesh], "temperature": 0.0})
+
+
+def two_magnon_threshold(result, k_points, grid: Sequence[int] = (48, 48)) -> np.ndarray:
+    """Lower edge of the two-magnon continuum, ``min_{q, n1, n2} w_n1(q) + w_n2(k - q)`` (D57).
+
+    A magnon ``(k, n)`` can decay into two magnons only where
+    ``w_n(k)`` lies above this edge. The minimum is taken on an
+    ``N1 x N2`` grid of the magnetic zone (half-step offset) and refined
+    from the four lowest grid points by a Nelder-Mead search.
+
+    The condition is kinematic and necessary only: momentum is conserved
+    modulo the magnetic reciprocal lattice, so a channel that a hidden
+    symmetry forbids (e.g. a translation combined with a spin rotation in a
+    canted antiferromagnet, which conserves the unfolded momentum) still
+    counts here. Whether a magnon actually decays is decided by the vertex:
+    :meth:`~spintoolkit.methods.nlswt.NLSWTResult.decay_rates`.
+
+    Parameters
+    ----------
+    result : LSWTResult
+        Lab-frame result.
+    k_points : (m, 2) array_like
+        Cartesian momenta.
+    grid : (n1, n2)
+
+    Returns
+    -------
+    (m,) array
+    """
+    from scipy.optimize import minimize
+
+    from spintoolkit.methods.lswt.run import require_lab_frame
+
+    require_lab_frame(result, "two_magnon_threshold")
+    ns = result.num_sites
+    k = np.atleast_2d(np.asarray(k_points, dtype=float))
+    reciprocal = 2 * np.pi * np.linalg.inv(np.asarray(result.magnetic_lattice)).T
+    n1, n2 = (int(n) for n in grid)
+    u = np.array([((i + 0.5) / n1, (j + 0.5) / n2) for i in range(n1) for j in range(n2)])
+    # w_n(p) is the hole-column eigenvalue at -p (see the module docstring)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        _, E1, _, _ = _diagonalization_at(result, -u @ reciprocal)
+
+    def lowest(Ea, Eb):
+        return np.nanmin(Ea[..., ns:][..., :, None] + Eb[..., ns:][..., None, :], axis=(-2, -1))
+
+    out = np.empty(len(k))
+    for i, ki in enumerate(k):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            _, E2, _, _ = _diagonalization_at(result, u @ reciprocal - ki)
+            edge = lowest(E1, E2)
+
+            def total(p):
+                q = np.asarray(p) @ reciprocal
+                _, Ea, _, _ = _diagonalization_at(result, -q)
+                _, Eb, _, _ = _diagonalization_at(result, q - ki)
+                value = lowest(Ea[0], Eb[0])
+                return float(value) if np.isfinite(value) else np.inf
+
+            best = float(np.nanmin(edge))
+            for start in np.argsort(np.where(np.isfinite(edge), edge, np.inf))[:4]:
+                fit = minimize(total, u[start], method="Nelder-Mead",
+                               options={"xatol": 1e-9, "fatol": 1e-12})
+                best = min(best, float(fit.fun))
+        out[i] = best
+    return out

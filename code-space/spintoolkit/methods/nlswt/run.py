@@ -117,6 +117,42 @@ class NLSWTResult:
                 "total": lswt + static + cubic.real, "decay_rate": -cubic.imag}
 
 
+    def decay_rates(self, k_points, grid: Tuple[int, int] = (64, 64)) -> Dict[str, np.ndarray]:
+        """Spontaneous two-magnon decay rates in the Born approximation (D57).
+
+        ``Gamma_n(k) = -Im Sigma_3^nn(k, w_n(k) + i0)``, the golden rule with
+        the cubic decay vertex and the LSWT energies, integrated over the
+        magnetic zone by linear interpolation on triangles of an ``N1 x N2``
+        grid (no broadening). It is the half width of the magnon peak at order
+        S^0 (relative 1/S). Unlike ``magnon_energies(..., broadening)``, the
+        result does not depend on an artificial ``eta``.
+
+        Parameters
+        ----------
+        k_points : (m, 2) array_like
+            Cartesian momenta; ``k`` and ``k - q`` must avoid zero modes on the grid.
+        grid : (N1, N2)
+            Integration grid, offset by one third of a step.
+
+        Returns
+        -------
+        dict
+            ``lswt`` (m, Ns) and ``decay_rate`` (m, Ns).
+
+        Notes
+        -----
+        The rate is exactly zero where ``w_n(k)`` lies below the two-magnon
+        continuum, and also where the vertex vanishes by symmetry although
+        the decay is kinematically allowed. Near the edge of the continuum the
+        Born approximation fails (threshold singularities, Zhitomirsky and
+        Chernyshev, RMP 85, 219 (2013)), and a decay region much narrower than
+        a grid step is missed; refine ``grid`` there.
+        """
+        k = np.atleast_2d(np.asarray(k_points, dtype=float))
+        pairs = [self.solver.decay_rate(ki, grid) for ki in k]
+        return {"lswt": np.array([p[0] for p in pairs]),
+                "decay_rate": np.array([p[1] for p in pairs])}
+
 def _resolution(fractional: np.ndarray, limit: int = 4096) -> int:
     for n in range(1, limit + 1):
         if np.allclose(fractional * n, np.rint(fractional * n), atol=1e-7):
