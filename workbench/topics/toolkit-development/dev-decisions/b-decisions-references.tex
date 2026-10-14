@@ -629,6 +629,27 @@
   \slidesource{2026-10-14 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D58): 마그논 스펙트럼 함수는 on-shell을 기본으로, Dyson 재합은 진단값과 함께 낸다}\label{decisions-d58-spectral}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-14 사용자 선택(``상호작용 스펙트럼''), 구현은 Claude 결정, 물리 검토 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    문제 & 1/S 에너지 이동(D46), 붕괴율(D57), 두 마그논 연속체(D56)가 따로 있어 하나의 $S(q,\omega)$로 볼 수 없었다 \\
+    자기에너지 & $\Pi^{(3)}_n(k,\omega)=\int\rho^{\rm dec}(x)/(\omega-x+i0)\,dx-\int\rho^{\rm src}(x)/(\omega+x+i0)\,dx$. 두 밀도는 D57 삼각형 적분으로 에너지 격자에서 구하고, 힐베르트 변환은 조각별 선형 보간에 대해 정확히 계산한다(자기에너지 안에 넓힘 없음) \\
+    기본(on-shell) & 엄밀한 상대 $1/S$ 차수: $\tilde\varepsilon=\varepsilon+\delta\varepsilon+{\rm Re}\,\Pi^{(3)}(\varepsilon)$에 반폭 $\Gamma+\eta$인 로렌츠 함수 \\
+    Dyson(선택) & $A=-\frac1\pi{\rm Im}[\omega+i\eta-\varepsilon-\delta\varepsilon-\Pi^{(3)}(\omega)]^{-1}$. 선 모양, 연속체로 옮겨 간 무게, 연속체 끝에 붙는 봉우리를 주지만 $1/S$로 통제되지 않는다. 진단값: $\omega<0$ 무게는 보손에서 $\le0$이어야 하므로 양수면 가짜 극이다. 삼각 120° $S=5$: 무게 합 1(오차 $10^{-2}$), 음주파수 무게 음수. $S=1/2$: 연속체 끝의 접힌 띠에서 정적 이동과 ${\rm Re}\,\Pi^{(3)}$가 LSWT 에너지보다 커 양의 무게를 가진 가짜 극이 생기고, 진단값이 이를 드러낸다 \\
+    띠 처리 & 띠 대각만 쓴다(비대각은 더 높은 차수). 정확히 겹친 띠 묶음에서는 대각 성분이 기저에 의존하므로 묶음 평균(대각합)을 쓴다 \\
+    $S(q,\omega)$ & \texttt{dressed\_structure\_factor}: $\sum_nW_n(q)A_n(q,\omega)+S_2(q,\omega)$. 완전한 $O(S^0)$가 아니다: 한 마그논 가중치의 $1/S$ 보정과 비공선 상태의 한·두 마그논 간섭 항은 같은 차수지만 넣지 않으며 docstring과 노트에 밝힌다. $t=0$, 실험실 틀, 영모드 운동량은 거부 \\
+    검산 & 반원 밀도의 힐베르트 변환 해석해($2\times10^{-3}$), on-shell 붕괴율 = D57(1\%), 3차 항 없는 Néel은 이동된 로렌츠 함수. 연속체 끝의 띠에서 ${\rm Re}\,\Pi^{(3)}$: 삼각형 격자 48/96/160 $\to-1.656/-1.649/-1.653$, 기존 메시 합 12--48 $\to-1.597\dots-1.661$(끝의 특이성 때문에 메시 합이 느리게 다가간다) \\
+    API & \texttt{NLSWTResult.spectral\_function(k\_points, omega, eta, mode="on\_shell", grid, levels)}; \texttt{NonlinearSpinWaves.cubic\_spectral\_densities}; \texttt{engine.triangle\_density}, \texttt{engine.hilbert\_transform}; \texttt{observables.interacting\_spectrum.dressed\_structure\_factor(lswt\_result, nlswt\_result, q\_points, omega, eta, component, mode)} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-14 결정}{contract}
+\endgroup
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

@@ -217,6 +217,26 @@ Eq. (11) is the Born approximation at relative order $1/S$. It needs $\varepsilo
 
 - **Edges of the continuum.** Near a point where $\varepsilon_{n\mathbf k}$ meets the edge, the self-energy can be singular and the Born approximation fails [@zhitomirskyColloquium2013]. There the decay region can also be narrower than a grid step, and the triangle integration then returns zero; the grid must be refined to resolve it.
 
+## Magnon Spectral Function
+
+Off the mass shell, the cubic self-energy of Eq. (9) is a pair of Hilbert transforms of two-magnon densities,
+
+<!-- eq 12: eq-nlswt-spectral-self-energy -->
+
+$$
+\Pi^{(3)}_n(\mathbf k,\omega)=\int dx\,\frac{\rho^{\mathrm{dec}}_{n\mathbf k}(x)}{\omega-x+\mathrm i0^+}-\int dx\,\frac{\rho^{\mathrm{src}}_{n\mathbf k}(x)}{\omega+x+\mathrm i0^+},
+\qquad
+A_{n\mathbf k}(\omega)=-\frac1\pi\operatorname{Im}\frac{1}{\omega-\varepsilon_{n\mathbf k}-\delta\varepsilon_{n\mathbf k}-\Pi^{(3)}_n(\mathbf k,\omega)}, \tag{12}
+$$
+
+where $\rho^{\mathrm{dec}}$ is the density of Eq. (11) without the factor $\pi$ at energy $x$, $\rho^{\mathrm{src}}$ the same construction with $18|s|^2$ and the pair at $\mathbf q$ and $-\mathbf k-\mathbf q$, and $\delta\varepsilon$ the static shift of Eq. (8). The package samples both densities on an energy grid by the triangle integration of Eq. (11) and evaluates the transforms exactly for the piecewise-linear interpolant, so no broadening enters the self-energy.
+
+The strict expansion to relative order $1/S$ is the on-shell form: a Lorentzian at $\widetilde\varepsilon_{n\mathbf k}$ of Eq. (8) with half width $\Gamma_{n\mathbf k}$. This is the default. The Dyson form of Eq. (12) resums the self-energy and gives line shapes, the weight moved into the continuum and the pinning of a peak at a continuum edge, but it is not controlled in $1/S$. Its check is the sign of the weight below $\omega=0$: for a boson, $A_{n\mathbf k}(\omega<0)=-\sum_m|\langle m|b_{n\mathbf k}|0\rangle|^2\delta(\omega+E_m)\le0$, and the total weight is $\langle[b,b^\dagger]\rangle=1$. For the triangular $120^\circ$ state at $S=5$ the total weight is $1$ within $10^{-2}$ and the negative-frequency weight is negative. At $S=1/2$ the static shift and $\operatorname{Re}\Pi^{(3)}$ of the folded bands at the continuum edge are larger than the LSWT energy, and the Dyson form produces a pole with positive weight below $\omega=0$. The package reports this weight so that such a result can be recognized.
+
+The self-energy is used band diagonal: the off-diagonal elements change the energies only at higher order. Within an exactly degenerate group of bands the diagonal elements depend on the basis, and the mean over the group, which is the basis-independent trace, is used for each band.
+
+The dynamical structure factor assembled from these pieces is $\sum_nW_{n\mathbf q}A_{n\mathbf q}(\omega)+S_2(\mathbf q,\omega)$, with the LSWT one-magnon weights $W$ and the non-interacting longitudinal continuum $S_2$ of Two-Magnon Continuum in research note *LSWT spin correlations*. It is not the complete order-$S^0$ structure factor: the $1/S$ corrections of the one-magnon weights and, in noncollinear states, the interference between one- and two-magnon terms mixed by $\hat H_3$ are of the same order and are not included.
+
 ## Momentum Meshes
 
 The three-magnon sums require $\mathbf q_3=-\mathbf q_1-\mathbf q_2$ to lie on the same momentum set, and the Goldstone points must be avoided. The mesh $\mathbf q=\sum_a(n_a+\tfrac13)\mathbf b_a/N_a$, with $\mathbf b_a$ the reciprocal vectors of the magnetic cell and $n_a=0,\dots,N_a-1$, has both properties: the sum of two offsets $\tfrac13+\tfrac13$ equals $-\tfrac13$ modulo $1$, and no point has an integer coordinate, so $\Gamma$ is excluded. The mesh is not closed under $\mathbf q\to-\mathbf q$, so quantities that should agree in the thermodynamic limit can differ on a coarse mesh. On a finite torus whose allowed momenta are all gapped, the same formulas are exact Rayleigh–Schrödinger perturbation theory in $1/S$ for that cluster.
@@ -237,6 +257,8 @@ The script `code-space/examples/verification/lswt_nonlinear_vertices_check.py` c
 
 6. **Decay rates.** The triangle integration reproduces $\int du\,dv\,\delta(\cos2\pi u-c)=1/(\pi\sqrt{1-c^2})$, and Eq. (11) agrees within $10\%$ with $-\operatorname{Im}\Pi^{(3)}$ at $\eta=0.1$ on a $24\times24$ mesh for the canted square-lattice antiferromagnet at $h=0.9\,h_c$, $h_c=8JS$. In that state the Goldstone branch becomes convex along the diagonal at $h=0.755929\,h_c$ (equal to $2/\sqrt7$ within $10^{-6}$, found numerically from the LSWT dispersion), consistent with the onset of spontaneous decays at $h^*\approx0.76\,h_c$ reported by Zhitomirsky and Chernyshev (Phys. Rev. Lett. 82, 4536 (1999)); the package finds $\Gamma=0$ at $h=0.7$ and $0.74\,h_c$ and $\Gamma>0$ at $0.9\,h_c$. For the triangular $120^\circ$ state, the rate vanishes for every band below the continuum edge and changes by less than $5\%$ between $48\times48$ and $96\times96$ grids (package tests in `test_magnon_decay.py`).
 
+7. **Spectral function.** The Hilbert transform reproduces the semicircle result $2(\omega-\sqrt{\omega^2-1})$ within $2\times10^{-3}$, and the on-shell rate equals Eq. (11) within $1\%$, the interpolation error of the sampled density. For a triangular band at the continuum edge, $\operatorname{Re}\Pi^{(3)}$ is $-1.6564$, $-1.6492$ and $-1.6528$ on triangle grids $48$, $96$ and $160$, while the mesh sum of Eq. (9) gives $-1.597$, $-1.633$, $-1.639$ and $-1.661$ on meshes $12$ to $48$: the mesh sum converges slowly toward the triangle value because the integrand is singular at the edge (package tests in `test_magnon_spectral.py`).
+
 ## References
 
 ### Internal Documents
@@ -253,7 +275,7 @@ The script `code-space/examples/verification/lswt_nonlinear_vertices_check.py` c
 
 - `code-space/examples/verification/lswt_nonlinear_vertices_check.py`: checks 1 and 2.
 
-- Decision records D46 (nonlinear spin-wave expansion), D47 (next order of the pseudo-Goldstone gap) and D57 (decay rate without broadening) in research note *Toolkit decisions and references*.
+- Decision records D46 (nonlinear spin-wave expansion), D47 (next order of the pseudo-Goldstone gap), D57 (decay rate without broadening) and D58 (spectral function) in research note *Toolkit decisions and references*.
 
 ### External Sources
 

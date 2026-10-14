@@ -209,39 +209,74 @@ def _vectors(mesh_vectors: np.ndarray, op, q: np.ndarray, create: bool, ns: int)
     return np.exp(1j * q @ r)[:, None] * mesh_vectors[:, row, :ns]
 
 
-def triangle_delta_integral(f: np.ndarray, g: np.ndarray) -> float:
-    """``int du dv g(u, v) delta(f(u, v))`` over the unit torus, linear on triangles.
+def _sorted_triangles(f: np.ndarray, g: np.ndarray):
+    """Vertex values of the two triangles of each grid square, sorted by ``f``; (2 N1 N2, 3) each."""
+    corners = [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)]
+    F = np.concatenate([np.stack([np.roll(f, (-a, -b), (0, 1)).ravel() for a, b in tri], axis=1)
+                        for tri in corners])
+    G = np.concatenate([np.stack([np.roll(g, (-a, -b), (0, 1)).ravel() for a, b in tri], axis=1)
+                        for tri in corners])
+    order = np.argsort(F, axis=1)
+    return np.take_along_axis(F, order, 1), np.take_along_axis(G, order, 1)
+
+
+def triangle_density(f: np.ndarray, g: np.ndarray, levels: Sequence[float]) -> np.ndarray:
+    """``rho(x) = int du dv g(u, v) delta(x - f(u, v))`` over the unit torus at each level x.
 
     ``f`` and ``g`` are (N1, N2) node values of a periodic grid. Each grid
     square is cut into two triangles; on each, ``f`` and ``g`` are linear, and
     the integral is exact for that interpolation: the weight
-    ``int delta(f) dA`` of the zero line times the mean of ``g`` on it (the
-    two-dimensional analogue of the tetrahedron method).
+    ``int delta(x - f) dA`` of the level line times the mean of ``g`` on it
+    (the two-dimensional analogue of the tetrahedron method).
     """
     n1, n2 = f.shape
-    corner = [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)]
-    total = 0.0
-    for triangle in corner:
-        F = np.stack([np.roll(f, (-a, -b), (0, 1)).ravel() for a, b in triangle], axis=1)
-        G = np.stack([np.roll(g, (-a, -b), (0, 1)).ravel() for a, b in triangle], axis=1)
-        order = np.argsort(F, axis=1)
-        F, G = np.take_along_axis(F, order, 1), np.take_along_axis(G, order, 1)
-        f1, f2, f3 = F.T
-        g1, g2, g3 = G.T
-        low = (f1 < 0) & (f2 >= 0)
-        high = (f2 < 0) & (f3 >= 0)
-        out = np.zeros(len(f1))
-        with np.errstate(divide="ignore", invalid="ignore"):
-            t12, t13, t23 = -f1 / (f2 - f1), -f1 / (f3 - f1), -f2 / (f3 - f2)
-            w_low = -2 * f1 / ((f2 - f1) * (f3 - f1))
-            g_low = 0.5 * (g1 + t12 * (g2 - g1) + g1 + t13 * (g3 - g1))
-            w_high = 2 * f3 / ((f3 - f1) * (f3 - f2))
-            g_high = 0.5 * (g1 + t13 * (g3 - g1) + g2 + t23 * (g3 - g2))
-        out[low] = (w_low * g_low)[low]
-        out[high] = (w_high * g_high)[high]
-        total += float(np.sum(out))
-    return total * 0.5 / (n1 * n2)
+    F, G = _sorted_triangles(f, g)
+    f1, f2, f3 = F.T
+    g1, g2, g3 = G.T
+    out = np.zeros(len(levels))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        for i, x in enumerate(np.asarray(levels, dtype=float)):
+            low = (f1 < x) & (x <= f2)
+            high = (f2 < x) & (x <= f3)
+            total = 0.0
+            if np.any(low):
+                a, b, c = f1[low], f2[low], f3[low]
+                t12, t13 = (x - a) / (b - a), (x - a) / (c - a)
+                ga = g1[low]
+                mean = 0.5 * (ga + t12 * (g2[low] - ga) + ga + t13 * (g3[low] - ga))
+                total += np.sum(2 * (x - a) / ((b - a) * (c - a)) * mean)
+            if np.any(high):
+                a, b, c = f1[high], f2[high], f3[high]
+                t13, t23 = (x - a) / (c - a), (x - b) / (c - b)
+                ga, gb = g1[high], g2[high]
+                mean = 0.5 * (ga + t13 * (g3[high] - ga) + gb + t23 * (g3[high] - gb))
+                total += np.sum(2 * (c - x) / ((c - a) * (c - b)) * mean)
+            out[i] = total
+    return out * 0.5 / (n1 * n2)
 
+
+def triangle_delta_integral(f: np.ndarray, g: np.ndarray) -> float:
+    """``int du dv g(u, v) delta(f(u, v))`` over the unit torus (see :func:`triangle_density`)."""
+    return float(triangle_density(-f, g, [0.0])[0])
+
+
+def hilbert_transform(x: np.ndarray, rho: np.ndarray, omega: Sequence[float]) -> np.ndarray:
+    """``int dx' rho(x') / (w - x' + i0)`` for ``rho`` piecewise linear on the grid ``x``.
+
+    The real part is the principal value, exact for the linear interpolant
+    (each segment gives ``(rho_0 + s (w - x_0)) ln|(w - x_0)/(w - x_1)| - s (x_1 - x_0)``);
+    the imaginary part is ``-pi rho(w)``. ``rho`` vanishes outside ``x``.
+    """
+    x, rho = np.asarray(x, dtype=float), np.asarray(rho, dtype=float)
+    w = np.asarray(omega, dtype=float)[:, None]
+    x0, x1, r0, r1 = x[:-1], x[1:], rho[:-1], rho[1:]
+    s = (r1 - r0) / (x1 - x0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        log = np.log(np.abs(w - x0)) - np.log(np.abs(w - x1))
+    log = np.where(np.isfinite(log), log, 0.0)
+    real = np.sum((r0 + s * (w - x0)) * log - s * (x1 - x0), axis=1)
+    imag = -np.pi * np.interp(w[:, 0], x, rho, left=0.0, right=0.0)
+    return real + 1j * imag
 
 def _group_cubic(cubic):
     """Merge cubic monomials that differ only by a common translation is not needed; keep list."""
@@ -541,6 +576,51 @@ class NonlinearSpinWaves:
                     f = (E1[:, a] + E2[:, b] - Ek[0, n]).reshape(n1, n2)
                     rates[n] += triangle_delta_integral(f, weight[:, a, b, n].reshape(n1, n2))
         return Ek[0], np.pi * rates
+
+    def cubic_spectral_densities(self, k, grid: Sequence[int] = (64, 64), levels: int = 400):
+        """Two-magnon densities of the cubic self-energy at ``k`` (D58).
+
+        ``rho_dec_n(x) = <sum 2 |D_{n1 n2; n}(q, k - q)|^2 delta(x - w_n1(q) - w_n2(k - q))>_q``
+        and ``rho_src_n(x) = <sum 18 |S_{n n1 n2}(k, q, -k - q)|^2 delta(x - w_n1(q) - w_n2(-k - q))>_q``
+        on ``levels`` equally spaced energies from 0 to the top of the
+        continua, by triangle integration (:func:`triangle_density`), so that
+        ``Sigma_3^nn(k, w) = int rho_dec(x) / (w - x + i0) dx - int rho_src(x) / (w + x) dx``.
+
+        Returns
+        -------
+        energies : (Ns,) array
+            LSWT ``w_n(k)``.
+        x : (levels,) array
+        rho_dec, rho_src : (Ns, levels) arrays
+        """
+        n1, n2 = (int(n) for n in grid)
+        ns = self.ns
+        k = np.asarray(k, dtype=float).reshape(1, 2)
+        Ek, Tk = self._bogoliubov(k)
+        u = np.array([((i + 1 / 3) / n1, (j + 1 / 3) / n2) for i in range(n1) for j in range(n2)])
+        q1 = u @ self.mesh.reciprocal
+        m = len(q1)
+        kk = np.broadcast_to(k, (m, 2))
+        Tkk = np.broadcast_to(Tk, (m,) + Tk.shape[1:])
+        E1, T1 = self._bogoliubov(q1)
+        E2, T2 = self._bogoliubov(k - q1)
+        E3, T3 = self._bogoliubov(-k - q1)
+        decay = 2 * np.abs(self._decay(q1, k - q1, kk, T1, T2, Tkk)) ** 2      # (m, n1, n2, n)
+        source = 18 * np.abs(self._source([kk, q1, -k - q1], [Tkk, T1, T3])) ** 2  # (m, n, n1, n2)
+        top = max(float(np.max(E1[:, :, None] + E2[:, None, :])),
+                  float(np.max(E1[:, :, None] + E3[:, None, :])))
+        x = np.linspace(0.0, 1.02 * top, int(levels))
+        rho_dec = np.zeros((ns, len(x)))
+        rho_src = np.zeros((ns, len(x)))
+        for a in range(ns):
+            for b in range(ns):
+                f_dec = (E1[:, a] + E2[:, b]).reshape(n1, n2)
+                f_src = (E1[:, a] + E3[:, b]).reshape(n1, n2)
+                for n in range(ns):
+                    rho_dec[n] += triangle_density(f_dec, decay[:, a, b, n].reshape(n1, n2), x)
+                    if np.any(source[:, n, a, b]):
+                        rho_src[n] += triangle_density(f_src, source[:, n, a, b].reshape(n1, n2), x)
+        return Ek[0], x, rho_dec, rho_src
 
     def _pair_amplitudes(self, k):
         """Two-magnon amplitudes of ``j_a = [psi_a(k), H_3]`` in the original Nambu basis.
