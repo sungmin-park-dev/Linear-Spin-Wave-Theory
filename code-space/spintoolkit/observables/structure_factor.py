@@ -425,8 +425,10 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
     StructureFactor
         Lab frame, with ``3 x 2 Ns`` modes per momentum ordered
         ``m = 0, +1, -1``. ``zero_mode`` marks momenta where any of the three
-        branches has a zero mode (e.g. ``k = 0, +-Q`` of a Heisenberg spiral);
-        only that branch is NaN.
+        branches has a zero mode (e.g. ``k = 0, +-Q`` of a Heisenberg spiral).
+        That branch takes the limit ``k -> k0`` of D52 where it exists
+        (``limit`` True only if every such branch has one) and is NaN
+        otherwise; the other branches are unaffected.
 
     Raises
     ------
@@ -461,6 +463,7 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
 
     tensors = _check_tensors(moment_tensors, len(q), ns)
     energies, weights, zero = [], [], np.zeros(len(q), dtype=bool)
+    undefined = np.zeros(len(q), dtype=bool)
     elastic = np.zeros((len(q), 3, 3), dtype=complex)
     bragg = np.zeros(len(q), dtype=bool)
     for m in (0, 1, -1):
@@ -468,13 +471,22 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         _, E, T, zero_m = _diagonalization_at(rotating, shifted)
         zero |= zero_m
         phase = np.exp(-1j * m * tau @ Q)
-        A_m = _apply_moment_tensors(rotations[m] @ (A * np.r_[phase, phase][None, :]),
-                                    tensors, len(q))
+        branch = rotations[m] @ (A * np.r_[phase, phase][None, :])
+        A_m = _apply_moment_tensors(branch, tensors, len(q))
         amplitudes = np.einsum("qam,qmn->qan", A_m, T)
-        energies.append(np.concatenate([E[:, :ns], -E[:, ns:]], axis=1))
+        E_m = np.concatenate([E[:, :ns], -E[:, ns:]], axis=1)
         factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
-        weights.append(np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
-                       * factors[:, :, None, None])
+        W_m = (np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
+               * factors[:, :, None, None])
+        for i in np.flatnonzero(zero_m):                          # D52, branch by branch
+            found = _zero_mode_limit(rotating, shifted[i], t, branch,
+                                     None if tensors is None else tensors[i])
+            if found is None:
+                undefined[i] = True
+            else:
+                E_m[i], W_m[i] = found
+        energies.append(E_m)
+        weights.append(W_m)
         fractional = shifted @ lattice.T / (2 * np.pi)
         on_lattice = np.all(np.abs(fractional - np.rint(fractional)) < 1e-9, axis=1)
         for i in np.flatnonzero(on_lattice):
@@ -482,12 +494,14 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
             F = np.exp(-1j * tau @ q[i]) @ _moments(tensors, i, rotated)
             elastic[i] += np.outer(F, F.conj()) / ns ** 2
         bragg |= on_lattice
+    limit = zero & ~undefined
     if np.any(zero):
         warnings.warn(f"H(k) has a zero mode in some branch at {int(zero.sum())} of {len(q)} "
-                      "momenta (e.g. Goldstone modes at k = 0, +-Q): those weights are NaN",
-                      UserWarning, stacklevel=2)
+                      f"momenta (e.g. Goldstone modes at k = 0, +-Q): the weights of that "
+                      f"branch are the direction-independent limit at {int(limit.sum())} of them "
+                      f"and NaN at {int(undefined.sum())}", UserWarning, stacklevel=2)
     return StructureFactor(q, np.concatenate(energies, axis=1), np.concatenate(weights, axis=1),
-                           elastic, bragg, zero, t, gapless, report)
+                           elastic, bragg, zero, t, gapless, report, limit)
 
 
 #: Ladder basis (S^+, S^-, S^z) from Cartesian components: S^mu = sum_a LADDER[mu, a] S^a.
