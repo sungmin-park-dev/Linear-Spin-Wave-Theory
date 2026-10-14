@@ -22,7 +22,8 @@ import numpy as np
 
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.lswt.run import LSWTError
-from spintoolkit.methods.nlswt.engine import NonlinearEnergies, NonlinearSpinWaves, bogoliubov_mesh
+from spintoolkit.methods.nlswt.engine import (NonlinearEnergies, NonlinearSpinWaves,
+                                              bogoliubov_mesh, hilbert_transform)
 from spintoolkit.methods.nlswt.expansion import expand_model
 from spintoolkit.methods.result import ResultHeader
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
@@ -152,6 +153,123 @@ class NLSWTResult:
         pairs = [self.solver.decay_rate(ki, grid) for ki in k]
         return {"lswt": np.array([p[0] for p in pairs]),
                 "decay_rate": np.array([p[1] for p in pairs])}
+
+    def spectral_function(self, k_points, omega, eta: float, mode: str = "on_shell",
+                          grid: Tuple[int, int] = (64, 64),
+                          levels: int = 400) -> Dict[str, np.ndarray]:
+        """Magnon spectral functions dressed by the order-S^0 self-energy (D58).
+
+        The self-energy of band n is ``dE_n(k) + Sigma_3^nn(k, w)``: the
+        Hartree-Fock + tadpole shift and the cubic self-energy, whose
+        frequency dependence comes from the two-magnon densities of
+        :meth:`NonlinearSpinWaves.cubic_spectral_densities` through an exact
+        Hilbert transform (no broadening inside the self-energy).
+
+        ``mode="on_shell"`` (default) is the strict expansion to relative order
+        1/S: a Lorentzian at ``E_n = w_n + dE_n + Re Sigma_3(w_n)`` with half
+        width ``Gamma_n + eta``, ``Gamma_n = -Im Sigma_3(w_n)`` (D57).
+        ``mode="dyson"`` resums the self-energy,
+        ``A_n(k, w) = -(1/pi) Im 1 / (w + i eta - w_n - dE_n - Sigma_3^nn(k, w))``,
+        which gives line shapes, weight moved into the continuum and the
+        pinning of a peak at a continuum edge, but is not controlled in 1/S:
+        where the corrections are large (S = 1/2) it can produce spurious poles.
+        Its ``negative_frequency_weight`` is the check: for a bosonic magnon
+        the weight below w = 0 is ``-sum |<m|b|0>|^2 <= 0``, and a positive
+        value means that the resummation has produced an unphysical pole.
+
+        Parameters
+        ----------
+        k_points : (m, 2) array_like
+            Cartesian momenta, away from zero modes.
+        omega : (nw,) array_like
+        eta : float
+            Instrumental Lorentzian half width, positive.
+        mode : "on_shell" or "dyson"
+        grid, levels :
+            Triangle grid of the zone and number of energies of the densities.
+
+        Returns
+        -------
+        dict
+            ``lswt``, ``hartree_fock_tadpole``, ``energy`` (on-shell 1/S energy)
+            and ``decay_rate``, each (m, Ns); ``spectral`` (m, Ns, nw); with
+            ``mode="dyson"`` also ``self_energy`` (m, Ns, nw) and
+            ``negative_frequency_weight`` (m, Ns), the integral of ``A`` below
+            zero over the given ``omega`` grid.
+
+        Notes
+        -----
+        The self-energy is band diagonal (off-diagonal elements change the
+        energies at higher order); within an exactly degenerate group of
+        bands the diagonal elements depend on the basis, and their mean (the
+        basis-independent trace) is used for every band of the group.
+        """
+        if eta <= 0:
+            raise ValueError("eta must be positive")
+        if mode not in ("on_shell", "dyson"):
+            raise ValueError("mode must be 'on_shell' or 'dyson'")
+        k = np.atleast_2d(np.asarray(k_points, dtype=float))
+        w = np.asarray(omega, dtype=float)
+        ns = self.solver.ns
+        E_all = np.zeros((len(k), ns))
+        static = np.zeros((len(k), ns))
+        on_shell = np.zeros((len(k), ns), dtype=complex)
+        sigma = np.zeros((len(k), ns, len(w)), dtype=complex)
+        for i, ki in enumerate(k):
+            E, x, rho_dec, rho_src = self.solver.cubic_spectral_densities(ki, grid, levels)
+            _, T = self.solver._bogoliubov(ki.reshape(1, 2))
+            dH = self.solver.static_hamiltonian(ki.reshape(1, 2))
+            static[i] = np.einsum("an,ab,bn->n", T[0].conj(), dH[0], T[0])[:ns].real
+            E_all[i] = E
+
+            def cubic(n, freq):
+                # -int rho_src(x) / (w + x + i0) is the conjugate of the transform at -w:
+                # real for w > 0, it carries the negative-frequency (anomalous) weight
+                return (hilbert_transform(x, rho_dec[n], freq)
+                        + np.conj(hilbert_transform(x, rho_src[n], -np.asarray(freq))))
+
+            for n in range(ns):
+                on_shell[i, n] = cubic(n, [E[n]])[0]
+                if mode == "dyson":
+                    sigma[i, n] = cubic(n, w)
+            for group in _degenerate_groups(E):
+                if len(group) > 1:
+                    static[i, group] = static[i, group].mean()
+                    on_shell[i, group] = on_shell[i, group].mean()
+                    sigma[i, group] = sigma[i, group].mean(axis=0)
+        energy = E_all + static + on_shell.real
+        rate = -on_shell.imag
+        out = {"lswt": E_all, "hartree_fock_tadpole": static, "energy": energy,
+               "decay_rate": rate}
+        if mode == "on_shell":
+            width = rate[:, :, None] + eta
+            out["spectral"] = width / np.pi / ((w[None, None, :] - energy[:, :, None]) ** 2
+                                               + width ** 2)
+            return out
+        denominator = (w[None, None, :] + 1j * eta - E_all[:, :, None] - static[:, :, None]
+                       - sigma)
+        spectral = -np.imag(1.0 / denominator) / np.pi
+        below = w < 0
+        weight = (np.trapz if hasattr(np, "trapz") else np.trapezoid)
+        out.update(spectral=spectral, self_energy=sigma,
+                   negative_frequency_weight=(weight(spectral[:, :, below], w[below], axis=-1)
+                                              if below.sum() > 1 else np.zeros((len(k), ns))))
+        return out
+
+def _degenerate_groups(energies: np.ndarray, tolerance: float = 1e-8):
+    """Index groups of equal energies (relative tolerance)."""
+    order = np.argsort(energies)
+    scale = max(float(np.max(np.abs(energies))), 1.0)
+    groups, current = [], [int(order[0])]
+    for a, b in zip(order[:-1], order[1:]):
+        if energies[b] - energies[a] <= tolerance * scale:
+            current.append(int(b))
+        else:
+            groups.append(current)
+            current = [int(b)]
+    groups.append(current)
+    return groups
+
 
 def _resolution(fractional: np.ndarray, limit: int = 4096) -> int:
     for n in range(1, limit + 1):
