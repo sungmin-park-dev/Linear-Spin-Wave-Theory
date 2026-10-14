@@ -1,0 +1,27 @@
+format: 1
+kind: literature
+progress: done
+result: solved
+short: Zheng-Hamer check
+title: Zheng–Hamer (1993) 원문으로 정사각 Z_c와 바닥 에너지를 대조한다
+topics:
+- beyond-linear-spin-waves
+- worked-examples
+date: '2026-10-10'
+from:
+- id: nlswt-expansion
+  type: use
+fields:
+  reading: Zheng and Hamer, PRB 47, 7961 (1993), TeX source cond-mat/9212020, Sec. III and IV; Oguchi 1960 and Hamer-Zheng-Arndt 1992 are not on arXiv.
+  gain: $Z_c=1+0.157947421/2S+\dots$ and $E_0/N=-2S^2-0.315894842S-\dots$, so $E/N=-2J(S+C/2)^2+O(1/S)$ with $C=0.1579474$, matching solve_nlswt ($\le7\times10^{-7}$); the numerical source in the concept note was changed from Oguchi to Zheng-Hamer.
+evidence:
+- kind: paper
+  ref: zhengSpinwave1993
+  text: Sec. III, IV
+  checks: []
+sources:
+- workbench/log/2026-10-10.md 22:20, 22:39
+- commit 5abe7ca
+- commit 89e83c1
+guesses:
+- Counted as a literature step because the same constant later fixes the Neel example in the boson-Hamiltonian note and the square-antiferromagnet example.

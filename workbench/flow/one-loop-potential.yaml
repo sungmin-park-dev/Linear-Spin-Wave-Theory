@@ -1,0 +1,30 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 1-loop potential
+title: 고전·양자 비교는 완화 경로 위 1-loop 유효 퍼텐셜의 최소로 한다 (D28)
+topics:
+- toolkit-development
+- beyond-linear-spin-waves
+date: '2026-09-30'
+from:
+- id: state-selection-q
+  type: origin
+fields:
+  statement: The selected state is the minimum of $\Gamma(\phi)=\min E_{\rm cl}|_\phi+E_{\rm zp}(\phi)$ along the relaxed path of the soft coordinate; on a flat classical orbit this is the D17 rule. The rigid orbit overestimated the classical pinning (by a factor 14 in one NBCP case).
+  condition: Order $S^0$, $T=0$, adiabatic separation of the soft coordinate (ratio recorded, warning above 0.1).
+evidence:
+- kind: calc
+  title: D28
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D28 review tables (NBCP Y, V)
+  checks: []
+- kind: paper
+  ref: rauPseudoGoldstone2018
+  text: pseudo-Goldstone gap
+  checks: []
+sources:
+- workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D28, d28-results)
+guesses:
+- The NBCP numbers were computed in this repo before the 2026-10-09 split; the NBCP analysis itself now lives in nbcp-spin-supersolid.

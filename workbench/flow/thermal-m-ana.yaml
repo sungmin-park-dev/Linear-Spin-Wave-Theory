@@ -1,0 +1,31 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: M = -dF/dh
+title: 유한 온도 자화 M(h,t) = −∂F/∂h와 그 분해식 (D49)
+topics:
+- spin-wave-observables
+- toolkit-development
+date: '2026-10-10'
+from:
+- id: thermal-m-q
+  type: origin
+fields:
+  goal: Implement and check $M(h,t)=-\partial F/\partial h$.
+  setup: Square lattice $S=1/2$; independent closed form for the general canted $H_2$; decomposition $M=(S-\langle n\rangle)\sin\theta-\partial_\theta F_{qm}/(8S\cos\theta)$.
+  result: Polarized phase equals the moment sum to $7\times10^{-10}$; Maxwell relation $8\times10^{-7}$; decomposition mesh-independent to $4\times10^{-11}$, package vs check $2\times10^{-12}$; low-$t$ $\Delta M=\zeta(3)ht^3/(8\pi c^4)$ ratio 1.000. Validity flags `beyond_lswt`, `gapless` added.
+evidence:
+- kind: calc
+  file: code-space/examples/verification/lswt_d49_thermal_magnetization_check.py
+  text: independent check
+  checks: []
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-thermodynamics/note.md
+  text: Magnetization at Nonzero Temperature
+  checks: []
+sources:
+- workbench/log/2026-10-10.md 18:34, 18:47, 20:47
+- commit 1582c1e
+- commit fba2d16
+- commit c4a46cf

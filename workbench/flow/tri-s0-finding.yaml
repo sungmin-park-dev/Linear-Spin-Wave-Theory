@@ -1,0 +1,27 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: Paper I3 value
+title: 0.2% 차이는 논문의 I₃ 수치에서 온다
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-13'
+from:
+- id: tri-s0-q
+  type: origin
+fields:
+  statement: Recomputing Eq. (39)-(42) gives $I_4=-0.2542933$ (as in the paper), $I_3=0.137830$ (paper 0.13785(1)) and $E^{(0)}=-0.00801256J$; the package converges to $-0.0080125394J$. The difference is the paper's $I_3$ (two standard errors), amplified to 0.2 % because two terms of size 0.27 nearly cancel.
+  condition: 1/3-shifted mesh where $k,q,-k-q$ lie on one mesh, converging as $N^{-3}$ ($N=96\to144$ changes $3\times10^{-9}$).
+evidence:
+- kind: calc
+  file: code-space/examples/verification/lswt_triangular_s0_energy_check.py
+  text: independent S^0 energy
+  checks: []
+- kind: paper
+  ref: chernyshevSpin2009
+  text: Eq. (39)-(42)
+  checks: []
+sources:
+- workbench/log/2026-10-13.md 23:59 (first entry)
+- commit d912b9f

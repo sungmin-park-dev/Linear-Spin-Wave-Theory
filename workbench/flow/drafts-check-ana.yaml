@@ -1,0 +1,28 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Recheck drafts
+title: 이론 초안 10개를 독립 유도로 다시 검산해 오류 14건을 고친다
+topics:
+- fundamental-theory-of-spin-wave-theory
+- spin-wave-observables
+date: '2026-10-01'
+from:
+- id: project-q
+  type: origin
+- id: bloch-convention
+  type: use
+fields:
+  goal: Check every equation of the ten LSWT theory drafts before the user review.
+  setup: A separate rederivation per document; cheap identities checked with random BdG matrices, two-mode Fock-space ED and numerical integrals.
+  result: 14 confirmed errors fixed, e.g. the conjugation relation of $C^{\alpha\beta}(q,t)$, the general retarded commutator for non-reciprocal magnons, the high-temperature limit of the $c_2$ weight, the trace-subtraction constant; doubtful items left open.
+evidence:
+- kind: analytic
+  title: physics review guide
+  file: GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+  text: table of fixed errors
+  checks: []
+sources:
+- GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+- commit 90cfee2

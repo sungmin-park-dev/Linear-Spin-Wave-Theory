@@ -1,0 +1,34 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: BdG blocks
+title: 보존 해밀토니안을 원형 성분으로 완성하고 BdG 블록을 명시한다
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-12'
+from:
+- id: pre-move-fixes
+  type: origin
+- id: onsite-rule-ana
+  type: use
+- id: zc-literature
+  type: use
+fields:
+  goal: Write the quadratic boson Hamiltonian and the BdG blocks $A_k,B_k$ explicitly.
+  setup: Circular components $\tilde J^{pq}=(e_I^p)^TJe_J^q$ (bilinear, no conjugation), the single-ion term, full-position gauge.
+  result: Explicit $A_k,B_k$ with same-sublattice bonds, $H_{k+G}=\Lambda_GH_k\Lambda_G^\dagger$, trace subtraction exact (real-space $H_2$ normal ordered); Neel $\Delta E_{zp}/N=-2JSC=-0.315895JS$. The note formulas implemented directly match the package to $10^{-14}$ on a random two-sublattice model.
+evidence:
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-boson-hamiltonian/note.md
+  text: Momentum-Space BdG Hamiltonian
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: checks 1-3
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 16:20
+- commit 71238be
+guesses:
+- Origin set to the pre-move fixes as the same review line ("local circular component and real-space H2" is the next bundle in TASK-QUEUE row 1).

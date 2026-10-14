@@ -1,0 +1,30 @@
+format: 1
+kind: analytic
+progress: done
+result: solved
+short: Hessian = BdG
+title: 고전 에너지의 2차 변분은 정확히 BdG 행렬이다
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-12'
+from:
+- id: boson-blocks-ana
+  type: use
+- id: spiral-frame-ana
+  type: use
+fields:
+  goal: Relate the local stability of a classical configuration to the BdG matrix.
+  setup: Classical HP coordinates $\alpha$; stationarity as torque $n_I\times H_I=0$ with the coherent single-ion value.
+  result: $\delta^2E_{\rm cl}[\alpha]=\tfrac12\sum\Psi^\dagger H_k\Psi$ exactly, stationary or not. Positive-definite $H_k$ means a strict local minimum, a negative direction a saddle where LSWT is undefined, a zero direction is undecided at harmonic order.
+evidence:
+- kind: analytic
+  file: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-classical-order/note.md
+  text: Local Stability and the BdG Matrix
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_bdg_blocks_check.py
+  text: check 4 (relative 2e-8)
+  checks: []
+sources:
+- workbench/log/2026-10-12.md 17:40
+- commit 94eaff3
