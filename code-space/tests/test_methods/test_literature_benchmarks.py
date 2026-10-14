@@ -272,3 +272,8 @@ def test_triangular_120_neutron_intensity_against_rotating_frame_closed_form():
     moment = result.ordered_moments()[0]
     assert bragg.elastic[0] == pytest.approx(moment ** 2 / 4, rel=1e-12)
     assert np.all(np.isnan(bragg.intensities))        # Goldstone modes at the Bragg vector
+    # At the nuclear Bragg vector the closed-form weights vanish as Q -> G; the
+    # package returns that direction-independent limit instead of NaN.
+    with pytest.warns(UserWarning, match="limit at 1 of them"):
+        nuclear = neutron_intensity(result, [[0.0, 4 * np.pi / np.sqrt(3), 0.0]])
+    np.testing.assert_allclose(nuclear.intensities, 0, atol=1e-10)

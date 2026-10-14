@@ -123,9 +123,16 @@ class StructureFactor:
         zero elsewhere (coefficient of ``N delta_{q,G}``).
     bragg : (nq,) bool array
     zero_mode : (nq,) bool array
-        ``H(q)`` has a zero mode at this q (inelastic weights diverge; NaN).
+        ``H(q)`` has a zero mode at this q. The inelastic weights there are
+        the limit ``q' -> q`` where that limit exists and is the same from
+        every direction (``limit``), and NaN otherwise (e.g. diverging
+        Goldstone weights at a magnetic Bragg vector).
     temperature : float
     gapless : bool or None
+    limit : (nq,) bool array or None
+        True where the weights at a zero-mode momentum are such a limit:
+        modes whose limiting energies coincide are merged, the weight of
+        the group sitting on its first mode and zero on the others.
     """
 
     q: np.ndarray
@@ -137,6 +144,7 @@ class StructureFactor:
     temperature: float
     gapless: Optional[bool] = None
     zero_modes: Dict[str, Any] = field(default_factory=dict)
+    limit: Optional[np.ndarray] = None
 
     def static(self) -> np.ndarray:
         """Inelastic equal-time ``S^{ab}(q) = sum_n W_n^{ab}(q)``, shape (nq, 3, 3)."""
@@ -222,6 +230,92 @@ def _moments(tensors: Optional[np.ndarray], i: int, moments: np.ndarray) -> np.n
     return moments if tensors is None else np.einsum("sab,sb->sa", tensors[i], moments)
 
 
+def _mode_weights(result, q, t, A, tensors):
+    """Signed energies, weights and the zero-mode flag at momenta ``q``."""
+    ns = result.num_sites
+    _, E, T, zero = _diagonalization_at(result, q)
+    A_q = _apply_moment_tensors(A, tensors, len(q))
+    amplitudes = np.einsum("qam,qmn->qan", A_q, T)              # (nq, 3, 2Ns)
+    energies = np.concatenate([E[:, :ns], -E[:, ns:]], axis=1)
+    factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
+    weights = (np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
+               * factors[:, :, None, None])
+    return energies, weights, zero
+
+
+def _groups(energies, tolerance):
+    """Labels of modes grouped by equal energy (within ``tolerance``), in energy order."""
+    order = np.argsort(energies)
+    labels = np.empty(len(energies), dtype=int)
+    labels[order] = np.cumsum(np.r_[0, np.diff(energies[order]) > tolerance])
+    return labels
+
+
+def _zero_mode_limit(result, q0, t, A, tensors):
+    """Weights at a zero-mode momentum ``q0`` as the limit ``q -> q0``, or None.
+
+    The weights are evaluated at ``q0 + delta u`` for ``ZERO_MODE_LIMIT_DIRECTIONS``
+    directions ``u`` and the radii ``delta, delta/2, delta/4``. Modes whose
+    limiting energies coincide are merged, because only their total weight
+    is defined at ``q0``. The limit exists when, in every direction, the
+    merged weights converge (the change shrinks when delta is halved; a
+    weight diverging like 1/delta doubles it) and the linearly extrapolated
+    energies and weights agree between the directions. Otherwise, and at
+    t > 0 where the Bose factor of a zero mode diverges, None is returned.
+
+    Returns
+    -------
+    (energies, weights) of shape (2Ns,) and (2Ns, 3, 3): each group's energy
+    on every member, its weight on the first member and zero on the others.
+    """
+    from spintoolkit.definitions.defaults import (ZERO_MODE_LIMIT_DIRECTIONS,
+                                                  ZERO_MODE_LIMIT_RADIUS,
+                                                  ZERO_MODE_LIMIT_TOLERANCE)
+
+    ns = result.num_sites
+    recip = 2 * np.pi * np.linalg.inv(np.asarray(result.magnetic_lattice)).T
+    delta = ZERO_MODE_LIMIT_RADIUS * np.min(np.linalg.norm(recip, axis=1))
+    angles = 2 * np.pi * np.arange(ZERO_MODE_LIMIT_DIRECTIONS) / ZERO_MODE_LIMIT_DIRECTIONS
+    units = np.column_stack([np.cos(angles), np.sin(angles)])
+    radii = delta / np.array([1.0, 2.0, 4.0])
+    points = (q0[None, None, :] + radii[None, :, None] * units[:, None, :]).reshape(-1, 2)
+    local = None if tensors is None else np.broadcast_to(tensors, (len(points),) + tensors.shape)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        energies, weights, zero = _mode_weights(result, points, t, A, local)
+    if np.any(zero) or not np.all(np.isfinite(weights)):
+        return None
+    energies = energies.reshape(len(units), 3, 2 * ns)
+    weights = weights.reshape(len(units), 3, 2 * ns, 3, 3)
+    E_tol = ZERO_MODE_LIMIT_TOLERANCE * max(1.0, float(np.max(np.abs(energies))))
+    E_out = np.empty(2 * ns)
+    W_out = np.zeros((2 * ns, 3, 3), dtype=complex)
+    for half in (np.arange(ns), np.arange(ns, 2 * ns)):         # particle, hole columns
+        E_lim = 2 * energies[:, 2, half] - energies[:, 1, half]  # (directions, ns)
+        labels = _groups(E_lim.mean(axis=0), E_tol)
+        if any(np.any(_groups(E_u, E_tol) != labels) or np.max(np.abs(E_u - E_lim.mean(axis=0))) > E_tol
+               for E_u in E_lim):
+            return None
+        groups = range(labels.max() + 1)
+        merged = np.array([[[weights[u, r, half][labels == g].sum(axis=0) for g in groups]
+                            for r in range(3)] for u in range(len(units))])
+        W1, W2, W4 = merged[:, 0], merged[:, 1], merged[:, 2]    # (directions, groups, 3, 3)
+        scale = max(1.0, float(np.max(np.abs(W4))))
+        step_1 = np.max(np.abs(W2 - W1), axis=(1, 2, 3))
+        step_2 = np.max(np.abs(W4 - W2), axis=(1, 2, 3))
+        if np.any(step_2 > 0.75 * step_1 + ZERO_MODE_LIMIT_TOLERANCE * scale):
+            return None
+        W_lim = 2 * W4 - W2
+        if np.max(np.abs(W_lim - W_lim.mean(axis=0))) > ZERO_MODE_LIMIT_TOLERANCE * scale:
+            return None
+        E_mean, W_mean = E_lim.mean(axis=0), W_lim.mean(axis=0)
+        for g in groups:
+            members = half[labels == g]
+            E_out[members] = E_mean[labels == g].mean()
+            W_out[members[0]] = W_mean[g]
+    return E_out, W_out
+
+
 def structure_factor(result, q_points, temperature: float = 0.0,
                      zero_modes: Optional[ZeroModeReport] = None,
                      gapless: Optional[bool] = None,
@@ -253,19 +347,23 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     gapless, report = _zero_mode_decision(result, t, zero_modes, gapless)
     ns = result.num_sites
     A = _deviation_vectors(result)
-    _, E, T, zero = _diagonalization_at(result, q)
-    if np.any(zero):
-        warnings.warn(f"H(q) has a zero mode at {int(zero.sum())} of {len(q)} momenta "
-                      "(e.g. Goldstone modes at Bragg vectors): inelastic weights there are NaN; "
-                      "the elastic part is computed", UserWarning, stacklevel=2)
     # H(k) is in the full-position gauge (D13): psi(q) already carries exp(-i q . tau_i),
     # so no further sublattice phase is applied.
-    A_q = _apply_moment_tensors(A, _check_tensors(moment_tensors, len(q), ns), len(q))
-    amplitudes = np.einsum("qam,qmn->qan", A_q, T)              # (nq, 3, 2Ns)
-    energies = np.concatenate([E[:, :ns], -E[:, ns:]], axis=1)
-    factors = np.concatenate([1.0 + _bose(E[:, :ns], t), _bose(E[:, ns:], t)], axis=1)
-    weights = (np.einsum("qan,qbn->qnab", amplitudes, amplitudes.conj())
-               * factors[:, :, None, None])
+    tensors = _check_tensors(moment_tensors, len(q), ns)
+    energies, weights, zero = _mode_weights(result, q, t, A, tensors)
+    limit = np.zeros(len(q), dtype=bool)
+    for i in np.flatnonzero(zero):
+        found = _zero_mode_limit(result, q[i], t, A, None if tensors is None else tensors[i])
+        if found is not None:
+            energies[i], weights[i] = found
+            limit[i] = True
+    undefined = zero & ~limit
+    if np.any(zero):
+        warnings.warn(f"H(q) has a zero mode at {int(zero.sum())} of {len(q)} momenta "
+                      f"(e.g. Goldstone modes at Bragg vectors): the inelastic weights are the "
+                      f"direction-independent limit at {int(limit.sum())} of them and NaN at "
+                      f"{int(undefined.sum())}; the elastic part is computed",
+                      UserWarning, stacklevel=2)
 
     moments = (result.spins - result.boson_numbers)[:, None] * result.directions
     fractional = q @ np.asarray(result.magnetic_lattice).T / (2 * np.pi)
@@ -274,7 +372,7 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     for i in np.flatnonzero(bragg):
         F = np.exp(-1j * result.positions @ q[i]) @ _moments(moment_tensors, i, moments)
         elastic[i] = np.outer(F, F.conj()) / ns ** 2
-    return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report)
+    return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report, limit)
 
 
 def _check_tensors(tensors, nq, ns):
