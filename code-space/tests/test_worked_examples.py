@@ -86,6 +86,7 @@ def test_honeycomb_topological_ferromagnet():
     assert v["gap_K"] == pytest.approx(v["gap_K_closed"], abs=1e-10)
     assert v["chern"][0.1] == [1.0, -1.0]
     assert v["chern"][-0.1] == [-1.0, 1.0]
+    assert v["dirac_count"] == {0.1: 1.0, -0.1: -1.0}                # eq. (6): C_- = sgn D
     text = note("honeycomb-topological-ferromagnet")
     assert_quoted(text, *(f"{e:.4f}" for e in v["bands_K"]), f"{v['gap_K']:.4f}",
                   f"{v['top_gamma']:.4f}", "$(C_-,C_+)=(+1,-1)$")
