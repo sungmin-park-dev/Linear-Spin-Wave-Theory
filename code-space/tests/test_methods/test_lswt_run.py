@@ -194,8 +194,7 @@ def test_explicit_k_points_not_closed_under_inversion_give_nan_vacuum():
     assert closed.zero_point_energy == pytest.approx(mesh.zero_point_energy, abs=1e-14)
     np.testing.assert_allclose(closed.boson_numbers, mesh.boson_numbers, atol=1e-14)
     half = np.array([[0.3, 0.1], [0.7, -0.2]])
-    with pytest.warns(UserWarning, match="not closed under"):
-        open_set = solve_lswt(model, state, settings=LSWTSettings(k_points=half))
+    open_set = solve_lswt(model, state, settings=LSWTSettings(k_points=half))
     assert not open_set.header.diagnostics["inversion_closed"]
     assert np.isnan(open_set.zero_point_energy) and np.isnan(open_set.boson_numbers).all()
     assert np.all(np.isfinite(open_set.bands()))

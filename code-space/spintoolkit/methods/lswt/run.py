@@ -400,11 +400,9 @@ def solve_lswt(model: SpinModel, state: SpinState,
         "num_k": len(k)}
     if settings.k_points is not None:
         diagnostics["inversion_closed"] = _closed_under_inversion(k, state.magnetic_lattice(model))
-        if not diagnostics["inversion_closed"] and diagnostics["stationary"]:
-            warnings.warn("explicit k_points are not closed under k -> -k (modulo the magnetic "
-                          "reciprocal lattice): the zero-point energy and the boson numbers "
-                          "relabel -k as k and are NaN; the bands are unaffected",
-                          UserWarning, stacklevel=2)
+        if not diagnostics["inversion_closed"]:
+            # Band paths are the usual open sets: only the vacuum quantities are
+            # undefined there, so no warning (diagnostics["inversion_closed"]).
             zero_point = float("nan")
             boson_numbers = np.full(len(boson_numbers), np.nan)
     if not diagnostics["stationary"]:
