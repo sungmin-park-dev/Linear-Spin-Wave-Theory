@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from math import gcd
+import warnings
 from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
@@ -81,29 +82,36 @@ class NLSWTResult:
         Momenta of all loop sums.
     solver : NonlinearSpinWaves
         The perturbation theory, for magnon energies at other momenta.
+    lattice : (2, 2) array
+        Primitive lattice of the model (rows), for named momentum paths.
     """
 
     header: ResultHeader
     energies: NonlinearEnergies
     k_points: np.ndarray
     solver: NonlinearSpinWaves = field(repr=False, compare=False)
+    lattice: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
 
     @property
     def ground_state_energy(self) -> float:
         """``E_cl + E_zp + E_(S^0)`` per site."""
         return self.energies.total
 
-    def magnon_energies(self, k_points, broadening: float = 0.0) -> Dict[str, np.ndarray]:
+    def magnon_energies(self, k_points, eta: float = 0.0, *,
+                        broadening: Optional[float] = None) -> Dict[str, np.ndarray]:
         """Magnon energies through order S^0 (on-shell 1/S correction).
 
         Parameters
         ----------
         k_points : (m, 2) array_like
             Cartesian momenta.
-        broadening : float
-            ``eta`` in ``Sigma_3(k, w + i eta)``; zero is exact on a finite
+        eta : float
+            Broadening in ``Sigma_3(k, w + i eta)``; zero is exact on a finite
             torus, a small positive value regularizes the principal value where
             ``w`` crosses the two-magnon continuum on a mesh.
+        broadening : float, optional
+            Deprecated name of ``eta`` (the name used by the other spectral
+            functions); removed in 0.3.
 
         Returns
         -------
@@ -113,7 +121,11 @@ class NLSWTResult:
             ``decay_rate`` = -Im cubic (meaningful with a broadening; the
             quasiparticle half width at order S^0).
         """
-        lswt, static, cubic = self.solver.magnon_energies(k_points, broadening)
+        if broadening is not None:
+            warnings.warn("magnon_energies(broadening=) is deprecated; use eta=", DeprecationWarning,
+                          stacklevel=2)
+            eta = broadening
+        lswt, static, cubic = self.solver.magnon_energies(k_points, eta)
         return {"lswt": lswt, "hartree_fock_tadpole": static, "cubic": cubic,
                 "total": lswt + static + cubic.real, "decay_rate": -cubic.imag}
 
@@ -346,4 +358,4 @@ def solve_nlswt(model: SpinModel, state: SpinState,
     header = ResultHeader.build(
         "nlswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0)", diagnostics)
-    return NLSWTResult(header, energies, k, solver)
+    return NLSWTResult(header, energies, k, solver, np.asarray(model.lattice, dtype=float))

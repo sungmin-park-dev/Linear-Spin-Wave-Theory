@@ -235,7 +235,40 @@ The strict expansion to relative order $1/S$ is the on-shell form: a Lorentzian 
 
 The self-energy is used band diagonal: the off-diagonal elements change the energies only at higher order. Within an exactly degenerate group of bands the diagonal elements depend on the basis, and the mean over the group, which is the basis-independent trace, is used for each band.
 
-The dynamical structure factor assembled from these pieces is $\sum_nW_{n\mathbf q}A_{n\mathbf q}(\omega)+S_2(\mathbf q,\omega)$, with the LSWT one-magnon weights $W$ and the non-interacting longitudinal continuum $S_2$ of Two-Magnon Continuum in research note *LSWT spin correlations*. It is not the complete order-$S^0$ structure factor: the $1/S$ corrections of the one-magnon weights and, in noncollinear states, the interference between one- and two-magnon terms mixed by $\hat H_3$ are of the same order and are not included.
+The dynamical structure factor assembled from these pieces is $\sum_nW_{n\mathbf q}A_{n\mathbf q}(\omega)+S_2(\mathbf q,\omega)$, with the LSWT one-magnon weights $W$ and the non-interacting longitudinal continuum $S_2$ of Two-Magnon Continuum in research note *LSWT spin correlations*. It is not the complete order-$S^0$ structure factor: the $1/S$ corrections of the one-magnon weights and, in noncollinear states, the interference between one- and two-magnon terms mixed by $\hat H_3$ are of the same order and are not included. The next section adds them.
+
+## Dynamical Structure Factor Through Order $S^0$
+
+The zero-temperature structure factor $S^{ab}(\mathbf q,\omega)=\sum_f\langle0|S^a_{\mathbf q}|f\rangle\langle f|S^{b\dagger}_{\mathbf q}|0\rangle\,\delta(\omega-E_f)$, with the per-site Fourier convention of research note *LSWT spin correlations*, has an order-$S$ part, the LSWT one-magnon weights, and an order-$S^0$ part. To obtain the order-$S^0$ part, the spin operator is expanded with the same Holstein–Primakoff truncation as the Hamiltonian and about the same condensate $\boldsymbol\alpha$ of Eq. (5):
+
+<!-- eq 13: eq-nlswt-spin-operator -->
+
+$$
+S^a_{\mathbf q}=\langle S^a\rangle\,\delta_{\mathbf q,\mathbf G}+\sum_\mu\big(\mathsf A+\delta\mathsf A\big)_{a\mu}\,\psi_{\mu\mathbf q}+L^a_{\mathbf q}+\dots,
+\qquad
+L^a_{\mathbf q}=-\frac{1}{\sqrt N}\sum_i n^a_i\,a_i^\dagger a_i\,e^{-\mathrm i\mathbf q\cdot\mathbf r_i}. \tag{13}
+$$
+
+Here $\mathsf A\psi$ is the LSWT one-magnon operator, of order $S^{1/2}$, and $L^a$ is the longitudinal two-magnon operator of order $S^0$. The correction $\delta\mathsf A$ is of order $S^{-1/2}$ and has two sources. The cubic term $-a^\dagger aa/(4S)$ of $s^+$ contributes its Hartree–Fock contraction $-(2\langle a^\dagger a\rangle a+\langle aa\rangle a^\dagger)/(4S)$, which reduces the transverse amplitude. The condensate in $-n^a a^\dagger a$ contributes the linear term $-n^a(\alpha^*a+\alpha a^\dagger)$, which is the $1/S$ rotation of the ordered moment seen by the transverse fluctuation.
+
+With $\mathsf a=\mathsf A\mathsf T_{\mathbf q}$, $\delta\mathsf a=\delta\mathsf A\mathsf T_{\mathbf q}$ and $g_\mu(z)=1/(z-\varepsilon_\mu)$ for particle columns and $-1/(z+\varepsilon_\mu)$ for hole columns, the retarded function $\chi^{ab}(z)=\langle\langle S^a_{\mathbf q};S^{b\dagger}_{\mathbf q}\rangle\rangle_z$ through order $S^0$ is
+
+<!-- eq 14: eq-nlswt-chi-s0 -->
+
+$$
+\chi=\mathsf a\,g\,\mathsf a^\dagger+\delta\mathsf a\,g\,\mathsf a^\dagger+\mathsf a\,g\,\delta\mathsf a^\dagger+\mathsf a\,g\,\mathsf M(z)\,g\,\mathsf a^\dagger+\mathsf a\,g\,\mathsf T^\dagger\sigma_3\mathsf K(z)+\widetilde{\mathsf K}(z)\sigma_3\mathsf T\,g\,\mathsf a^\dagger+\chi_{LL}(z), \tag{14}
+$$
+
+with $\mathsf M=\mathsf T^\dagger(\delta\mathsf H+\sigma_3\Pi\sigma_3)\mathsf T$, the static and cubic self-energies of Eqs. (8) and (9) in their full Nambu form. The functions $\Pi$, $\mathsf K=\langle\langle j;L^\dagger\rangle\rangle$, $\widetilde{\mathsf K}=\langle\langle L;j^\dagger\rangle\rangle$ and $\chi_{LL}$ are the blocks of one free two-magnon bubble of the operators $(j,L)$, $j=[\psi,\hat H_3]$. The mixed terms follow from the equation of motion $\langle\langle\psi;L^\dagger\rangle\rangle=G_0\sigma_3\langle\langle j;L^\dagger\rangle\rangle$. Read as a sum over final states, Eq. (14) gives two kinds of weight.
+
+- **One magnon.** For a band, or an exactly degenerate group $g$ of bands, at energy $\varepsilon$, the pole moves to $\varepsilon+d_j$, where $d_j$ are the eigenvalues of $\mathsf M_{gg}(\varepsilon)$ with projectors $P_j$. Its residue is $\mathsf a_gP_j\mathsf a_g^\dagger$ plus the order-$S^0$ terms $\tfrac12\mathsf a_g\{P_j,\mathsf M'_{gg}\}\mathsf a_g^\dagger$ (the quasiparticle residue), $\delta\mathsf a_gP_j\mathsf a_g^\dagger+\text{h.c.}$ (the operator corrections), $\mathsf a_gP_j\sum_{\nu\notin g}\mathsf M_{g\nu}g_\nu(\varepsilon)\mathsf a_\nu^\dagger+\text{h.c.}$ (the rotation of the eigenvector by the interband and anomalous self-energy) and $\mathsf a_gP_j(\mathsf T^\dagger\sigma_3\mathsf K)_g+\text{h.c.}$ (the interference with the two-magnon operator).
+- **Two magnons.** A pair $P$ has weight $\tfrac12|c_L(P)+\mathsf a\,g(E_P)\,\mathsf T^\dagger\sigma_3X(P)|^2$, where $c_L$ is the longitudinal amplitude of the non-interacting continuum and the second term is the transverse operator acting through a virtual magnon and the cubic vertex. The cross term is the one-/two-magnon interference, and the square of the second term is the off-shell tail of the magnon in the continuum.
+
+On a finite torus whose momenta are all gapped, these weights are exact Rayleigh–Schrödinger perturbation theory in $1/S$. In the thermodynamic limit the bubble is the Cauchy transform of matrix two-magnon densities sampled by the triangle integration of Eq. (11), and the second term above is resonant where a magnon lies inside the continuum. The package therefore separates the poles from the rest. It subtracts from the strict expression its pole parts at each $\varepsilon$, which leaves a finite remainder, and evaluates that remainder at zero broadening and positive frequency, where only two-magnon states contribute. It then adds each pole resummed, $R_j/(z-\varepsilon-d_j)$. For a magnon in the continuum, $d_j$ has the imaginary part $-\Gamma$ of Eq. (11) and $R_j$ becomes complex; its imaginary part makes the line asymmetric (a Fano profile). Everywhere else the result is the strict order-$S^0$ spectrum.
+
+The residue of a decaying magnon needs one more choice. Inside the continuum $\mathsf M'(\varepsilon+i0)$ follows the van Hove structure of the two-magnon density, which is sharper than the line itself, so the strict residue changes by up to $20\%$ between triangle grids and does not converge. The line averages the self-energy over its width, so the package evaluates the derivative, the off-diagonal self-energy and $\mathsf K$ at $\varepsilon+i\Gamma$ for the reported weight and for the one-magnon line, and keeps $\mathsf M_{gg}(\varepsilon+i0)$ for the position and width. The two choices differ by terms of order $\Gamma\,\partial^2\Pi$, beyond the accuracy of a $1/S$ calculation. The total spectrum is still the strict expression, and the continuum is reported as the total minus the line, so the split between line and continuum within a few $\Gamma$ of a decaying magnon is a convention. The continuum in that window also depends on the grid at the level of a few percent of the line weight, and is resolved only as far as the grid resolves the van Hove structure.
+
+The truncation sets the scope. The pair energies are the LSWT ones, so two-magnon interactions and bound states are of higher order. Only zero temperature is treated. Where the order-$S^0$ weight becomes comparable to the LSWT weight, for example at $S=1/2$ near a decay threshold, the expansion is not controlled, and a negative residue or a negative spectrum beyond the broadening signals it. The complex residue of a decaying magnon also leaves a slowly decaying dispersive tail at frequencies far from the peak, an artifact of evaluating the self-energy on shell.
 
 ## Momentum Meshes
 
@@ -259,6 +292,8 @@ The script `code-space/examples/verification/lswt_nonlinear_vertices_check.py` c
 
 7. **Spectral function.** The Hilbert transform reproduces the semicircle result $2(\omega-\sqrt{\omega^2-1})$ within $2\times10^{-3}$, and the on-shell rate equals Eq. (11) within $1\%$, the interpolation error of the sampled density. For a triangular band at the continuum edge, $\operatorname{Re}\Pi^{(3)}$ is $-1.6564$, $-1.6492$ and $-1.6528$ on triangle grids $48$, $96$ and $160$, while the mesh sum of Eq. (9) gives $-1.597$, $-1.633$, $-1.639$ and $-1.661$ on meshes $12$ to $48$: the mesh sum converges slowly toward the triangle value because the integrand is singular at the edge (package tests in `test_magnon_spectral.py`).
 
+8. **Structure factor through order $S^0$.** For the two-spin cluster of check 5, the order-$S^0$ weights of both one-magnon states agree with the $1/S$ expansion of exact diagonalization at $S=10,\dots,31$ within $3\times10^{-4}$ (the corrections themselves are $0.04$ to $0.11$). The weights of all three two-magnon states agree within $10^{-4}$, at $\mathbf q=0$ and at a reciprocal vector, where the sublattice phases differ. For the Néel state, the zone average of the order-$S^0$ one-magnon correction equals $-\delta^2-\langle(a^\dagger a)^2\rangle_c$, with $\delta=\langle a^\dagger a\rangle$, to $10^{-12}$. This is the sum rule $\sum_a\langle S^aS^a\rangle=S(S+1)$ at order $S^0$, because the Hartree–Fock terms only rescale $\mathsf H(\mathbf k)$ and $\delta$ has no $1/S$ correction. The ferromagnet has no correction. The Néel continuum integrates to the non-interacting longitudinal continuum within $3\%$. For the canted square-lattice antiferromagnet at $h=0.5\,h_c$, where nothing decays at the momentum used, the thermodynamic-limit weights and continuum agree with the mesh sums within $2\%$. For the triangular $120^\circ$ state at $S=5$, the pole energies and widths equal those of Eq. (12) on shell, and the one-magnon weights fall by $10$ to $15\%$ at $\mathbf q=(1.3,0.4)$. There the width-averaged weight of the decaying band at $\varepsilon=11.75$ ($\Gamma\approx0.078$) stays between $0.886$ and $0.908$ of the LSWT weight on grids from $48\times48$ to $96\times96$, while the strict residue at $\varepsilon+i0$ ranges from $0.79$ to $0.90$; the integrated total spectrum between $10.5$ and $13$ changes by $3\%$ over the same grids (package tests in `test_structure_factor_s0.py`).
+
 ## References
 
 ### Internal Documents
@@ -275,7 +310,7 @@ The script `code-space/examples/verification/lswt_nonlinear_vertices_check.py` c
 
 - `code-space/examples/verification/lswt_nonlinear_vertices_check.py`: checks 1 and 2.
 
-- Decision records D46 (nonlinear spin-wave expansion), D47 (next order of the pseudo-Goldstone gap), D57 (decay rate without broadening) and D58 (spectral function) in research note *Toolkit decisions and references*.
+- Decision records D46 (nonlinear spin-wave expansion), D47 (next order of the pseudo-Goldstone gap), D57 (decay rate without broadening), D58 (spectral function) and D59 (structure factor through order $S^0$) in research note *Toolkit decisions and references*.
 
 ### External Sources
 

@@ -1,4 +1,4 @@
-"""Longitudinal two-magnon continuum of the spin structure factor (O(S^0), D56).
+"""Longitudinal two-magnon continuum of the spin structure factor (O(S^0), D56, D60).
 
 In the local frame of site ``i`` (axes ``x_i, y_i, n_i``) the Holstein-Primakoff
 spin component along the ordered moment is exactly ``S_i - a_i^dagger a_i``,
@@ -33,9 +33,29 @@ Order and scope: the one-magnon weights are O(S); this continuum is O(S^0).
 The same order also contains the 1/S renormalization of the one-magnon
 energies and weights by the magnon interactions (and their decay into the
 continuum in noncollinear states), which is *not* included: the result is
-the non-interacting two-magnon continuum. Only zero temperature is
-implemented (at t > 0 the thermal scattering terms ``b^dagger b`` also
-contribute); a lab-frame (commensurate) result is required.
+the non-interacting two-magnon continuum. A lab-frame (commensurate) result
+is required.
+
+Finite temperature (D60): with all ``2 N_s`` columns,
+``L^b(q)^dagger = sum_k sum_{mu nu} C^b_{mu nu}(k) phi_mu(-k-q) phi_nu(k)``,
+where ``phi_mu`` (``mu < N_s``) annihilates a magnon of energy ``E_mu`` and
+``phi_{Ns+n}`` creates one. For free bosons in thermal equilibrium Wick's
+theorem gives the connected correlation
+
+    S_2^{ab}(q, w) = 1/2 sum_k sum_{mu nu} A^a_{mu nu}(k)^* A^b_{mu nu}(k)
+                     f_mu f_nu delta(w - e_mu - e_nu),
+
+with ``e = +E, f = 1 + n_B(E)`` for a creation operator and
+``e = -E, f = n_B(E)`` for an annihilation operator: pair creation at
+``w1 + w2`` with ``(1 + n1)(1 + n2)``, thermal scattering of a magnon
+(``b^dagger b``, the Landau-type term near ``w = 0``) at ``+-(w1 - w2)``
+with ``(1 + n1) n2``, and pair annihilation at ``-w1 - w2`` with
+``n1 n2``. Detailed balance ``S(-q, -w) = exp(-w / t) S(q, w)`` holds term
+by term. The classical state is fixed and magnons do not interact, so
+this is the low-temperature limit at this order; the static (equal-time)
+sum is the connected thermal ``<L L^dagger>``. The elastic disconnected
+part ``<L>`` (the thermal reduction of the ordered moment at Bragg
+vectors) is not included.
 """
 
 from __future__ import annotations
@@ -58,10 +78,13 @@ class TwoMagnonContinuum:
     q : (nq, 2) array
         Cartesian momenta.
     energies : (nq, M) array
-        Pair energies ``w_n(k + q) + w_{n'}(-k)`` over the mesh and the band pairs.
+        Pair energies ``w_n(k + q) + w_{n'}(-k)`` over the mesh and the band
+        pairs; at ``t > 0`` the energy transfer ``e_mu + e_nu`` of every
+        operator pair (creation, scattering, annihilation; may be negative).
     weights : (nq, M, 3, 3) complex array
-        ``1/2 A^a* A^b`` per pair, per site, so that ``weights.sum(axis=1)``
-        is the equal-time connected longitudinal correlation.
+        ``1/2 A^a* A^b`` per pair (times the thermal factors at ``t > 0``),
+        per site, so that ``weights.sum(axis=1)`` is the equal-time
+        connected longitudinal correlation.
     mesh : (nk, 2) array
         Cartesian momenta ``k`` of the internal sum.
     excluded : (nq,) int array
@@ -118,9 +141,18 @@ def _mesh(result, mesh) -> np.ndarray:
     return p @ reciprocal
 
 
+def _occupations(E: np.ndarray, temperature: float) -> np.ndarray:
+    """Bose factor ``1 / (exp(E / t) - 1)``; zero at ``t = 0``."""
+    if temperature == 0.0:
+        return np.zeros_like(E)
+    with np.errstate(over="ignore", divide="ignore", invalid="ignore"):
+        return 1.0 / np.expm1(E / temperature)
+
+
 def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
-                         temperature: float = 0.0) -> TwoMagnonContinuum:
-    """Non-interacting longitudinal two-magnon continuum at momenta ``q_points`` (D56).
+                         temperature: float = 0.0, zero_modes=None,
+                         gapless: Optional[bool] = None) -> TwoMagnonContinuum:
+    """Non-interacting longitudinal two-magnon continuum at momenta ``q_points`` (D56, D60).
 
     Parameters
     ----------
@@ -132,11 +164,28 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
         Half-step shifted mesh of the magnetic zone for the internal momentum
         ``k`` (the shift avoids the zone centre).
     temperature : float
-        Only 0 is implemented.
+        ``t = k_B T`` in the energy unit of the model (as in
+        :func:`~spintoolkit.observables.thermal.thermal_quantities`).
+    zero_modes : ZeroModeReport, optional
+        Scan of :func:`~spintoolkit.observables.zero_modes.scan_zero_modes`;
+        computed when needed and not given (``t > 0`` only).
+    gapless : bool, optional
+        Overrides the scan, as in ``thermal_quantities`` (D25).
 
     Returns
     -------
     TwoMagnonContinuum
+        At ``t = 0`` the pair-creation states only (D56). At ``t > 0`` every
+        pair of quasiparticle operators: creation of two magnons at
+        ``w1 + w2`` with weight ``(1 + n1)(1 + n2)``, scattering at
+        ``w1 - w2`` with ``(1 + n1) n2`` and annihilation at ``-w1 - w2``
+        with ``n1 n2`` (module docstring). If the spectrum is gapless the
+        weights at ``t > 0`` are NaN.
+
+    Raises
+    ------
+    ZeroModeCandidateError
+        At ``t > 0`` if the scan finds candidates and ``gapless`` is None.
 
     Notes
     -----
@@ -144,56 +193,93 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     the interaction corrections of the same order. Mesh points where ``k`` or
     ``-k - q`` has a zero mode (e.g. a Goldstone mode at a Bragg vector) are
     left out and counted in ``excluded``; their measure vanishes as the mesh
-    is refined, and the weights stay integrable there.
+    is refined, and the weights stay integrable there at ``t = 0``. At
+    ``t > 0`` a zero mode makes the thermal weights diverge logarithmically
+    with the mesh in two dimensions (the scattering weight near a zero mode
+    goes as ``n |A|^2``), the same Mermin-Wagner divergence as the boson
+    numbers of :func:`~spintoolkit.observables.thermal.thermal_quantities`;
+    the continuum is then not defined and is reported as NaN.
     """
     from spintoolkit.methods.lswt.run import require_lab_frame
 
     require_lab_frame(result, "two_magnon_continuum")
-    if float(temperature) != 0.0:
-        raise NotImplementedError("the two-magnon continuum is implemented at zero temperature "
-                                  "only; at t > 0 thermal b^dagger b scattering terms contribute")
+    t = float(temperature)
+    if t < 0:
+        raise ValueError("temperature must be non-negative")
+    settings: Dict[str, Any] = {"mesh": [int(m) for m in mesh], "temperature": t}
+    undefined = False
+    if t > 0:
+        from spintoolkit.observables.thermal import ZeroModeCandidateError
+        from spintoolkit.observables.zero_modes import scan_zero_modes
+
+        report = zero_modes if zero_modes is not None else scan_zero_modes(result)
+        if gapless is None:
+            if report.has_candidates:
+                raise ZeroModeCandidateError(report)
+            undefined, decision = report.has_zero, "scan"
+        else:
+            undefined, decision = bool(gapless), "user"
+        settings.update(gapless=undefined, gapless_decision=decision)
+        if undefined:
+            warnings.warn("gapless spectrum: the two-magnon continuum at t > 0 diverges with "
+                          "the mesh in two dimensions and is reported as NaN", UserWarning,
+                          stacklevel=2)
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     ns = result.num_sites
     n = np.asarray(result.directions, dtype=float)                 # (Ns, 3) ordered axes
     k = _mesh(result, mesh)
     nk = len(k)
+    # operators phi_mu(p): mu < Ns annihilates (energy change -E), mu >= Ns creates (+E)
+    cols = slice(ns, 2 * ns) if t == 0 else slice(0, 2 * ns)
+    sign = np.r_[-np.ones(ns), np.ones(ns)][cols]
+    m = len(sign)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         _, Ek, Tk, zk = _diagonalization_at(result, k)
-    energies = np.full((len(q), nk * ns * ns), np.nan)
-    weights = np.zeros((len(q), nk * ns * ns, 3, 3), dtype=complex)
+    energies = np.full((len(q), nk * m * m), np.nan)
+    weights = np.zeros((len(q), nk * m * m, 3, 3), dtype=complex)
     excluded = np.zeros(len(q), dtype=int)
     norm = 1.0 / np.sqrt(nk * ns)
+
+    def factors(E):
+        """Energy change and <phi^+ phi> of each operator: (1 + n) to create, n to annihilate."""
+        nb = _occupations(E[:, cols], t)
+        return sign * E[:, cols], np.where(sign > 0, 1.0 + nb, nb)
+
     for iq, qi in enumerate(q):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             _, Em, Tm, zm = _diagonalization_at(result, -k - qi)     # at -k - q
 
         def amplitude(T_first, T_second):
-            """C^a_{n n'} = -norm sum_i n_i^a T_first[Ns+i, Ns+n] T_second[i, Ns+n']."""
+            """C^a_{mu nu} = -norm sum_i n_i^a T_first[Ns+i, mu] T_second[i, nu]."""
             return -norm * np.einsum("ia,kin,kim->kanm", n,
-                                     T_first[:, ns:, ns:], T_second[:, :ns, ns:])
+                                     T_first[:, ns:, cols], T_second[:, :ns, cols])
 
-        # phi_{Ns+n}(-k-q) = b_n^dagger(k+q) and phi_{Ns+n'}(k) = b_n'^dagger(-k); the
-        # energy of each is the hole-column eigenvalue at that momentum.
+        # L^b(q)^+ = sum_k C(k) phi(-k-q) phi(k); the pair (phi_mu(-k-q), phi_nu(k)) also
+        # appears at -k-q with the operators swapped, hence the symmetrized amplitude.
         C = amplitude(Tm, Tk)                       # C(k)
         C_swap = amplitude(Tk, Tm)                  # C(-k-q)
-        A = C + np.swapaxes(C_swap, 2, 3)           # (nk, 3, n, n')
+        A = C + np.swapaxes(C_swap, 2, 3)           # (nk, 3, mu, nu)
         W = 0.5 * np.einsum("kanm,kbnm->knmab", A.conj(), A)
-        pair = Em[:, ns:][:, :, None] + Ek[:, ns:][:, None, :]
+        em, fm = factors(Em)
+        ek, fk = factors(Ek)
+        W = W * (fm[:, :, None] * fk[:, None, :])[..., None, None]
+        pair = em[:, :, None] + ek[:, None, :]
         bad = zk | zm | ~np.all(np.isfinite(W.reshape(nk, -1)), axis=1)
         W[bad] = 0.0
         pair = np.where(bad[:, None, None], np.nan, pair)
         excluded[iq] = int(np.sum(bad))
         energies[iq] = pair.reshape(-1)
-        weights[iq] = W.reshape(nk * ns * ns, 3, 3)
+        weights[iq] = W.reshape(nk * m * m, 3, 3)
     if np.any(excluded):
         warnings.warn(f"{int(excluded.sum())} mesh points with a zero mode at k or -k - q "
                       f"were left out of the two-magnon sum", UserWarning, stacklevel=2)
     weights = np.where(np.isnan(energies)[:, :, None, None], 0.0, weights)
     energies = np.where(np.isnan(energies), 0.0, energies)
-    return TwoMagnonContinuum(q, energies, weights, k, excluded,
-                              {"mesh": [int(m) for m in mesh], "temperature": 0.0})
+    if undefined:
+        weights = np.full(weights.shape, np.nan + 0j)
+    return TwoMagnonContinuum(q, energies, weights, k, excluded, settings)
 
 
 def two_magnon_threshold(result, k_points, grid: Sequence[int] = (48, 48)) -> np.ndarray:

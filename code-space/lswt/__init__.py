@@ -80,7 +80,10 @@ def _register(name, module):
     full = __name__ + '.' + name
     sys.modules[full] = module
     parent, _, child = full.rpartition('.')
-    setattr(sys.modules[parent], child, module)
+    # A shared package may already bind the name to a function of the same name
+    # (spintoolkit.observables.structure_factor); keep that binding.
+    if not hasattr(sys.modules[parent], child):
+        setattr(sys.modules[parent], child, module)
 
 
 def _install():

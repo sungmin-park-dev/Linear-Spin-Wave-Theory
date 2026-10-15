@@ -3,7 +3,10 @@
 import re
 import subprocess
 import sys
+import warnings
 from pathlib import Path
+
+import pytest
 
 import spintoolkit
 
@@ -75,3 +78,26 @@ def test_readme_quickstart_block_runs():
     assert "solve_lswt" in code
     prelude = f"import sys; sys.path.insert(0, {str(ROOT / 'code-space')!r})\n"
     _run_strict(prelude + code)
+
+
+@pytest.mark.parametrize("module", ["spintoolkit", "spintoolkit.methods", "spintoolkit.observables"])
+def test_public_names_resolve_without_deprecation_warnings(module):
+    import importlib
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        package = importlib.import_module(module)
+        missing = [name for name in package.__all__ if not hasattr(package, name)]
+    assert not missing
+
+
+def test_main_entry_points_are_reachable_from_the_top_level():
+    import spintoolkit as stk
+
+    for name in ("solve_lswt", "solve_nlswt", "solve_spiral_lswt", "pseudo_goldstone_gap",
+                 "solve_ed", "classical_search", "compare_states", "magnetization_curve",
+                 "local_stability"):
+        assert callable(getattr(stk, name))
+    for name in ("structure_factor", "neutron_intensity", "thermal_quantities", "thermal_hall",
+                 "chern_numbers", "two_magnon_continuum", "structure_factor_s0"):
+        assert callable(getattr(stk.observables, name))

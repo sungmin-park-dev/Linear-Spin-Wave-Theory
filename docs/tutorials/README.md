@@ -1,7 +1,7 @@
 # Tutorials
 
-Five short tutorials that take you from a first calculation to topology and
-neutron spectra. Each one has a companion script in
+Six short tutorials that take you from a first calculation to topology,
+neutron spectra and interacting spin waves. Each one has a companion script in
 [`code-space/examples/tutorials/`](../../code-space/examples/tutorials/) that prints every number
 quoted in the text, and `code-space/tests/test_tutorials.py` checks those
 numbers on every commit. Each tutorial compares the package with a closed-form
@@ -15,6 +15,7 @@ check a calculation of your own.
 | [3. Neutron scattering](03-neutron.md) | `neutron_intensity`, paths, powder average, Bragg peaks | closed-form Néel magnon energy and weight |
 | [4. Magnetization curve](04-magnetization.md) | `magnetization_curve` at 1/S order, `solve_ed` | exact diagonalization of a 4 × 4 torus |
 | [5. Topology and thermal Hall](05-topology.md) | Berry curvature, Chern numbers, `thermal_hall` | closed-form gap at K; D → −D symmetry |
+| [6. Interacting spin waves](06-interacting.md) | `solve_nlswt`, magnon decay rates, S(q, ω) through order S⁰ | independent evaluation of the S⁰ energy formulas of Chernyshev and Zhitomirsky (2009) |
 
 Run every script from the repository root, for example
 

@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -51,4 +52,4 @@ version = {attr = "spintoolkit.__version__"}
 [tool.setuptools.packages.find]
 where = ["code-space"]
 include = ["spintoolkit*", "lswt"]
-exclude = ["modules*", "tests*", "examples*", "docs*"]
+exclude = ["tests*", "examples*", "docs*"]
