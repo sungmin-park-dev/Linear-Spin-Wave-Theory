@@ -454,7 +454,7 @@
     API & \texttt{magnetization\_curve(..., temperatures=None)}; 결과에 \texttt{temperatures}, \texttt{thermal} $(n_h, n_t)$를 기본값과 함께 더함(기존 호출 그대로) \\
     계산 & \texttt{harmonic}과 같은 상태 분기에서 $h\pm\delta$ 중앙 차분; 고전 상태는 각 장의 $t=0$ 최소(열적 자기일관성 없음, 저온 근사) \\
     기존 값 & \texttt{ThermalResult.magnetization}$=\sum_i(S_i-\langle n_i\rangle)\hat n_i/N_s$는 그대로 두고, 기울기 각 보정이 없는 모멘트 합이라고 문서에 밝힘 \\
-    Goldstone & 반 칸 이동 메시라 영모드가 메시에 없고, $n_B\,\partial\omega/\partial h$가 유한해 2D에서도 $M$이 유한($\langle n\rangle$은 발산) \\
+    Goldstone & 반 칸 이동 메시라 영모드가 메시에 없고, 장이 영모드를 0으로 남기면(장 축 둘레 회전, 기울어진 반강자성) $\partial\omega/\partial h\propto k$라 $n_B\,\partial\omega/\partial h$가 유한해 2D에서도 $M$이 유한($\langle n\rangle$은 발산). 2026-10-15 정정: 장이 영모드에 간격을 1차로 열면(강자성 $h=0$, $\partial\omega/\partial h=1$) $n_B\,\partial\omega/\partial h\sim t/\omega$로 2D에서 로그 발산하므로 $t>0$ 값은 NaN과 경고. 판정은 $H(k_0)$의 연한 고윳값 합의 $h$ 기울기 $>10^{-2}$(\texttt{THERMAL\_ZERO\_MODE\_SLOPE}). 그 전에는 격자에 따라 줄어드는 값을 냈다(정사각 강자성 $S=1/2$, $t=0.3$: 격자 12--96에서 0.350$\to$0.151) \\
     불안정 & LSWT가 불안정한 장에서는 NaN \\
     \midrule
     유효 범위 & \texttt{beyond\_lswt} $(n_h,n_t)$와 \texttt{gapless} $(n_h)$: gap이 있으면 열적 $\langle n_i\rangle>S_i$로 표시(\texttt{ThermalResult}와 같은 기준); 영모드·후보가 있으면 $t=0$만 확인하고 $t\ll JS$에서 쓴다고 문서에 밝힘 \\

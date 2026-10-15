@@ -108,3 +108,25 @@ def test_validity_flags_follow_the_boson_number_only_for_a_gapped_spectrum(model
     unstable = magnetization_curve(model, neel_state(model, (0, 0, 1)), [1.0], k_density=12,
                                    temperatures=t)
     assert not np.any(unstable.beyond_lswt) and not unstable.gapless[0]
+
+
+def test_field_opening_a_zero_mode_gives_nan_at_finite_temperature():
+    """2D ferromagnet at h = 0: the field gaps the k = 0 mode linearly, so
+    n_B d omega/dh ~ t / omega and -dF/dh diverges logarithmically (the mesh
+    value falls by a constant per doubling). Reported as NaN for t > 0."""
+    ferro = square_heisenberg(J=-1.0, S=0.5)
+    with pytest.warns(UserWarning, match="opens or closes a gap at a zero mode"):
+        curve = magnetization_curve(ferro, polarized_state(ferro), [0.0, 0.5],
+                                    temperatures=[0.0, 0.3])
+    assert curve.thermal[0, 0] == pytest.approx(0.5)
+    assert np.isnan(curve.thermal[0, 1])
+    assert np.isfinite(curve.thermal[1, 1])        # gapped at h = 0.5
+
+
+def test_symmetric_goldstone_mode_keeps_the_value(model):
+    """Neel at h = 0: the field gaps the precession mode only quadratically and
+    keeps the rotation about z at zero, so M(0, t) = 0 stays defined."""
+    curve = magnetization_curve(model, neel_state(model, (1, 0, 0)), [0.0, 1.0],
+                                temperatures=[0.3])
+    assert curve.thermal[0, 0] == pytest.approx(0.0, abs=1e-9)
+    assert np.isfinite(curve.thermal[1, 0])

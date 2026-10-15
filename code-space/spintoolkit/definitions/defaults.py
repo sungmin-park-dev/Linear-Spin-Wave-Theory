@@ -102,6 +102,7 @@ TOPOLOGY_ADAPTIVE_MAX_DEPTH = 12    # adaptive k integration: halvings of an ini
 # =============================================================================
 
 ZERO_MODE_ZERO_TOLERANCE = 1e-12       # lambda_min(H) / scale at or below: numerically zero
+THERMAL_ZERO_MODE_SLOPE = 1e-2         # |d (soft eigenvalues of H(k0)) / dh| above: the field moves a zero mode (D49)
 ZERO_MODE_CANDIDATE_TOLERANCE = 1e-6   # up to this: candidate, the user decides
 ZERO_MODE_MESH_SEEDS = 8               # lowest mesh points used as scan starting points
 ZERO_MODE_SEARCH_THRESHOLD = 1e-2      # minimize lambda_min only from points at or below this
