@@ -444,7 +444,7 @@
 
 \subsection{결정 기록 (D49): 유한 온도 자화는 $-\partial F/\partial h$}\label{decisions-d49-thermal-magnetization}
 \begingroup% frame-local settings, as in Beamer
-  \framesubtitle{2026-10-10 Claude 제안(사용자: ``추천대로 진행해''), 사용자 물리 검토 대기.}
+  \framesubtitle{2026-10-10 Claude 제안(사용자: ``추천대로 진행해''), 2026-10-15 사용자 물리 검토 승인(``승인해'').}
   \small\renewcommand{\arraystretch}{1.12}
   \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
     \toprule
@@ -459,7 +459,7 @@
     \midrule
     유효 범위 & \texttt{beyond\_lswt} $(n_h,n_t)$와 \texttt{gapless} $(n_h)$: gap이 있으면 열적 $\langle n_i\rangle>S_i$로 표시(\texttt{ThermalResult}와 같은 기준); 영모드·후보가 있으면 $t=0$만 확인하고 $t\ll JS$에서 쓴다고 문서에 밝힘 \\
     기준 상태 & 사용자 결정(2026-10-10): 고전 상태는 $E_{\rm cl}$를 목적함수로 최소화한다($F$가 아님; 차이는 $O(S^0)$로 생략한 4차 항과 같은 차수) \\
-    \textbf{열린 항목} & 2D Goldstone에서 유한한 $M$: 사용자 질문(``변경된 정의 때문인가'')에 대한 설명 — 정의 변경의 산물이 아니다. 정확한 이론에서 $-\partial F/\partial h=\langle S^z_{\rm tot}\rangle/N$이고, 발산하는 요동은 장 축 둘레 회전이라 $S^z$를 바꾸지 않는다. 모멘트 합은 그 회전의 종방향 감소만, 기울기 각 항은 기울기 평면 안의 2차 성분을 담아 둘이 상쇄된다. 판정 대기 \\
+    \textbf{열린 항목} & 2D Goldstone에서 유한한 $M$: 사용자 질문(``변경된 정의 때문인가'')에 대한 설명 — 정의 변경의 산물이 아니다. 정확한 이론에서 $-\partial F/\partial h=\langle S^z_{\rm tot}\rangle/N$이고, 발산하는 요동은 장 축 둘레 회전이라 $S^z$를 바꾸지 않는다. 모멘트 합은 그 회전의 종방향 감소만, 기울기 각 항은 기울기 평면 안의 2차 성분을 담아 둘이 상쇄된다. 2026-10-15 검토: $M_{(나)}=M_{(가)}-\sum_iS_i\sin\theta_i\,\delta\theta_i/N$ 유도와 함께 승인. 모멘트 합은 정렬 모멘트 길이 $S_i-\langle n_i\rangle$를 고전 방향에 둔 값으로 남기고 이름은 그대로 둔다 \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-10-10 결정}{contract}
