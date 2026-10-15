@@ -693,6 +693,29 @@
   \slidesource{2026-10-14 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D61): 물리적이지 않거나 정의되지 않는 값은 NaN으로 낸다}\label{decisions-d61-undefined-nan}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-15 사용자 지시(``물리적인 상황이 아닌 경우, 또는 정의할 수 없는 상황에서는 숫자를 주지말고, nan으로 해''), 적용 범위는 Claude 결정, 사용자 확인 대기.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    원칙 & 입력이 물리적이지 않거나(불안정, 비정지, $\langle n_i\rangle>S_i$) 극한이 없으면(발산, 방향·메시 의존) 숫자 대신 NaN과 경고를 낸다. 0은 유도된 물리값일 때만 쓴다(보존 생성자의 가중치, $T=0$의 열 항 등) \\
+    불안정 상태 & \texttt{solve\_lswt}: 정규화(\texttt{MAGSWT}, \texttt{k-dependent})는 영모드만 들어 올린다. $H(k)$의 고윳값이 $-\texttt{zero\_mode\_tolerance}\cdot\max|\mathrm{eig}|$ 아래면 정규화를 골라도 \texttt{LSWTError}. 이전에는 MAGSWT 이동량에 상한이 없어 불안정 상태에도 에너지를 냈다 \\
+    비정지 상태 & 토크가 남으면 보손 선형항이 남아 조화 차수가 없다. 영점·바닥 에너지와 보손 수를 NaN으로(이전에는 경고만). $H(k)$와 그 고윳값은 이차 부분으로 남긴다 \\
+    고정 궤도 영점 에너지 & \texttt{LSWTZeroPointEnergy}(constrained): 투영 뒤 $H(k)$가 양의 준정부호가 아니면 NaN. 이전에는 복소 쌍만 불안정으로 세고 실수 진동수의 음에너지 모드(Landau 불안정)를 양의 진동수로 잘못 셌다 \\
+    LSWT 밖 온도 & \texttt{thermal\_quantities}: \texttt{beyond\_lswt}인 온도에서 $F,U,S,C$, 모멘트, 모멘트 합을 NaN으로(보손 수는 원인을 보이려 남긴다). \texttt{ordered\_moments}는 $\langle n_i\rangle>S_i$에서 NaN. \texttt{magnetization\_curve}도 같은 곳에서 NaN \\
+    열적 Bragg & 구조인자의 탄성 부분이 $t>0$에서도 $T=0$ 모멘트를 썼다. 열 모멘트 $S_i-\langle n_i\rangle(t)$를 쓰고, 간격 없는 스펙트럼에서는 NaN(2차원에서 질서 없음) \\
+    1/S & \texttt{magnon\_energies}: 음수인 1/S 에너지는 NaN. 열역학 극한에서 $\eta=0$의 \texttt{decay\_rate}는 NaN(\texttt{decay\_rates} 사용). Dyson 진단 \texttt{negative\_frequency\_weight}는 음의 진동수 격자가 없으면 NaN(확인 안 함) \\
+    기타 & MC 잭나이프 오차: 블록이 둘 미만이거나 측정 수보다 많으면 NaN. 두 마그논 연속체에서 영모드로 뺀 쌍의 에너지 NaN(가중치 0). 옛 \texttt{JH\_method}가 복소 고윳값 자리에 허수부를 넣던 것을 NaN으로 \\
+    남긴 것 & 폐기 예정 옛 API(\texttt{LSWTSolver.solve}, \texttt{EnergyFunction}, \texttt{SpinOptimizer})의 기본 MAGSWT는 바꾸지 않았다. 0.3에서 지운다 \\
+    검산 & \texttt{tests/test\_methods/test\_undefined\_values.py}(정의되는 경우와 안 되는 경우를 짝으로). 옛 해법과의 비교 시험은 임의 각도 상태에서 같은 $H(k)$인지를 보고, 에너지는 내지 않는지 본다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-15 결정}{contract}
+\endgroup
+
 \subsection{세부 규칙: 2026-09-29 결정}\label{detail-rules}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{D12 · 1차 범위를 규약으로 옮기며 추가한 규칙에 대해 결정한 내용이다.}

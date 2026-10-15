@@ -118,16 +118,23 @@ class NLSWTResult:
         dict
             ``lswt`` (m, Ns), ``hartree_fock_tadpole`` (m, Ns), ``cubic``
             (m, Ns, complex), ``total`` = lswt + static + Re cubic, and
-            ``decay_rate`` = -Im cubic (meaningful with a broadening; the
-            quasiparticle half width at order S^0).
+            ``decay_rate`` = -Im cubic (the quasiparticle half width at order
+            S^0). ``total`` is NaN where it is negative: a magnon of negative
+            energy is outside the 1/S expansion. In the thermodynamic limit
+            ``decay_rate`` at ``eta = 0`` is NaN (a mesh sum of delta
+            functions does not give the rate; use :meth:`decay_rates`).
         """
         if broadening is not None:
             warnings.warn("magnon_energies(broadening=) is deprecated; use eta=", DeprecationWarning,
                           stacklevel=2)
             eta = broadening
         lswt, static, cubic = self.solver.magnon_energies(k_points, eta)
+        total = _physical_energies(lswt + static + cubic.real, lswt)
+        rate = -cubic.imag
+        if eta == 0 and self.header.geometry.get("kind") != "finite_torus":
+            rate = np.full(rate.shape, np.nan)
         return {"lswt": lswt, "hartree_fock_tadpole": static, "cubic": cubic,
-                "total": lswt + static + cubic.real, "decay_rate": -cubic.imag}
+                "total": total, "decay_rate": rate}
 
 
     def decay_rates(self, k_points, grid: Tuple[int, int] = (64, 64)) -> Dict[str, np.ndarray]:
@@ -207,7 +214,10 @@ class NLSWTResult:
             and ``decay_rate``, each (m, Ns); ``spectral`` (m, Ns, nw); with
             ``mode="dyson"`` also ``self_energy`` (m, Ns, nw) and
             ``negative_frequency_weight`` (m, Ns), the integral of ``A`` below
-            zero over the given ``omega`` grid.
+            zero over the given ``omega`` grid (NaN when the grid has fewer
+            than two negative frequencies: not checked). Where the on-shell
+            energy is negative (outside the 1/S expansion) ``energy`` and the
+            on-shell ``spectral`` of that band are NaN.
 
         Notes
         -----
@@ -249,7 +259,7 @@ class NLSWTResult:
                     static[i, group] = static[i, group].mean()
                     on_shell[i, group] = on_shell[i, group].mean()
                     sigma[i, group] = sigma[i, group].mean(axis=0)
-        energy = E_all + static + on_shell.real
+        energy = _physical_energies(E_all + static + on_shell.real, E_all)
         rate = -on_shell.imag
         out = {"lswt": E_all, "hartree_fock_tadpole": static, "energy": energy,
                "decay_rate": rate}
@@ -265,8 +275,14 @@ class NLSWTResult:
         weight = (np.trapz if hasattr(np, "trapz") else np.trapezoid)
         out.update(spectral=spectral, self_energy=sigma,
                    negative_frequency_weight=(weight(spectral[:, :, below], w[below], axis=-1)
-                                              if below.sum() > 1 else np.zeros((len(k), ns))))
+                                              if below.sum() > 1 else np.full((len(k), ns), np.nan)))
         return out
+
+def _physical_energies(energy: np.ndarray, lswt: np.ndarray) -> np.ndarray:
+    """``energy`` with NaN where it is negative beyond round-off of the LSWT scale."""
+    scale = max(float(np.max(np.abs(lswt), initial=0.0)), 1.0)
+    return np.where(energy < -1e-10 * scale, np.nan, energy)
+
 
 def _degenerate_groups(energies: np.ndarray, tolerance: float = 1e-8):
     """Index groups of equal energies (relative tolerance)."""

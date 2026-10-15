@@ -80,7 +80,8 @@ class ThermalResult:
         The scan report.
     beyond_lswt : (nt,) bool array
         True where some ``<n_i> > S_i``: the moment would reverse and the
-        spin-wave expansion is no longer valid at that temperature.
+        spin-wave expansion is no longer valid at that temperature. There
+        every quantity except ``boson_numbers`` (which shows why) is NaN.
     """
 
     temperatures: np.ndarray
@@ -189,9 +190,13 @@ def thermal_quantities(result, temperatures: Sequence[float],
         magnetization.append(m @ result.directions / ns)
     bosons = np.array(bosons)
     beyond = np.any(bosons > result.spins, axis=1)
+    columns = [np.array(free, dtype=float), np.array(internal), np.array(entropy),
+               np.array(heat), np.array(moments), np.array(magnetization)]
     if np.any(beyond):
         warnings.warn(f"boson numbers exceed S at t = {t[beyond].tolist()}: LSWT is not valid "
-                      "there (moments would reverse)", UserWarning, stacklevel=2)
-    return ThermalResult(t, free, np.array(internal), np.array(entropy),
-                         np.array(heat), bosons, np.array(moments),
-                         np.array(magnetization), gapless_flag, decision, report.to_dict(), beyond)
+                      "there (moments would reverse) and the thermal quantities are NaN",
+                      UserWarning, stacklevel=2)
+        for column in columns:
+            column[beyond] = np.nan
+    return ThermalResult(t, *columns[:4], bosons, *columns[4:], gapless_flag, decision,
+                         report.to_dict(), beyond)

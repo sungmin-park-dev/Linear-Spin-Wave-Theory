@@ -121,7 +121,9 @@ class StructureFactor:
         ``W^{ab}`` of each mode (Hermitian in a, b), per site.
     elastic : (nq, 3, 3) complex array
         Bragg intensity ``I^{ab}(q)`` where q is a magnetic reciprocal vector,
-        zero elsewhere (coefficient of ``N delta_{q,G}``).
+        zero elsewhere (coefficient of ``N delta_{q,G}``), from the ordered
+        moments ``S_i - <n_i>(t)``. NaN at Bragg vectors for ``t > 0`` with a
+        gapless spectrum (no order in 2D) and where ``<n_i> > S_i``.
     bragg : (nq,) bool array
     zero_mode : (nq,) bool array
         ``H(q)`` has a zero mode at this q. The inelastic weights there are
@@ -212,6 +214,26 @@ def _zero_mode_decision(result, temperature, zero_modes, gapless):
         warnings.warn("gapless spectrum: thermal weights diverge as t / w near the zero modes",
                       UserWarning, stacklevel=3)
     return bool(gapless), report.to_dict()
+
+
+def _ordered_moments(result, t: float, gapless: Optional[bool]) -> np.ndarray:
+    """Ordered moments ``S_i - <n_i>(t)`` of the elastic part, (Ns,).
+
+    NaN at ``t > 0`` for a gapless spectrum (``<n_i>`` diverges in two
+    dimensions, no long-range order) and where ``<n_i> > S_i`` (outside the
+    spin-wave expansion).
+    """
+    if t > 0 and gapless:
+        return np.full(result.num_sites, np.nan)
+    if t > 0:
+        from spintoolkit.observables.thermal import thermal_quantities
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            bosons = thermal_quantities(result, [t], gapless=False).boson_numbers[0]
+    else:
+        bosons = result.boson_numbers
+    moments = result.spins - bosons
+    return np.where(moments < 0, np.nan, moments)
 
 
 def _apply_moment_tensors(A: np.ndarray, tensors: Optional[np.ndarray], nq: int) -> np.ndarray:
@@ -371,7 +393,7 @@ def structure_factor(result, q_points, temperature: float = 0.0,
                       f"{int(undefined.sum())}; the elastic part is computed",
                       UserWarning, stacklevel=2)
 
-    moments = (result.spins - result.boson_numbers)[:, None] * result.directions
+    moments = _ordered_moments(result, t, gapless)[:, None] * result.directions
     fractional = q @ np.asarray(result.magnetic_lattice).T / (2 * np.pi)
     bragg = np.all(np.abs(fractional - np.rint(fractional)) < 1e-9, axis=1)
     elastic = np.zeros((len(q), 3, 3), dtype=complex)
@@ -465,7 +487,7 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
     rotations = {0: np.outer(n, n).astype(complex), 1: (P - 1j * K) / 2, -1: (P + 1j * K) / 2}
     A = _deviation_vectors(rotating)                              # (3, 2Ns), rotating frame
     tau = np.asarray(rotating.positions)
-    moments = (rotating.spins - rotating.boson_numbers)[:, None] * rotating.directions
+    moments = _ordered_moments(rotating, t, gapless)[:, None] * rotating.directions
 
     tensors = _check_tensors(moment_tensors, len(q), ns)
     energies, weights, zero = [], [], np.zeros(len(q), dtype=bool)

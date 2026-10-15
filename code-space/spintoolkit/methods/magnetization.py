@@ -32,7 +32,9 @@ Two orders are reported:
 
 Validity of the thermal values (D49). For a gapped spectrum ``beyond_lswt``
 marks the temperatures where some thermal ``<n_i> > S_i``, as in
-``ThermalResult.beyond_lswt``. Where the zero-mode scan finds zero modes or
+``ThermalResult.beyond_lswt``; the spin-wave expansion is not valid there and
+the thermal value is NaN. The harmonic value is NaN where ``<n_i> > S_i`` at
+zero temperature. Where the zero-mode scan finds zero modes or
 candidates (``gapless``), ``<n_i>`` diverges at every ``t > 0`` in two
 dimensions and gives no criterion: only ``t = 0`` is checked, and ``M(h, t)``
 applies for ``t`` small compared with the spin-wave energy scale (``J S``).
@@ -76,7 +78,8 @@ class MagnetizationCurve:
     classical : (nh,) array
         ``-dE_cl/dh`` per site (mu_B).
     harmonic : (nh,) array
-        ``-d(E_cl + E_zp)/dh`` per site; NaN where LSWT is unstable.
+        ``-d(E_cl + E_zp)/dh`` per site; NaN where LSWT is unstable or some
+        ``<n_i> > S_i``.
     spins : (Ns,) array
     moment_reduction : (nh, Ns) array
         ``<n_i>`` at zero temperature; NaN where unstable.
@@ -87,8 +90,8 @@ class MagnetizationCurve:
     thermal : (nh, nt) array
         ``-dF/dh`` per site at each field and temperature; NaN where LSWT is
         unstable, and at ``t > 0`` where the field opens or closes a gap at a
-        zero mode (logarithmic divergence in 2D). Column ``t = 0`` equals
-        ``harmonic``.
+        zero mode (logarithmic divergence in 2D), and where ``beyond_lswt``.
+        Column ``t = 0`` equals ``harmonic``.
     beyond_lswt : (nh, nt) bool array
         True where some ``<n_i> > S_i`` at that field and temperature; at
         ``t > 0`` checked only where ``gapless`` is False.
@@ -111,8 +114,9 @@ class MagnetizationCurve:
 
     @property
     def ordered_moments(self) -> np.ndarray:
-        """``S_i - <n_i>``, shape (nh, Ns)."""
-        return self.spins[None] - self.moment_reduction
+        """``S_i - <n_i>``, shape (nh, Ns); NaN where ``<n_i> > S_i``."""
+        moments = self.spins[None] - self.moment_reduction
+        return np.where(moments < 0, np.nan, moments)
 
 
 def _mesh(state: SpinState, k_density: int) -> tuple:
@@ -225,7 +229,8 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         _, cl_plus, harm_plus, free_plus, result_plus = energies(h + step, current)
         _, cl_minus, harm_minus, free_minus, result_minus = energies(h - step, current)
         classical.append(-(cl_plus - cl_minus) / (2 * step))
-        harmonic.append(-(harm_plus - harm_minus) / (2 * step))
+        reversed_moment = result is not None and bool(np.any(result.boson_numbers > result.spins))
+        harmonic.append(np.nan if reversed_moment else -(harm_plus - harm_minus) / (2 * step))
         row_thermal = -(free_plus - free_minus) / (2 * step)
         if (result is not None and np.any(t > 0)
                 and field_opens_zero_mode(result, result_plus, result_minus)):
@@ -237,6 +242,8 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         reduction.append(result.boson_numbers if result is not None else None)
         states.append(current)
         row, flag = validity(result)
+        if reversed_moment or np.any(row):
+            thermal[-1] = np.where(row | reversed_moment, np.nan, thermal[-1])
         beyond.append(row)
         gapless.append(flag)
     if spins is None:                       # unstable everywhere: site order of the state

@@ -799,10 +799,11 @@ class LSWTZeroPointEnergy:
     ``(e_theta, e_phi, s_i)``; the zone-centre Hamiltonian is restricted to
     its orthogonal complement (a unitary, hence paraunitary, reduction).
     Without ``axis`` the whole zone centre is dropped (recorded by
-    :meth:`describe`). No regularization is added; where ``H(k)`` is not
-    positive definite (long-wavelength modes of a constrained state away
-    from the classical minimum) the real part of the harmonic frequencies is
-    used and the number of such mode pairs is logged. A uniform MAGSWT shift
+    :meth:`describe`). No regularization is added. Where ``H(k)`` is not
+    positive semidefinite after the projection (an unstable mode pair, with
+    complex or negative-energy frequencies) the zero-point energy is not
+    defined and NaN is returned; the number of such mode pairs is logged.
+    Exact zero modes (positive semidefinite ``H(k)``) contribute zero. A uniform MAGSWT shift
     must not be used here: it is of the same order as the zero-point energy
     differences and makes E_zp(phi) non-smooth.
 
@@ -1015,10 +1016,20 @@ def _harmonic_modes(Hk: np.ndarray) -> Tuple[float, int, np.ndarray]:
         energies = Diagonalizer.Colpa(np.linalg.cholesky(Hk), eta, paraunitary=False)[:n]
         unstable = 0
     except np.linalg.LinAlgError:
+        h = np.linalg.eigvalsh(Hk)
+        if h[0] < -1e-10 * np.max(np.abs(h)):
+            # Not positive semidefinite: complex frequencies or modes of negative energy
+            # (a Landau instability with real frequencies). The harmonic energy is undefined.
+            w = np.linalg.eigvals(eta @ Hk)
+            complex_pairs = int(np.sum(np.abs(w.imag) > 1e-10 * np.max(np.abs(w)))) // 2
+            negative = int(np.sum(h < -1e-10 * np.max(np.abs(h))))
+            return float("nan"), max(1, complex_pairs, negative), np.zeros(0)
+        # Positive semidefinite with exact zero modes: they carry no zero-point energy.
         w = np.linalg.eigvals(eta @ Hk)
-        stable = np.abs(w.imag) <= 1e-10 * np.max(np.abs(w))
-        unstable = int(np.sum(~stable)) // 2
-        energies = w.real[stable & (w.real > 0)]
+        unstable = 0
+        energies = np.sort(w.real)[n:]
+        # A zero mode in a Jordan block splits to about sqrt(eps) of the scale numerically.
+        energies = np.where(energies <= 1e-7 * np.max(np.abs(w)), 0.0, energies)
     return float(np.sum(energies) / 2 - np.real(np.trace(Hk)) / 4), unstable, np.sort(energies)
 
 

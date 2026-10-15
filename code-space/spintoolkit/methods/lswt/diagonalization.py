@@ -166,7 +166,8 @@ class Diagonalizer:
         if im_part is None:
             eigenvalues = re_part
         else:
-            eigenvalues = np.where(np.abs(re_part) >= np.abs(im_part), re_part, im_part)
+            # A complex eigenvalue is an instability: there is no magnon energy.
+            eigenvalues = np.where(np.abs(im_part) > TOLERANCE_DEFAULT, np.nan, re_part)
         idx = np.argsort(eigenvalues)[::-1]
         eigenvalues = eigenvalues[idx]
         return eigenvalues, None, im_part
