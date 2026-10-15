@@ -182,3 +182,22 @@ def test_header_and_json(tmp_path):
                   sector=EDSector(axis=(0, 0, 1), magnon_number=1))
     ed_json = load_json(save_json(ed, tmp_path / "ed.json"))
     assert ed_json["header"]["method"] == "ed" and ed_json["header"]["state_ref"] is None
+
+
+def test_explicit_k_points_not_closed_under_inversion_give_nan_vacuum():
+    """Zero-point energy and boson numbers relabel -k as k: undefined on an open set."""
+    model = square_heisenberg(J=1.0)
+    state = neel_state(model)
+    mesh = solve_lswt(model, state, settings=LSWTSettings(mesh=(8, 8)))
+    closed = solve_lswt(model, state, settings=LSWTSettings(k_points=mesh.k_points))
+    assert closed.header.diagnostics["inversion_closed"]
+    assert closed.zero_point_energy == pytest.approx(mesh.zero_point_energy, abs=1e-14)
+    np.testing.assert_allclose(closed.boson_numbers, mesh.boson_numbers, atol=1e-14)
+    half = np.array([[0.3, 0.1], [0.7, -0.2]])
+    open_set = solve_lswt(model, state, settings=LSWTSettings(k_points=half))
+    assert not open_set.header.diagnostics["inversion_closed"]
+    assert np.isnan(open_set.zero_point_energy) and np.isnan(open_set.boson_numbers).all()
+    assert np.all(np.isfinite(open_set.bands()))
+    pair = solve_lswt(model, state, settings=LSWTSettings(k_points=np.vstack([half, -half])))
+    assert pair.header.diagnostics["inversion_closed"] and np.isfinite(pair.zero_point_energy)
+
