@@ -261,8 +261,13 @@ def _zero_mode_limit(result, q0, t, A, tensors):
     is defined at ``q0``. The limit exists when, in every direction, the
     merged weights converge (the change shrinks when delta is halved; a
     weight diverging like 1/delta doubles it) and the linearly extrapolated
-    energies and weights agree between the directions. Otherwise, and at
-    t > 0 where the Bose factor of a zero mode diverges, None is returned.
+    energies and weights agree between the directions. Otherwise None is
+    returned. At t > 0 the weights include the Bose factors: where the
+    zero-temperature weight vanishes like |q - q0| (a conserved generator,
+    e.g. the total spin at the nuclear zone centre) the product with
+    n_B ~ t / omega has a finite limit, the classical t * chi; where it
+    diverges (a magnetic Bragg vector) the product diverges faster and None
+    is returned.
 
     Returns
     -------

@@ -235,3 +235,19 @@ def test_ladder_components_of_a_polarized_ferromagnet():
     assert np.real(ladder[0, 0]) == pytest.approx(1.0, abs=1e-14)
     ladder[0, 0] = 0
     np.testing.assert_allclose(ladder, 0, atol=1e-14)
+
+
+def test_thermal_weight_at_the_nuclear_zone_centre_is_the_classical_t_chi():
+    """D52 at t > 0: the transverse weight of a Neel state vanishes like |q|
+    at q = 0 (total spin conserved) while n_B ~ t / omega diverges; the
+    product has the finite limit t chi_perp = t / 8J (classical LSWT
+    susceptibility), and the magnetic Bragg vector stays NaN."""
+    model = square_heisenberg(J=1.0, S=0.5)
+    result = solve_lswt(model, neel_state(model, (0, 0, 1)), settings=LSWTSettings(mesh=(12, 12)))
+    t = 0.3
+    with pytest.warns(UserWarning):
+        sf = structure_factor(result, np.array([[0.0, 0.0], [np.pi, np.pi]]),
+                              temperature=t, gapless=True)
+    assert list(sf.limit) == [True, False]
+    assert np.real(sf.weights[0][:, 0, 0]).sum() == pytest.approx(t / 8, rel=1e-6)
+    assert np.all(np.isnan(sf.weights[1]))
