@@ -19,7 +19,7 @@
 ### A3. Thermal Hall: full-position Bloch 규약 (D29, 이슈 260802)
 - 결정: κ_xy는 각 사이트의 실제 위치로 위상을 잡는 규약으로 계산. Chern 수는 두 규약에서 같음.
 - 볼 점: 이 규약이 유일하게 물리적이라는 유도(부격자를 다른 셀로 옮겨 적으면 셀 규약 값만 바뀜).
-- 위치: `GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md`, 튜토리얼 5
+- 위치: `workbench/tasks/2026-08-02-thermal-hall-real-space-volume.md`, 튜토리얼 5
 
 ### A4. 중성자 세기 정의 (D41)
 - 결정: I = Σ(δ−Q̂Q̂)S_M^{ab}, S_i → ½gF(|Q|)S_i. (γr₀)²k_f/k_i e^{−2W}는 제외. Bragg 벡터의 Goldstone 비탄성 세기는 NaN.
@@ -37,7 +37,7 @@
 
 | 번호 | 결정 | 물리적으로 봐 주실 점 | 위치 |
 |---|---|---|---|
-| B1 | D34 단일 Q 나선 회전틀 LSWT | 축에 대해 U(1)이 아닌 모델은 근사 대신 거부; 위상은 셀 번호로만 | `GOVERNMENT/Working-Pad/idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md` |
+| B1 | D34 단일 Q 나선 회전틀 LSWT | 축에 대해 U(1)이 아닌 모델은 근사 대신 거부; 위상은 셀 번호로만 | `archive/government/Working-Pad/idea-proposals/2026-10-01-spiral-rotating-frame-lswt.md` |
 | B2 | D35 결정 대칭과 대칭 허용 결합 | 스핀은 축 벡터 R_s = det(R)R; 시간 반전은 군에 넣지 않음; 대칭을 깨는 계수는 대칭화하지 않고 거부 | D35 프레임 |
 | B3 | D38 고전 동역학·Langevin | 잡음 세기 2αT/S, Stratonovich 해석, 정상 분포 e^{−E/T} | D38 프레임 |
 | B4 | D39 유한 온도 조화 자유 에너지 f(φ,T) | 부드러운 모드 차단 Λ를 위상 이론으로 넘기는 방식 | D39 프레임 |
@@ -49,8 +49,8 @@
 
 | 번호 | 내용 | 위치 |
 |---|---|---|
-| C1 | LSWT 이론 draft 10편 물리·수학 검토 (독립 검산으로 오류 14건 수정 완료, 남은 의심 항목 정리됨) | 검토 PDF `/mnt/project-files/lswt-review/2026-10-01-lswt-drafts-review.pdf`, 가이드 `GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md` |
-| C2 | 솔버 seam 스파이크 (ED·TeNPy·NetKet이 같은 토러스에서 1e-14 일치) → closed로 옮겨도 되는지 | `GOVERNMENT/Working-Pad/handoff/open/260607-solver-seam-spike.md` |
+| C1 | LSWT 이론 draft 10편 물리·수학 검토 (독립 검산으로 오류 14건 수정 완료, 남은 의심 항목 정리됨) | 검토 PDF `/mnt/project-files/lswt-review/2026-10-01-lswt-drafts-review.pdf`, 가이드 `docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md` |
+| C2 | 솔버 seam 스파이크 (ED·TeNPy·NetKet이 같은 토러스에서 1e-14 일치) → closed로 옮겨도 되는지 | `workbench/tasks/2026-06-07-solver-seam-spike.md` |
 | C3 | 개발 설계 Beamer (D30–D45 결정 기록 포함) | 원본 `docs/archive/2026-10-08-development-beamer/main.tex`; PDF는 저장소에 없어 원하시면 만들어 드립니다 |
 
 NBCP 논문 점검 항목(Rau 공식 적용 범위, V의 Z₆, Fig. 4(b) 출처 등)은 "NBCP 연구 문서 점검·정교화" 스레드에서 따로 정리돼 있어 여기서는 뺐습니다.

@@ -1,16 +1,19 @@
 ---
-frontmatter-version: 1
-title: Topology thermal Hall real_space_volume bug
-section: issue-notes/open
-issue-type: problem
-status: in-review
-last-edited-by: claude
-created: 2026-08-02
-updated: 2026-09-30
-source: sources/00-primary-source/Linear_Spin_Wave_Theory___Note.pdf
-related: code-space/spintoolkit/observables/topology.py
-must-read: archive/government/Agents-Bylaws/templates/issue-notes-template.md
+title: Thermal Hall 면적·단위·반환 기준
+topic: spin-wave-observables
+priority: 1
+created: '2026-08-02'
+state: working
+task: 'Thermal Hall 계산의 면적·단위·반환 기준. 구현은 toolkit 5a–5d(D29)로 해결했고, full-position Bloch 규약만 물리적임을 닫힌 식으로 정리했다(PR #14, 일괄 검토 A3). pseudo-Goldstone 갭은 Δ²=C_φ/χ_z로 정리했다(PR #20·#22).'
+issues:
+- text: '이론 문서 A6/A7/A16 검토. A7은 Goldstone 경우만 열려 있다(Goldstone 띠 Chern 수 유도는 PR #71).'
+- text: NBCP의 J_PD·J_Γ 크기. 최근접 XXZ는 대칭으로 0이고 J_PD·J_Γ가 있어야 0이 아니다.
+references:
+- workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+- code-space/spintoolkit/observables/topology.py
 ---
+
+> 2026-10-15 `GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md`에서 옮겼다. 옛 머리말: title Topology thermal Hall real_space_volume bug, status in-review, created 2026-08-02, updated 2026-09-30.
 
 # Topology thermal Hall `real_space_volume` bug
 
@@ -713,7 +716,7 @@ cutoff 조절·경계·입력 검증·두 Hall 경로·온도 스캔·3D 환산�
 
 ## 2026-09-30 toolkit 5단계 — 공통 경로의 위상량과 계산 핵심 통합
 
-사용자 결정 D29(`GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md`)에 따라
+사용자 결정 D29(`archive/government/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md`)에 따라
 toolkit의 공통 LSWT 결과(`solve_lswt`)에서 위상량을 계산하는 경로를 만들고 이 이슈의 구현 항목을 정리했다.
 
 - 5a: `observables/berry.py`의 `berry_curvature`가 저장된 대각화와 해석적 `dH/dk`로 곡률을 계산한다. 부호는

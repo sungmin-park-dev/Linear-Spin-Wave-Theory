@@ -201,4 +201,4 @@ accepted Markdown manifest
 
 문서 작업은 Foundations, derivation, observables, examples, appendices의 의존 관계를 따라 진행한다. 각 단위에서 필요한 notation을 먼저 대조하고, 이미 합의한 convention과 수식 ID 문법은 재사용한다. 새 renderer 또는 지원 문법을 도입할 때는 관련 문서로 출력 pilot을 수행한다.
 
-진행 상태와 바로 다음 작업은 [Task Queue](../../GOVERNMENT/Working-Pad/TASK-QUEUE.md), 문서별 coverage·열린 질문·사용자 검토 범위는 [Documentation Audit](../../GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md)가 소유한다. 이 절차에는 현재 문서 수나 완료 이력을 중복 기록하지 않는다.
+진행 상태와 바로 다음 작업은 [작업 파일](../tasks/)(앱 작업 탭), 문서별 coverage·열린 질문·사용자 검토 범위는 [Documentation Audit](../tasks/2026-08-09-lswt-documentation-audit.md)가 소유한다. 이 절차에는 현재 문서 수나 완료 이력을 중복 기록하지 않는다.

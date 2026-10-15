@@ -20,9 +20,9 @@ fields:
 evidence:
 - kind: analytic
   title: physics review guide
-  file: GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+  file: docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md
   text: table of fixed errors
   checks: []
 sources:
-- GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+- docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md
 - commit 90cfee2

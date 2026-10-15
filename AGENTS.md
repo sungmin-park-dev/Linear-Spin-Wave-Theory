@@ -25,7 +25,7 @@
 ## 현재 디렉토리 구조
 
 > LSWT 일반 이론과 개발 설계는 `workbench/topics/` 연구노트(2026-10-08부터; `archive/2026-10-08-lswt-markdown/`·`archive/2026-10-08-development-beamer/`는 보존본), 실행 예제와 검증 스크립트는 `code-space/examples/`에서 관리한다.
-> 설계 사본은 `GOVERNMENT/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy.md`에 둔다.
+> 설계 사본은 `archive/government/Working-Pad/idea-proposals/2026-05-30-project-knowledge-philosophy.md`에 둔다.
 
 ```
 project-root/
@@ -36,6 +36,7 @@ project-root/
 │   ├── topics/<주제>/           # topic.yaml(주제 정보)과 그 주제가 주인인 연구노트 폴더 (2026-10-08부터 내용 원본)
 │   ├── decisions/               # 결정 기록 (옛 GOVERNMENT/Court-Precedents)
 │   ├── rules/                   # 이 프로젝트의 긴 규칙: 이론 문체, 정본 문서 절차
+│   ├── tasks/                   # 작업 파일, 일 하나에 파일 하나 (앱 작업 탭; 옛 TASK-QUEUE·열린 이슈·인계)
 │   ├── comments/ · log/ · figures/
 │   └── STATUS.md                # 앱이 쓰는 요약 (git 제외)
 │
@@ -48,6 +49,7 @@ project-root/
 │
 ├── docs/                        # 우리가 쓴 글
 │   ├── README.md
+│   ├── reviews/                 # 검토·계획 문서 (옛 project-review, 2026-10-01 이론 검토 안내)
 │   ├── tutorials/               # 패키지 사용법 영어 튜토리얼 5편
 │   └── verification-notes/      # 수식·basis convention과 코드의 내부 검증 자료
 │
@@ -59,10 +61,7 @@ project-root/
 │   ├── 2026-10-08-development-beamer/ # 옛 docs/development
 │   ├── 2026-10-11-lswt-latex-notes/   # Markdown 전환 직전 LaTeX 이론 노트와 변환 도구
 │   ├── legacy/                  # 원본 legacy 코드와 과거 연구노트
-│   └── government/              # 옛 GOVERNMENT의 닫힌 기록, 형식 규칙과 서식, map 문서, User-Constitution
-│
-└── GOVERNMENT/                  # 남은 운영 문서. 열린 일을 손댈 때 하나씩 workbench/로 옮긴다
-    └── Working-Pad/             # TASK-QUEUE.md, roadmap.md, 열린 issue-notes·handoff, idea-proposals, project-review
+│   └── government/              # 옛 GOVERNMENT: 닫힌 기록, 형식 규칙과 서식, map 문서, User-Constitution, TASK-QUEUE·roadmap·제안(2026-10-15)
 ```
 
 ---
@@ -142,4 +141,4 @@ result.data                  # dict (솔버별 고유 데이터)
 4. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/topics/` 연구노트를 직접 편집한다. 이론 노트 `lswt-*`는 `note.md`, 개발 노트 `dev-*`는 아직 TeX다. PDF는 그로부터 생성한다(Markdown 이론 노트의 공개용 PDF 경로는 열린 항목이다). LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
 5. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/topics/*/lswt-*`)를 작성하거나 교정하기 전에 `workbench/rules/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
 
-현재 작업, 우선순위와 진행 상태는 `GOVERNMENT/Working-Pad/TASK-QUEUE.md`에서 확인한다. `AGENTS.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.
+현재 작업, 우선순위와 진행 상태는 `workbench/tasks/`의 작업 파일(앱 작업 탭, `STATUS.md` "맡긴 일" 절)에서 확인한다. `AGENTS.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.

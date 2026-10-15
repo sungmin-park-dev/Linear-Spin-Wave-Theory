@@ -8,7 +8,7 @@ last-edited-by: claude
 created: 2026-10-01
 updated: 2026-10-01
 related:
-  - GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md
+  - workbench/tasks/2026-08-09-lswt-documentation-audit.md
   - archive/2026-10-08-lswt-markdown/README.md
 ---
 
@@ -22,11 +22,11 @@ related:
 
 ## 권장 검토 순서
 
-1. [Paraunitary Diagonalization](../../../../archive/2026-10-08-lswt-markdown/01-derivation/paraunitary-diagonalization.md) → [Appendix: Paraunitarity Proofs](../../../../archive/2026-10-08-lswt-markdown/04-appendices/paraunitarity-proofs.md) → [Worked Example](../../../../archive/2026-10-08-lswt-markdown/03-examples/worked-example.md). 뒤의 모든 observable이 여기 정의(T, Σ3, 입자–홀 구조, ΔE_zp)를 쓴다. Worked example은 일반 식을 한 band 닫힌 식으로 확인하는 용도다.
-2. [Magnon Observables](../../../../archive/2026-10-08-lswt-markdown/02-observables/magnon-observables.md), [Thermodynamics](../../../../archive/2026-10-08-lswt-markdown/02-observables/thermodynamics.md), [Appendix: Thermodynamic Derivations](../../../../archive/2026-10-08-lswt-markdown/04-appendices/thermodynamic-derivations.md).
-3. [Topological Magnon Quantities](../../../../archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md). Bloch 규약 문단은 코드·이슈 260802(PR #14)의 결론과 맞췄다.
-4. [Spin Correlations](../../../../archive/2026-10-08-lswt-markdown/02-observables/spin-correlations.md), [Structure Factor and Spectral Function](../../../../archive/2026-10-08-lswt-markdown/02-observables/structure-factor-and-spectral-function.md).
-5. [Appendix: Luttinger–Tisza Method](../../../../archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md).
+1. [Paraunitary Diagonalization](../../archive/2026-10-08-lswt-markdown/01-derivation/paraunitary-diagonalization.md) → [Appendix: Paraunitarity Proofs](../../archive/2026-10-08-lswt-markdown/04-appendices/paraunitarity-proofs.md) → [Worked Example](../../archive/2026-10-08-lswt-markdown/03-examples/worked-example.md). 뒤의 모든 observable이 여기 정의(T, Σ3, 입자–홀 구조, ΔE_zp)를 쓴다. Worked example은 일반 식을 한 band 닫힌 식으로 확인하는 용도다.
+2. [Magnon Observables](../../archive/2026-10-08-lswt-markdown/02-observables/magnon-observables.md), [Thermodynamics](../../archive/2026-10-08-lswt-markdown/02-observables/thermodynamics.md), [Appendix: Thermodynamic Derivations](../../archive/2026-10-08-lswt-markdown/04-appendices/thermodynamic-derivations.md).
+3. [Topological Magnon Quantities](../../archive/2026-10-08-lswt-markdown/02-observables/topological-magnon-quantities.md). Bloch 규약 문단은 코드·이슈 260802(PR #14)의 결론과 맞췄다.
+4. [Spin Correlations](../../archive/2026-10-08-lswt-markdown/02-observables/spin-correlations.md), [Structure Factor and Spectral Function](../../archive/2026-10-08-lswt-markdown/02-observables/structure-factor-and-spectral-function.md).
+5. [Appendix: Luttinger–Tisza Method](../../archive/2026-10-08-lswt-markdown/04-appendices/luttinger-tisza-method.md).
 
 ## 2026-10-01에 고친 확인된 오류
 

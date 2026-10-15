@@ -15,11 +15,11 @@ fields:
   motivation: An old note recorded a missing factor $N_s$ and a wrong conversion factor in topology.py; the values had never been rederived.
 evidence:
 - kind: other
-  file: GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md
+  file: workbench/tasks/2026-08-02-thermal-hall-real-space-volume.md
   text: problem statement and later conclusion
   checks: []
 sources:
-- GOVERNMENT/Working-Pad/issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md
-- GOVERNMENT/Working-Pad/TASK-QUEUE.md (row 3)
+- workbench/tasks/2026-08-02-thermal-hall-real-space-volume.md
+- archive/government/Working-Pad/TASK-QUEUE.md (row 3)
 guesses:
 - Marked active because the issue note is still open (in-review) in TASK-QUEUE row 3.

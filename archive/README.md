@@ -8,7 +8,7 @@
 | [`2026-10-08-development-beamer/`](2026-10-08-development-beamer/README.md) | 패키지 개발 설계와 결정 기록 Beamer, 2026-10-08 상태 (옛 `docs/development`). 지금 정본은 `dev-*` 연구노트 |
 | [`2026-10-11-lswt-latex-notes/`](2026-10-11-lswt-latex-notes/) | Markdown 전환 직전의 LaTeX 이론 연구노트와 변환 도구 |
 | [`legacy/`](legacy/) | 원본 legacy 코드(`modules/`, `scripts/`)와 과거 연구노트. 테스트 몇 개가 legacy 수치와 대조한다 |
-| [`government/`](government/) | 옛 GOVERNMENT의 닫힌 이슈·인계 기록, 형식 규칙(frontmatter·이름·폴더 안내)과 서식, map 문서, User-Constitution(원칙은 연구 공통 규칙 6·7번으로 옮김) |
+| [`government/`](government/) | 옛 GOVERNMENT의 닫힌 이슈·인계 기록, 형식 규칙(frontmatter·이름·폴더 안내)과 서식, map 문서, User-Constitution(원칙은 연구 공통 규칙 6·7번으로 옮김), 2026-10-15에 옮긴 TASK-QUEUE·roadmap·제안 |
 
 ## 옛 경로 → 새 경로 (2026-10-13)
 
@@ -32,7 +32,22 @@
 | `GOVERNMENT/Working-Pad/issue-notes/closed/`, `handoff/closed/`, `inbox/`, `vault-staging/` | `archive/government/Working-Pad/` 아래 같은 이름 |
 | `GOVERNMENT/User-Constitution/` (10/13 공통 규칙 뒤) | `archive/government/User-Constitution/`. 단일 정본 원칙은 개인 저장소 `rules/research.md` 6·7번 |
 
-남은 `GOVERNMENT/`(TASK-QUEUE, 열린 이슈·인계, 제안, project-review, roadmap)는 손댈 때 하나씩 `workbench/`로 옮긴다.
+## 옛 경로 → 새 경로 (2026-10-15)
+
+남은 `GOVERNMENT/Working-Pad/`를 옮기고 `GOVERNMENT/`를 지웠다(research-workspace 결정 "연구 저장소 폴더" 5단계). 열린 일은 작업 파일(앱 작업 탭)이 되었고, 옛 머리말은 각 작업 파일 본문 첫 줄에 남겼다.
+
+| 옛 경로 (`GOVERNMENT/Working-Pad/` 아래) | 새 경로 |
+|---|---|
+| `issue-notes/open/261012-batch-review-ledger.md` | `workbench/tasks/2026-10-13-batch-review.md` |
+| `issue-notes/open/260809-lswt-documentation-audit.md` | `workbench/tasks/2026-08-09-lswt-documentation-audit.md` |
+| `issue-notes/open/260802-topology-thermal-hall-real-space-volume-bug.md` | `workbench/tasks/2026-08-02-thermal-hall-real-space-volume.md` |
+| `issue-notes/open/260810-lswt-implementation-backlog.md` | `workbench/tasks/2026-08-10-lswt-implementation-backlog.md` |
+| `handoff/open/260607-solver-seam-spike.md` | `workbench/tasks/2026-06-07-solver-seam-spike.md` |
+| `TASK-QUEUE.md`의 12번(공개 배포) | `workbench/tasks/2026-10-15-release-0-2-0.md` |
+| `issue-notes/open/261001-lswt-draft-physics-review-guide.md` | `docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md` |
+| `project-review/` | `docs/reviews/` |
+| `TASK-QUEUE.md`, `roadmap.md`, `map-working-pad.md`, `handoff/map-handoff.md`, `issue-notes/map-issue-notes.md` | `archive/government/Working-Pad/` 아래 같은 이름. 작업 순서는 작업 파일의 `priority`가 대신한다 |
+| `idea-proposals/` | `archive/government/Working-Pad/idea-proposals/`. 모두 구현되었고 결정은 `dev-decisions`, 설계는 `dev-design` 연구노트가 정본이다(2026-10-08 결정) |
 
 | 주제 | 노트 |
 |---|---|

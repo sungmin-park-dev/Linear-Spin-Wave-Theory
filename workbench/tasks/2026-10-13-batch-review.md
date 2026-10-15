@@ -1,12 +1,18 @@
 ---
-frontmatter-version: 1
-title: 일괄 검토 판정 기록
-section: working-pad
-status: in-review
-last-edited-by: claude
-created: 2026-10-13
-updated: 2026-10-14
+title: 결정과 문서 일괄 검토
+topic: toolkit-development
+priority: 1
+created: '2026-10-13'
+state: working
+task: 2026-10-12 일괄 검토 목록(28개 항목)에 대한 사용자 판정을 차례로 이 파일 표에 남기고, 판정이 나면 dev-decisions 연구노트의 그 결정 상태 줄도 함께 고친다.
+end-condition: 목록 28개 모두에 사용자 판정이 적혀 있고, dev-decisions의 상태 줄이 판정과 같다.
+references:
+- workbench/topics/toolkit-development/dev-decisions
+- docs/reviews/2026-10-02-batch-review-guide.md
+- docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md
 ---
+
+> 2026-10-15 `GOVERNMENT/Working-Pad/issue-notes/open/261012-batch-review-ledger.md`에서 옮겼다. 옛 머리말: title 일괄 검토 판정 기록, status in-review, created 2026-10-13, updated 2026-10-14.
 
 # 일괄 검토 판정 기록
 

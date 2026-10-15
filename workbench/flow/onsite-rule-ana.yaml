@@ -27,6 +27,6 @@ evidence:
 sources:
 - commit 08ffb6e
 - workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex (D36-D37)
-- GOVERNMENT/Working-Pad/issue-notes/open/261012-batch-review-ledger.md (item 3)
+- workbench/tasks/2026-10-13-batch-review.md (item 3)
 guesses:
 - The batch-review ledger records a user verdict on D37 on 2026-10-13; it is not entered as a check here.
