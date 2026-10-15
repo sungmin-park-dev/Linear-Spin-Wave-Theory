@@ -99,3 +99,22 @@ def test_nlswt_decay_rate_needs_a_broadening_in_the_thermodynamic_limit():
     out = result.spectral_function(k, np.linspace(0.1, 3.0, 7), 0.05, mode="dyson",
                                    grid=(8, 8), levels=40)
     assert np.isnan(out["negative_frequency_weight"]).all()    # no negative frequencies given
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_legacy_solver_gives_no_energy_for_an_unstable_state():
+    from spintoolkit import LSWTSolver, SpinSystem
+
+    def chain(J):
+        system = SpinSystem(lattice_vectors=[[2, 0], [0, 1]])
+        system.add_site("A", [0, 0], spin=0.5, angles=[0, 0], magnetic_field=[0, 0, 0])
+        system.add_site("B", [1, 0], spin=0.5, angles=[np.pi, 0], magnetic_field=[0, 0, 0])
+        system.add_coupling("A", "B", J * np.eye(3), displacement=[0, 0])
+        system.add_coupling("B", "A", J * np.eye(3), displacement=[1, 0])
+        return system
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        unstable = LSWTSolver(chain(-1.0), bz_type="simple").solve(N=4, regularization="MAGSWT")
+        stable = LSWTSolver(chain(1.0), bz_type="simple").solve(N=4, regularization="MAGSWT")
+    assert np.isnan(unstable.ground_state_energy) and np.isnan(unstable.eigenvalues).all()
+    assert np.isfinite(stable.ground_state_energy)       # zero modes lifted, not an instability

@@ -408,6 +408,11 @@ class Diagonalizer:
         J_mat = np.diag(np.hstack([np.ones((Ns)), -np.ones((Ns))]))
         Identity = np.eye(N)
         reg_type = cls.reg_method(regularization)
+        # A regularization may lift zero modes only. A negative eigenvalue of H(k) means
+        # the reference state is unstable: no magnon energies exist (D61), so every
+        # eigenvalue and transformation is NaN instead of the shifted matrix's values.
+        spectra = np.array([np.linalg.eigvalsh(Hk)[[0, -1]] for Hk in H])
+        unstable = bool(np.any(spectra[:, 0] < -1e-10 * np.max(np.abs(spectra))))
 
         if reg_type == 0:
             mu_magswt = cls.prepare_magswt(H, eps=EPSILON_DEFAULT)
@@ -420,6 +425,9 @@ class Diagonalizer:
             mu_magswt = None
             H, Bose_E, Para_T, Imag_E = cls.Reg_k_dep_onsite(H, J_mat, eps=eps, threshold=0)
 
+        if unstable:
+            Bose_E = [np.full(N, np.nan) for _ in Bose_E]
+            Para_T = [np.full((N, N), np.nan + 0j) for _ in Para_T]
         if paraunitary:
             return H, Bose_E, Para_T, Imag_E, mu_magswt
         else:
@@ -474,7 +482,7 @@ class Diagonalizer:
 
             Eigen_data = [bose_E[j], para_T[j]]
 
-            if para_T is None:
+            if para_T[j] is None:
                 Colpa_k_data = [False, imag_E[j]]
             else:
                 Colpa_k_data = [True, None]
