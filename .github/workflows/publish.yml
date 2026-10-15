@@ -1,0 +1,64 @@
+# Build spin-toolkit and upload it with PyPI Trusted Publishing (no API token).
+# Run it by hand from the Actions tab. "testpypi" is the default; choose "pypi"
+# only after the user has said "공개" (workbench/tasks/2026-10-15-release-0-2-0.md).
+# One-time setup on test.pypi.org / pypi.org: add a (pending) trusted publisher
+# with owner sungmin-park-dev, repository Linear-Spin-Wave-Theory,
+# workflow publish.yml and environment testpypi / pypi.
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Package index to upload to"
+        type: choice
+        options: [testpypi, pypi]
+        default: testpypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check --strict dist/*
+
+      - name: Smoke-test the wheel
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install dist/*.whl
+          cd /tmp && /tmp/smoke/bin/python -c "import spintoolkit as stk; print(stk.__version__)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.target }}
+      url: ${{ inputs.target == 'pypi' && 'https://pypi.org/p/spin-toolkit' || 'https://test.pypi.org/p/spin-toolkit' }}
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ inputs.target == 'pypi' && 'https://upload.pypi.org/legacy/' || 'https://test.pypi.org/legacy/' }}
