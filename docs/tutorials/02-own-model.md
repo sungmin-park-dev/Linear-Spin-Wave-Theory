@@ -45,6 +45,17 @@ def square_j1j2(J2, S=0.5):
   Use `Term.onsite(site, A)` (S·A·S) for
   single-ion anisotropy when S ≥ 1.
 
+**Single-ion convention.** The classical and spin-wave methods use the
+spin-coherent-state value of S·A·S, which scales `A` by 1 − 1/(2S) (D37).
+This makes the single-ion gap exact: a lone spin with easy-axis D(S^z)²
+(D < 0) in a field h along z has its excitation at h + |D|(2S − 1). At S = 1/2 the term is a
+constant and has no effect. Spin-wave codes that expand S·A·S with plain
+Holstein–Primakoff bosons give h + 2|D|S instead. magnopy 0.6.1 does this,
+as checked in `docs/reviews/2026-10-15-spin-wave-package-comparison.md`.
+To reproduce such a code, enter A / (1 − 1/(2S)) here. For any other code
+(SpinW, Sunny, …), check its documentation for which convention it uses
+before you compare numbers.
+
 ## Finding the classical ground state
 
 ```python

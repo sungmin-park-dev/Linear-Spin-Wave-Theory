@@ -48,4 +48,4 @@ references:
 | 24 | 이론 노트 12개 draft → accepted | draft 유지 | 2026-10-15 | 사용자: "추천대로 진행". 논문 비교로 엄밀한 검토를 마친 노트부터 하나씩 accepted로 올리고, 공개본은 그때까지 미룬다 |
 | 25 | 개발 노트 dev-design·dev-verification·dev-decisions | draft 유지 | 2026-10-15 | 사용자: "추천대로 진행". 논문 비교로 엄밀한 검토를 마친 노트부터 하나씩 accepted로 올리고, 공개본은 그때까지 미룬다 |
 | 26 | 영어 튜토리얼 5편 | draft 유지 | 2026-10-15 | 사용자: "추천대로 진행". 논문 비교로 엄밀한 검토를 마친 노트부터 하나씩 accepted로 올리고, 공개본은 그때까지 미룬다 |
-| 28 | 작업대 앱이 research-library bib를 읽는지 | 미확인 | 2026-10-15 | 앱 코드가 이 세션에서 닿는 저장소에 없음. 앱 쪽에서 확인할 항목으로 남김 |
+| 28 | 작업대 앱이 research-library bib를 읽는지 | 앱 수정 ("추천대로 진행해") | 2026-10-15 | 앱 코드로 확인: 연구노트의 `[@키]`는 프로젝트 bib(`research.yaml` `sources.bib`, 없으면 저장소 맨 위 `*.bib`)만 찾았고, 이 저장소에는 둘 다 없어 화면에 "bib에 없는 키", Markdown 노트 PDF에 참고문헌 없음. emergence-project/emergence-workbench PR #128로 프로젝트 bib에 없는 키를 공유 라이브러리 `references.bib`에서 찾게 함(화면과 PDF, PDF는 그 항목만 뽑은 `library-refs.bib`). 이 저장소는 고칠 것 없음 |

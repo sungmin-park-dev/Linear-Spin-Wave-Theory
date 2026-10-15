@@ -49,7 +49,7 @@ Y는 있음, N은 없음, ?는 확인하지 못함이다. 다른 패키지의 �
 
 | 기능 | spin-toolkit | SpinW | Sunny.jl | magnopy | pyMagCalc |
 |---|---|---|---|---|---|
-| 언어 / 라이선스 | Python / (미정) | MATLAB GPL-3, pySpinW 알파(Rust 핵심) | Julia / MIT | Python / GPL-3 | Python / MIT |
+| 언어 / 라이선스 | Python / MIT | MATLAB GPL-3, pySpinW 알파(Rust 핵심) | Julia / MIT | Python / GPL-3 | Python / MIT |
 | 차원 | 2D만 | 3D | 3D | 3D | 3D |
 | LSWT 정합 구조, 초격자 | Y | Y | Y | Y | Y |
 | 단일-Q 나선·원뿔(회전 좌표계) | Y (D34) | Y | Y | ? | Y |
