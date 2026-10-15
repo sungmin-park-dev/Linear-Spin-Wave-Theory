@@ -83,6 +83,9 @@ class LSWTSettings:
         Offset the mesh by half a step, so that it avoids the zone centre.
     k_points : (m, 2) array_like, optional
         Explicit Cartesian momenta with equal weights, replacing the mesh.
+        Unless the set is closed under ``k -> -k`` modulo the magnetic
+        reciprocal lattice, only the bands are defined: the zero-point
+        energy and the boson numbers are NaN.
     regularization : {"none", "MAGSWT", "k-dependent"}
         A regularization only lifts zero modes (e.g. a Goldstone mode on the
         mesh). A negative eigenvalue of ``H(k)`` below ``-zero_mode_tolerance *
@@ -163,10 +166,12 @@ class LSWTResult:
         Per site; ``ground_state_energy = classical + zero_point``. The
         zero-point and ground-state energies are NaN when the reference state
         is not stationary (linear boson terms remain, so the expansion has no
-        harmonic order).
+        harmonic order), or when explicit ``k_points`` are not closed under
+        ``k -> -k`` (the formula relabels the hole momentum).
     boson_numbers : (Ns,) array
         ``<a_i^dagger a_i>`` at zero temperature; NaN when the reference state
-        is not stationary.
+        is not stationary or explicit ``k_points`` are not closed under
+        ``k -> -k``.
     lattice, magnetic_lattice : (2, 2) arrays
         Primitive and magnetic lattice vectors (rows).
     positions : (Ns, 2) array
@@ -266,6 +271,20 @@ def _momenta(model: SpinModel, state: SpinState, geometry: CalculationGeometry,
     grid = np.array([((i + offset) / n1, (j + offset) / n2) for i in range(n1) for j in range(n2)])
     k = 2 * np.pi * grid @ np.linalg.inv(magnetic).T
     return k, grid
+
+
+def _closed_under_inversion(k: np.ndarray, magnetic: np.ndarray, tol: float = 1e-9) -> bool:
+    """Whether every -k of the set equals some k up to a magnetic reciprocal vector.
+
+    The zero-point energy and the boson numbers of :func:`solve_lswt` relabel
+    the hole momentum -k as k, which needs such a set (research note *LSWT
+    paraunitary diagonalization*). The default mesh and the finite torus are
+    closed; explicit ``k_points`` need not be.
+    """
+    p = np.asarray(k, dtype=float) @ np.asarray(magnetic, dtype=float).T / (2 * np.pi)
+    d = (-p)[:, None, :] - p[None, :, :]
+    d -= np.round(d)
+    return bool(np.all(np.any(np.all(np.abs(d) < tol, axis=-1), axis=1)))
 
 
 def _diagonalize(H: np.ndarray, regularization: str, k: np.ndarray, zero_mode_tolerance: float):
@@ -379,6 +398,15 @@ def solve_lswt(model: SpinModel, state: SpinState,
                     f"{settings.mesh[0]}x{settings.mesh[1]} mesh of the magnetic reciprocal cell, "
                     f"{'half-step shifted' if settings.shift else 'zone-centred'}"),
         "num_k": len(k)}
+    if settings.k_points is not None:
+        diagnostics["inversion_closed"] = _closed_under_inversion(k, state.magnetic_lattice(model))
+        if not diagnostics["inversion_closed"] and diagnostics["stationary"]:
+            warnings.warn("explicit k_points are not closed under k -> -k (modulo the magnetic "
+                          "reciprocal lattice): the zero-point energy and the boson numbers "
+                          "relabel -k as k and are NaN; the bands are unaffected",
+                          UserWarning, stacklevel=2)
+            zero_point = float("nan")
+            boson_numbers = np.full(len(boson_numbers), np.nan)
     if not diagnostics["stationary"]:
         warnings.warn(f"reference state is not stationary (max torque {torque:.3g} E0): linear "
                       "boson terms remain and LSWT is not a consistent expansion; the zero-point "

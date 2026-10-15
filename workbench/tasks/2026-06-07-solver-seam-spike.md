@@ -3,7 +3,7 @@ title: 솔버 seam 스파이크 (ED·TN·NQS로 XXZ 검증)
 topic: toolkit-development
 priority: 3
 created: '2026-06-07'
-state: paused
+state: done
 task: 같은 토러스 전개를 ED·TeNPy DMRG·NetKet이 읽게 해 솔버 경계(seam)를 실측으로 검증한다. 세 방법이 1e-14로 일치했고, RBM VMC 상대 오차는 1e-3–8e-3, TN 필드 규약 -h_i·S_i는 사용자가 확인했다(2026-10-01).
 outputs:
 - data-space/verification/261001-solver-seam-netket/report.json
@@ -13,6 +13,8 @@ outputs:
 > 2026-10-15 `GOVERNMENT/Working-Pad/handoff/open/260607-solver-seam-spike.md`에서 옮겼다. 옛 머리말: title Solver Seam Spike - XXZ multi-solver (reuse Tensor-Network-Study), status draft, created 2026-06-07, updated 2026-10-01.
 >
 > 멈춘 까닭: 2026-10-10 범위 결정(D48)으로 양자 다체 계산이 범위 밖이 되어 더 진행하지 않고 결과만 보존한다. 닫을지는 일괄 검토 C2에서 사용자가 정한다.
+>
+> 2026-10-15 일괄 검토 27번에서 닫았다(사용자 원칙 "물리검토는 원칙을 세우고, 추천대로 진행해."). 결과는 위 outputs에 보존한다.
 
 # Solver Seam Spike — XXZ 멀티솔버 (TN-Study 하네스 재사용)
 
