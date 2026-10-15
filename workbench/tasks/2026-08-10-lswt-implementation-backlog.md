@@ -1,17 +1,15 @@
 ---
-frontmatter-version: 1
-title: LSWT implementation backlog migrated from AGENTS
-section: issue-notes/open
-issue-type: review
-status: draft
-last-edited-by: claude
-created: 2026-08-10
-updated: 2026-09-30
-related:
-  - archive/government/Working-Pad/issue-notes/closed/260802-code-space-audit-general-2d-spin-tool.md
-  - archive/government/Working-Pad/issue-notes/closed/260810-agents-progress-history.md
-must-read: archive/government/Agents-Bylaws/templates/issue-notes-template.md
+title: LSWT 구현 남은 목록
+topic: toolkit-development
+priority: 2
+created: '2026-08-10'
+state: paused
+task: AGENTS.md에서 옮겨 온 미완료 구현 항목(band plotter·exchange viewer 포팅, 공개 배포 정리, real-space BdG solver, IncommensurateStructure 후속)과 NBCP 밴드 계산의 측정 데이터 대조를 모아 둔 목록.
 ---
+
+> 2026-10-15 `GOVERNMENT/Working-Pad/issue-notes/open/260810-lswt-implementation-backlog.md`에서 옮겼다. 옛 머리말: title LSWT implementation backlog migrated from AGENTS, status draft, created 2026-08-10, updated 2026-09-30.
+>
+> 멈춘 까닭: 표의 항목은 우선순위가 정해지지 않았다. 사용자가 다음 구현 단위를 고르면 그 항목을 따로 작업으로 나눈다(본문 권고 1). 측정 데이터와의 대조는 데이터가 있어야 한다.
 
 # LSWT implementation backlog migrated from AGENTS
 
@@ -60,8 +58,8 @@ observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `
     0.041, 0.031, 0.015 meV이고, B → B_C^cl 아래에서 연속으로 닫힌다(1.71 T에서 3e-4 meV). 이는 편극상 갭이 위에서 닫히는 것과
     맞는다.
   - **미완료.** 측정 데이터와의 비교는 하지 않았다. 논문의 측정 B_C ≈ 1.65 T와 고전값의 차이는 LSWT 밖의 효과다.
-- 2026-09-11 후속: 스핀당 U/S/C와 sublattice 점유수의 정규화, 통합·온도 스캔의 Ns 추론을 신규 21개 테스트로 검증·수정했다. [정규화 종결 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)에 해석해·legacy 대조를 기록하고 완료 항목을 표에서 제거했다. Thermal Hall, 적용되지 않는 `exclude_gamma` 및 Goldstone/invalid-mode 처방은 별도 검토 범위다.
-- 2026-09-11 온도 전달, thermal energy의 band 합, free-energy logarithm 결함은 신규 17개 회귀 테스트로 수정·종결했다. [해당 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)에 legacy 대조와 검증 범위를 기록했다.
+- 2026-09-11 후속: 스핀당 U/S/C와 sublattice 점유수의 정규화, 통합·온도 스캔의 Ns 추론을 신규 21개 테스트로 검증·수정했다. [정규화 종결 이슈](../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)에 해석해·legacy 대조를 기록하고 완료 항목을 표에서 제거했다. Thermal Hall, 적용되지 않는 `exclude_gamma` 및 Goldstone/invalid-mode 처방은 별도 검토 범위다.
+- 2026-09-11 온도 전달, thermal energy의 band 합, free-energy logarithm 결함은 신규 17개 회귀 테스트로 수정·종결했다. [해당 이슈](../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)에 legacy 대조와 검증 범위를 기록했다.
 - 2026-09-10 B/B† 구현 회귀 검증과 공개 솔버의 T=0 에너지 반환식 수정은 각각 종결 이슈에 기록했다. 이는 전체 Hamiltonian, Colpa 또는 유한온도 검증의 완료를 뜻하지 않는다.
 - 일부 항목은 이미 code-space audit에 상세히 기록되어 있으므로 이 문서에서 내용을 중복 확정하지 않는다.
 - “합의 완료”라고 적힌 API 항목도 승인 근거와 현재 코드 상태를 다시 확인한 뒤 착수해야 한다.
@@ -81,11 +79,11 @@ observables–솔버 연결은 공통 경로(`classical_energy(model, state)`, `
 
 ## 참조
 
-- `GOVERNMENT/Working-Pad/TASK-QUEUE.md` — 활성 작업 인덱스
+- `archive/government/Working-Pad/TASK-QUEUE.md` — 활성 작업 인덱스
 - `archive/government/Working-Pad/issue-notes/closed/260802-code-space-audit-general-2d-spin-tool.md` — 현재 code-space 구조 진단
 - `GOVERNMENT/Working-Pad/issue-notes/open/260602-commensurate-structure-test-failures.md` — magnetic-structure 검증 문제
-- [T=0 energy assembly 수정 및 유한온도 검토 경계](../../../../archive/government/Working-Pad/issue-notes/closed/260910-zero-point-energy-normalization.md)
-- [유한온도 U/F 및 점유수 수정과 남은 정규화](../../../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)
-- [열역학 observables 정규화 종결](../../../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)
+- [T=0 energy assembly 수정 및 유한온도 검토 경계](../../archive/government/Working-Pad/issue-notes/closed/260910-zero-point-energy-normalization.md)
+- [유한온도 U/F 및 점유수 수정과 남은 정규화](../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)
+- [열역학 observables 정규화 종결](../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)
 - `code-space/examples/` — NBCP 실행 예제
 - `code-space/spintoolkit/` — 현재 구현(2026-09-29 `lswt`에서 이름 변경)

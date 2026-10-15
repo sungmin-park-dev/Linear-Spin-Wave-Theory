@@ -1,13 +1,18 @@
 ---
-frontmatter-version: 1
-title: Current LSWT Documentation Audit
-section: issue-notes/open
-issue-type: review
-status: in-review
-last-edited-by: claude
-created: 2026-06-03
-updated: 2026-10-01
+title: LSWT 이론 문서 점검 (범위·열린 물리 결정·검토 기록)
+topic: fundamental-theory-of-spin-wave-theory
+priority: 1
+created: '2026-06-03'
+state: paused
+task: LSWT 이론 문서의 coverage, lifecycle, source review, legacy 통합과 열린 물리 질문을 추적한다. 2026-10-01 독립 검산으로 오류 14건을 고쳤고 10개 draft를 썼다. 기존 다음 묶음은 local circular component와 real-space H2다.
+references:
+- workbench/rules/lswt-canonical-document-lifecycle.md
+- docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md
 ---
+
+> 2026-10-15 `GOVERNMENT/Working-Pad/issue-notes/open/260809-lswt-documentation-audit.md`에서 옮겼다. 옛 머리말: title Current LSWT Documentation Audit, status in-review, created 2026-06-03, updated 2026-10-01.
+>
+> 멈춘 까닭: 점검 대상인 옛 Markdown 이론 문서는 2026-10-08부터 보존본이고 이론은 연구노트에서 고친다. 남은 것(열린 물리 결정 9개, 10개 draft의 물리·수학 검토 C1, LT 진단 1/4 파수 거짓 음성 수정 확인)은 사용자 판단을 기다린다.
 
 # Current LSWT Theory Documentation Audit
 
@@ -36,7 +41,7 @@ Markdown 단일 정본 원칙은 2026-08-01 사용자가 승인했고, active au
 surface를 `docs/`로 올리는 구조는 2026-08-09 승인했다. 기존 결정 원문은
 `workbench/decisions/2026-08-01-lswt-markdown-source-authority.md`에
 있으며 새 경로를 반영하는
-[후속 결정](../../../../workbench/decisions/2026-08-09-lswt-docs-authoring-surface.md)은
+[후속 결정](../decisions/2026-08-09-lswt-docs-authoring-surface.md)은
 2026-09-05 기준 문서 보완에서 Court-Precedents로 옮겨 기록했다.
 Routing 승인은 아래 draft 또는 skeleton의 이론 내용을 승인한 것이 아니다.
 
@@ -56,7 +61,7 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 | 작성 범위 | Real-space 문서의 작업 메모는 $H_4$ 이식을 요구하지만 아래 Open Physical Decisions에서는 포함 범위가 미결정이다. 원문에 있다는 이유만으로 범위를 확장하지 않고, 해당 단위 검토 시 이 충돌을 해결한다. |
 | 다음 본문 단위 | `bilinear-spin-hamiltonian.md`를 원본 PDF의 Source Eq. (1)–(3)과 대조한다. 필요한 notation만 먼저 점검하고, 영어 본문·interaction support·link counting·Zeeman convention과 작업 메모 분리를 다룬다. 본문 수정은 대기다. |
 
-현재 완료한 것은 작업 상태 복원과 기준 문서 보완이다. 원문 수식의 재검증, 사용자 물리·수학 acceptance와 코드 검증은 수행하지 않았다. 문서별 검토 범위와 완료 근거는 [lifecycle](../../../../workbench/rules/lswt-canonical-document-lifecycle.md)의 작업 단위 기준에 따라 이 audit에 이어 기록한다.
+현재 완료한 것은 작업 상태 복원과 기준 문서 보완이다. 원문 수식의 재검증, 사용자 물리·수학 acceptance와 코드 검증은 수행하지 않았다. 문서별 검토 범위와 완료 근거는 [lifecycle](../rules/lswt-canonical-document-lifecycle.md)의 작업 단위 기준에 따라 이 audit에 이어 기록한다.
 
 기준 문서 검증: 변경한 문서의 내부 링크·frontmatter·공백과 AGENTS/CLAUDE의 공통 지침 일치를 확인했다. 작업 시작 시점의 파일 내용과 대조해 승인 범위 밖의 변경이 없고, 이론 본문·원자료·코드와 2026-08-01 결정 원문이 그대로임을 확인했다.
 
@@ -282,7 +287,7 @@ Quarto HTML preview(embed-resources, MathJax)를 scratchpad에 생성했다. 경
 
 ## Independent Check and Skeleton Drafts — 2026-10-01
 
-프로젝트 coordinator 경유 사용자 위임("최고의 spin model 범용 솔빙 패키지", 2026-10-01)에 따라, 2026-09-30 draft 7개를 문서별 독립 검산자가 다시 유도·수치 확인했고, 남은 skeleton 3개를 본문 draft로 작성했다. 결과와 문서별 검토 포인트는 [LSWT draft 물리·수학 검토 가이드](261001-lswt-draft-physics-review-guide.md)가 소유한다. 이 audit에는 요약만 둔다.
+프로젝트 coordinator 경유 사용자 위임("최고의 spin model 범용 솔빙 패키지", 2026-10-01)에 따라, 2026-09-30 draft 7개를 문서별 독립 검산자가 다시 유도·수치 확인했고, 남은 skeleton 3개를 본문 draft로 작성했다. 결과와 문서별 검토 포인트는 [LSWT draft 물리·수학 검토 가이드](../../docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md)가 소유한다. 이 audit에는 요약만 둔다.
 
 - 확인된 오류 14건을 고쳤다. 핵심은 topology 문서의 "thermal Hall 전도도가 Fourier gauge에 무관" 진술(Chern 수만 불변; C3를 깬 모델에서 두 gauge의 κ/T가 0.0266 대 0.0354), c2 가중치의 고온 극한 진술, spin-correlations의 켤레 관계 \([\mathcal C^{\alpha\beta}(\mathbf q,t)]^*=\mathcal C^{\beta\alpha}(\mathbf q,-t)\), SF의 교환자=2i Im C 진술(상반 경우에만 성립)이다.
 - 정정: 위 Luttinger–Tisza 검토 묶음의 "stage 6b `lt_matrix`(D32)와 같은 정의"는 on-site 항이 없을 때만 맞다. 코드 `lt_matrix`는 bilinear 항만 더한다.
@@ -545,7 +550,7 @@ source-only evidence로 보존한다.
 2026-09-10 후속 코드 검증: 현재 `LSWTHamiltonian`의 B/B† 배치와 두 운동량
 미분은 독립적인 spin-matrix 기준 회귀 테스트 8건으로 확인했다. Legacy 원본과
 현재 구현의 차이, c735573 수정 이력 및 stale issue 정정은
-[종결 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260802-hamiltonian-b-block-substitution-bug.md)에 기록했다.
+[종결 이슈](../../archive/government/Working-Pad/issue-notes/closed/260802-hamiltonian-b-block-substitution-bug.md)에 기록했다.
 이 구현 이슈의 종결은 A1, Fourier/gauge, A2/A5/A10 또는 사용자의 Human
 Physics and Mathematics Review를 완료한 것이 아니다. 아래의 원문 수식
 검토 항목은 계속 열린 상태로 둔다.
@@ -558,7 +563,7 @@ Fock-space 대각화로 확인했다. 저수준 trace 식은 유지하고, 잘�
 분산에서는 \(\operatorname{Tr}H_k=2\operatorname{Tr}A_k\)가 각 k에서
 성립하지 않아도 k↔-k를 보존하는 합에서 성립한다. A2/A5/A10/A11/A12의
 원본 수식 대조, 보충 방향과 11개 회귀 테스트는
-[영점에너지 종결 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260910-zero-point-energy-normalization.md)에
+[영점에너지 종결 이슈](../../archive/government/Working-Pad/issue-notes/closed/260910-zero-point-energy-normalization.md)에
 기록했다. 구현 오류만 종결했으며, 이론 본문 반영과 사용자 검토는 남아 있다.
 아래 인용은 과거 초안의 검토 메모로 보존한다.
 
@@ -646,14 +651,14 @@ Fock-space 대각화로 확인했다. 저수준 trace 식은 유지하고, 잘�
 점유수 평균을 대조했다. 개별·통합 U/S/C를 스핀당 값으로 맞추고, 통합 점유수의
 중복 N_s 나눗셈 및 Ns 추론 결함을 수정했다. N_s=2/4의 cell 복제,
 S=-partial F/partial T, C=partial U/partial T와 온도 스캔을 21개 테스트로
-확인했다. [정규화 종결 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)에
+확인했다. [정규화 종결 이슈](../../archive/government/Working-Pad/issue-notes/closed/260911-thermodynamic-observable-normalization.md)에
 근거와 영향 범위를 기록했다. 이론 본문 반영·사용자 검토와 Thermal Hall,
 Goldstone 및 invalid-mode 처방은 별도다.
 
 2026-09-11 구현 검증: Primary PDF 13–14쪽의 분배함수와 U/F 최종식을
 독립 oscillator 및 복소 pairing boson 모델에 대조했다. 온도 전달, U의 band
 합산, F의 masked-copy 결함을 수정했고, U=F-T partial F/partial T도 확인했다.
-[유한온도 구현 종결 이슈](../../../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)에
+[유한온도 구현 종결 이슈](../../archive/government/Working-Pad/issue-notes/closed/260911-finite-temperature-energy-and-occupation.md)에
 17개 회귀 테스트와 근거를 기록했다. 원본 식 (61)의 trace 계수·누락된 k 합,
 E_0의 명칭 및 이론 본문 반영은 사용자 검토가 남아 있다. 별도 observables의
 per-spin/per-cell 정규화와 Goldstone 처리는 이 종결에 포함하지 않는다.
@@ -677,7 +682,7 @@ area 정규화 오류를 재현했다. `1e-12`→`1e-22`, `Ns` 곱셈만으로 �
 사용자가 층당 κ [W/K] 기본·명시적인 층간격에 따른 3D 환산을 승인해 두
 실행 경로와 온도 스캔에 적용했다. 독립 회귀 32개 통과, 전체 123 passed와
 기존 CommensurateStructure 5 failed를 확인했다.
-[열린 이슈](260802-topology-thermal-hall-real-space-volume-bug.md)에 유도,
+[열린 이슈](2026-08-02-thermal-hall-real-space-volume.md)에 유도,
 `code-space/examples/verification/thermal_hall_reference_check.py`의 수치와 legacy 대비를 기록했다.
 이어서 실제 BZ의 격자 교체·경계 누락/중복 및 Chern의 불필요한 Ns 나눗셈을
 수정했다. 신규 BZ 검사 40개와 이전 Hall 검사 32개 통과, 전체 163 passed와

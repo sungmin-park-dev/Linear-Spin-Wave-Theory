@@ -16,7 +16,7 @@ fields:
 evidence:
 - kind: calc
   title: Bloch convention check
-  file: GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md
+  file: docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md
   text: 'C3-broken boson honeycomb, 120^2 mesh, T=2: full-position 0.02662, cell 0.03536'
   checks: []
 - kind: analytic
@@ -26,6 +26,6 @@ evidence:
 sources:
 - commit a91372f
 - commit 16523a3 (#17)
-- GOVERNMENT/Working-Pad/issue-notes/open/261001-lswt-draft-physics-review-guide.md (topology row)
+- docs/reviews/2026-10-01-lswt-draft-physics-review-guide.md (topology row)
 guesses:
 - A first correction called it a gauge dependence and the user rejected it; this dot records the corrected result only.

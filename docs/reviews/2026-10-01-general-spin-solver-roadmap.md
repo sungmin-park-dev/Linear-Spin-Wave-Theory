@@ -1,7 +1,7 @@
 # 범용 스핀 모델 솔버 로드맵 (spin-toolkit)
 
 작성 2026-10-01, Claude (사용자 위임 판단). 이 문서는 제안이며 각 항목의 설계 결정은
-구현 PR마다 `GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md`
+구현 PR마다 `archive/government/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md`
 결정 목록(D34~)에 기록해 사용자가 검토·되돌릴 수 있게 한다.
 
 ## 1. 현재 위치 (main, 2026-10-01)

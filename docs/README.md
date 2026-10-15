@@ -16,6 +16,7 @@ updated: 2026-09-23
 |---|---|---|
 | 패키지 사용법(영어 튜토리얼) | [tutorials/](tutorials/README.md) | 첫 계산부터 중성자·M(h)·위상까지 5편. 각 수치는 해석해·문헌·ED와 대조하고 테스트로 확인한다. |
 | 내부 검증 자료 | [verification-notes/](verification-notes/) | 수식·basis convention과 코드의 대조 (옛 `docs/sources/03-verification-notes`) |
+| 검토·계획 문서 | [reviews/](reviews/README.md) | 2026-10-01–02 검토 안내·로드맵·목표 점검 (옛 `GOVERNMENT/Working-Pad/project-review`). 과정 기록이며 정본이 아니다. |
 | LSWT 원자료 | [../sources/](../sources/README.md) | 원본 노트·TeX 전사본. 현재 이론 작업이 계속 참조한다. |
 | LSWT 일반 이론 Markdown (보존본) | [../archive/2026-10-08-lswt-markdown/](../archive/2026-10-08-lswt-markdown/README.md) | 2026-10-08 상태로 보존. 더 고치지 않는다. |
 | LSWT 이론 LaTeX 연구노트 (보존본) | [../archive/2026-10-11-lswt-latex-notes/](../archive/2026-10-11-lswt-latex-notes/) | 2026-10-11 Markdown 전환 직전 상태와 변환 도구. 더 고치지 않는다. |

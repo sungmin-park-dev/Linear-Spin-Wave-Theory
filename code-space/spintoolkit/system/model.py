@@ -28,7 +28,7 @@ in :data:`SUPPORTED_KINDS`. A model is validated when it is constructed, so a
 ``SpinModel`` object is always valid; all violations are reported together in
 one :class:`SpinModelError`. Arrays are copied and made read-only.
 
-See ``GOVERNMENT/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md``.
+See ``archive/government/Working-Pad/idea-proposals/2026-09-23-spin-model-transfer-contract.md``.
 """
 
 from __future__ import annotations

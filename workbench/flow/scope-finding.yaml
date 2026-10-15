@@ -19,12 +19,12 @@ evidence:
   text: decision
   checks: []
 - kind: calc
-  file: GOVERNMENT/Working-Pad/handoff/open/260607-solver-seam-spike.md
+  file: workbench/tasks/2026-06-07-solver-seam-spike.md
   text: solver seam spike results
   checks: []
 sources:
 - workbench/decisions/2026-10-10-package-scope-semiclassical.md
 - commit a9008a9
-- GOVERNMENT/Working-Pad/TASK-QUEUE.md (row 2)
+- archive/government/Working-Pad/TASK-QUEUE.md (row 2)
 guesses:
 - This is a user scope decision recorded as a finding; whether a decision belongs in the flow is the agent's choice.

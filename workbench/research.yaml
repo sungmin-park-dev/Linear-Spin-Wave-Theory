@@ -8,13 +8,10 @@ sources:
     - workbench/topics — LSWT 이론 lswt-* 8개(2026-10-09 주제별로 나눈 7개 + 2026-10-12 1/S 보정 노트), 예제 lswt-example-* 4개(2026-10-12)와 개발 노트 dev-* 3개 (2026-10-08부터 내용 원본)
     - archive/2026-10-08-lswt-markdown — LSWT 일반 이론 Markdown (2026-10-08 상태로 보존, 더 고치지 않음)
     - archive/2026-10-08-development-beamer/main.tex — 패키지 개발 설계와 결정 기록 D01–D47 Beamer (2026-10-08 상태로 보존, 더 고치지 않음)
-  tasks: GOVERNMENT/Working-Pad/TASK-QUEUE.md
   materials:
-    - GOVERNMENT/Working-Pad/project-review
+    - docs/reviews
     - data-space/gallery
     - docs/tutorials
-folders:
-  - GOVERNMENT — 남은 운영 문서(TASK-QUEUE, 열린 이슈·인계, 제안, project-review, roadmap). 손댈 때 하나씩 workbench/로 옮긴다
 concepts:
   - linear-spin-wave-theory
   - magnon
