@@ -12,6 +12,7 @@ Claude 프로젝트 공유 폴더(`/mnt/project-files/`)에만 있던 2026-10-01
 | `2026-10-01-lswt-drafts-review.pdf` | LSWT draft 검토용 PDF (파생물; 원본은 `archive/2026-10-08-lswt-markdown/`, 검토 가이드는 아래 줄) | `lswt-review/` |
 | `2026-10-01-lswt-draft-physics-review-guide.md` | LSWT draft 10편 물리·수학 검토 가이드 (일괄 검토 C1) | 저장소 `GOVERNMENT/Working-Pad/issue-notes/open/261001-…` |
 | `2026-10-02-batch-review-guide.md` | 사용자 일괄 검토 안내 (A1–A6, B1–B7, C1–C3) | `review/` |
+| `2026-10-15-spin-wave-package-comparison.md` | SpinW·Sunny·magnopy 등과 기능·수치 비교 (magnopy 교차검증 스크립트는 `data-space/verification/261015-magnopy-comparison/`) | `package-comparison/` |
 | `stage7-visualization-proposal.md` | Stage 7 시각화 설계 제안 (draft) | `task-queue/` |
 
 공유 폴더에서 이미 저장소에 있던 파일(각도 자유에너지·고전 열적 scan README, stage7 그림, spiral memo, 그림 묶음 `data-space/gallery/`, 10/2 계산 기록 `data-space/verification/261002-*`)은 옮기지 않았다. 자화 곡선 비교 데이터(`roadmap/magnetization/`, 스크립트·json 60여 개)는 공유 폴더에 둔다. 아직 PR이 아닌 코드 patch(`roadmap/patches/`, `task-queue/*.patch`)는 해당 스레드가 PR로 올린다.
