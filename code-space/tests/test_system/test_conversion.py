@@ -111,7 +111,12 @@ def test_round_trip_through_common_format_keeps_hamiltonian(cell, family):
 @pytest.mark.parametrize("family", FAMILIES)
 @pytest.mark.parametrize("cell", CELLS)
 def test_energies_agree_for_any_angle_representation(cell, family):
-    """Classical and zero-point energies are gauge invariant, so any angles work."""
+    """Classical and zero-point energies are gauge invariant, so any angles work.
+
+    These angles are not a classical minimum: the state is unstable, so the
+    zero-point energy is NaN in both representations (D61). The spectrum of H(k),
+    which a change of local frame leaves unchanged, is compared instead.
+    """
     config = {**BASE, **FAMILIES[family]}
     n = len(legacy_cells(cell))
     angles = np.linspace(-1.1, 2.3, 2 * n)
@@ -124,7 +129,11 @@ def test_energies_agree_for_any_angle_representation(cell, family):
     converted = to_spin_system(model, state, field)
     new = EnergyFunction(converted.to_legacy_dict(BZ[cell]), N=3)
     assert float(new.quantum_energy_density_func(converted.get_angles_flat())) == pytest.approx(
-        float(legacy.quantum_energy_density_func(angles)), abs=1e-12)
+        float(legacy.quantum_energy_density_func(angles)), abs=1e-12, nan_ok=True)
+    np.testing.assert_allclose(
+        np.linalg.eigvalsh(hamiltonian(converted, BZ[cell])),
+        np.linalg.eigvalsh(hamiltonian(legacy_system(cell, config, angles), BZ[cell])),
+        rtol=0, atol=1e-12)
 
 
 def test_site_dependent_fields_are_rejected_with_an_explanation():
