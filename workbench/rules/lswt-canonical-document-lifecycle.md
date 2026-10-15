@@ -7,7 +7,7 @@ last-edited-by: codex
 created: 2026-08-01
 updated: 2026-09-16
 must-read:
-  - GOVERNMENT/User-Constitution/single-knowledge-canon.md
+  - archive/government/User-Constitution/single-knowledge-canon.md
   - workbench/decisions/2026-08-01-lswt-markdown-source-authority.md
   - workbench/decisions/2026-08-09-lswt-docs-authoring-surface.md
 ---

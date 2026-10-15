@@ -14,7 +14,7 @@ sources:
     - data-space/gallery
     - docs/tutorials
 folders:
-  - GOVERNMENT — 남은 운영 문서(TASK-QUEUE, 열린 이슈·인계, 제안, 공통 규칙 후보). 손댈 때 하나씩 workbench/로 옮긴다
+  - GOVERNMENT — 남은 운영 문서(TASK-QUEUE, 열린 이슈·인계, 제안, project-review, roadmap). 손댈 때 하나씩 workbench/로 옮긴다
 concepts:
   - linear-spin-wave-theory
   - magnon
