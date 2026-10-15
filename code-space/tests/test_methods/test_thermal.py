@@ -133,8 +133,9 @@ def test_polarized_state_is_gapped_by_h_minus_h_sat():
 def test_polarized_ferromagnet_matches_direct_formulas():
     model = square_heisenberg(J=1.0)
     result = solve_lswt(model, polarized_state(model), FIELD, settings=LSWTSettings(mesh=(24, 24)))
-    t = np.array([0.1, 0.5, 1.0, 3.0])
+    t = np.array([0.1, 0.5, 1.0, 1.5])                  # <n> < S = 1/2 at all of them
     thermal = thermal_quantities(result, t)
+    assert not thermal.beyond_lswt.any()
     w = result.bands()[:, 0]
     base = result.classical_energy + result.zero_point_energy
     for i, ti in enumerate(t):
@@ -148,6 +149,12 @@ def test_polarized_ferromagnet_matches_direct_formulas():
             np.mean((w / ti) ** 2 * n * (n + 1)), abs=1e-13)
         assert thermal.moments[i][0] == pytest.approx(0.5 - np.mean(n), abs=1e-13)
     np.testing.assert_allclose(thermal.magnetization[:, :2], 0, atol=1e-15)
+    with pytest.warns(UserWarning, match="exceed S"):
+        hot = thermal_quantities(result, [3.0])              # <n> = 0.73 > S: no spin-wave result
+    assert hot.beyond_lswt[0] and hot.boson_numbers[0][0] > 0.5
+    for value in (hot.free_energy, hot.internal_energy, hot.entropy, hot.specific_heat,
+                  hot.moments, hot.magnetization):
+        assert np.isnan(value).all()
 
 
 def test_thermodynamic_identities():
@@ -167,8 +174,9 @@ def test_low_and_high_temperature_limits():
     result = solve_lswt(model, polarized_state(model), FIELD, settings=LSWTSettings(mesh=(16, 16)))
     with pytest.warns(UserWarning, match="exceed S"):
         hot = thermal_quantities(result, [1e4])
-    assert hot.specific_heat[0] == pytest.approx(1.0, abs=1e-6)       # one mode per site
-    assert hot.beyond_lswt[0]
+    # Free bosons would reach equipartition (C = 1 per site); spins do not, and the
+    # spin-wave expansion has broken down long before, so there is no value.
+    assert hot.beyond_lswt[0] and np.isnan(hot.specific_heat[0])
     cold = thermal_quantities(result, [0.05, 0.1])
     ratio = cold.specific_heat[0] / cold.specific_heat[1]
     assert ratio < np.exp(-1.0 / 0.05 + 1.0 / 0.1) * 10                # activated, gap 1

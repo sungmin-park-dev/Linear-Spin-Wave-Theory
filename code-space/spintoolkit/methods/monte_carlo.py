@@ -232,8 +232,14 @@ class ThermalAverages:
 
 
 def _binned(values: np.ndarray, estimator, bins: int) -> Tuple[float, float]:
-    """Estimator on the whole series and its jackknife error over ``bins`` blocks."""
+    """Estimator on the whole series and its jackknife error over ``bins`` blocks.
+
+    The error is NaN for fewer than two blocks or more blocks than measurements:
+    the jackknife does not estimate it there.
+    """
     full = estimator(values)
+    if bins < 2 or bins > len(values):
+        return float(full), float("nan")
     blocks = np.array_split(np.arange(len(values)), bins)
     leave_out = np.array([estimator(np.delete(values, b, axis=0)) for b in blocks])
     error = np.sqrt((bins - 1) * np.mean((leave_out - leave_out.mean()) ** 2))

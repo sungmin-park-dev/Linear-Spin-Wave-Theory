@@ -1,6 +1,7 @@
 """LSWT on the common model types (stage 4a).
 
-1. The new entry point reproduces the existing LSWTSolver (same momenta, MAGSWT).
+1. The new entry point builds the same H(k) as the existing LSWTSolver (same momenta),
+   and reports no energies for unstable or non-stationary states.
 2. Square and triangular Heisenberg ground-state energies and moment
    reductions against the analytic LSWT values:
    square  E/N = -2JS(S+1) + 2JS <sqrt(1 - gamma_k^2)>, dS = <1/(2 sqrt(1-gamma^2))> - 1/2
@@ -19,6 +20,7 @@ from model import nbcp
 from model.nbcp.model import legacy_cells
 from spintoolkit.methods.ed import EDSector, solve_ed
 from spintoolkit.methods.lswt import LSWTError, LSWTSettings, LSWTSolver, solve_lswt
+from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.result import load_json, save_json, state_fingerprint
 from spintoolkit.models import neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg
 from spintoolkit.states.spin_state import SpinState
@@ -56,7 +58,14 @@ def square_reference(n=1000):
 @pytest.mark.filterwarnings("ignore:reference state is not stationary")
 @pytest.mark.parametrize("cell", list(BZ))
 @pytest.mark.parametrize("family", [{}, {"JPD": 0.013, "JGamma": -0.021}])
-def test_reproduces_existing_lswt_solver(cell, family):
+def test_reproduces_existing_lswt_hamiltonian(cell, family):
+    """Same H(k) as the existing builder; no energies for these non-physical test states.
+
+    The angles are arbitrary, so the states are neither stationary nor stable. The
+    existing solver repairs them with a MAGSWT shift of up to ~0.3 and reports energies;
+    solve_lswt refuses an unstable state (LSWTError, even with MAGSWT, which only lifts
+    zero modes) and gives NaN energies for a stable but non-stationary one.
+    """
     config = {"Jxy": 0.076, "Jz": 0.125, **family}
     n = len(legacy_cells(cell))
     angles = np.column_stack([np.linspace(0.3, 2.6, n), np.linspace(-2.0, 2.5, n)]).ravel()
@@ -64,23 +73,20 @@ def test_reproduces_existing_lswt_solver(cell, family):
     state = nbcp.candidate_state(model, cell, angles)
     conditions = ExternalConditions(field=FIELD)
     system = to_spin_system(model, state, conditions)
-    legacy = LSWTSolver(system, bz_type=BZ[cell]).solve(N=4, regularization="MAGSWT")
+    legacy = LSWTSolver(system, bz_type=BZ[cell])
     bz = BrillouinZone(system.to_legacy_dict(BZ[cell])["Lattice/BZ setting"], bz_type=BZ[cell])
     _, k_points, _ = bz.get_full(4)
-    new = solve_lswt(model, state, conditions,
-                     settings=LSWTSettings(k_points=k_points, regularization="MAGSWT"))
-    assert new.ground_state_energy == pytest.approx(legacy.ground_state_energy, abs=1e-13)
-    keys = sorted(legacy.data["k_data"])
-    by_key = {tuple(map(float, k)): e for k, e in zip(k_points, new.eigenvalues[:, :new.num_sites])}
-    np.testing.assert_allclose(np.array([by_key[key] for key in keys]), legacy.eigenvalues,
-                               rtol=0, atol=1e-12)
-    # The boson numbers are ill-conditioned here: these test states are not classical
-    # minima, MAGSWT shifts H(k) by up to ~0.3 and leaves magnon energies ~4e-5, so a
-    # perturbation of H(k) at machine epsilon moves <n> by up to ~7e-10 (measured,
-    # 2026-10-01). The native H(k) (D36) agrees with the old builder to ~2e-16 but
-    # sums in a different order, so the bound reflects that conditioning.
-    np.testing.assert_allclose(new.boson_numbers, list(legacy.data["boson_numbers"].values()),
-                               rtol=0, atol=1e-8)
+    k_points = np.asarray(k_points, dtype=float)
+    old_H, _ = legacy.Ham.Quadratic_Bose_Hamiltonian(k_points, angles=system.get_angles_flat())
+    new_H = QuadraticBoseHamiltonian(model, state, conditions).at(k_points)
+    np.testing.assert_allclose(np.asarray(new_H), np.asarray(old_H), rtol=0, atol=1e-13)
+    settings = LSWTSettings(k_points=k_points, regularization="MAGSWT")
+    if min(np.linalg.eigvalsh(Hk)[0] for Hk in new_H) < 0:
+        with pytest.raises(LSWTError, match="unstable"):
+            solve_lswt(model, state, conditions, settings=settings)
+    else:
+        result = solve_lswt(model, state, conditions, settings=settings)
+        assert np.isnan(result.ground_state_energy) and np.isnan(result.boson_numbers).all()
 
 
 def test_square_neel_matches_analytic_lswt():

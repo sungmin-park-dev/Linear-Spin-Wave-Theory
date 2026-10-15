@@ -84,6 +84,11 @@ class LSWTSettings:
     k_points : (m, 2) array_like, optional
         Explicit Cartesian momenta with equal weights, replacing the mesh.
     regularization : {"none", "MAGSWT", "k-dependent"}
+        A regularization only lifts zero modes (e.g. a Goldstone mode on the
+        mesh). A negative eigenvalue of ``H(k)`` below ``-zero_mode_tolerance *
+        max |eig H(k)|`` means the reference state is unstable and raises
+        :class:`LSWTError` with any regularization: no energies are reported
+        for an unstable state.
     stationarity_tolerance : float
         Largest torque (E0) accepted without a warning.
     zero_mode_tolerance : float
@@ -155,9 +160,13 @@ class LSWTResult:
     linear_terms : float
         Largest linear boson coefficient (zero at a stationary state).
     classical_energy, zero_point_energy, ground_state_energy : float
-        Per site; ``ground_state_energy = classical + zero_point``.
+        Per site; ``ground_state_energy = classical + zero_point``. The
+        zero-point and ground-state energies are NaN when the reference state
+        is not stationary (linear boson terms remain, so the expansion has no
+        harmonic order).
     boson_numbers : (Ns,) array
-        ``<a_i^dagger a_i>`` at zero temperature.
+        ``<a_i^dagger a_i>`` at zero temperature; NaN when the reference state
+        is not stationary.
     lattice, magnetic_lattice : (2, 2) arrays
         Primitive and magnetic lattice vectors (rows).
     positions : (Ns, 2) array
@@ -212,8 +221,13 @@ class LSWTResult:
         return np.sort(self.eigenvalues[:, :self.num_sites], axis=1)
 
     def ordered_moments(self) -> np.ndarray:
-        """Ordered moment ``S_i - <n_i>`` of every magnetic site at zero temperature."""
-        return self.spins - self.boson_numbers
+        """Ordered moment ``S_i - <n_i>`` of every magnetic site at zero temperature.
+
+        NaN where ``<n_i> > S_i``: the moment would reverse, which is outside
+        the spin-wave expansion.
+        """
+        moments = self.spins - self.boson_numbers
+        return np.where(moments < 0, np.nan, moments)
 
     def to_json_dict(self, include_arrays: bool = False) -> Dict[str, Any]:
         body = {"site_keys": [[s, list(c)] for s, c in self.site_keys],
@@ -282,6 +296,14 @@ def _diagonalize(H: np.ndarray, regularization: str, k: np.ndarray, zero_mode_to
                 "(shift=True) or an explicit regularization ('MAGSWT', 'k-dependent'); "
                 "a negative eigenvalue means the reference state is unstable.")
         return H, np.array(energies), np.array(vectors), np.zeros(nk)
+    lowest = np.array([np.linalg.eigvalsh(Hk)[[0, -1]] for Hk in H])
+    negative = lowest[:, 0] < -zero_mode_tolerance * np.max(np.abs(lowest), axis=1)
+    if np.any(negative):
+        i = int(np.flatnonzero(negative)[0])
+        raise LSWTError(
+            f"H(k) has a negative eigenvalue at {int(negative.sum())} of {nk} momenta (first "
+            f"k={np.round(k[i], 6).tolist()}, min eig {lowest[i, 0]:.3g}): the reference state "
+            f"is unstable, and regularization '{regularization}' only lifts zero modes.")
     original = H.copy()
     reg, bose_E, para_T, imag_E, mu = Diagonalizer.diagonalize_w_reg(
         H.copy(), regularization, paraunitary=True)
@@ -359,8 +381,10 @@ def solve_lswt(model: SpinModel, state: SpinState,
         "num_k": len(k)}
     if not diagnostics["stationary"]:
         warnings.warn(f"reference state is not stationary (max torque {torque:.3g} E0): linear "
-                      "boson terms remain and LSWT is not a consistent expansion", UserWarning,
-                      stacklevel=2)
+                      "boson terms remain and LSWT is not a consistent expansion; the zero-point "
+                      "energy and the boson numbers are NaN", UserWarning, stacklevel=2)
+        zero_point = float("nan")
+        boson_numbers = np.full(len(boson_numbers), np.nan)
     header = ResultHeader.build(
         "lswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0); boson numbers per magnetic site", diagnostics)

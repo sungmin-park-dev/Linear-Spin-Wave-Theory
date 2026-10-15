@@ -22,12 +22,19 @@ Two orders are reported:
   ``t > 0``; the moment sum ``ThermalResult.magnetization`` does not. The
   classical state is the zero-temperature one at each field (no thermal
   self-consistency), so this is a low-temperature result. Near a Goldstone
-  mode the integrand ``n_B d omega/dh`` stays finite in two dimensions, so
-  M is finite where boson numbers diverge.
+  mode that the field keeps at zero (rotation about the field axis, e.g. a
+  canted antiferromagnet) ``d omega/dh`` vanishes with ``omega`` and the
+  integrand ``n_B d omega/dh`` stays finite in two dimensions, so M is finite
+  where boson numbers diverge. Where the field opens or closes a gap at a
+  zero mode (e.g. a ferromagnet at h = 0) ``n_B d omega/dh ~ t/omega`` and
+  M diverges logarithmically in two dimensions (Mermin-Wagner); the thermal
+  values at ``t > 0`` are NaN there, with a warning.
 
 Validity of the thermal values (D49). For a gapped spectrum ``beyond_lswt``
 marks the temperatures where some thermal ``<n_i> > S_i``, as in
-``ThermalResult.beyond_lswt``. Where the zero-mode scan finds zero modes or
+``ThermalResult.beyond_lswt``; the spin-wave expansion is not valid there and
+the thermal value is NaN. The harmonic value is NaN where ``<n_i> > S_i`` at
+zero temperature. Where the zero-mode scan finds zero modes or
 candidates (``gapless``), ``<n_i>`` diverges at every ``t > 0`` in two
 dimensions and gives no criterion: only ``t = 0`` is checked, and ``M(h, t)``
 applies for ``t`` small compared with the spin-wave energy scale (``J S``).
@@ -51,6 +58,7 @@ import warnings
 
 import numpy as np
 
+from spintoolkit.definitions.defaults import THERMAL_ZERO_MODE_SLOPE
 from spintoolkit.methods.classical import classical_energy, refine_classical
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
@@ -70,7 +78,8 @@ class MagnetizationCurve:
     classical : (nh,) array
         ``-dE_cl/dh`` per site (mu_B).
     harmonic : (nh,) array
-        ``-d(E_cl + E_zp)/dh`` per site; NaN where LSWT is unstable.
+        ``-d(E_cl + E_zp)/dh`` per site; NaN where LSWT is unstable or some
+        ``<n_i> > S_i``.
     spins : (Ns,) array
     moment_reduction : (nh, Ns) array
         ``<n_i>`` at zero temperature; NaN where unstable.
@@ -80,7 +89,9 @@ class MagnetizationCurve:
         ``t = k_B T / E0`` of ``thermal``; empty if not requested.
     thermal : (nh, nt) array
         ``-dF/dh`` per site at each field and temperature; NaN where LSWT is
-        unstable. Column ``t = 0`` equals ``harmonic``.
+        unstable, and at ``t > 0`` where the field opens or closes a gap at a
+        zero mode (logarithmic divergence in 2D), and where ``beyond_lswt``.
+        Column ``t = 0`` equals ``harmonic``.
     beyond_lswt : (nh, nt) bool array
         True where some ``<n_i> > S_i`` at that field and temperature; at
         ``t > 0`` checked only where ``gapless`` is False.
@@ -103,8 +114,9 @@ class MagnetizationCurve:
 
     @property
     def ordered_moments(self) -> np.ndarray:
-        """``S_i - <n_i>``, shape (nh, Ns)."""
-        return self.spins[None] - self.moment_reduction
+        """``S_i - <n_i>``, shape (nh, Ns); NaN where ``<n_i> > S_i``."""
+        moments = self.spins[None] - self.moment_reduction
+        return np.where(moments < 0, np.nan, moments)
 
 
 def _mesh(state: SpinState, k_density: int) -> tuple:
@@ -181,28 +193,67 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         harm = e_cl + float(result.zero_point_energy)
         return st, e_cl, harm, harm + magnon_free_energy(result, t), result
 
+    def field_opens_zero_mode(result, plus, minus):
+        """True if the field moves the soft eigenvalues of ``H(k0)`` at a zero mode ``k0``.
+
+        The slope of the sum of the soft eigenvalues (those at or below the
+        candidate tolerance at ``h``) is compared with
+        ``THERMAL_ZERO_MODE_SLOPE``: a gap opened linearly in ``h``.
+
+        Then ``d omega / dh`` is finite where ``omega -> 0`` and
+        ``n_B d omega/dh ~ t / omega`` is not integrable in two dimensions.
+        A zero mode kept by a symmetry of the field (rotation about the field
+        axis) stays at zero on both sides and gives an integrable term.
+        """
+        report = scan_zero_modes(result)
+        tolerance = THERMAL_ZERO_MODE_SLOPE * step
+        for point in report.candidates:
+            eigs = np.linalg.eigvalsh(result.hamiltonian_at(point.k)[0])
+            soft = max(1, int(np.sum(eigs <= report.candidate_tolerance * report.scale)))
+            base = float(np.sum(eigs[:soft]))
+            for side in (plus, minus):
+                if side is None:
+                    return True
+                shifted = float(np.sum(np.linalg.eigvalsh(side.hamiltonian_at(point.k)[0])[:soft]))
+                if abs(shifted - base) > tolerance:
+                    return True
+        return False
+
     spins = None
     classical, harmonic, thermal, reduction, states = [], [], [], [], []
     beyond, gapless = [], []
     current = state
+    divergent = 0
     for h in fields:
         current, _, _, _, result = energies(h, current)
-        _, cl_plus, harm_plus, free_plus, _ = energies(h + step, current)
-        _, cl_minus, harm_minus, free_minus, _ = energies(h - step, current)
+        _, cl_plus, harm_plus, free_plus, result_plus = energies(h + step, current)
+        _, cl_minus, harm_minus, free_minus, result_minus = energies(h - step, current)
         classical.append(-(cl_plus - cl_minus) / (2 * step))
-        harmonic.append(-(harm_plus - harm_minus) / (2 * step))
-        thermal.append(-(free_plus - free_minus) / (2 * step))
+        reversed_moment = result is not None and bool(np.any(result.boson_numbers > result.spins))
+        harmonic.append(np.nan if reversed_moment else -(harm_plus - harm_minus) / (2 * step))
+        row_thermal = -(free_plus - free_minus) / (2 * step)
+        if (result is not None and np.any(t > 0)
+                and field_opens_zero_mode(result, result_plus, result_minus)):
+            row_thermal = np.where(t > 0, np.nan, row_thermal)
+            divergent += 1
+        thermal.append(row_thermal)
         if result is not None and spins is None:
             spins = np.asarray(result.spins, dtype=float)
         reduction.append(result.boson_numbers if result is not None else None)
         states.append(current)
         row, flag = validity(result)
+        if reversed_moment or np.any(row):
+            thermal[-1] = np.where(row | reversed_moment, np.nan, thermal[-1])
         beyond.append(row)
         gapless.append(flag)
     if spins is None:                       # unstable everywhere: site order of the state
         spins = np.array([model.site(site).spin for site, _ in states[0].directions])
     reduction = np.array([np.full(len(spins), np.nan) if r is None else r for r in reduction])
     beyond = np.array(beyond, dtype=bool).reshape(len(fields), len(t))
+    if divergent:
+        warnings.warn(f"at {divergent} field(s) the field opens or closes a gap at a zero mode: "
+                      "n_B d omega/dh diverges logarithmically in two dimensions, so the "
+                      "thermal magnetization is NaN there for t > 0", UserWarning, stacklevel=2)
     if np.any(beyond):
         warnings.warn(f"boson numbers exceed S at {int(beyond.sum())} (field, temperature) points: "
                       "LSWT is not valid there (see beyond_lswt)", UserWarning, stacklevel=2)

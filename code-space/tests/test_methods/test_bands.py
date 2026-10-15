@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
+from spintoolkit.methods.lswt.run import LSWTError
 from spintoolkit.models import (
     neel_state, polarized_state, square_heisenberg, state_120, triangular_heisenberg)
 from spintoolkit.observables.bands import band_structure
@@ -81,11 +82,17 @@ def test_triangular_120_degree_bands_are_the_folded_single_q_dispersion():
 
 def test_unstable_state_explicit_vertices_and_magnetic_zone():
     ferro = square_heisenberg(J=-1.0)
-    result = solve_lswt(ferro, neel_state(ferro), None,
-                        settings=LSWTSettings(mesh=(2, 2), regularization="MAGSWT"))
+    with pytest.raises(LSWTError, match="negative eigenvalue"):     # no regularization repairs it
+        solve_lswt(ferro, neel_state(ferro), None,
+                   settings=LSWTSettings(mesh=(2, 2), regularization="MAGSWT"))
+    # Collinear Neel in a field along the moments: H(k) is positive definite at the two
+    # explicit momenta but not near the zone centre, so the path there is NaN.
+    model = square_heisenberg(J=1.0)
+    result = solve_lswt(model, neel_state(model), ExternalConditions(field=(0, 0, 0.5)),
+                        settings=LSWTSettings(k_points=[(np.pi, 0), (np.pi / 2, np.pi / 2)]))
     with pytest.warns(UserWarning, match="not positive semidefinite"):
         bands = band_structure(result, ("Γ", "X"), points=10)
-    assert np.isnan(bands.energies).any()
+    assert np.isnan(bands.energies).any() and np.isfinite(bands.energies[-1]).all()
     model = square_heisenberg(J=1.0)
     result = solve_lswt(model, neel_state(model), None, settings=LSWTSettings(mesh=(4, 4)))
     explicit = band_structure(result, [(0.1, 0.2), (1.0, 0.4)], points=20)

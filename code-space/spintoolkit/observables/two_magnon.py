@@ -81,6 +81,7 @@ class TwoMagnonContinuum:
         Pair energies ``w_n(k + q) + w_{n'}(-k)`` over the mesh and the band
         pairs; at ``t > 0`` the energy transfer ``e_mu + e_nu`` of every
         operator pair (creation, scattering, annihilation; may be negative).
+        NaN for pairs left out at a zero mode (their weight is zero).
     weights : (nq, M, 3, 3) complex array
         ``1/2 A^a* A^b`` per pair (times the thermal factors at ``t > 0``),
         per site, so that ``weights.sum(axis=1)`` is the equal-time
@@ -130,6 +131,7 @@ class TwoMagnonContinuum:
             profile = np.exp(-0.5 * (x / eta) ** 2) / (eta * np.sqrt(2 * np.pi))
         else:
             raise ValueError("shape must be 'lorentzian' or 'gaussian'")
+        profile = np.where(np.isnan(x), 0.0, profile)       # pairs left out (energy NaN)
         return np.einsum("qm,qmw->qw", weight, profile)
 
 
@@ -276,7 +278,6 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
         warnings.warn(f"{int(excluded.sum())} mesh points with a zero mode at k or -k - q "
                       f"were left out of the two-magnon sum", UserWarning, stacklevel=2)
     weights = np.where(np.isnan(energies)[:, :, None, None], 0.0, weights)
-    energies = np.where(np.isnan(energies), 0.0, energies)
     if undefined:
         weights = np.full(weights.shape, np.nan + 0j)
     return TwoMagnonContinuum(q, energies, weights, k, excluded, settings)
