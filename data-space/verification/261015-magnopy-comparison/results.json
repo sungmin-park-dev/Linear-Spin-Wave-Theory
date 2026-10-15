@@ -1,0 +1,74 @@
+[
+ {
+  "model": "square AFM S=1/2, Neel",
+  "sites": 2,
+  "band_max_abs_diff": 6.328271240363392e-15,
+  "band_scale": 1.9999999929704635,
+  "magnopy_imag": 1.6575719215547742e-16,
+  "zpe_stk": -0.15794290952995427,
+  "zpe_magnopy": -0.1579429095299547
+ },
+ {
+  "model": "square AFM S=1/2, canted in h=0.5 h_sat",
+  "sites": 2,
+  "band_max_abs_diff": 1.0436096431476471e-14,
+  "band_scale": 2.121320219448485,
+  "magnopy_imag": 2.1524200242880134e-16,
+  "zpe_stk": -0.08496166871783892,
+  "zpe_magnopy": -0.08496166871783906
+ },
+ {
+  "model": "triangular AFM S=1/2, 120 deg",
+  "sites": 3,
+  "band_max_abs_diff": 5.329070518200751e-15,
+  "band_scale": 1.5909836015467287,
+  "magnopy_imag": 1.6128346051636244e-16,
+  "zpe_stk": -0.163807358197829,
+  "zpe_magnopy": -0.16380735819782885
+ },
+ {
+  "model": "honeycomb FM + 2nd-nbr DM (D=0.1)",
+  "sites": 2,
+  "band_max_abs_diff": 2.6645352591003757e-15,
+  "band_scale": 2.99661384036325,
+  "magnopy_imag": 6.438796829439784e-17,
+  "zpe_stk": -5.13992141030165e-19,
+  "zpe_magnopy": 0.0
+ },
+ {
+  "model": "square FM, anisotropic J + single-ion D(Sz)^2, S=1.0",
+  "sites": 1,
+  "band_max_abs_diff": 0.3238596658625146,
+  "band_scale": 8.784430368626879,
+  "magnopy_imag": 1.7034070168573853e-17,
+  "zpe_stk": -0.008650990611452717,
+  "zpe_magnopy": -0.007808731048977169
+ },
+ {
+  "model": "same, single-ion removed, S=1.0",
+  "sites": 1,
+  "band_max_abs_diff": 7.105427357601002e-15,
+  "band_scale": 8.535567073917269,
+  "magnopy_imag": 3.824815185405608e-18,
+  "zpe_stk": -0.0097626534269854,
+  "zpe_magnopy": -0.009762653426985235
+ },
+ {
+  "model": "square FM, anisotropic J + single-ion D(Sz)^2, S=2.5",
+  "sites": 1,
+  "band_max_abs_diff": 0.3209451641460772,
+  "band_scale": 22.251152498856726,
+  "magnopy_imag": 1.1827733241429137e-17,
+  "zpe_stk": -0.021162315887455638,
+  "zpe_magnopy": -0.020301740057807827
+ },
+ {
+  "model": "same, single-ion removed, S=2.5",
+  "sites": 1,
+  "band_max_abs_diff": 2.1316282072803006e-14,
+  "band_scale": 21.09939786713082,
+  "magnopy_imag": 1.9808981591970925e-17,
+  "zpe_stk": -0.025801847217540665,
+  "zpe_magnopy": -0.025801847217540086
+ }
+]
