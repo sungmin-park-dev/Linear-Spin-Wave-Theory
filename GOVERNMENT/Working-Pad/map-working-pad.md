@@ -16,7 +16,7 @@ LSWT 프로젝트의 진행 중 작업, 제안, 이슈, 검토 대기 문서를 
 
 - 아직 정본화되지 않은 운영 지식은 이 계층에 둔다.
 - 사용자 승인 또는 검토 후 durable한 절차는 `archive/government/Agents-Bylaws/`에 둔다.
-- 보호해야 할 확정 원칙은 `GOVERNMENT/User-Constitution/`에 둔다.
+- 모든 연구에 통하는 원칙은 [연구 공통 규칙](https://github.com/sungmin-park-dev/research-workspace-backup/blob/main/rules/research.md)에 둔다.
 
 ## 목차
 

@@ -145,7 +145,7 @@ Theory note를 사용자 검토에 올리기 전에 다음을 확인한다.
 - [Documentation Map](../../archive/2026-10-08-lswt-markdown/README.md)
 - [Notation and Conventions](../../archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md)
 - [Source Inventory](../../sources/README.md)
-- [Single Knowledge Canon](../../GOVERNMENT/User-Constitution/single-knowledge-canon.md)
+- [Single Knowledge Canon](../../archive/government/User-Constitution/single-knowledge-canon.md)
 - [LSWT Canonical Document Lifecycle](lswt-canonical-document-lifecycle.md)
 - [APS Style Basics](https://journals.aps.org/authors/style-basics)
 - [Physical Review Style and Notation Guide](https://publish.aps.org/files/styleguide-pr.pdf)

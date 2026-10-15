@@ -1,5 +1,7 @@
 # AGENTS.md
 
+> **먼저 읽을 것:** 모든 연구 저장소에 통하는 [연구 공통 규칙](https://github.com/sungmin-park-dev/research-workspace-backup/blob/main/rules/research.md)(맥 사본 `~/.config/research-workspace/personal/rules/research.md`). 이 파일은 그 위에 이 저장소만의 규칙을 더한다. 둘이 부딪히면 공통 규칙을 따르고 사용자에게 알린다.
+
 > LSWT 이론 문서 정립과 Python 패키지 개발 시 에이전트(Claude·Codex)가 따르는 저장소 지침. `CLAUDE.md`는 이 파일을 불러온다(`@AGENTS.md`).
 
 ---
@@ -57,10 +59,9 @@ project-root/
 │   ├── 2026-10-08-development-beamer/ # 옛 docs/development
 │   ├── 2026-10-11-lswt-latex-notes/   # Markdown 전환 직전 LaTeX 이론 노트와 변환 도구
 │   ├── legacy/                  # 원본 legacy 코드와 과거 연구노트
-│   └── government/              # 옛 GOVERNMENT의 닫힌 기록, 형식 규칙과 서식, map 문서
+│   └── government/              # 옛 GOVERNMENT의 닫힌 기록, 형식 규칙과 서식, map 문서, User-Constitution
 │
 └── GOVERNMENT/                  # 남은 운영 문서. 열린 일을 손댈 때 하나씩 workbench/로 옮긴다
-    ├── User-Constitution/       # 단일 정본 원칙 (공통 규칙이 정해지면 그쪽으로)
     └── Working-Pad/             # TASK-QUEUE.md, roadmap.md, 열린 issue-notes·handoff, idea-proposals, project-review
 ```
 
@@ -128,7 +129,6 @@ result.data                  # dict (솔버별 고유 데이터)
 - **Docstring**: NumPy 스타일
 - **Import 순서**: 표준 라이브러리 → 서드파티 (`numpy`, `scipy`) → 로컬 (`spintoolkit.*`)
 - **Type hints**: 사용 권장
-- **언어**: 코드·주석·docstring은 영어, 사용자 대화는 한국어
 
 ---
 
@@ -136,13 +136,10 @@ result.data                  # dict (솔버별 고유 데이터)
 
 > 이 섹션은 에이전트(Claude·Codex)가 이론 문서와 코드 작업 시 반드시 따라야 하는 규칙이다.
 
-1. **제안 우선**: 파일 생성·수정·삭제 전 반드시 변경 계획을 먼저 제시하고 승인 대기.
-2. **인터페이스 변경은 토의 후 결정**: API(함수명, 데이터 구조, 클래스 인터페이스) 변경은 선 제안 → 토의 → 성민 확정 순서를 따름. 임의로 결정하지 않음.
-3. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
-4. **물리적 의도 불명확 시 질문**: legacy 로직의 물리적 의미가 불분명하면 임의 해석하지 말고 반드시 질문할 것.
-5. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `workbench/rules/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
-6. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/topics/` 연구노트를 직접 편집한다. 이론 노트 `lswt-*`는 `note.md`, 개발 노트 `dev-*`는 아직 TeX다. PDF는 그로부터 생성한다(Markdown 이론 노트의 공개용 PDF 경로는 열린 항목이다). LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
-7. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/topics/*/lswt-*`)를 작성하거나 교정하기 전에 `workbench/rules/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
-8. **작업 시작 시 STATUS 확인**: 작업을 시작할 때 `workbench/STATUS.md`를 먼저 읽는다. research-workspace 앱이 `TASK-QUEUE.md`, `workbench/`의 주제·노트·결정·규칙의 상태, 일지, 참고문헌을 모아 자동으로 쓰는 요약이며 정본이 아니다. 고칠 내용은 각 원본 파일에서 고치고, 이 파일은 직접 편집하지 않는다(git 제외).
+1. **인터페이스 변경은 토의 후 결정**: API(함수명, 데이터 구조, 클래스 인터페이스) 변경은 선 제안 → 토의 → 성민 확정 순서를 따름. 임의로 결정하지 않음.
+2. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
+3. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `workbench/rules/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
+4. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/topics/` 연구노트를 직접 편집한다. 이론 노트 `lswt-*`는 `note.md`, 개발 노트 `dev-*`는 아직 TeX다. PDF는 그로부터 생성한다(Markdown 이론 노트의 공개용 PDF 경로는 열린 항목이다). LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
+5. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/topics/*/lswt-*`)를 작성하거나 교정하기 전에 `workbench/rules/lswt-writing-style.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
 
 현재 작업, 우선순위와 진행 상태는 `GOVERNMENT/Working-Pad/TASK-QUEUE.md`에서 확인한다. `AGENTS.md`에는 완료 이력, backlog 또는 issue 상태를 중복 기록하지 않는다.

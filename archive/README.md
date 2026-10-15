@@ -8,7 +8,7 @@
 | [`2026-10-08-development-beamer/`](2026-10-08-development-beamer/README.md) | 패키지 개발 설계와 결정 기록 Beamer, 2026-10-08 상태 (옛 `docs/development`). 지금 정본은 `dev-*` 연구노트 |
 | [`2026-10-11-lswt-latex-notes/`](2026-10-11-lswt-latex-notes/) | Markdown 전환 직전의 LaTeX 이론 연구노트와 변환 도구 |
 | [`legacy/`](legacy/) | 원본 legacy 코드(`modules/`, `scripts/`)와 과거 연구노트. 테스트 몇 개가 legacy 수치와 대조한다 |
-| [`government/`](government/) | 옛 GOVERNMENT의 닫힌 이슈·인계 기록, 형식 규칙(frontmatter·이름·폴더 안내)과 서식, map 문서 |
+| [`government/`](government/) | 옛 GOVERNMENT의 닫힌 이슈·인계 기록, 형식 규칙(frontmatter·이름·폴더 안내)과 서식, map 문서, User-Constitution(원칙은 연구 공통 규칙 6·7번으로 옮김) |
 
 ## 옛 경로 → 새 경로 (2026-10-13)
 
@@ -30,8 +30,9 @@
 | `GOVERNMENT/Agents-Bylaws/procedures/lswt-canonical-document-lifecycle.md` | `workbench/rules/lswt-canonical-document-lifecycle.md` |
 | `GOVERNMENT/Agents-Bylaws/` (그 밖) | `archive/government/Agents-Bylaws/` |
 | `GOVERNMENT/Working-Pad/issue-notes/closed/`, `handoff/closed/`, `inbox/`, `vault-staging/` | `archive/government/Working-Pad/` 아래 같은 이름 |
+| `GOVERNMENT/User-Constitution/` (10/13 공통 규칙 뒤) | `archive/government/User-Constitution/`. 단일 정본 원칙은 개인 저장소 `rules/research.md` 6·7번 |
 
-남은 `GOVERNMENT/`(단일 정본 원칙, TASK-QUEUE, 열린 이슈·인계, 제안, project-review, roadmap)는 손댈 때 하나씩 `workbench/`로 옮긴다.
+남은 `GOVERNMENT/`(TASK-QUEUE, 열린 이슈·인계, 제안, project-review, roadmap)는 손댈 때 하나씩 `workbench/`로 옮긴다.
 
 | 주제 | 노트 |
 |---|---|
