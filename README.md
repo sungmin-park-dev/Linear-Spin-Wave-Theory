@@ -1,6 +1,6 @@
 # spin-toolkit
 
-> **Status:** alpha (0.2.0rc1). Research code under validation; not yet on PyPI.
+> **Status:** alpha (0.2.0rc1). Research code under validation. Installed from GitHub; not published on PyPI.
 
 `spintoolkit` is a Python package for two-dimensional spin models. You write
 the Hamiltonian once as a `SpinModel`, find classical ordered states, and
@@ -39,7 +39,13 @@ Goldstone mode at a Bragg vector, instead of returning an arbitrary value.
 
 ## Installation
 
-Python 3.9 or newer. From a clone of this repository:
+Python 3.9 or newer. The package is not on PyPI; install it from GitHub:
+
+```bash
+pip install "git+https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory.git"
+```
+
+or from a clone of this repository (needed for the examples and tests):
 
 ```bash
 pip install .            # numpy, scipy, matplotlib

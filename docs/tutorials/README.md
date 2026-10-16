@@ -17,6 +17,8 @@ check a calculation of your own.
 | [5. Topology and thermal Hall](05-topology.md) | Berry curvature, Chern numbers, `thermal_hall` | closed-form gap at K; D → −D symmetry |
 | [6. Interacting spin waves](06-interacting.md) | `solve_nlswt`, magnon decay rates, S(q, ω) through order S⁰ | independent evaluation of the S⁰ energy formulas of Chernyshev and Zhitomirsky (2009) |
 
+The scripts live in this repository, so clone it first
+(`git clone https://github.com/sungmin-park-dev/Linear-Spin-Wave-Theory.git`).
 Run every script from the repository root, for example
 
 ```bash
