@@ -39,7 +39,7 @@ Quick Start
 -0.5388
 """
 
-__version__ = "0.2.0rc1"   # PEP 440; the single source of the package version
+__version__ = "0.2.0"   # PEP 440; the single source of the package version
 __author__ = "Sung-Min Park"
 __email__ = "sungmin.park.0226@gmail.com"
 
