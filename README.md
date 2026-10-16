@@ -1,6 +1,6 @@
 # spin-toolkit
 
-> **Status:** alpha (0.2.0rc1). Research code under validation. Installed from GitHub; not published on PyPI.
+> **Status:** alpha (0.2.0). Research code under validation. Installed from GitHub; not published on PyPI.
 
 `spintoolkit` is a Python package for two-dimensional spin models. You write
 the Hamiltonian once as a `SpinModel`, find classical ordered states, and
