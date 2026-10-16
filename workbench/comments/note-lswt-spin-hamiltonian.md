@@ -9,6 +9,6 @@
 
 ### 답 · Claude · 2026-10-12 20:10
 
-이론 노트 8개의 외부 출처를 모두 `research-library/references.bib` 키로 바꿨습니다. 본문은 `[@키, Eq. (29)]` 꼴로 인용하고, External Sources에는 `[@키]: 이 노트에서 무엇의 근거인지` 한 줄만 남겼습니다(저자·제목·DOI는 bib에만). bib에 없던 8개(Berg–Lüscher, Hamer–Zheng–Arndt, Muniz–Kato–Batista, Balents, Sachdev–Bhatt, Majumdar–Furton–Uhrig, NIST 두 쪽)는 research-library PR로 더했습니다.
+이론 노트 8개의 외부 출처를 `research-library/references.bib` 키로 인용하게 바꿨습니다(`[@키, Eq. (29)]`). External Sources에는 키와 쓰임 한 줄만 남겼고, bib에 없던 8개는 research-library에 더했습니다.
 - 상태: 답함
 - 상태: 끝냄
