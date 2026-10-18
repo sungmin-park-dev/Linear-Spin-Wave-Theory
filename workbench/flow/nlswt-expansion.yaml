@@ -9,7 +9,7 @@ topics:
 - toolkit-development
 date: '2026-10-03'
 from:
-- id: project-q
+- id: toolkit-q
   type: origin
 fields:
   goal: 'Extend the package beyond LSWT to order $S^0$: ground-state energy, magnon shifts and decay.'

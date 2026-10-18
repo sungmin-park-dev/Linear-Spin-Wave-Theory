@@ -8,7 +8,7 @@ topics:
 - toolkit-development
 date: '2026-10-10'
 from:
-- id: project-q
+- id: toolkit-q
   type: origin
 fields:
   statement: spin-toolkit covers classical order and the fluctuations about it (LSWT at the centre, 1/S, classical MC and spin dynamics); quantum many-body solvers (DMRG, QMC, TN) are out of scope and ED is kept only to check spin-wave results.
