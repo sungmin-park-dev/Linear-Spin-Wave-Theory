@@ -1,0 +1,26 @@
+format: 1
+kind: question
+progress: active
+short: spin-toolkit
+title: 정본 이론 위에 반고전 패키지(spin-toolkit)를 만들어 정본과 문헌으로 검증하고 공개할 수 있는가
+topics:
+- toolkit-development
+date: '2026-08-01'
+fields:
+  question: Can a semiclassical package (spin-toolkit) be built on the canon, verified against the canon and the literature, and released?
+  motivation: 'Package half of the project goal (research.yaml): theory, code, publication (2026-08-01 decision). Scope is semiclassical only (2026-10-10 decision).'
+evidence:
+- kind: other
+  file: workbench/research.yaml
+  text: research question
+  checks: []
+- kind: other
+  file: workbench/decisions/2026-08-01-lswt-markdown-source-authority.md
+  text: 'Context: theory, code, web publication'
+  checks: []
+sources:
+- workbench/research.yaml (question)
+- workbench/decisions/2026-08-01-lswt-markdown-source-authority.md (Context)
+guesses:
+- Split from the earlier single start dot "Theory + toolkit" at the user's request (record c-20261015-2239, 2026-10-18).
+- 'Drawn as its own start, not as a step after the theory question: package work ran alongside the theory notes from the start.'

@@ -9,7 +9,7 @@ topics:
 - beyond-linear-spin-waves
 date: '2026-09-29'
 from:
-- id: project-q
+- id: toolkit-q
   type: origin
 fields:
   question: When classical states are degenerate along an accidental direction, how should the zero-point energy select one without leaving the order of LSWT?
