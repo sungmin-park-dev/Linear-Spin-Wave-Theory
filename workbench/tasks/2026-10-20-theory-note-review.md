@@ -16,7 +16,7 @@ references:
 
 | 순서 | 노트 | 대조 | 사용자 판정 |
 |---|---|---|---|
-| 1 | `lswt-spin-hamiltonian` | 2026-10-20 끝 | 대기 |
+| 1 | `lswt-spin-hamiltonian` | 2026-10-20 끝 | accepted (2026-10-20) |
 | 2 | `lswt-classical-order` | | |
 | 3 | `lswt-boson-hamiltonian` | | |
 | 4 | `lswt-paraunitary-diagonalization` | | |
@@ -56,6 +56,11 @@ references:
 
 - **Zeeman 부호 관례.** 2026-09-06 사용자는 이론 문서에 전자 부호($\hat{\boldsymbol\mu}=-\mu_B\mathsf g\hat{\mathbf S}$, $\mathbf h=-\mu_B\mathsf g^{\mathsf T}\mathbf B$)를 쓰기로 했다(문서 점검 파일 "Zeeman Convention Decision"). 2026-10-08 커밋 3901c51이 노트를 패키지·D09 관례($\hat H_Z=-\mu_B\mathbf B^{\mathsf T}\mathsf g\hat{\mathbf S}$, 모멘트 $+\mu_B\mathsf g\hat{\mathbf S}$)로 바꾸고, 전자계와는 $\mathbf B\to-\mathbf B$ 관계라고 적었다. 두 관례 모두 일관되고(검사 5), 에너지·스펙트럼·자화는 같으며 열 Hall 부호 같은 시간 반전 홀수 양만 장 방향이 뒤집힌다. 이 변경에 대한 사용자 승인 기록은 찾지 못했다. 추천: 지금 노트대로(패키지·D09와 같음) 두고 09-06 결정을 이것으로 대체한다고 기록. SpinW(Toth–Lake)는 전자 부호를 쓰므로 비교할 때 장 부호를 뒤집어야 한다는 점은 노트에 이미 있다.
 - **노트 안의 열린 관례:** Conventions Not Yet Fixed 절의 full-position Fourier 관례 승인은 `lswt-boson-hamiltonian` 검토 때 정한다. 이 노트를 accepted로 해도 그 항목은 열린 채로 남고, 노트가 그렇게 적고 있다.
+
+### 사용자 판정 (2026-10-20)
+
+- Zeeman 부호: "노트대로". 패키지·D09 관례를 이론 노트 관례로 확정하고 2026-09-06 전자 부호 결정을 대체한다. 근거: 이론 노트·개발 노트·코드가 이미 같은 부호이고, 전자 부호로 바꾸면 패키지 API의 장 방향을 뒤집어야 한다.
+- 이에 따라 노트의 세 절 머리 주석을 accepted로 바꿨다. full-position Fourier 관례는 노트에 적힌 대로 열린 채 `lswt-boson-hamiltonian` 검토로 넘긴다.
 
 ### 형식 메모
 

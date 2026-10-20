@@ -1,6 +1,6 @@
 <!-- Converted from LaTeX on 2026-10-11. The LaTeX original is kept in archive/2026-10-11-lswt-latex-notes/lswt-spin-hamiltonian/. Equation numbers are fixed in this form; the original \label of each numbered equation is in the comment before it. -->
 
-<!-- Spin-Wave Theory Overview Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/lswt-overview.md (status: draft, source-section: "Introduction to Spin Wave Theory: model and workflow"). Review status: draft; awaiting the user's physics and mathematics review. -->
+<!-- Spin-Wave Theory Overview Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/lswt-overview.md (status: draft, source-section: "Introduction to Spin Wave Theory: model and workflow"). Review status: accepted by the user on 2026-10-20 after comparison with the primary source, Toth–Lake and the package (workbench/tasks/2026-10-20-theory-note-review.md). -->
 
 # Spin-Wave Theory Overview
 
@@ -127,7 +127,7 @@ Genuine higher-order interactions, such as inter-site biquadratic coupling and f
 
 - [@merminAbsence1966]: establishes the absence of spontaneous ferro- or antiferromagnetic long-range order at nonzero temperature in the short-range isotropic one- and two-dimensional Heisenberg model.
 
-<!-- Notation and Conventions Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md (status: in-review, source-section: Summary of Notation and Symbols). Review status: in-review; awaiting the user's physics and mathematics review. -->
+<!-- Notation and Conventions Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md (status: in-review, source-section: Summary of Notation and Symbols). Review status: accepted by the user on 2026-10-20 after comparison with the primary source, Toth–Lake and the package (workbench/tasks/2026-10-20-theory-note-review.md). -->
 
 # Notation and Conventions
 
@@ -465,7 +465,7 @@ The other items formerly listed here are fixed in the sections above: the circul
 
 - None.
 
-<!-- Bilinear Spin Hamiltonian Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/bilinear-spin-hamiltonian.md (status: draft, source-section: Introduction to Spin Wave Theory, Eq. (1)-Eq. (3)). Review status: draft; awaiting the user's physics and mathematics review. -->
+<!-- Bilinear Spin Hamiltonian Converted on 2026-10-08 from archive/2026-10-08-lswt-markdown/00-foundations/bilinear-spin-hamiltonian.md (status: draft, source-section: Introduction to Spin Wave Theory, Eq. (1)-Eq. (3)). Review status: accepted by the user on 2026-10-20 after comparison with the primary source, Toth–Lake and the package (workbench/tasks/2026-10-20-theory-note-review.md). -->
 
 # Bilinear Spin Hamiltonian
 

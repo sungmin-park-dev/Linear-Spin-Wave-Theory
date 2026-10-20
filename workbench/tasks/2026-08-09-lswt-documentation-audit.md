@@ -111,6 +111,8 @@ lifecycle과 review boundary를 추적하며 독자용 navigation을 대체하�
 
 ## Zeeman Convention Decision — 2026-09-06
 
+> **대체됨 (2026-10-20):** 사용자는 2026-10-20 이론 노트 검토에서 패키지·D09 관례($\hat H_Z=-\mu_B\mathbf B^{\mathsf T}\mathsf g\hat{\mathbf S}$, 모멘트 $+\mu_B\mathsf g\hat{\mathbf S}$, $\mathbf h=\mu_B\mathsf g^{\mathsf T}\mathbf B$)를 이론 노트의 관례로 확정했다("노트대로"). 아래 전자 부호 결정은 이것으로 대체한다. 근거와 검사는 [이론 노트 검토](2026-10-20-theory-note-review.md).
+
 사용자는 $g$를 양수로 두고 부호를 식에 명시하도록 결정했다. 부호를 $g$에 흡수해 원문의 Zeeman minus를 유지하려던 제안은 철회했다. 이 승인은 Zeeman convention에 한정하며, Hamiltonian 전체 영문 수정안이나 formal tensor reality 조건 전체의 승인을 뜻하지 않는다.
 
 - `bilinear-spin-hamiltonian.md`의 Zeeman section에 $\hat{\boldsymbol\mu}_I=-\mu_B\mathsf g_I\hat{\mathbf S}_I$를 명시했다. $g_I>0$와 $\mu_B>0$를 사용한다. 스핀 연산자는 $\hbar$ 단위의 무차원 연산자다.
