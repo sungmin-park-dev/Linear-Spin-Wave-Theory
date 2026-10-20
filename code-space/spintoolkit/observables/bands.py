@@ -126,6 +126,9 @@ def band_structure(result, path: Sequence[PathPoint] = ("Γ", "K", "M", "Γ"), p
     -------
     BandStructure
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "band_structure")
     if result.hamiltonian_at is None:
         raise ValueError("the result has no hamiltonian_at; use solve_lswt")
     if lattice not in ("primitive", "magnetic"):
@@ -191,6 +194,9 @@ def density_of_states(result, omega: Sequence[float], fwhm: float,
     ValueError
         If some band energy is not finite (unstable state).
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "density_of_states")
     from spintoolkit.observables.neutron import broaden_modes
 
     lab = getattr(result, "rotating", result)

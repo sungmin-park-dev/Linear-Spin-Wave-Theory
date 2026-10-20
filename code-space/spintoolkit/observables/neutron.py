@@ -303,6 +303,9 @@ def neutron_intensity(result, Q, temperature: float = 0.0, *, g: SiteValue = Non
     -------
     NeutronIntensity
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "neutron_intensity")
     Q = _as_3d(Q)
     if not length_unit > 0:
         raise ValueError("length_unit must be positive")
@@ -361,6 +364,9 @@ def domain_average(result, Q, omega, fwhm, rotations: Sequence[Any],
     **kwargs
         Passed to :func:`neutron_intensity`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "domain_average")
     Q = _as_3d(Q)
     lattice = np.asarray(_lab_result(result).lattice, dtype=float)
     rotations = [np.asarray(R, dtype=float) for R in rotations]
@@ -411,6 +417,9 @@ def powder_average(result, Q_magnitudes, omega, fwhm, num_directions: int = 500,
     **kwargs
         Passed to :func:`neutron_intensity`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "powder_average")
     Q_magnitudes = np.atleast_1d(np.asarray(Q_magnitudes, dtype=float))
     directions = sphere_directions(num_directions)
     Q = (Q_magnitudes[:, None, None] * directions[None]).reshape(-1, 3)
@@ -472,6 +481,9 @@ def neutron_path(result, omega, fwhm, path: Sequence[Any] = ("Γ", "K", "M", "Γ
     **kwargs
         Passed to :func:`neutron_intensity`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "neutron_path")
     from spintoolkit.observables.bands import _path_momenta, _vertices
     from spintoolkit.system.high_symmetry import high_symmetry_points
 
@@ -525,6 +537,9 @@ def neutron_slice(result, energy: float, fwhm, extent: Optional[float] = None,
     **kwargs
         Passed to :func:`neutron_intensity`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "neutron_slice")
     from spintoolkit.system.high_symmetry import zone_boundary
 
     lattice = _primitive_lattice(result)
@@ -566,6 +581,9 @@ def correlation_path(result, omega, fwhm, component: str = "zz",
     temperature, zero_modes, gapless
         As in :func:`~spintoolkit.observables.structure_factor.structure_factor`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "correlation_path")
     from spintoolkit.observables.bands import _path_momenta, _vertices
     from spintoolkit.system.high_symmetry import high_symmetry_points
 
@@ -631,6 +649,9 @@ def static_slice(result, extent: Optional[float] = None, points: int = 81, q_z: 
     **kwargs
         Passed to :func:`neutron_intensity` (g, form factor, zero-mode options).
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "static_slice")
     from spintoolkit.system.high_symmetry import reciprocal_lattice, zone_boundary
 
     lattice = _primitive_lattice(result)

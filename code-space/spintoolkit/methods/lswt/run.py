@@ -16,6 +16,15 @@ Round-off can make an exact zero mode slightly positive, so a successful
 Cholesky factorization alone is not accepted; use the default shifted
 mesh, which avoids the zone centre, or request ``"MAGSWT"`` or
 ``"k-dependent"`` explicitly. The shift applied is always recorded.
+(``"MAGSWT"`` here is the uniform zero-mode shift of the legacy code, not the
+augmented theory below; since D61 it never acts on an unstable state.)
+
+Augmentation (D62, opt-in): ``augmentation="minimal"`` solves the minimally
+augmented Hamiltonian ``H + mu sum_i a_i^dagger a_i`` of
+:mod:`~spintoolkit.methods.lswt.augmentation` (MAGSWT) about a classically
+unstable stationary state. Only the energy is defined for the spin model, as
+an upper estimate; the boson numbers are NaN and observables refuse the result
+(:func:`require_unaugmented`).
 Passing the mesh is not a stability test: an instability between mesh points,
 in particular a negative stiffness next to a Goldstone mode, goes unnoticed;
 :func:`~spintoolkit.methods.stability.local_stability` tests continuous ``k`` (D51).
@@ -49,6 +58,25 @@ REGULARIZATIONS = ("none", "MAGSWT", "k-dependent")
 
 class LSWTError(ValueError):
     """The LSWT Hamiltonian cannot be diagonalized as requested."""
+
+
+def require_unaugmented(result, observable: str) -> None:
+    """Refuse a MAGSWT result (D62) for anything but its ground-state energy.
+
+    The bands, eigenvectors and boson numbers of an augmented result belong to
+    ``H + mu sum_i a_i^dagger a_i``, not to the spin model.
+
+    Raises
+    ------
+    ValueError
+        If ``result.extra["augmentation"]`` is set.
+    """
+    augmentation = getattr(result, "extra", {}).get("augmentation")
+    if augmentation is not None:
+        raise ValueError(f"{observable} is not defined for a MAGSWT result "
+                         f"({augmentation['label']}): its magnons are those of the augmented "
+                         "Hamiltonian, not of the spin model (D62); only the ground-state "
+                         "energy is reported")
 
 
 def require_lab_frame(result, observable: str) -> None:
@@ -100,6 +128,13 @@ class LSWTSettings:
     gapless : bool, optional
         The user's decision after inspecting zero-mode candidates (4b); used
         only for finite-temperature quantities, recorded in the header.
+    augmentation : None, "minimal" or float
+        MAGSWT (D62). ``None`` (default): plain LSWT, an unstable state raises
+        :class:`LSWTError`. ``"minimal"``: add the smallest shift
+        ``mu sum_i a_i^dagger a_i`` that makes ``H(k)`` positive semidefinite
+        at every continuous ``k``. A float ``mu >= 0`` uses that shift (it
+        must be at least the minimal one). Needs ``regularization="none"``
+        and zero temperature; the result is an upper estimate of the energy.
     """
 
     mesh: Tuple[int, int] = LSWT_DEFAULT_MESH
@@ -109,10 +144,21 @@ class LSWTSettings:
     stationarity_tolerance: float = LSWT_STATIONARITY_TOLERANCE
     zero_mode_tolerance: float = LSWT_ZERO_MODE_TOLERANCE
     gapless: Optional[bool] = None
+    augmentation: Optional[Any] = None
 
     def __post_init__(self):
         if self.regularization not in REGULARIZATIONS:
             raise ValueError(f"regularization must be one of {REGULARIZATIONS}")
+        if self.augmentation is not None:
+            if isinstance(self.augmentation, str):
+                if self.augmentation != "minimal":
+                    raise ValueError("augmentation must be None, 'minimal' or a number >= 0")
+            elif not np.isfinite(float(self.augmentation)) or float(self.augmentation) < 0:
+                raise ValueError("augmentation must be None, 'minimal' or a number >= 0")
+            else:
+                object.__setattr__(self, "augmentation", float(self.augmentation))
+            if self.regularization != "none":
+                raise ValueError("augmentation replaces regularization; use regularization='none'")
         mesh = tuple(int(n) for n in self.mesh)
         if len(mesh) != 2 or min(mesh) < 1:
             raise ValueError("mesh must be two positive integers")
@@ -127,7 +173,8 @@ class LSWTSettings:
                 "k_points": None if self.k_points is None else "explicit",
                 "regularization": self.regularization,
                 "stationarity_tolerance": self.stationarity_tolerance,
-                "zero_mode_tolerance": self.zero_mode_tolerance, "gapless": self.gapless}
+                "zero_mode_tolerance": self.zero_mode_tolerance, "gapless": self.gapless,
+                "augmentation": self.augmentation}
 
 
 @dataclass(frozen=True)
@@ -365,6 +412,9 @@ def solve_lswt(model: SpinModel, state: SpinState,
         If ``H(k)`` cannot be diagonalized (see the module docstring).
     """
     conditions = conditions or ExternalConditions()
+    if settings.augmentation is not None and conditions.temperature > 0:
+        raise ValueError("finite-temperature quantities are not defined for a MAGSWT result "
+                         "(D62): the thermal magnons would be those of the augmented Hamiltonian")
     geometry = geometry or CalculationGeometry.thermodynamic_limit()
     validate_spin_state(state, model, geometry)
     k, fractional = _momenta(model, state, geometry, settings)
@@ -372,6 +422,13 @@ def solve_lswt(model: SpinModel, state: SpinState,
     hamiltonian = QuadraticBoseHamiltonian(model, state, conditions)
     H = hamiltonian.at(k)
     linear_max = float(np.max(np.abs(hamiltonian.linear_terms), initial=0.0))
+    augmentation = None
+    if settings.augmentation is not None:
+        from spintoolkit.methods.lswt.augmentation import find_augmentation
+
+        augmentation = find_augmentation(hamiltonian, state.magnetic_lattice(model), k,
+                                         settings.augmentation)
+        H = H + augmentation.mu * np.eye(H.shape[1])
     H, E, T, shift = _diagonalize(np.asarray(H, dtype=complex), settings.regularization, k,
                                   settings.zero_mode_tolerance)
 
@@ -398,6 +455,14 @@ def solve_lswt(model: SpinModel, state: SpinState,
                     f"{settings.mesh[0]}x{settings.mesh[1]} mesh of the magnetic reciprocal cell, "
                     f"{'half-step shifted' if settings.shift else 'zone-centred'}"),
         "num_k": len(k)}
+    if augmentation is not None:
+        # The boson numbers are those of the augmented Hamiltonian; their mean is
+        # dE/dmu, which bounds the energy offset of the padding above mu_min.
+        diagnostics["augmentation"] = augmentation.as_dict()
+        diagnostics["augmentation_padding_energy"] = float(
+            (augmentation.mu - augmentation.mu_min) * np.mean(boson_numbers))
+        diagnostics["energy_bound"] = augmentation.label
+        boson_numbers = np.full(len(boson_numbers), np.nan)
     if settings.k_points is not None:
         diagnostics["inversion_closed"] = _closed_under_inversion(k, state.magnetic_lattice(model))
         if not diagnostics["inversion_closed"]:
@@ -425,6 +490,8 @@ def solve_lswt(model: SpinModel, state: SpinState,
                         None, np.array([model.cartesian_position(s, c) for s, c in keys]),
                         hamiltonian.local_frames,
                         hamiltonian_at, hamiltonian_derivatives_at=hamiltonian_derivatives_at)
+    if augmentation is not None:
+        result.extra["augmentation"] = augmentation.as_dict()
     if conditions.temperature > 0:
         from spintoolkit.observables.thermal import thermal_quantities
 

@@ -716,6 +716,47 @@
   \slidesource{2026-10-15 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D62): 최소 증강 스핀파(MAGSWT)를 켤 때만 쓴다}\label{decisions-d62-magswt}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-20 사용자 확인(``그렇게하자''), 제안은 Claude. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    목적 & 고전적으로 불안정한 정류 상태의 $O(S)$ 에너지. 상이 고전 안정 영역 밖으로 넓어지는지(양자 escapism) 보려면 필요하다. D61은 그대로: 기본값에서 불안정하면 \texttt{LSWTError} \\
+    API & \texttt{LSWTSettings(augmentation=None|"minimal"|}$\mu$\texttt{)}. \texttt{regularization="none"}과 $T=0$에서만. \texttt{compare\_states(..., augmentation=, refine="stationary")}는 상태 \texttt{"augmented"}와 $\mu$를 적고 안정 후보와 함께 순위를 매긴다 \\
+    물리 & $\delta H=\mu\sum_i(S_i-\mathbf S_i\cdot\mathbf n_i)=\mu\sum_i a_i^\dagger a_i$(Holstein--Primakoff에서 정확). 고전 에너지는 그대로이고 $H(k)$ 대각에 $\mu$가 더해진다. 영점 에너지는 기존 식 $\tfrac12\sum(\varepsilon-\operatorname{tr}A)$을 증강된 행렬로 쓴다 \\
+    $\mu$ 기준 & $\mu_{\min}=\max(0,-\min_k\lambda_{\min}H(k))$, 연속 $k$에서(D51과 같은 Nelder--Mead 탐색). $H+\mu\ge0$일 때만 진공이 증강된 이차 해밀토니안의 바닥 상태다. 논문의 기준($gH$ 고윳값이 실수, $\varepsilon^2>0$)은 음에너지 마그논을 허용하므로 비교값 \texttt{mu\_real\_spectrum}으로만 적는다. 옛 구현(\texttt{archive/legacy/modules/Tools/diagonalization.py} \texttt{prepare\_magswt})도 같은 $H\ge0$ 기준이었고, 다른 점은 메쉬 위 최솟값, 안정 상태에도 $\mu\ge10^{-9}$, 정류점·온도 확인 없음 \\
+    영 모드 & $\mu=\mu_{\min}$에서 영 모드가 생긴다. $\mu_{\min}+10^{-9}\times$스펙트럼 크기를 쓰고, 그 에너지 차의 상한 $(\mu-\mu_{\min})\langle n\rangle$을 진단에 적는다($dE/d\mu=\langle n\rangle$) \\
+    결과 & 진단 \texttt{energy\_bound="upper bound (MAGSWT, mu=...)"}. 의미: $\delta H\ge0$이므로 $E_{gs}(H)\le E_{gs}(H+\delta H)$가 엄밀하고, 숫자는 우변의 $O(S)$ 추정이다(엄밀한 변분 상한은 아님). 보손 수는 NaN, 띠·고유벡터를 쓰는 관측량 전부(띠, DOS, 구조인자, 중성자, 열, 위상, 두 마그논, 영모드 탐색)는 \texttt{require\_unaugmented}로 거부 \\
+    한계 & 정류점이 아닌 상태는 지금처럼 NaN(증강해도 선형항은 남는다). 안정한 상태는 $\mu=0$이라 결과가 비트 단위로 같다 \\
+    비교 대상 & Chernyshev arXiv:2509.08877 식 (25)--(27): 벌집 $J_1$--$J_3$ XXZ의 FM·ZZ $\mu$. 2026-10-20 확인: $J_3=0.30,0.35,0.60$에서 $10^{-7}$ 안으로 일치, XXZ 이방성과 무관, \texttt{mu\_real\_spectrum}도 같음(\texttt{tests/test\_methods/test\_magswt.py}). 다른 모형도 같은 날 확인: 같은 논문 식 (46)--(48)의 벌집 $J_1$--$J_2$ XXZ Néel·Iz·collinear $\mu$가 $J_2=0.1$--$0.5$, $\Delta=0,0.5,0.95$에서 $10^{-8}$ 안으로 일치. Coletta--Zhitomirsky--Mila arXiv:1212.3086 식 (6)--(7)의 정사각 $J_1$--$J_2$ 자기장 속 기운 Néel·줄무늬 $\mu$($-\min_k(A_k-|B_k|)$)가 일치하고, uuud($J_2=J_1/2$, $H=H_{\rm sat}/2$)와 등방 삼각 uud($H=H_{\rm sat}/3$)는 고전 점에서만 $\mu=0$. 다음: 같은 논문 그림 5·6 에너지와 DMRG(arXiv:2304.06062) 경계 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-20 결정}{contract}
+\endgroup
+
+\subsection{결정 기록 (D63): 단위 세포를 고정한 정류점 탐색}\label{decisions-d63-stationary}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-20 사용자 확인(``그렇게하자''), 제안은 Claude. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    목적 & MAGSWT는 정류점(안장점 포함)에만 쓸 수 있다(arXiv:2509.08877 4--5쪽). 결합 의존 항($J^{(3)}_{z\pm}$)이 있으면 대칭 무늬(UUD, 이중 지그재그)가 정류점이 아니다. \texttt{refine\_classical}은 에너지를 낮추므로 안장점에서 미끄러진다 \\
+    API & \texttt{find\_stationary\_state(model, seed, conditions, torque\_tolerance=1e-10, max\_steps=100)} $\to$ \texttt{StationaryResult}(\texttt{state}, \texttt{converged}, \texttt{max\_torque}, \texttt{energy}, \texttt{saddle\_index}, \texttt{flat\_directions}, \texttt{max\_rotation\_from\_seed}, \texttt{steps}, \texttt{history}) \\
+    방법 & 접선 좌표에서 $g=0$을 Newton 법으로 푼다(해석적 Hessian, 평평한 방향은 의사역행렬로 제외, 토크가 줄 때까지 걸음 반감, 실패하면 $-Hg$ 방향). 걸음마다 좌표를 다시 잡는다. $g$와 $H$가 모형 대칭에 공변이라 씨앗의 대칭이 유지된다 \\
+    정의 안 됨 & 수렴하지 않으면 \texttt{converged=False}, \texttt{saddle\_index=-1}. 마지막 상태는 확인용일 뿐 LSWT 기준 상태가 아니다. \texttt{saddle\_index}는 세포 위의 Hessian 음의 방향 수이고, 연속 $k$ 안정성 판정은 D51 \\
+    확인 & $J_3=0.45$, $J^{(3)}_{z\pm}=0.6$: UUD·이중 지그재그 씨앗(토크 0.3)에서 4걸음에 토크 $<10^{-10}$, 면 밖으로 기울어짐. $J^{(3)}_{z\pm}=0$의 UUD 안장점(지수 1)을 흔든 씨앗에서 같은 안장점으로 돌아옴 \\
+    모형 & \texttt{models.bcao\_minimal}: Maksimov arXiv:2308.10672 식 (1). 결합 위상 벡터 $(\cos\phi_\alpha,\sin\phi_\alpha)$는 결합에 수직(입방 축 $\to$ 결정 축 사상에서 유도, 그림 2(a)는 읽지 못함), $\phi=0$은 $-y$ 방향 결합, $x$(자기장 방향)는 결합에 수직. 0장에서는 이 선택이 면내 전체 회전과 같아 에너지에 영향이 없다 \\
+    비교 대상 & Maksimov 그림 1(a)·2(c)·3(a), 0장 고전 순서 ZZ $\to$ UUD $\to$ 이중 지그재그. 2026-10-20 고전 탐색(초격자 1, 2, 3, 4, 6줄, 줄 방향 하나): $J_3=0.34$에서 UUD는 $J^{(3)}_{z\pm}=0.1$, 이중 지그재그는 0.2부터로, 논문의 맞춤 점($J_3=0.34$, $J^{(3)}_{z\pm}=0.2$: 이중 지그재그, UUD 경계 가까이)과 맞는다. $J_3=0.45$에서는 UUD 구간이 약 0.42--0.55인데 본문은 UUD--이중 지그재그 전이를 ``0.9 부근''이라 적어 위치가 다르다. 그림을 읽지 못해 원인은 열린 항목 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-20 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

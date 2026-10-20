@@ -69,6 +69,7 @@ from spintoolkit.methods.lswt import solve_spiral_lswt
 from spintoolkit.methods.nlswt import pseudo_goldstone_gap
 from spintoolkit.methods.ed import solve_ed
 from spintoolkit.methods.classical import classical_search
+from spintoolkit.methods.stationary import StationaryResult, find_stationary_state
 from spintoolkit.methods.phase_competition import compare_states
 from spintoolkit.methods.magnetization import magnetization_curve
 from spintoolkit.methods.lswt.solver import LSWTSolver
@@ -93,7 +94,8 @@ __all__ = [
     'AbstractSolver', 'SolverResult', 'solve_lswt', 'LSWTSettings', 'LSWTResult',
     'solve_nlswt', 'NLSWTSettings', 'NLSWTResult',
     'local_stability', 'StabilityReport', 'solve_spiral_lswt', 'pseudo_goldstone_gap',
-    'solve_ed', 'classical_search', 'compare_states', 'magnetization_curve',
+    'solve_ed', 'classical_search', 'find_stationary_state', 'StationaryResult',
+    'compare_states', 'magnetization_curve',
     # Deprecated, removed in 0.3 (D43)
     'LSWTSolver', 'SpinOptimizer', 'EnergyFunction',
 ]

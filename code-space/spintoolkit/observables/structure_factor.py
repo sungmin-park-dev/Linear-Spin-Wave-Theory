@@ -365,6 +365,9 @@ def structure_factor(result, q_points, temperature: float = 0.0,
         :func:`~spintoolkit.observables.neutron.neutron_intensity`). None
         (default) gives the spin structure factor.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "structure_factor")
     from spintoolkit.methods.lswt.run import require_lab_frame
 
     require_lab_frame(result, "structure_factor")
@@ -465,6 +468,9 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         branches then survive; use the commensurate supercell with
         :func:`structure_factor`.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "spiral_structure_factor")
     rotating = result.rotating
     Q = np.asarray(result.wave_vector, dtype=float)
     lattice = np.asarray(rotating.lattice)
@@ -588,6 +594,9 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
         is the harmonic ``<delta S_i^a delta S_i^b>``, not the exact
         ``S(S+1)`` identity.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "spin_correlation")
     from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.states.spin_state import reduce_cell
 
@@ -619,6 +628,9 @@ def bond_correlations(result, model) -> Dict[str, Any]:
         ``bonds``: list of per-term dicts (``label``, ``site_i``, ``site_j``,
         ``offset``, ``correlation`` (3, 3)); ``energy``: per site, E0.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "bond_correlations")
     from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.system.model import BILINEAR, ZEEMAN
     from spintoolkit.states.spin_state import reduce_cell

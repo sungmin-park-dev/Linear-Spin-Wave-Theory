@@ -223,6 +223,9 @@ def scan_zero_modes(result, model=None, state=None, conditions=None,
     -------
     ZeroModeReport
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "scan_zero_modes")
     if result.hamiltonian_at is None or result.magnetic_lattice is None:
         raise ValueError("the result has no Hamiltonian evaluator (produced by solve_lswt?)")
     n2 = result.hamiltonians.shape[1]

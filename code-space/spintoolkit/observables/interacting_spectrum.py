@@ -79,6 +79,9 @@ def dressed_structure_factor(lswt_result, nlswt_result, q_points, omega, eta: fl
     Each LSWT mode is matched to the band of the same energy in the
     nonlinear calculation; a mode without such a band raises ValueError.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(lswt_result, "dressed_structure_factor")
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     w = np.asarray(omega, dtype=float)
     with warnings.catch_warnings():
