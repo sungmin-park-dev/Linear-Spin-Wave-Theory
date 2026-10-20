@@ -54,7 +54,7 @@ The existence of a spin-coherent reference configuration permits a Holstein–Pr
 
 Failure of a prerequisite invalidates Holstein–Primakoff LSWT about the selected reference, whereas a large spin reduction signals that neglected interaction terms may be important; their leading effects are treated in research note *LSWT nonlinear spin waves*. Neither conclusion rules out every possible spin-wave description. The momentum-space derivation developed here also assumes a commensurate reference configuration with a finite magnetic unit cell; this is a restriction of that derivation rather than a general limitation of SWT.
 
-In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature [@merminAbsence1966]. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a symmetry-breaking field, anisotropy that removes the relevant continuous spin-rotation symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff.
+In two dimensions, the finite-temperature interpretation requires an additional qualification. A short-range isotropic Heisenberg model cannot sustain spontaneous ferromagnetic or antiferromagnetic long-range order at nonzero temperature [@merminAbsence1966]. The same argument applies to any continuous spin-rotation symmetry that the order breaks and the short-range Hamiltonian keeps. Consequently, a thermodynamic ordered-state interpretation of finite-temperature LSWT requires a field or anisotropy that removes every such symmetry, interlayer coupling, a finite-size or crossover scale, or another physical infrared cutoff. A uniform field removes it for a ferromagnet polarized along the field, but not for an antiferromagnet: the rotation about the field axis remains a symmetry, and the transverse order of a canted antiferromagnet in an isotropic model is again absent at nonzero temperature. Easy-plane anisotropy likewise leaves the rotation about the plane normal.
 
 ## Reference States Beyond Local Magnetic Order
 
@@ -254,10 +254,12 @@ $$
 \hat{\mathbf S}_I
 =\mathsf R_I\hat{\widetilde{\mathbf S}}_I,
 \qquad
-\mathsf R_I^{\mathsf T}\mathsf R_I=\mathsf I_3.
+\mathsf R_I^{\mathsf T}\mathsf R_I=\mathsf I_3,
+\qquad
+\det\mathsf R_I=+1.
 $$
 
-The columns of $\mathsf R_I$ are the local basis vectors expressed in laboratory coordinates. The exchange matrix in the local frames is
+The columns of $\mathsf R_I$ are the local basis vectors expressed in laboratory coordinates; they form a right-handed frame. The rotation must be proper: with $\det\mathsf R_I=-1$ the local components would obey $[\hat{\widetilde S}{}^x_I,\hat{\widetilde S}{}^y_I]=-\mathrm i\hat{\widetilde S}{}^z_I$, which is not the spin algebra on which the Holstein–Primakoff representation is built. The exchange matrix in the local frames is
 
 $$
 \widetilde{\mathsf J}_{IJ}
@@ -557,7 +559,7 @@ $$
 \qquad S_I=\frac12,
 $$
 
-where $\hat{\mathbb 1}_I$ is the identity on the local spin space. Within this spin-$1/2$ model, exchange anisotropy and an anisotropic magnetic coupling can remain nontrivial even though real symmetric quadratic on-site anisotropy contributes only a constant.
+where $\hat{\mathbb 1}_I$ is the identity on the local spin space. Within this spin-$1/2$ model, exchange anisotropy and an anisotropic $g$-tensor can remain nontrivial even though real symmetric quadratic on-site anisotropy contributes only a constant.
 
 Independent higher-order spin interactions, such as scalar spin chirality or ring exchange, are outside the bilinear starting Hamiltonian defined here. This restriction specifies the model used in the following derivation, rather than the scope of spin-wave theory as a whole.
 
