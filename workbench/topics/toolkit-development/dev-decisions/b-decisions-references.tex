@@ -731,7 +731,7 @@
     영 모드 & $\mu=\mu_{\min}$에서 영 모드가 생긴다. $\mu_{\min}+10^{-9}\times$스펙트럼 크기를 쓰고, 그 에너지 차의 상한 $(\mu-\mu_{\min})\langle n\rangle$을 진단에 적는다($dE/d\mu=\langle n\rangle$) \\
     결과 & 진단 \texttt{energy\_bound="upper bound (MAGSWT, mu=...)"}. 의미: $\delta H\ge0$이므로 $E_{gs}(H)\le E_{gs}(H+\delta H)$가 엄밀하고, 숫자는 우변의 $O(S)$ 추정이다(엄밀한 변분 상한은 아님). 보손 수는 NaN, 띠·고유벡터를 쓰는 관측량 전부(띠, DOS, 구조인자, 중성자, 열, 위상, 두 마그논, 영모드 탐색)는 \texttt{require\_unaugmented}로 거부 \\
     한계 & 정류점이 아닌 상태는 지금처럼 NaN(증강해도 선형항은 남는다). 안정한 상태는 $\mu=0$이라 결과가 비트 단위로 같다 \\
-    비교 대상 & Chernyshev arXiv:2509.08877 식 (25)--(27): 벌집 $J_1$--$J_3$ XXZ의 FM·ZZ $\mu$. 2026-10-20 확인: $J_3=0.30,0.35,0.60$에서 $10^{-7}$ 안으로 일치, XXZ 이방성과 무관, \texttt{mu\_real\_spectrum}도 같음(\texttt{tests/test\_methods/test\_magswt.py}). 다음: 같은 논문 그림 5·6 에너지와 DMRG(arXiv:2304.06062) 경계 \\
+    비교 대상 & Chernyshev arXiv:2509.08877 식 (25)--(27): 벌집 $J_1$--$J_3$ XXZ의 FM·ZZ $\mu$. 2026-10-20 확인: $J_3=0.30,0.35,0.60$에서 $10^{-7}$ 안으로 일치, XXZ 이방성과 무관, \texttt{mu\_real\_spectrum}도 같음(\texttt{tests/test\_methods/test\_magswt.py}). 다른 모형도 같은 날 확인: 같은 논문 식 (46)--(48)의 벌집 $J_1$--$J_2$ XXZ Néel·Iz·collinear $\mu$가 $J_2=0.1$--$0.5$, $\Delta=0,0.5,0.95$에서 $10^{-8}$ 안으로 일치. Coletta--Zhitomirsky--Mila arXiv:1212.3086 식 (6)--(7)의 정사각 $J_1$--$J_2$ 자기장 속 기운 Néel·줄무늬 $\mu$($-\min_k(A_k-|B_k|)$)가 일치하고, uuud($J_2=J_1/2$, $H=H_{\rm sat}/2$)와 등방 삼각 uud($H=H_{\rm sat}/3$)는 고전 점에서만 $\mu=0$. 다음: 같은 논문 그림 5·6 에너지와 DMRG(arXiv:2304.06062) 경계 \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-10-20 결정}{contract}

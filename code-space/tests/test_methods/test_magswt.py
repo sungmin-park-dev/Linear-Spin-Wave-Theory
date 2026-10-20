@@ -154,3 +154,95 @@ def test_compare_states_ranks_augmented_candidates():
     assert np.isfinite(by_name["FM"].harmonic_energy)
     assert np.isnan(by_name["FM"].lowest_magnon)
     assert reports[0].harmonic_energy <= reports[1].harmonic_energy
+
+
+# --- Other models -----------------------------------------------------------------------
+
+def _square_j1j2(J2, J1=1.0):
+    from spintoolkit.models.heisenberg import SQUARE_LATTICE
+    from spintoolkit.system.model import Site, SpinModel, Term
+    terms = [Term.bilinear(("A", (0, 0)), ("A", o), J1 * np.eye(3)) for o in ((1, 0), (0, 1))]
+    terms += [Term.bilinear(("A", (0, 0)), ("A", o), J2 * np.eye(3)) for o in ((1, 1), (1, -1))]
+    terms.append(Term.zeeman("A", np.eye(3)))
+    return SpinModel(SQUARE_LATTICE, [Site("A", (0, 0), S)], terms, {"model_id": "square_j1j2"})
+
+
+def _honeycomb_j1j2_xxz(J2, Delta):
+    from spintoolkit.models.heisenberg import TRIANGULAR_LATTICE
+    from spintoolkit.models.honeycomb import NEAREST_NEIGHBOUR_OFFSETS, NEXT_NEAREST_OFFSETS, _sites
+    from spintoolkit.system.model import SpinModel, Term
+    xxz = np.diag([1.0, 1.0, Delta])
+    terms = [Term.bilinear(("A", (0, 0)), ("B", o), xxz) for o in NEAREST_NEIGHBOUR_OFFSETS]
+    terms += [Term.bilinear((s, (0, 0)), (s, o), J2 * xxz)
+              for s in "AB" for o in NEXT_NEAREST_OFFSETS]
+    return SpinModel(TRIANGULAR_LATTICE, _sites(S), terms, {"model_id": "honeycomb_j1j2_xxz"})
+
+
+@pytest.mark.parametrize("J2", [0.1, 0.3, 0.4])
+@pytest.mark.parametrize("Delta", [0.0, 0.5])
+def test_honeycomb_j1j2_shifts_match_chernyshev_eq46_48(J2, Delta):
+    """arXiv:2509.08877 Eqs. (46)-(48): Neel (in plane), Iz (Neel along z), collinear."""
+    model = _honeycomb_j1j2_xxz(J2, Delta)
+    sign = {"A": 1.0, "B": -1.0}
+
+    def neel(axis):
+        return SpinState.from_function(model, np.eye(2, dtype=int),
+                                       lambda site, cell: sign[site] * np.array(axis))
+    collinear = SpinState.from_function(
+        model, [[1, 0], [0, 2]],
+        lambda site, cell: sign[site] * (-1) ** cell[1] * np.array([1.0, 0.0, 0.0]))
+    mu_neel = 0.0 if J2 <= 1 / 6 else S * (6 * J2 - 1) ** 2 / (4 * J2)
+    mu_col = 2 * S * (1 - 4 * J2) if J2 <= 1 / 6 else S * (1 - 2 * J2) ** 2 / (4 * J2)
+    mu0 = 3 * S * (1 - Delta) * (1 - 2 * J2)
+    got = [magswt(model, st).extra["augmentation"]["mu_min"]
+           for st in (neel((1, 0, 0)), neel((0, 0, 1)), collinear)]
+    assert got == pytest.approx([mu_neel, mu0 + mu_neel, mu_col], abs=1e-7)
+
+
+@pytest.mark.parametrize("J2, H", [(0.4, 1.0), (0.6, 3.0)])
+def test_square_j1j2_canted_states_match_coletta_eq6_7(J2, H):
+    """Coletta-Zhitomirsky-Mila, arXiv:1212.3086 Eqs. (6)-(7): canted Neel and stripe.
+
+    The minimal shift is ``-min_k (A_k - |B_k|)`` of their 2x2 blocks.
+    """
+    model = _square_j1j2(J2)
+    k = np.linspace(-np.pi, np.pi, 401)
+    kx, ky = np.meshgrid(k, k)
+    gam, eta = (np.cos(kx) + np.cos(ky)) / 2, np.cos(kx) * np.cos(ky)
+    cn, cs = H / (8 * S), H / ((4 + 8 * J2) * S)
+    a_n = 4 * S * (1 + gam * cn ** 2) - 4 * J2 * S * (1 - eta)
+    b_n = -4 * S * gam * (1 - cn ** 2)
+    a_s = 4 * J2 * S * (1 + eta * cs ** 2) + 2 * S * (np.cos(ky) + cs ** 2 * np.cos(kx))
+    b_s = -2 * S * (1 - cs ** 2) * (np.cos(kx) + 2 * J2 * eta)
+    neel = SpinState.from_function(model, [[1, 1], [-1, 1]], lambda site, cell: np.array(
+        [(-1) ** (cell[0] + cell[1]) * np.sqrt(1 - cn ** 2), 0.0, cn]))
+    stripe = SpinState.from_function(model, [[2, 0], [0, 1]], lambda site, cell: np.array(
+        [(-1) ** cell[0] * np.sqrt(1 - cs ** 2), 0.0, cs]))
+    field = ExternalConditions(field=(0, 0, H))
+    for state, a, b in ((neel, a_n, b_n), (stripe, a_s, b_s)):
+        mu = magswt(model, state, conditions=field).extra["augmentation"]["mu_min"]
+        assert mu == pytest.approx(max(0.0, -(a - np.abs(b)).min()), abs=1e-7)
+
+
+def test_plateau_states_need_no_shift_only_at_their_classical_point():
+    """arXiv:1212.3086: uuud (square, J2 = J1/2, H = Hsat/2) and uud (isotropic
+    triangular, H = Hsat/3) are classically marginal there and saddles elsewhere."""
+    def uuud(model):
+        return SpinState.from_function(model, [[2, 0], [0, 2]], lambda site, cell: np.array(
+            [0.0, 0.0, -1.0 if cell[0] % 2 == 0 and cell[1] % 2 == 0 else 1.0]))
+    for J2, H, zero in ((0.5, 4 * S, True), (0.6, 4 * S, False), (0.5, 3 * S, False)):
+        model = _square_j1j2(J2)
+        mu = magswt(model, uuud(model), conditions=ExternalConditions(field=(0, 0, H)))
+        assert (mu.extra["augmentation"]["mu_min"] == 0.0) is zero
+
+    from spintoolkit.models.heisenberg import TRIANGULAR_LATTICE
+    from spintoolkit.system.model import Site, SpinModel, Term
+    for Jp, zero in ((1.0, True), (0.75, False)):
+        terms = [Term.bilinear(("A", (0, 0)), ("A", (1, 0)), np.eye(3))]
+        terms += [Term.bilinear(("A", (0, 0)), ("A", o), Jp * np.eye(3)) for o in ((0, 1), (-1, 1))]
+        terms.append(Term.zeeman("A", np.eye(3)))
+        model = SpinModel(TRIANGULAR_LATTICE, [Site("A", (0, 0), S)], terms, {"model_id": "tri"})
+        uud = SpinState.from_function(model, [[1, 1], [-1, 2]], lambda site, cell: np.array(
+            [0.0, 0.0, -1.0 if (cell[0] - cell[1]) % 3 == 0 else 1.0]))
+        mu = magswt(model, uud, conditions=ExternalConditions(field=(0, 0, (1 + 2 * Jp) * S)))
+        assert (mu.extra["augmentation"]["mu_min"] == 0.0) is zero
