@@ -306,7 +306,7 @@ The script `code-space/examples/verification/lswt_nonlinear_vertices_check.py` c
 
 - Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*: $\mathsf T_{\mathbf k}$, the magnon operators and the zero-point energy.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: indices, system sizes and the Nambu metric $\Sigma_3$.
+- Notation and Conventions in research note *LSWT conventions*: indices, system sizes and the Nambu metric $\Sigma_3$.
 
 - `code-space/examples/verification/lswt_nonlinear_vertices_check.py`: checks 1 and 2.
 

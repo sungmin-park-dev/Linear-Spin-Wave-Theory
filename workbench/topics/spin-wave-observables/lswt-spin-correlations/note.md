@@ -165,7 +165,7 @@ where $\mathsf w_\mu^\alpha=(\bar u_\mu^\alpha,u_\mu^\alpha)$ and $[\cdots]_{\{\
 
 - Structure Factor and Spectral Function (Section *Structure Factor and Spectral Function*): builds the scattering observables from $\mathcal C^{\alpha\beta}(\mathbf q,t)$.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: distinguishes the external momentum $\mathbf q$ from the magnon momentum $\mathbf k$ and reserves the spin-vertex symbol.
+- Notation and Conventions in research note *LSWT conventions*: distinguishes the external momentum $\mathbf q$ from the magnon momentum $\mathbf k$ and reserves the spin-vertex symbol.
 
 ### External Sources
 
@@ -402,7 +402,7 @@ For Cartesian components, the conjugation relation $[\mathcal C^{\alpha\beta}(\m
 
 - Magnon Observables in research note *LSWT magnon thermodynamics*: supplies the reduced moments that enter the elastic part.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: distinguishes the external momentum $\mathbf q$ from the magnon momentum $\mathbf k$.
+- Notation and Conventions in research note *LSWT conventions*: distinguishes the external momentum $\mathbf q$ from the magnon momentum $\mathbf k$.
 
 ### External Sources
 

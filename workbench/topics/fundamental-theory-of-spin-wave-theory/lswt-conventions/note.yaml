@@ -1,0 +1,4 @@
+name: LSWT conventions
+from: workbench/topics/fundamental-theory-of-spin-wave-theory/lswt-spin-hamiltonian (section Notation and Conventions, moved 2026-10-20)
+summary: Indices, geometry, link orientation, local frames, Nambu and BdG notation, energies, units, Brillouin-zone sums and band labels used by all LSWT notes.
+topics: [ fundamental-theory-of-spin-wave-theory ]

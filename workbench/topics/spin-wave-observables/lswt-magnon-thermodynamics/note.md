@@ -117,7 +117,7 @@ At a zero mode the summand of (2) can diverge. Near a Goldstone mode of an antif
 
 # Thermodynamics
 
-In thermal equilibrium the LSWT Hamiltonian describes an ideal gas of magnons on top of the classical reference configuration. The partition function therefore factorizes over the magnon modes $(\mathbf k,n)$, and the free energy, internal energy, entropy, and heat capacity follow from single-oscillator expressions summed over the magnetic Brillouin zone (MBZ). Energy, temperature, and entropy symbols follow Notation and Conventions in research note *LSWT spin Hamiltonian*; the inverse temperature is $\beta=(k_{\mathrm B}T)^{-1}$ and the entropy is $\mathcal S$.
+In thermal equilibrium the LSWT Hamiltonian describes an ideal gas of magnons on top of the classical reference configuration. The partition function therefore factorizes over the magnon modes $(\mathbf k,n)$, and the free energy, internal energy, entropy, and heat capacity follow from single-oscillator expressions summed over the magnetic Brillouin zone (MBZ). Energy, temperature, and entropy symbols follow Notation and Conventions in research note *LSWT conventions*; the inverse temperature is $\beta=(k_{\mathrm B}T)^{-1}$ and the entropy is $\mathcal S$.
 
 ## Validity of the Magnon-Gas Description
 
@@ -305,7 +305,7 @@ $$
 
 ### Internal Documents
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: defines $\beta$, $\mathcal S$, $\varepsilon_{n\mathbf k}$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, $E_{\mathrm{GS}}$, and the system-size symbols.
+- Notation and Conventions in research note *LSWT conventions*: defines $\beta$, $\mathcal S$, $\varepsilon_{n\mathbf k}$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, $E_{\mathrm{GS}}$, and the system-size symbols.
 
 - Paraunitary Diagonalization in research note *LSWT paraunitary diagonalization*: supplies the diagonal magnon Hamiltonian, the zero-point correction, and the positive-definiteness condition.
 
@@ -480,7 +480,7 @@ The same result follows directly from $\hat a_{\mathbf k\mu}=\sum_n[(\mathsf P_{
 
 - Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: defines the full-position Fourier convention and the Nambu spinor.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: fixes the thermodynamic and system-size notation.
+- Notation and Conventions in research note *LSWT conventions*: fixes the thermodynamic and system-size notation.
 
 ### External Sources
 

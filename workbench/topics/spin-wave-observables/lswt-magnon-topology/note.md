@@ -181,7 +181,7 @@ The verification script `lswt_goldstone_chern_check.py` and check 6 of `lswt_bdg
 
 - `code-space/examples/verification/lswt_goldstone_chern_check.py`: the canted antiferromagnet without threefold symmetry with three regularizations, the ferromagnet with a U(1)-breaking regularization, and the pseudo-dipolar ferromagnet that realizes (9).
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: fixes $\Sigma_3$, $\varepsilon_{n\mathbf k}$, $N_{\mathrm{sub}}$, and the MBZ notation, and states the units of the Berry curvature and the per-layer thermal Hall conductivity.
+- Notation and Conventions in research note *LSWT conventions*: fixes $\Sigma_3$, $\varepsilon_{n\mathbf k}$, $N_{\mathrm{sub}}$, and the MBZ notation, and states the units of the Berry curvature and the per-layer thermal Hall conductivity.
 
 ### External Sources
 
