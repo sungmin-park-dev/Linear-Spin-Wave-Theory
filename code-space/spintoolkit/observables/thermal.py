@@ -117,6 +117,9 @@ def magnon_free_energy(result, temperatures: Sequence[float]) -> np.ndarray:
         In E0; zero at ``t = 0``, ``-inf`` at ``t > 0`` if a mesh point is an
         exact zero mode.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "magnon_free_energy")
     energies = result.eigenvalues[:, :result.num_sites]
     return np.array([float(result.weights @ np.sum(log_1_m_exp(energies, tk / K_BOLTZMANN_MEV),
                                                    axis=1)) / result.num_sites
@@ -151,6 +154,9 @@ def thermal_quantities(result, temperatures: Sequence[float],
     ZeroModeCandidateError
         If the scan finds candidates and ``gapless`` is None.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "thermal_quantities")
     t = np.asarray(temperatures, dtype=float).ravel()
     if np.any(~np.isfinite(t)) or np.any(t < 0):
         raise ValueError("temperatures must be finite and non-negative")

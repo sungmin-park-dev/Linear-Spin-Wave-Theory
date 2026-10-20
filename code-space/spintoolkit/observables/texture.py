@@ -80,8 +80,16 @@ def lattice_triangles(model, patch: int = 3) -> List[Tuple[Vertex, Vertex, Verte
                 points.append(model.cartesian_position(site.id, (c1, c2)))
     points = np.array(points)
     inverse = np.linalg.inv(lattice)
+    # Cocircular sites (the six corners of a honeycomb hexagon) leave the Delaunay
+    # choice arbitrary and not periodic; a tiny shift of each sublattice, the same
+    # in every cell, keeps the point set periodic and makes the choice unique. The
+    # kept triangles are then evaluated at the true positions.
+    size = float(np.min(np.linalg.norm(lattice, axis=1)))
+    jitter = np.array([[np.cos(1.0 + 2.3 * s), np.sin(1.0 + 2.3 * s)]
+                       for s in range(len(model.sites))]) * 1e-7 * size
+    shifted = points + np.tile(jitter, ((2 * patch + 1) ** 2, 1))
     triangles = []
-    for simplex in Delaunay(points).simplices:
+    for simplex in Delaunay(shifted).simplices:
         corners = points[simplex]
         centroid = corners.mean(axis=0) @ inverse
         if not np.all((centroid >= -1e-9) & (centroid < 1 - 1e-9)):

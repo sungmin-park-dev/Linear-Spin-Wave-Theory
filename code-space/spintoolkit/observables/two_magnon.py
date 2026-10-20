@@ -202,6 +202,9 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     numbers of :func:`~spintoolkit.observables.thermal.thermal_quantities`;
     the continuum is then not defined and is reported as NaN.
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "two_magnon_continuum")
     from spintoolkit.methods.lswt.run import require_lab_frame
 
     require_lab_frame(result, "two_magnon_continuum")
@@ -310,6 +313,9 @@ def two_magnon_threshold(result, k_points, grid: Sequence[int] = (48, 48)) -> np
     -------
     (m,) array
     """
+    from spintoolkit.methods.lswt.run import require_unaugmented
+
+    require_unaugmented(result, "two_magnon_threshold")
     from scipy.optimize import minimize
 
     from spintoolkit.methods.lswt.run import require_lab_frame

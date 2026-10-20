@@ -46,6 +46,10 @@ CLASSICAL_REFINE_ORBIT_FLOOR = 1e3  # x eps x max|Hessian|: G^T g above it marks
 CLASSICAL_REFINE_ORBIT_PROBE = 1e-3  # radians, first secant step along the orbit
 CLASSICAL_REFINE_ORBIT_STEPS = 30  # secant iterations of the orbit search
 # Global classical search (D32): the differential-evolution settings of the former SpinOptimizer
+STATIONARY_TORQUE_TOLERANCE = 1e-10  # E0, largest torque of a stationary point found by find_stationary_state (D63)
+STATIONARY_MAX_STEPS = 100         # Newton steps of find_stationary_state
+STATIONARY_HALVINGS = 30           # step halvings before a Newton step is rejected
+
 CLASSICAL_SEARCH_POPSIZE = 18
 CLASSICAL_SEARCH_TOL = 1e-9
 CLASSICAL_SEARCH_MAXITER = 800
@@ -86,6 +90,8 @@ ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficien
 LSWT_DEFAULT_MESH = (24, 24)       # thermodynamic-limit mesh of the magnetic reciprocal cell
 LSWT_STATIONARITY_TOLERANCE = 1e-8 # E0, largest torque accepted without a warning
 LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below this is a zero mode
+AUGMENTATION_PADDING = 1e-9        # MAGSWT (D62): mu = mu_min + this x spectral scale, lifting the zero mode at mu_min
+AUGMENTATION_BISECTION_STEPS = 50  # MAGSWT: bisection steps for the comparison shift mu_real_spectrum
 SPIRAL_SYMMETRY_TOLERANCE = 1e-10  # relative |[J, R_n]| or transverse field treated as U(1) symmetric (D34)
 # Topology (D29, confirmed as D31 on 2026-09-30)
 TOPOLOGY_BAND_GAP_CUTOFF = 1e-8    # E0; signed BdG separation at or below this leaves a band's curvature undefined
