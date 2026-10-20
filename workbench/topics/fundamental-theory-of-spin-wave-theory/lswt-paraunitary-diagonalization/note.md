@@ -8,7 +8,7 @@ The quadratic Hamiltonian $\hat H_2$ of Momentum-Space BdG Hamiltonian in resear
 
 ## Bogoliubov Transformation and the Paraunitary Condition
 
-We write the Nambu spinor of Holstein–Primakoff bosons, $\hat\Psi_{\mathbf k}$, as a linear combination of the magnon spinor $\hat\Phi_{\mathbf k}$ defined in Notation and Conventions in research note *LSWT spin Hamiltonian*,
+We write the Nambu spinor of Holstein–Primakoff bosons, $\hat\Psi_{\mathbf k}$, as a linear combination of the magnon spinor $\hat\Phi_{\mathbf k}$ defined in Notation and Conventions in research note *LSWT conventions*,
 
 <!-- eq 1: eq-lswt-bogoliubov-transformation -->
 
@@ -167,7 +167,7 @@ Adding a small positive shift $\delta\,\mathsf I_{2N_{\mathrm{sub}}}$ makes $\ma
 
 ### Internal Documents
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: defines the Nambu spinors $\hat\Psi_{\mathbf k}$ and $\hat\Phi_{\mathbf k}$, the metric $\Sigma_3$, the paraunitary matrix $\mathsf T_{\mathbf k}$, and the energy symbols $\varepsilon_{n\mathbf k}$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, and $E_{\mathrm{GS}}$.
+- Notation and Conventions in research note *LSWT conventions*: defines the Nambu spinors $\hat\Psi_{\mathbf k}$ and $\hat\Phi_{\mathbf k}$, the metric $\Sigma_3$, the paraunitary matrix $\mathsf T_{\mathbf k}$, and the energy symbols $\varepsilon_{n\mathbf k}$, $E_{\mathrm{cl}}$, $\Delta E_{\mathrm{zp}}$, and $E_{\mathrm{GS}}$.
 
 - Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: supplies $\hat H_2$, the BdG blocks $\mathsf A_{\mathbf k}$ and $\mathsf B_{\mathbf k}$, their block relations, and the trace subtraction, which it shows to be exact.
 
@@ -385,7 +385,7 @@ The occupation per mode diverges at the zero mode, while the energy per mode, $\
 
 - Thermodynamics in research note *LSWT magnon thermodynamics*: defines the Bose–Einstein occupations.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: defines $\Sigma_3$, $\mathsf T_{\mathbf k}$, $\hat\Phi_{\mathbf k}$, and the energy symbols.
+- Notation and Conventions in research note *LSWT conventions*: defines $\Sigma_3$, $\mathsf T_{\mathbf k}$, $\hat\Phi_{\mathbf k}$, and the energy symbols.
 
 ### External Sources
 
@@ -500,7 +500,7 @@ The vector $\Sigma_1\mathbf t^*$ is therefore a correctly normalized hole column
 
 - Momentum-Space BdG Hamiltonian in research note *LSWT boson Hamiltonian*: defines the BdG blocks and the block relations behind the particle–hole relation.
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: defines the Nambu metric and the paraunitary-matrix notation.
+- Notation and Conventions in research note *LSWT conventions*: defines the Nambu metric and the paraunitary-matrix notation.
 
 - Worked Example (Section *Worked Example*): evaluates these statements for a single sublattice.
 

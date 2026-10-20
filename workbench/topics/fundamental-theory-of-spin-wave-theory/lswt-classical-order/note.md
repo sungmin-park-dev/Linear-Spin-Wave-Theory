@@ -207,7 +207,7 @@ The two factors are, up to $S$, the eigenvalues $A_{\mathbf k}\pm B_{\mathbf k}$
 
 ### Internal Documents
 
-- Notation and Conventions in research note *LSWT spin Hamiltonian*: defines the rotation-matrix direction and local-basis notation.
+- Notation and Conventions in research note *LSWT conventions*: defines the rotation-matrix direction and local-basis notation.
 
 - Bilinear Spin Hamiltonian in research note *LSWT spin Hamiltonian*: defines the laboratory-frame exchange matrices and Zeeman field rotated here.
 

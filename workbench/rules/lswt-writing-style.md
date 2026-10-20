@@ -55,7 +55,7 @@ updated: 2026-09-16
 - Heading과 opening paragraph는 문서 또는 section의 구체적인 물리적 대상과 범위를 앞에서 밝힌다. Markdown heading에는 수동 section number를 붙이지 않는다.
 - Prose paragraph는 하나의 논리적 역할을 수행하고 Markdown source에서 한 physical line으로 작성한다. Editor의 soft wrap을 사용한다.
 - Display equation은 주변 문장의 문법적 일부로 작성한다. 새 기호, 가정, approximation과 적용 조건은 필요한 지점에서 정의한다.
-- Matrix, vector, operator, index, imaginary unit와 energy notation은 [Notation and Conventions](../../archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md)를 따른다.
+- Matrix, vector, operator, index, imaginary unit와 energy notation은 [LSWT Notation Rules](lswt-notation.md)와 연구노트 *LSWT conventions*를 따른다.
 - Claim의 강도는 근거 수준을 넘지 않아야 하며, regime과 approximation은 해당 claim 가까이에 둔다.
 - Primary note에 없는 claim은 확인된 scholarly source 또는 documented derivation으로 뒷받침한다. 외부 논문은 `External Sources`, 내부 유도는 `Internal Documents`에 기록하며 citation을 추측하거나 생성하지 않는다.
 - Package, API, implementation plan, task status, agent note와 unresolved review ledger는 theory body에 넣지 않는다.
@@ -143,7 +143,7 @@ Theory note를 사용자 검토에 올리기 전에 다음을 확인한다.
 
 - [AGENTS.md](../../AGENTS.md)
 - [Documentation Map](../../archive/2026-10-08-lswt-markdown/README.md)
-- [Notation and Conventions](../../archive/2026-10-08-lswt-markdown/00-foundations/notation-and-conventions.md)
+- [LSWT Notation Rules](lswt-notation.md)와 연구노트 *LSWT conventions*
 - [Source Inventory](../../sources/README.md)
 - [Single Knowledge Canon](../../archive/government/User-Constitution/single-knowledge-canon.md)
 - [LSWT Canonical Document Lifecycle](lswt-canonical-document-lifecycle.md)

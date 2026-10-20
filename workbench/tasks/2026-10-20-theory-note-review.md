@@ -17,6 +17,7 @@ references:
 | 순서 | 노트 | 대조 | 사용자 판정 |
 |---|---|---|---|
 | 1 | `lswt-spin-hamiltonian` | 2026-10-20 끝 | accepted (2026-10-20) |
+| 1a | `lswt-conventions` (1의 Notation 절을 옮긴 것) | 2026-10-20 끝 | accepted (2026-10-20, 옮기기 전 판정 그대로) |
 | 2 | `lswt-classical-order` | | |
 | 3 | `lswt-boson-hamiltonian` | | |
 | 4 | `lswt-paraunitary-diagonalization` | | |
@@ -30,7 +31,7 @@ references:
 
 ## 1. lswt-spin-hamiltonian (2026-10-20)
 
-세 절: Spin-Wave Theory Overview, Notation and Conventions, Bilinear Spin Hamiltonian.
+세 절: Spin-Wave Theory Overview, Notation and Conventions, Bilinear Spin Hamiltonian. 검토 뒤 2026-10-20 사용자 코멘트 c-20261019-1006에 따라 Notation and Conventions 절을 둘로 나눴다: 물리 관례(첨자, 격자, 링크, 국소 틀, Nambu·BdG, 에너지, 단위, 브릴루앙 영역 합, 띠 번호, 열린 관례)는 새 노트 `lswt-conventions`, 글꼴 규칙과 원문 기호 대응표는 규칙 `workbench/rules/lswt-notation.md`. 글자는 바꾸지 않았고, 다른 노트 8편의 링크를 새 노트로 고쳤다.
 
 ### 대조한 것
 
