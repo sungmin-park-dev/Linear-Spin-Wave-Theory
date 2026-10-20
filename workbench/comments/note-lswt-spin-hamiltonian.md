@@ -12,3 +12,8 @@
 이론 노트 8개의 외부 출처를 `research-library/references.bib` 키로 인용하게 바꿨습니다(`[@키, Eq. (29)]`). External Sources에는 키와 쓰임 한 줄만 남겼고, bib에 없던 8개는 research-library에 더했습니다.
 - 상태: 답함
 - 상태: 끝냄
+
+## c-20261019-1006 · 지시 · 전체
+- 상태: 대기
+
+Section "2 Notation and Conventions"을 다른 노트로 만들거나, 또는 문서 규칙 처럼 만들어버려. 지금 해당 본문에는 적절하지 않아.

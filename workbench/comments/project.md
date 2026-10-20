@@ -6,3 +6,8 @@
 <!-- rw: {"unsorted":true} -->
 
 작업을 최신화해줘.
+
+## c-20261003-0947 · 할 일 · 전체
+- 상태: 끝냄
+
+일괄 검토 (A1–A6, B1–B7, C1–C3) — `GOVERNMENT/Working-Pad/project-review/2026-10-02-batch-review-guide.md`
