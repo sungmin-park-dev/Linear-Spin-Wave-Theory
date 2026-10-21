@@ -1,12 +1,13 @@
-"""Abstract base class for spin system solvers.
+"""Abstract base class of the former ``SpinSystem`` solvers (deprecated, removed in 0.3).
 
-All solvers (LSWT, real-space BdG, ED, DMRG, ...) share a common interface:
+The former solvers (LSWT, real-space BdG) shared a common interface:
 
     solver = SomeSolver(system, **options)
     result = solver.solve()
 
-This module defines that contract so that different methods can be compared
-on the same SpinSystem with minimal code changes.
+The current API calls functions on a ``SpinModel`` and ``SpinState``
+(``solve_lswt``, ``solve_nlswt``, ``solve_ed``) and returns results with a
+common ``ResultHeader`` (D14); see :mod:`spintoolkit.methods.result`.
 """
 
 from __future__ import annotations
@@ -38,7 +39,7 @@ class SolverResult:
         - Real-space BdG: (num_modes,) finite-size spectrum
         - ED: (dim_hilbert,) full spectrum
     method : str
-        Solver identifier, e.g. 'LSWT', 'RealSpaceBdG', 'ED', 'DMRG'.
+        Solver identifier, e.g. 'LSWT', 'RealSpaceBdG'.
     spin_config : np.ndarray or None
         Optimized spin angles [theta_0, phi_0, ...], if the solver
         performed optimization. None if angles were fixed.
@@ -46,7 +47,6 @@ class SolverResult:
         Solver-specific output. Examples:
         - LSWT: {'k_data': ..., 'bz_data': ..., 'berry_curvature': ...}
         - ED: {'wavefunctions': ..., 'partition_function': ...}
-        - DMRG: {'bond_dimensions': ..., 'entanglement': ...}
     """
     ground_state_energy: float
     method: str

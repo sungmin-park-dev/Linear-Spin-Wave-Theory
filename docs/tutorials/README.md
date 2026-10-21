@@ -31,8 +31,8 @@ The figures go to `data-space/tutorials/`.
 ## Units and conventions
 
 All quantities are dimensionless. Energies are in the unit E0 of your
-coupling constants (here J), fields are h = μ_B B / E0 with the g-tensor of
-the model's Zeeman term, and temperatures are t = k_B T / E0. Momenta are in
+coupling constants (here J), fields are b = μ_B B / E0, entering as −bᵀ g S with the
+g-tensor of the model's Zeeman term, and temperatures are t = k_B T / E0. Momenta are in
 inverse units of the lattice length you chose. Energies are per spin.
 
 Spin-wave theory expands about an ordered classical state. When a quantity

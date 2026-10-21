@@ -1,9 +1,11 @@
 """
 spintoolkit: calculation toolkit for 2D spin systems
 
-Defines 2D spin models and connects them to classical optimization, linear
-spin-wave theory and observables. Further methods (ED, tensor networks) are
-added as subpackages of ``methods``. The conventional alias is
+Defines 2D spin models and connects them to semiclassical methods: classical
+ground-state search, Monte Carlo and spin dynamics, linear spin-wave theory,
+its 1/S corrections, and observables. Small exact diagonalization is included
+to validate spin-wave results; quantum many-body methods (DMRG, QMC, tensor
+networks) are outside the package scope (2026-10-10 decision, D48). The conventional alias is
 ``import spintoolkit as stk``.
 
 Main Components

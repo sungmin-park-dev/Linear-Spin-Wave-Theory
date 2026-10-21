@@ -17,7 +17,7 @@
 - 명확성 우선 — 물리적 의미가 코드에 드러나야 함
 - 관심사 분리 — 시스템 정의 / 솔버 / 관측량(observables) / 시각화
 - 범위는 반고전 방법: 고전 질서와 그 위의 요동(LSWT 중심, 1/S 보정, 고전 MC·스핀 동역학). 양자 다체 계산(DMRG·QMC·TN)은 다루지 않고, ED는 스핀파 결과 검증용으로만 둔다 ([2026-10-10 결정](workbench/decisions/2026-10-10-package-scope-semiclassical.md))
-- `SpinSystem`은 solver-agnostic — LSWT 전용 로직을 넣지 않음
+- `SpinModel`은 solver-agnostic — 방법 전용 로직을 넣지 않음 (상태는 `SpinState`, 조건은 `ExternalConditions`로 분리)
 - Python config 사용 (YAML 아님) — exchange matrix(3×3)를 numpy로 직접 정의
 
 ---
@@ -41,7 +41,7 @@ project-root/
 │   └── STATUS.md                # 앱이 쓰는 요약 (git 제외)
 │
 ├── code-space/                  # 코드
-│   ├── spintoolkit/             # system · states · methods · definitions · observables · visualization
+│   ├── spintoolkit/             # system · states · models · methods · definitions · observables · visualization
 │   ├── lswt/                    # 옛 이름 `lswt` 호환 패키지(DeprecationWarning)
 │   ├── tests/                   # pytest 테스트
 │   ├── examples/                # quickstart.py, gallery.py, tutorials/(튜토리얼 스크립트), worked_examples/(예제 노트의 계산), verification/(검증 스크립트)
@@ -50,7 +50,7 @@ project-root/
 ├── docs/                        # 우리가 쓴 글
 │   ├── README.md
 │   ├── reviews/                 # 검토·계획 문서 (옛 project-review, 2026-10-01 이론 검토 안내)
-│   ├── tutorials/               # 패키지 사용법 영어 튜토리얼 5편
+│   ├── tutorials/               # 패키지 사용법 영어 튜토리얼 6편
 │   └── verification-notes/      # 수식·basis convention과 코드의 내부 검증 자료
 │
 ├── sources/                     # LSWT 원자료: 원본 PDF와 TeX 전사본. 고치지 않는다
@@ -90,33 +90,31 @@ NBCP 연구는 2026-10-09 별도 저장소 `sungmin-park-dev/nbcp-spin-supersoli
 ## 핵심 API
 
 ```python
-from spintoolkit import SpinSystem, LSWTSolver   # 관례 별칭: import spintoolkit as stk
+import numpy as np
+import spintoolkit as stk                      # 관례 별칭
 
-# 시스템 정의 — builder 패턴 (권장)
-system = SpinSystem(lattice_vectors=[[1, 0], [0.5, np.sqrt(3)/2]])
-system.add_site("A", [0, 0], spin=0.5, angles=[θ, φ], magnetic_field=[0, 0, h])
-system.add_site("B", [0.5, 0.5], spin=0.5, angles=[θ, φ], magnetic_field=[0, 0, h])
-system.add_coupling("A", "B", J_matrix, displacement=[1, 0])
+# 모형: 격자(행이 격자 벡터), 자리(분수 좌표, 스핀 크기), 항. 값은 모두 E0 단위(D20)
+site = stk.Site("A", (0.0, 0.0), 0.5)
+terms = [stk.Term.bilinear(("A", (0, 0)), ("A", d), stk.heisenberg(1.0)) for d in [(1, 0), (0, 1)]]
+terms.append(stk.Term.zeeman("A", np.eye(3)))          # -b^T g S, b = mu_B B / E0
+model = stk.SpinModel(np.eye(2), (site,), tuple(terms), {"model_id": "square"})
 
-# list 기반 생성도 지원 (하위 호환)
-system = SpinSystem(sites=[...], couplings=[...], lattice_vectors=[[...], [...]])
+# 고전 상태: 정수 초격자와 자리마다 방향 (또는 classical_search로 찾기)
+state = stk.SpinState.from_function(
+    model, [[1, 1], [1, -1]], lambda s, cell: np.array([1.0, 0, 0]) * (-1) ** (cell[0] + cell[1]))
 
-# 접근
-system.site("A").position       # label 또는 index로 접근
-system.get_couplings("A", "B")  # 필터링된 coupling 리스트
-
-# 솔버 실행 — bz_type은 solver에서 지정
-solver = LSWTSolver(system, bz_type="Hex_60")
-result = solver.solve(N=10)
-
-# 결과 (SolverResult)
-result.ground_state_energy   # float
-result.eigenvalues           # np.ndarray (num_k, num_bands)
-result.method                # str
-result.data                  # dict (솔버별 고유 데이터)
+# LSWT: 조건(장, 온도)과 설정(메시 등)은 따로
+result = stk.solve_lswt(model, state, stk.ExternalConditions(field=(0, 0, 0)),
+                        settings=stk.LSWTSettings(mesh=(24, 24)))   # 장이 있으면 기울어진 상태가 필요
+result.ground_state_energy      # 자리당 E_cl + E_zp
+result.bands()                  # (nk, Ns) 마그논 에너지
+result.header                   # 출처·설정·진단(D14), 결과는 읽기 전용(D66)
+stk.solve_nlswt(model, state)   # 1/S 보정 (D46)
 ```
 
-**Legacy 호환**: `LSWTSolver`는 legacy dict 형식도 받음. `SpinSite`, `Coupling` alias 유지 (점진적 제거 예정).
+관측량은 `spintoolkit.observables`(띠, 구조 인자, 중성자 세기, 열역학, 위상)의 함수가 결과를 받는다. 나선은 `IncommensurateStructure`와 `solve_spiral_lswt`(D34), 검증용 ED는 `spintoolkit.methods.ed.solve_ed`.
+
+**옛 API**: `SpinSystem`, `LSWTSolver`, `EnergyFunction`, `SpinOptimizer`, `LSWTHamiltonian`, `AbstractSolver`, 켈빈 `Thermodynamics`는 0.2에서 경고하고 0.3에서 지운다(D43, D65). 새 코드에 쓰지 않는다.
 
 **범위 (2026-10-10 결정)**: 같은 `SpinModel` 정의에서 고전 상태 탐색 → `solve_lswt` → `solve_nlswt`(1/S) 순서로 쌓는다. 새 방법은 이 반고전 흐름 안에서만 더하고, ED는 검증용으로 둔다.
 

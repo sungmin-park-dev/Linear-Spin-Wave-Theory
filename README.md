@@ -99,7 +99,7 @@ example) and a `stk.SpinState` for the ordered configuration, or find one with
 
 ## Tutorials
 
-Five tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
+Six tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
 first calculation to neutron spectra, the magnetization curve at 1/S order
 (checked against exact diagonalization) and magnon topology. Every number in
 them is printed by a script in `code-space/examples/tutorials/` and checked by the test
@@ -189,7 +189,7 @@ results in research.
 - [Documentation index](docs/README.md)
 - [Package layout](code-space/spintoolkit/README.md) (Korean)
 
-Design notes and the decision log (D01–D60) are in Korean, in
+Design notes and the decision log (D01–D67) are in Korean, in
 `workbench/topics/toolkit-development/`. Earlier snapshots are kept in
 `archive/` and are no longer edited.
 

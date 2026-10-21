@@ -2,9 +2,8 @@
 
 This is the computational lattice condition, not the crystal lattice itself
 (which lives in :mod:`spintoolkit.system.lattice` and in
-:attr:`SpinModel.lattice`). The 1st scope supports the thermodynamic limit of
-the periodic system and finite periodic tori; cylinders and open clusters are
-added with the ED and tensor-network solvers.
+:attr:`SpinModel.lattice`). It supports the thermodynamic limit of the periodic
+system and finite periodic tori (for ED validation and classical simulations).
 """
 
 from __future__ import annotations

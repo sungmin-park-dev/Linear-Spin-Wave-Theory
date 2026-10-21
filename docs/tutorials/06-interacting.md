@@ -13,6 +13,7 @@ factor through order S⁰.
 ## Ground-state energy through order S⁰
 
 ```python
+import numpy as np
 import spintoolkit as stk
 from spintoolkit.models import state_120, triangular_heisenberg
 
@@ -36,6 +37,7 @@ fifth digit, as explained in the theory note *LSWT nonlinear spin waves*
 ## Magnon energies and decay rates
 
 ```python
+k = np.array([[2 * np.pi / 3, 0.0]])   # halfway from Gamma to K
 result.magnon_energies(k)          # LSWT, Hartree-Fock + tadpole, cubic, total
 result.decay_rates(k, grid=(96, 96))
 ```
@@ -74,9 +76,11 @@ S = 5/2, where the corrections are small enough to be controlled:
 from spintoolkit.observables import interacting_path
 from spintoolkit.visualization import plot_intensity_path, plot_spectrum_cut
 
+omega = np.linspace(0.0, 17.5, 350)
 path = interacting_path(result, omega, eta=0.25, path=("Γ", "K", "M", "Γ"),
                         points=24, grid=(36, 36))
 plot_intensity_path(path)
+i = int(np.argmin(np.abs(path.distance - 0.5 * path.label_distances[1])))   # halfway to K
 plot_spectrum_cut(path, i)
 ```
 

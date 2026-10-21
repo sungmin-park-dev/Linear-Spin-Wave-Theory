@@ -1,30 +1,14 @@
 """
-Abstract base classes for magnetic structures.
+Abstract base class of the former magnetic-structure classes (kept for import compatibility).
 
-This module defines how spin configurations are represented, separate from
-the underlying crystallographic lattice geometry.
-
-Key Distinction
----------------
-Commensurate vs Incommensurate structures fundamentally differ:
-
-Commensurate:
-    - Finite magnetic supercell
-    - Discrete spin angles per sublattice
-    - q-vector is rational fraction of reciprocal lattice
-    - Example: 120° structure on triangular lattice
-
-Incommensurate:
-    - Infinite lattice (no supercell)
-    - Continuous spiral/helix modulation
-    - q-vector is irrational
-    - Example: spiral with q = (0.4, 0.4)
-
-This architectural distinction affects:
-    - Optimization (angles vs q-vector)
-    - Visualization (discrete arrows vs continuous field)
-    - Brillouin zone (folded vs extended)
-    - Hamiltonian size (finite vs infinite with truncation)
+The current state types are
+:class:`~spintoolkit.states.spin_state.SpinState` for commensurate order (an
+integer magnetic supercell with one direction per site) and
+:class:`~spintoolkit.states.incommensurate.IncommensurateStructure` for a
+single-Q spiral (planar or conical), whose spin waves are computed in the
+rotating frame on the primitive cell (D34, ``solve_spiral_lswt``); no
+supercell or truncation is involved. Multi-Q incommensurate structures are not
+supported.
 """
 
 import numpy as np

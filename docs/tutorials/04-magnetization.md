@@ -10,6 +10,7 @@ moments cant towards the field and saturate at h_sat = 8JS = 4.
 ## The calculation
 
 ```python
+import numpy as np
 from spintoolkit.methods.magnetization import magnetization_curve
 from spintoolkit.models import neel_state, square_heisenberg
 
@@ -64,8 +65,9 @@ from spintoolkit.methods.ed import EDSector, solve_ed
 from spintoolkit.system.geometry import CalculationGeometry
 
 geometry = CalculationGeometry.finite_torus([[4, 0], [0, 4]])
-sector = EDSector(axis=(0, 0, 1), magnon_number=n, momenta="all")
-blocks = solve_ed(model, geometry, sector=sector, num_eigenvalues=1).blocks
+for n in range(9):          # 16 spins: S^z = 8 - n >= 0 suffices at h >= 0
+    sector = EDSector(axis=(0, 0, 1), magnon_number=n, momenta="all")
+    blocks = solve_ed(model, geometry, sector=sector, num_eigenvalues=1).blocks
 ```
 
 The script finds the lowest zero-field energy E(S^z) in each sector. The

@@ -8,10 +8,13 @@ moments point along z, g = 2, and the magnetic form factor is 1. The
 harmonic-order result has a closed form, so every number can be checked.
 
 ```python
+import numpy as np
 import spintoolkit as stk
 from spintoolkit.models import neel_state, square_heisenberg
 from spintoolkit.observables.neutron import neutron_intensity
 
+pi = np.pi
+Q = np.array([[pi, 0], [pi / 2, pi / 2], [pi / 2, 0], [0.9 * pi, 0.9 * pi]])
 model = square_heisenberg(J=1.0, S=0.5)
 result = stk.solve_lswt(model, neel_state(model), settings=stk.LSWTSettings(mesh=(24, 24)))
 spectrum = neutron_intensity(result, Q, g=2.0)
@@ -74,6 +77,8 @@ weight there, so the package returns NaN rather than a number. The elastic
 from spintoolkit.observables.neutron import neutron_path, powder_average
 from spintoolkit.visualization import plot_intensity_path, plot_powder
 
+omega = np.linspace(0, 2.5, 251)
+Q_magnitudes = np.linspace(0.05, 8, 120)
 path = neutron_path(result, omega, 0.05, path=[(0, 0), (np.pi, 0), (np.pi, np.pi), (0, 0)], g=2.0)
 powder = powder_average(result, Q_magnitudes, omega, 0.05, num_directions=400, g=2.0)
 ```
