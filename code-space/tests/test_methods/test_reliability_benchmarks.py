@@ -26,6 +26,11 @@ B9  Order by disorder at low field: zero-point energy selects the coplanar Y
     state over the classically degenerate cone; the 1/S susceptibilities
     chi = (1 + c/(2S))/(9J) against the sums of Keselman et al.,
     arXiv:2512.02150, End Matter Eqs. (3), (4) (J2 = 0), evaluated here.
+B10 Canted BCAO states in fields along any direction (zigzag and double
+    zigzag supercells): LSWT bands against an independent Holstein-Primakoff
+    matrix in local frames built from the terms and the directions only. The
+    polarized state softens exactly at the classical saturation field of the
+    zigzag (M point), closed forms in the test.
 
 The full tables are produced by
 ``code-space/examples/verification/theory_reliability_benchmarks.py``.
@@ -371,3 +376,106 @@ def test_zero_point_energy_selects_the_y_state_with_the_literature_susceptibilit
     assert np.all(np.array(energies["Y"]) < np.array(energies["cone"]))
     assert c["Y"] == pytest.approx(c_y, abs=0.005)
     assert c["cone"] == pytest.approx(c_cone, abs=0.005)
+
+
+# ---------------------------------------------------------------- B10 ----
+
+def independent_canted_bands(model, state, field, k_points):
+    """LSWT of a noncollinear supercell state from the terms and the directions only.
+
+    Local frame per magnetic sublattice: n along the spin, u = e + i n x e; bond i -> j
+    with exchange J adds sqrt(S_i S_j)/2 (u_i J u_j^*, u_i J u_j) to (A, B) and
+    -S_j n_i J n_j, -S_i n_i J n_j to the diagonal; the field -b.S adds b.n_i (g = 1).
+    """
+    spins = {s.id: s.spin for s in model.sites}
+    pos = {s.id: s.position @ model.lattice for s in model.sites}
+    inverse = np.linalg.inv(np.asarray(state.supercell, dtype=float))
+    keys = sorted(state.directions)
+    index = {key: i for i, key in enumerate(keys)}
+    n = {key: np.asarray(v) / np.linalg.norm(v) for key, v in state.directions.items()}
+    u = {}
+    for key, v in n.items():
+        e = np.array([0, 0, 1.0]) if abs(v[2]) < 0.9 else np.array([1.0, 0, 0])
+        e = e - v * (v @ e)
+        e /= np.linalg.norm(e)
+        u[key] = e + 1j * np.cross(v, e)
+
+    def sublattice(site, cell):
+        for s, c in keys:
+            x = (cell - np.asarray(c)) @ inverse
+            if s == site and np.allclose(x, np.rint(x), atol=1e-9):
+                return s, c
+        raise RuntimeError("no sublattice")                      # pragma: no cover
+
+    def blocks(k):
+        A = np.diag([field @ n[key] for key in keys]).astype(complex)
+        B = np.zeros_like(A)
+        for term in model.terms_of_kind("bilinear"):
+            (si, ci), (sj, cj) = term.participants
+            J = np.asarray(term.coefficient)
+            for s0, c0 in keys:
+                if s0 != si:
+                    continue
+                cell_j = np.asarray(c0) + np.asarray(cj) - np.asarray(ci)
+                ki, kj = (s0, c0), sublattice(sj, cell_j)
+                r = pos[sj] + cell_j @ model.lattice - pos[si] - np.asarray(c0) @ model.lattice
+                phase, amp = np.exp(1j * k @ r), np.sqrt(spins[si] * spins[sj]) / 2
+                i, j = index[ki], index[kj]
+                A[i, j] += amp * (u[ki] @ J @ u[kj].conj()) * phase
+                A[j, i] += amp * (u[kj] @ J.T @ u[ki].conj()) / phase
+                B[i, j] += amp * (u[ki] @ J @ u[kj]) * phase
+                B[j, i] += amp * (u[kj] @ J.T @ u[ki]) / phase
+                A[i, i] -= spins[sj] * (n[ki] @ J @ n[kj])
+                A[j, j] -= spins[si] * (n[ki] @ J @ n[kj])
+        return A, B
+
+    ns, bands = len(keys), []
+    for k in k_points:
+        (A, B), (Am, _) = blocks(k), blocks(-k)
+        K = cholesky(np.block([[A, B], [B.conj().T, Am.T]]))
+        w = np.linalg.eigvalsh(K @ np.diag([1.0] * ns + [-1.0] * ns) @ K.conj().T)
+        bands.append(np.sort(w[w > 0]))
+    return np.array(bands)
+
+
+@pytest.mark.parametrize("params, field, cell", [
+    ((0.45, 0.1, 0.2, 0.2), (0.3, 0.0, 0.0), [[1, 0], [0, 2]]),
+    ((0.45, 0.1, 0.2, 0.2), (0.0, 0.0, 0.5), [[1, 0], [0, 2]]),
+    ((0.45, 0.1, 0.2, 0.2), (0.2, 0.1, 0.3), [[1, 0], [0, 2]]),
+    ((0.45, 0.0, 0.0, 0.7), (0.1, 0.0, 0.0), [[1, 0], [0, 4]]),
+])
+def test_canted_bcao_bands_match_an_independent_holstein_primakoff_matrix(params, field, cell):
+    J3, d1, d3, jzp = params
+    model = bcao_minimal(J3=J3, Delta1=d1, Delta3=d3, Jzpm3=jzp)
+    conditions = ExternalConditions(field=field)
+    state = classical_search(model, cell, conditions, maxiter=300).state
+    magnetization = np.mean(list(state.directions.values()), axis=0)
+    assert 0.01 < np.linalg.norm(magnetization) < 0.99          # canted, not collinear
+    k = np.random.default_rng(1).uniform(-6, 6, (5, 2))
+    bands = solve_lswt(model, state, conditions, settings=LSWTSettings(k_points=k)).bands()
+    np.testing.assert_allclose(bands, independent_canted_bands(model, state, np.array(field), k),
+                               atol=1e-12)
+
+
+@pytest.mark.parametrize("J3, d1, d3, jzp", [(0.45, 0.1, 0.2, 0.2), (0.6, -0.3, 0.5, -0.8)])
+def test_polarized_bcao_softens_at_the_zigzag_saturation_field(J3, d1, d3, jzp):
+    """J1 = -1, J3 > 0.4: the softest transverse mode of the polarized state is at M, where
+    f1 = -1 and f3 = 3 (third neighbours at -2 x the first). Along z,
+    h_c = S (|J1 - 3 J3| + 3 (J1 Delta1 + J3 Delta3)) for any Jz+-, which couples the
+    transverse x, y only to the longitudinal z. In the plane Jz+- couples the two transverse
+    components (y and z for a field along x), so h_ab = S (|J1 - 3 J3| - |3 J1 + 3 J3|) is
+    checked at Jz+- = 0; at Jz+- = -0.8 the polarized state is unstable there."""
+    from spintoolkit.methods.lswt.run import LSWTError
+
+    S, J1 = 0.5, -1.0
+    h_ab = S * (abs(J1 - 3 * J3) - abs(3 * J1 + 3 * J3))
+    h_c = S * (abs(J1 - 3 * J3) + 3 * (J1 * d1 + J3 * d3))
+    cases = [(jzp, (0.0, 0.0, 1.0), h_c), (0.0, (1.0, 0.0, 0.0), h_ab), (0.0, (0.0, 1.0, 0.0), h_ab)]
+    for coupling, direction, h_s in cases:
+        model = bcao_minimal(J1=J1, J3=J3, Delta1=d1, Delta3=d3, Jzpm3=coupling, S=S)
+        state, d = polarized_state(model, direction), np.array(direction)
+        settings = LSWTSettings(mesh=(24, 24), shift=False)
+        above = solve_lswt(model, state, ExternalConditions(field=tuple(1.001 * h_s * d)), settings=settings)
+        assert above.bands().min() > 0
+        with pytest.raises(LSWTError):
+            solve_lswt(model, state, ExternalConditions(field=tuple(0.999 * h_s * d)), settings=settings)
