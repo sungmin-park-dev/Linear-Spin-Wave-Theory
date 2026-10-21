@@ -910,6 +910,26 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D72): 자기무모순 one-loop(SCOL)는 3차 꼭짓점이 없는 상태에서만}\label{decisions-d72-self-consistent-one-loop}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 사용자 요청(``self-consistent를 일반 패키지로 더하자''). 범위와 규칙은 Claude 추천, 잠정 승인. 비교 대상: Keselman et al., arXiv:2512.02150 End Matter와 SM III절(SCOL), Chubukov--Golosov 1991(큰 $S$ 극한).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    방법 & \texttt{solve\_scswt}: $H_\mathrm{SC}(k)=H_2(k)+\delta H_\mathrm{HF}$, 두 점 함수 $\langle a^\dagger a\rangle$, $\langle aa\rangle$를 $H_\mathrm{SC}$의 진공에서 다시 구해 바뀌지 않을 때까지 되풀이(Keselman 식 (S53)--(S54)). 고정점은 Bogoliubov 진공들 위 가우스 에너지 $\langle H_0+H_2+H_4\rangle$의 정류점이고, 이 값을 바닥 에너지로 낸다. 마그논 에너지는 $H_\mathrm{SC}$의 Bogoliubov 에너지 \\
+    범위 & 3차 꼭짓점이 없는 상태($H_3=0$: UUD 같은 공선 판, 대칭축을 따른 공선 상태)만. $H_3\neq0$이면 $\Sigma_3$와 tadpole이 HF와 같은 차수로 마그논 에너지를 옮기므로, HF만 자기무모순으로 다루는 것은 일관된 근사가 아니다. 이때 \texttt{LSWTError}와 선택지(\texttt{solve\_nlswt}) \\
+    장 스캔 & \texttt{frozen=}: 다른 장의 결과에서 $\delta H_\mathrm{HF}$를 그대로 쓴다(4차 항은 장과 무관). $S^z_\mathrm{tot}$가 보존되면 장 항이 $H_\mathrm{SC}$와 교환해 진공이 그대로이므로, 고정은 근사가 아니라 정확하다(Keselman의 ``약하게 의존한다'' 가정이 필요 없음). \texttt{initial=}: 다른 장의 해에서 반복을 시작(LSWT 진공이 없는 곳) \\
+    NaN 규칙 & 고정 모드에서 메시 위 $H_\mathrm{SC}$가 양의 정부호가 아니면(간극 닫힘 너머) 에너지와 보손 수는 NaN과 경고. \texttt{magnon\_energies}는 그 $k$에서만 NaN. 자기무모순 반복이 불안정한 $H$에 닿거나 수렴하지 않으면 오류 \\
+    확인 & 정사각 Néel: HF가 $H(k)$를 균일하게 늘리므로 고정점 = one-loop($10^{-6}$). 큰 $S$ 정확 대각화(XYZ 편극상, $2\times2$ 토러스, $S=1$--8): $(E_\mathrm{ED}-E_\mathrm{SC})S$, 간극 차$\times S$가 유한하게 수렴. 정류성: SC 진공에서 에너지 기울기 $10^{-8}$, LSWT 진공에서 $10^{-2}$. UUD: $n_\downarrow=2n_\uparrow$ 정확히, $S\to\infty$에서 경계가 CG $0.50$, $1.29$로 \\
+    결과 & 삼각 UUD $S=1/2$: $h_{c1}=1.2665J$, $h_{c2}=2.0517J$(one-loop 1.25, 2.15), $|\langle S^z\rangle|$ 위 0.4168, 아래 0.3336. Keselman의 SCOL·DMRG 값은 그림으로만 있어 숫자로 대조하지 못했다(미확인) \\
+    검증 & \texttt{tests/test\_methods/test\_self\_consistent.py}, 표 \texttt{data-space/verification/261021-self-consistent/tables.txt} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

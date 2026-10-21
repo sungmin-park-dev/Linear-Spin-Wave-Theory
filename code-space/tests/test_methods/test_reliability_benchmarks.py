@@ -31,6 +31,10 @@ B10 Canted BCAO states in fields along any direction (zigzag and double
     matrix in local frames built from the terms and the directions only. The
     polarized state softens exactly at the classical saturation field of the
     zigzag (M point), closed forms in the test.
+B11 Anisotropic one loop (Delta, Jz+-; Hartree-Fock, cubic and tadpole all
+    non-zero) against exact diagonalization at large S on a finite torus,
+    where the 1/S expansion is exact perturbation theory: the errors fall as
+    1/S (energy per site) and relative 1/S^2 (excitations).
 
 The full tables are produced by
 ``code-space/examples/verification/theory_reliability_benchmarks.py``.
@@ -45,12 +49,14 @@ from scipy.optimize import minimize
 
 from spintoolkit import ExternalConditions, LSWTSettings, SpinModel, SpinState, Site, Term
 from spintoolkit import classical_search, solve_lswt
+from spintoolkit.methods.ed import solve_ed
 from spintoolkit.methods.luttinger_tisza import luttinger_tisza
 from spintoolkit.methods.nlswt.run import NLSWTSettings, solve_nlswt
 from spintoolkit.models import bcao_minimal, neel_state, polarized_state, square_heisenberg
 from spintoolkit.models import state_120, triangular_heisenberg
 from spintoolkit.models.bcao import THIRD_NEIGHBOUR_OFFSETS
 from spintoolkit.models.heisenberg import TRIANGULAR_LATTICE
+from spintoolkit.system.geometry import CalculationGeometry
 
 SQRT2 = np.sqrt(2.0)
 A1, A2 = TRIANGULAR_LATTICE
@@ -510,3 +516,29 @@ def test_eta_zero_energy_inside_the_decay_continuum_is_nan():
     inside = np.isnan(totals[0])
     assert inside.sum() == 3 and np.array_equal(inside, np.isnan(totals[1]))
     np.testing.assert_allclose(totals[0][~inside], totals[1][~inside], atol=2e-3)
+
+
+# ---------------------------------------------------------------- B11 -----
+
+def test_anisotropic_one_loop_matches_large_spin_exact_diagonalization():
+    """Polarized BCAO in an in-plane field on a 3 x 1 torus (six spins): Delta and Jz+- make the
+    Hartree-Fock, cubic and tadpole energies all non-zero. The 1/S expansion on a finite torus is
+    exact perturbation theory, so its error is O(1/S) per site in the energy and relative 1/S^2 in
+    the excitation energies; an error in any order-S^0 piece would leave an S-independent gap."""
+    geometry = CalculationGeometry.finite_torus([[3, 0], [0, 1]])
+    error = {}
+    for S in (1.0, 2.5):
+        model = bcao_minimal(J3=0.45, Delta1=0.3, Delta3=0.4, Jzpm3=0.8, S=S)
+        conditions = ExternalConditions(field=(3.0 * S, 0, 0))
+        exact = solve_ed(model, geometry, conditions, num_eigenvalues=4).energies()
+        result = solve_nlswt(model, polarized_state(model, (1, 0, 0)), conditions, geometry=geometry)
+        e = result.energies
+        assert min(abs(e.hartree_fock), abs(e.cubic), abs(e.tadpole)) > 1e-4
+        error[S] = exact[0] / 6 - e.total
+        if S == 2.5:
+            out = result.magnon_energies(result.k_points)
+            one_loop = np.sort(out["total"].ravel())[:3]
+            lswt = np.sort(out["lswt"].ravel())[:3]
+            np.testing.assert_array_less(np.abs(exact[1:4] - exact[0] - one_loop),
+                                         0.1 * np.abs(exact[1:4] - exact[0] - lswt))
+    assert error[1.0] / error[2.5] == pytest.approx(2.5, rel=0.15)
