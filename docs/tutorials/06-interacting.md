@@ -39,18 +39,29 @@ fifth digit, as explained in the theory note *LSWT nonlinear spin waves*
 ```python
 k = np.array([[2 * np.pi / 3, 0.0]])   # halfway from Gamma to K
 result.magnon_energies(k)          # LSWT, Hartree-Fock + tadpole, cubic, total
+result.spectral_function(k, np.linspace(0.0, 2.0, 3), 0.05, grid=(96, 96), levels=1600)["energy"]
 result.decay_rates(k, grid=(96, 96))
 ```
 
 ```
 magnons at k = [2.0944 0.    ] (S = 1/2):
 LSWT      [1.5811 1.5811 1.    ]
-1/S       [1.0885 1.0885 0.7313]
+1/S       [   nan    nan 0.7313]
+1/S (PV)  [1.1778 1.1778 0.7355]
 decay     [0.1597 0.1597 0.    ]
 ```
 
+The upper two bands lie inside the two-magnon continuum. There the mesh sum
+of the cubic self-energy at the magnon energy crosses its poles and is not the
+principal value, so `magnon_energies` returns NaN with a warning (D71).
+`spectral_function` gives the principal value by an exact Hilbert transform
+of densities integrated on triangles; its `energy` is the on-shell 1/S
+energy. For a band below the continuum the mesh value is the better one: the
+Hilbert transform of a band that does not decay depends on `levels` at the
+level of a few percent (0.7355 here against the mesh 0.7313).
+
 The magnetic cell has three sites, so there are three bands. At S = 1/2 the
-1/S correction lowers the upper two by about 30%, and these two decay into
+1/S correction lowers the upper two by about 25%, and these two decay into
 the two-magnon continuum with half width Γ = 0.16 J. The lowest band lies
 below the continuum, and its rate is exactly zero. `decay_rates` integrates
 the golden rule over triangles of the zone, so it needs no broadening, and a

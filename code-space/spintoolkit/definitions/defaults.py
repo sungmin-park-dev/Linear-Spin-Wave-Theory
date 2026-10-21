@@ -56,6 +56,10 @@ CLASSICAL_SEARCH_MAXITER = 800
 CLASSICAL_SEARCH_MUTATION = (0.5, 0.9)
 CLASSICAL_SEARCH_RECOMBINATION = 0.8
 CLASSICAL_SEARCH_SEED = 42
+CLASSICAL_SEARCH_RESTARTS = "adaptive"  # or a fixed number of seeds (D70)
+CLASSICAL_SEARCH_MAX_RUNS = 8      # adaptive: largest number of seeds
+CLASSICAL_SEARCH_PATIENCE = 2      # adaptive: stop after this many seeds that do not lower the best
+CLASSICAL_SEARCH_ENERGY_TOL = 1e-8  # E0 per site: bound reached / energy lowered
 
 SELECTION_MODE = "physics"         # "physics" or "fixed"
 SELECTION_GAP_RATIO = 1e-3         # fixed mode: w_min / w_next below this is a null mode

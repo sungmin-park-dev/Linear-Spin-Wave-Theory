@@ -40,8 +40,9 @@ from spintoolkit.definitions.defaults import (
     CLASSICAL_REFINE_GTOL, CLASSICAL_REFINE_NEWTON_STEPS, CLASSICAL_REFINE_ORBIT_FLOOR,
     CLASSICAL_REFINE_ORBIT_PROBE, CLASSICAL_REFINE_ORBIT_STEPS, CLASSICAL_REFINE_RECENTRE,
     CLASSICAL_REFINE_ROUNDS, CLASSICAL_SEARCH_MAXITER, CLASSICAL_SEARCH_MUTATION,
-    CLASSICAL_SEARCH_POPSIZE, CLASSICAL_SEARCH_RECOMBINATION, CLASSICAL_SEARCH_SEED,
-    CLASSICAL_SEARCH_TOL)
+    CLASSICAL_SEARCH_ENERGY_TOL, CLASSICAL_SEARCH_MAX_RUNS, CLASSICAL_SEARCH_PATIENCE,
+    CLASSICAL_SEARCH_POPSIZE, CLASSICAL_SEARCH_RECOMBINATION, CLASSICAL_SEARCH_RESTARTS,
+    CLASSICAL_SEARCH_SEED, CLASSICAL_SEARCH_TOL)
 
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
@@ -555,9 +556,10 @@ class ClassicalSearchResult:
     energy : float
         Its classical energy per site (E0).
     search_energy : float
-        Energy per site of the differential-evolution result before refinement.
+        Energy per site of the differential-evolution result of that run before
+        refinement.
     evaluations : int
-        Energy evaluations of the search.
+        Energy evaluations of all runs.
     settings : dict
     """
 
@@ -592,12 +594,48 @@ def _angles_to_directions(angles: np.ndarray) -> np.ndarray:
                             np.cos(theta)])
 
 
+def supercell_lt_bound(model: SpinModel, supercell,
+                       conditions: Optional[ExternalConditions] = None) -> Optional[float]:
+    """Luttinger-Tisza lower bound on the classical energy per site on ``supercell``.
+
+    A state on the supercell has Fourier components only at the momenta ``q``
+    with ``q . R`` in ``2 pi Z`` for every supercell vector ``R``; with
+    ``sum_q |S_q|^2`` fixed by the unit spins, the energy per site is at least
+    the lowest eigenvalue of ``J(q)`` over those momenta plus the onsite
+    constant. The bound is reached exactly when a state built from those
+    eigenvectors has unit spins (D70).
+
+    Returns ``None`` when no bound is available: a nonzero Zeeman field (the
+    energy is then not a quadratic form of the spins) or term kinds the
+    Luttinger-Tisza matrix does not treat.
+    """
+    from itertools import product
+
+    from spintoolkit.methods.luttinger_tisza import _onsite_constant, lt_matrix
+
+    if any(t.kind not in SUPPORTED_KINDS for t in model.terms):
+        return None
+    conditions = conditions or ExternalConditions()
+    if model.terms_of_kind(ZEEMAN) and np.any(np.asarray(conditions.field, dtype=float) != 0):
+        return None
+    cell = np.asarray(supercell, dtype=float)
+    count = int(round(abs(np.linalg.det(cell))))
+    fractions = set()
+    for m in product(range(-count, count + 1), repeat=2):
+        f = np.mod(np.linalg.solve(cell, np.array(m, dtype=float)), 1.0)
+        f[np.isclose(f, 1.0, atol=1e-9)] = 0.0
+        fractions.add(tuple(np.round(f, 12)))
+    reciprocal = 2 * np.pi * np.linalg.inv(model.lattice).T
+    q = np.array(sorted(fractions)) @ reciprocal
+    return float(np.linalg.eigvalsh(lt_matrix(model, q))[:, 0].min() + _onsite_constant(model))
+
+
 def classical_search(model: SpinModel, supercell, conditions: Optional[ExternalConditions] = None,
                      seed: int = CLASSICAL_SEARCH_SEED, popsize: int = CLASSICAL_SEARCH_POPSIZE,
                      tol: float = CLASSICAL_SEARCH_TOL, maxiter: int = CLASSICAL_SEARCH_MAXITER,
                      mutation=CLASSICAL_SEARCH_MUTATION,
                      recombination: float = CLASSICAL_SEARCH_RECOMBINATION,
-                     refine: bool = True) -> ClassicalSearchResult:
+                     refine: bool = True, restarts=CLASSICAL_SEARCH_RESTARTS) -> ClassicalSearchResult:
     """Global minimum of the classical energy on a magnetic supercell.
 
     Every spin of the supercell is parametrized by polar angles
@@ -607,6 +645,15 @@ def classical_search(model: SpinModel, supercell, conditions: Optional[ExternalC
     refined with :func:`refine_classical` (analytic gradient and Hessian in
     tangent coordinates, free of the angular poles).
 
+    One differential-evolution run can end in a local minimum that is
+    locally stable. With ``restarts="adaptive"`` (D70) the search runs the
+    seeds ``seed, seed + 1, ...`` until a run reaches the Luttinger-Tisza
+    bound of the supercell (:func:`supercell_lt_bound`; then the minimum is
+    proven), or ``CLASSICAL_SEARCH_PATIENCE`` successive runs fail to lower
+    the best energy, or ``CLASSICAL_SEARCH_MAX_RUNS`` runs are done. Without a
+    bound (nonzero field) only the last two criteria apply. An integer runs
+    exactly that many seeds; ``restarts=1`` is a single run.
+
     Parameters
     ----------
     model : SpinModel
@@ -614,16 +661,26 @@ def classical_search(model: SpinModel, supercell, conditions: Optional[ExternalC
         Magnetic supercell (rows in primitive lattice units).
     conditions : ExternalConditions, optional
     seed, popsize, tol, maxiter, mutation, recombination
-        Differential-evolution settings.
+        Differential-evolution settings; ``seed`` is the first seed.
     refine : bool
         Apply :func:`refine_classical` to the search result.
+    restarts : "adaptive" or int
 
     Returns
     -------
     ClassicalSearchResult
+        The lowest run. ``settings["runs"]`` lists the energy of every seed,
+        ``settings["lt_bound"]`` the bound (or ``None``),
+        ``settings["bound_reached"]`` and ``settings["stop"]`` why the search
+        stopped.
     """
     from scipy.optimize import differential_evolution
 
+    adaptive = isinstance(restarts, str)
+    if adaptive and restarts != "adaptive":
+        raise ValueError(f"restarts must be 'adaptive' or a positive integer, got {restarts!r}")
+    if not adaptive and (int(restarts) != restarts or restarts < 1):
+        raise ValueError(f"restarts must be 'adaptive' or a positive integer, got {restarts!r}")
     conditions = conditions or ExternalConditions()
     template = SpinState.from_function(model, supercell, lambda site, cell: (0.0, 0.0, 1.0),
                                        {"origin": "classical_search"})
@@ -635,16 +692,44 @@ def classical_search(model: SpinModel, supercell, conditions: Optional[ExternalC
         count[0] += 1
         return _energy_and_fields(compiled, _angles_to_directions(angles))[0] / n
 
-    result = differential_evolution(
-        energy, [(-np.pi, np.pi)] * (2 * n), strategy="best1bin", popsize=popsize, tol=tol,
-        mutation=mutation, recombination=recombination, maxiter=maxiter, polish=True,
-        updating="immediate", seed=seed)
-    settings = {"method": "differential_evolution", "seed": seed, "popsize": popsize, "tol": tol,
-                "maxiter": maxiter, "mutation": list(mutation), "recombination": recombination,
-                "polish": "L-BFGS-B", "refine": refine}
-    state = _with_directions(template, compiled.keys, _angles_to_directions(result.x),
-                             {"origin": "classical_search", "search": settings})
-    if refine:
-        state = refine_classical(model, state, conditions)
-    return ClassicalSearchResult(state, float(classical_energy(model, state, conditions)),
-                                 float(result.fun), int(count[0]), settings)
+    def run(run_seed):
+        result = differential_evolution(
+            energy, [(-np.pi, np.pi)] * (2 * n), strategy="best1bin", popsize=popsize, tol=tol,
+            mutation=mutation, recombination=recombination, maxiter=maxiter, polish=True,
+            updating="immediate", seed=run_seed)
+        state = _with_directions(template, compiled.keys, _angles_to_directions(result.x),
+                                 {"origin": "classical_search", "search": base | {"seed": run_seed}})
+        if refine:
+            state = refine_classical(model, state, conditions)
+        return state, float(classical_energy(model, state, conditions)), float(result.fun)
+
+    base = {"method": "differential_evolution", "seed": seed, "popsize": popsize, "tol": tol,
+            "maxiter": maxiter, "mutation": list(mutation), "recombination": recombination,
+            "polish": "L-BFGS-B", "refine": refine}
+    bound = supercell_lt_bound(model, supercell, conditions)
+    limit = CLASSICAL_SEARCH_MAX_RUNS if adaptive else int(restarts)
+    runs, best, stale, stop = [], None, 0, "restarts"
+    for run_seed in range(seed, seed + limit):
+        state, found, searched = run(run_seed)
+        runs.append({"seed": run_seed, "energy": found})
+        if best is None or found < best[1] - CLASSICAL_SEARCH_ENERGY_TOL:
+            best, stale = (state, found, searched, run_seed), 0
+        else:
+            stale += 1
+        if not adaptive:
+            continue
+        if bound is not None and best[1] <= bound + CLASSICAL_SEARCH_ENERGY_TOL:
+            stop = "lt_bound_reached"
+            break
+        if stale >= CLASSICAL_SEARCH_PATIENCE:
+            stop = "no_lower_energy"
+            break
+    else:
+        if adaptive:
+            stop = "max_runs"
+    energies = [r["energy"] for r in runs]
+    settings = base | {"seed": best[3], "first_seed": seed, "restarts": restarts, "runs": runs,
+                       "spread": max(energies) - min(energies), "lt_bound": bound,
+                       "bound_reached": bound is not None and best[1] <= bound + CLASSICAL_SEARCH_ENERGY_TOL,
+                       "stop": stop}
+    return ClassicalSearchResult(best[0], best[1], best[2], int(count[0]), settings)

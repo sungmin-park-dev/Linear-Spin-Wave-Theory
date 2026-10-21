@@ -136,7 +136,13 @@ class NLSWTResult:
             (m, Ns, complex), ``total`` = lswt + static + Re cubic, and
             ``decay_rate`` = -Im cubic (the quasiparticle half width at order
             S^0). ``total`` is NaN where it is negative: a magnon of negative
-            energy is outside the 1/S expansion. In the thermodynamic limit
+            energy is outside the 1/S expansion, and where the shift is a
+            near-cancellation the mesh cannot resolve (D69: near a Goldstone
+            mode folded to the zone centre, momenta off the grid
+            ``(j1/N1, j2/N2)`` of the magnetic reciprocal cell, with a warning),
+            and at ``eta = 0`` where the band lies inside the two-magnon decay
+            continuum of the mesh (D71: the mesh sum is then not the principal
+            value; use :meth:`spectral_function`). In the thermodynamic limit
             ``decay_rate`` at ``eta = 0`` is NaN (a mesh sum of delta
             functions does not give the rate; use :meth:`decay_rates`).
         """
@@ -146,6 +152,24 @@ class NLSWTResult:
             eta = broadening
         lswt, static, cubic = self.solver.magnon_energies(k_points, eta)
         total = _physical_energies(lswt + static + cubic.real, lswt)
+        if self.header.geometry.get("kind") != "finite_torus":
+            k = np.atleast_2d(np.asarray(k_points, dtype=float))
+            mesh = tuple(self.header.settings["mesh"])
+            unsafe = _cancellation_limited(lswt, static, cubic.real, min(mesh))
+            unsafe &= ~_on_mesh_grid(k, self.solver.mesh.reciprocal, mesh)[:, None]
+            total = _flag_cancellation(total, unsafe, "magnon_energies", min(mesh))
+            if eta == 0:
+                inside = self.solver.resonant_on_mesh(k)
+                if np.any(inside):
+                    warnings.warn(
+                        f"magnon_energies(eta=0): {int(inside.sum())} band(s) lie inside the "
+                        "two-magnon decay continuum, where the mesh sum of Sigma_3 crosses its "
+                        "poles and its real part is not the principal value; the energy is NaN "
+                        "(D71). Options: spectral_function(...)['energy'] (principal value by an "
+                        "exact Hilbert transform of the triangle-integrated densities), a "
+                        "positive eta (a broadened, eta-dependent shift), or a finite torus.",
+                        UserWarning, stacklevel=2)
+                    total = np.where(inside, np.nan, total)
         rate = -cubic.imag
         if eta == 0 and self.header.geometry.get("kind") != "finite_torus":
             rate = np.full(rate.shape, np.nan)
@@ -233,7 +257,9 @@ class NLSWTResult:
             zero over the given ``omega`` grid (NaN when the grid has fewer
             than two negative frequencies: not checked). Where the on-shell
             energy is negative (outside the 1/S expansion) ``energy`` and the
-            on-shell ``spectral`` of that band are NaN.
+            on-shell ``spectral`` of that band are NaN; so are ``energy`` and
+            ``spectral`` (both modes) where the shift is a near-cancellation
+            the mesh cannot resolve (D69, with a warning).
 
         Notes
         -----
@@ -276,6 +302,11 @@ class NLSWTResult:
                     on_shell[i, group] = on_shell[i, group].mean()
                     sigma[i, group] = sigma[i, group].mean(axis=0)
         energy = _physical_energies(E_all + static + on_shell.real, E_all)
+        unsafe = np.zeros(energy.shape, dtype=bool)
+        if self.header.geometry.get("kind") != "finite_torus":
+            mesh_size = min(self.header.settings["mesh"])
+            unsafe = _cancellation_limited(E_all, static, on_shell.real, mesh_size)
+            energy = _flag_cancellation(energy, unsafe, "spectral_function", mesh_size)
         rate = -on_shell.imag
         out = {"lswt": E_all, "hartree_fock_tadpole": static, "energy": energy,
                "decay_rate": rate}
@@ -287,12 +318,61 @@ class NLSWTResult:
         denominator = (w[None, None, :] + 1j * eta - E_all[:, :, None] - static[:, :, None]
                        - sigma)
         spectral = -np.imag(1.0 / denominator) / np.pi
+        spectral[unsafe] = np.nan
         below = w < 0
         weight = (np.trapz if hasattr(np, "trapz") else np.trapezoid)
         out.update(spectral=spectral, self_energy=sigma,
                    negative_frequency_weight=(weight(spectral[:, :, below], w[below], axis=-1)
                                               if below.sum() > 1 else np.full((len(k), ns), np.nan)))
         return out
+
+#: The order-S^0 shift is computed only where its two parts, the Hartree-Fock +
+#: tadpole term and Re Sigma_3, are each at most this fraction of the smallest
+#: mesh size times the LSWT energy (D69).
+CANCELLATION_FACTOR = 0.25
+
+
+def _cancellation_limited(lswt: np.ndarray, static: np.ndarray, cubic: np.ndarray,
+                          mesh_size: int) -> np.ndarray:
+    """Bands whose 1/S shift is a near-cancellation that the mesh cannot resolve (D69).
+
+    Near a Goldstone mode folded into the magnetic zone centre of a noncollinear
+    state (the k = +-Q modes of the 120 degree state), the Hartree-Fock + tadpole
+    term and Re Sigma_3 each grow like 1/|k| while their sum vanishes like |k|.
+    Both are mesh sums, and their mismatch, of relative size ~1/N, is then
+    multiplied by the ratio ``rho = max(|static|, |Re Sigma_3|) / w``. Measured on
+    the triangular antiferromagnet (data-space/verification/261021-theory-reliability),
+    ``rho > N / 4`` gives errors from 10% to several times the shift.
+    """
+    with np.errstate(divide="ignore", invalid="ignore"):
+        rho = np.maximum(np.abs(static), np.abs(cubic)) / np.abs(lswt)
+    return ~(rho <= CANCELLATION_FACTOR * mesh_size)
+
+
+def _on_mesh_grid(k: np.ndarray, reciprocal: np.ndarray, mesh) -> np.ndarray:
+    """Momenta on the grid ``(j1 / N1, j2 / N2)`` of the magnetic reciprocal cell.
+
+    For these, every ``k - q`` of the cubic mesh sum lies on the mesh (offset by
+    -1/3 step), so the sum and the Hartree-Fock averages are one consistent
+    finite set and the Goldstone cancellation is exact.
+    """
+    f = k @ np.linalg.inv(reciprocal) * np.asarray(mesh, dtype=float)
+    return np.all(np.abs(f - np.rint(f)) < 1e-7, axis=1)
+
+
+def _flag_cancellation(energy: np.ndarray, unsafe: np.ndarray, where: str,
+                       mesh_size: int) -> np.ndarray:
+    if not np.any(unsafe):
+        return energy
+    warnings.warn(
+        f"{where}: the 1/S shift of {int(unsafe.sum())} band(s) is a cancellation of terms "
+        f"more than {CANCELLATION_FACTOR} x {mesh_size} times the LSWT energy (near a "
+        "Goldstone mode folded to the zone centre); the mesh cannot resolve it and the energy "
+        "is NaN. Options: momenta on the mesh grid (multiples of 1/N of the magnetic "
+        "reciprocal vectors, magnon_energies only), a finer mesh, or momenta further from "
+        "the zero mode.", UserWarning, stacklevel=3)
+    return np.where(unsafe, np.nan, energy)
+
 
 def _physical_energies(energy: np.ndarray, lswt: np.ndarray) -> np.ndarray:
     """``energy`` with NaN where it is negative beyond round-off of the LSWT scale."""
