@@ -18,6 +18,14 @@ B6  Triangular antiferromagnet: XY limit energy through order S^0 and
 B7  Honeycomb Heisenberg antiferromagnet: E/(N J S^2) = -3/2 - 0.31476/S and
     M/S = 1 - 0.2582/S (Zheng, Oitmaa and Hamer, PRB 44, 11869 (1991), as
     quoted in Farnell et al., arXiv:1811.04229).
+B8  Triangular antiferromagnet in a field, 1/3 plateau: the one-loop gaps of
+    the up-up-down state at h = 3JS close at h_c1 = 3JS - 0.5JS/(2S) and
+    h_c2 = 3JS + 1.3JS/(2S) (Chubukov and Golosov, J. Phys. Condens. Matter 3,
+    69 (1991), as quoted in Starykh, arXiv:1412.8482, Sec. III A; two digits).
+B9  Order by disorder at low field: zero-point energy selects the coplanar Y
+    state over the classically degenerate cone; the 1/S susceptibilities
+    chi = (1 + c/(2S))/(9J) against the sums of Keselman et al.,
+    arXiv:2512.02150, End Matter Eqs. (3), (4) (J2 = 0), evaluated here.
 
 The full tables are produced by
 ``code-space/examples/verification/theory_reliability_benchmarks.py``.
@@ -290,3 +298,76 @@ def test_honeycomb_antiferromagnet_matches_spin_wave_literature():
     assert S - lswt.ordered_moments()[0] == pytest.approx(0.2582, abs=1.5e-2)
     e = solve_nlswt(model, state, settings=NLSWTSettings(mesh=(24, 24))).energies
     assert e.total == pytest.approx(-0.5489, abs=1e-4)
+
+
+# ---------------------------------------------------------------------------
+# B8, B9: triangular antiferromagnet in a field along z
+# ---------------------------------------------------------------------------
+
+def _sublattice_state(model, directions):
+    """Three-sublattice state on the sqrt3 x sqrt3 cell, sublattice (n1 - n2) mod 3."""
+    return SpinState.from_function(model, [[1, 1], [-1, 2]],
+                                   lambda site, cell: np.asarray(directions[(cell[0] - cell[1]) % 3]))
+
+
+@pytest.mark.parametrize("S", [0.5, 1.0])
+def test_triangular_plateau_critical_fields_match_chubukov_golosov(S):
+    """Collinear: no cubic vertex; the Hartree-Fock shifts of the two soft modes at k -> 0
+    are h_cl - h_c1 and h_c2 - h_cl (the field moves the two modes by +-(h - h_cl))."""
+    model = triangular_heisenberg(J=1.0, S=S)
+    state = _sublattice_state(model, [(0, 0, -1.0), (0, 0, 1.0), (0, 0, 1.0)])
+    conditions = ExternalConditions(field=(0, 0, 3 * S))
+    n = 24
+    result = solve_nlswt(model, state, conditions, settings=NLSWTSettings(mesh=(n, n)))
+    b = 2 * np.pi * np.linalg.inv(state.magnetic_lattice(model)).T
+    lswt, static, cubic = result.solver.magnon_energies(np.array([b[0] / n, 2 * b[0] / n]))
+    assert np.all(cubic == 0)
+    rising, falling = np.argsort(lswt[0])[:2]           # gapless at k = 0; mode 1 is the lower
+    shift = (4 * static[0] - static[1]) / 3              # k^2 extrapolation to k = 0
+    h_c1, h_c2 = 3 * S - shift[rising], 3 * S + shift[falling]
+    assert 3 * S - h_c1 == pytest.approx(0.5 * S / (2 * S), abs=0.01)
+    assert h_c2 - 3 * S == pytest.approx(1.3 * S / (2 * S), abs=0.01)
+
+
+def _triangular_susceptibility_sums(m=1200):
+    b1 = 2 * np.pi * np.array([1, -1 / np.sqrt(3)])
+    b2 = 2 * np.pi * np.array([0, 2 / np.sqrt(3)])
+    f = (np.arange(m) + 1 / 3) / m
+    k = (f[:, None, None] * b1 + f[None, :, None] * b2).reshape(-1, 2)
+
+    def parts(q):
+        g = (np.cos(q[:, 0]) + 2 * np.cos(q[:, 0] / 2) * np.cos(np.sqrt(3) * q[:, 1] / 2)) / 3
+        a, b = 1 + g / 2, -1.5 * g
+        return g, a, b, np.sqrt(np.maximum(a * a - b * b, 0))
+
+    Q = np.array([4 * np.pi / 3, 0])
+    g, a, b, E = parts(k)
+    _, ap, bp, Ep = parts(k + Q)
+    _, am, bm, Em = parts(k - Q)
+    c_y = -np.mean((a - b) * g / E) + 3 * np.mean((ap - bp) * (am - bm) * g ** 2 / (Ep * Em * (Ep + Em)))
+    c_cone = np.mean((a + b) * g / E)
+    return c_y, c_cone
+
+
+def test_zero_point_energy_selects_the_y_state_with_the_literature_susceptibility():
+    S = 0.5
+    model = triangular_heisenberg(J=1.0, S=S)
+    fields = np.array([0.005, 0.01, 0.015])
+    energies = {"Y": [], "cone": []}
+    for h in fields:
+        mz = h / (3 * S)
+        t, p = np.arccos((mz + 1) / 2), np.arccos(mz / 3)
+        states = {"Y": [(0, 0, -1.0), (np.sin(t), 0, np.cos(t)), (-np.sin(t), 0, np.cos(t))],
+                  "cone": [(np.sin(p) * np.cos(a), np.sin(p) * np.sin(a), np.cos(p))
+                           for a in 2 * np.pi * np.arange(3) / 3]}
+        for name, directions in states.items():
+            result = solve_lswt(model, _sublattice_state(model, directions),
+                                ExternalConditions(field=(0, 0, h)), settings=LSWTSettings(mesh=(120, 120)))
+            energies[name].append(result.ground_state_energy)
+    fit = np.vstack([np.ones(3), fields ** 2, fields ** 4]).T
+    c = {name: (-2 * np.linalg.lstsq(fit, np.array(e), rcond=None)[0][1] * 9 - 1) * 2 * S
+         for name, e in energies.items()}
+    c_y, c_cone = _triangular_susceptibility_sums()
+    assert np.all(np.array(energies["Y"]) < np.array(energies["cone"]))
+    assert c["Y"] == pytest.approx(c_y, abs=0.005)
+    assert c["cone"] == pytest.approx(c_cone, abs=0.005)

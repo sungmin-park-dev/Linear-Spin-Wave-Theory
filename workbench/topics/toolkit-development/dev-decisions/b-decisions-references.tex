@@ -874,6 +874,25 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D70): 고전 탐색은 LT 하한을 기준으로 적응적으로 다시 돈다}\label{decisions-d70-adaptive-restarts}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 이론적 신뢰성 확인, 사용자 승인(``그렇게하자''). 적용은 Claude. 잠정 승인. 비교 대상: 같은 초격자의 LT 하한, BCAO 시드별 에너지(\texttt{data-space/verification/261021-theory-reliability}).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    현상 & 차분 진화 한 번이 국소적으로 안정한 국소 최소에 갇힌다. BCAO $J_3=0.45$, $J_{z\pm}=0.5$, 셀 $[[1,0],[0,6]]$에서 기본 시드는 UUD($-0.303614$, \texttt{local\_stability} 판정 stable), 다른 시드는 $-0.304193$. 그래서 국소 안정성만으로는 다시 돌릴지를 정할 수 없다 \\
+    하한 & 초격자에 맞는 운동량 $q$($q\cdot R\in 2\pi\mathbb{Z}$)에서 $J(q)$의 최저 고유값 + 온사이트 상수는 그 초격자 위 모든 상태 에너지의 엄밀한 하한이다(약한 제약 LT). 도달하면 전역 최소가 증명된다. 0이 아닌 장에서는 정의하지 않는다(\texttt{None}) \\
+    규칙 & \texttt{classical\_search(restarts="adaptive")}가 기본. 시드 \texttt{seed}, \texttt{seed+1}, … 순서로 돌려 (1) 하한에 도달하면, (2) 연속 2번 최저값이 $10^{-8}$보다 더 내려가지 않으면, (3) 8번이면 멈춘다. 정수를 주면 그 수만큼 돈다(\texttt{restarts=1}이 옛 동작). 결과 \texttt{settings}에 시드별 에너지, 폭, 하한, 도달 여부, 멈춘 이유를 적는다 \\
+    비용 & 하한에 닿는 상(FM, Néel, 120°, 지그재그 등)은 한 번. 결합 의존 항이나 장이 있으면 보통 세 번 이상 \\
+    남은 일 & 하한에 닿지 않으면 전역 최소의 증명은 없다. 시드 폭은 증거일 뿐이다. 다중 $q$ 상태와 장 속에서는 다른 하한(일반화 LT)이 없다 \\
+    검증 & \texttt{tests/test\_methods/test\_classical\_search.py} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}
