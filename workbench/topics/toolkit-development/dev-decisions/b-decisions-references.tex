@@ -839,6 +839,23 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D68): 정지성은 상대 토크로 판정하고, 안정성은 무엇을 검사했는지 적고, 검증 기준을 정한다}\label{decisions-d68-relative-stationarity}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 감사 질문 3, 5, 6(사용자 ``다음은 추천대로 진행해''), 적용은 Claude. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    정지성 & 허용치 \texttt{stationarity\_tolerance}(기본 $10^{-8}$)는 상대 토크 $\max_i|S_i\times h_i|/\max_i S_i|h_i|$에 적용한다(감사 SPEC-13). 스핀과 국소장 사이 가장 큰 어긋남 각의 사인이고, 결합·장·$S$를 함께 늘려도 그대로다. 이전 절대값 $10^{-8}\,E_0$는 $J$가 작은 단위에서 어긋난 상태를 정지 상태로 받았다($J=10^{-9}$, 어긋남 $10^{-4}$ rad). 머리에 \texttt{max\_torque}($E_0$)와 \texttt{relative\_torque}를 함께 적는다. \texttt{solve\_lswt}, \texttt{local\_stability}, \texttt{solve\_spiral\_lswt}에 적용. 나선의 피치 기울기 $|dE/dq|$는 같은 장 크기에 격자 길이 $\sqrt{|\det a|}$를 곱한 값으로 나눈다 \\
+    안정성 표시 & \texttt{solve\_lswt}는 연속 $k$ 안정성을 기본으로 검사하지 않고, 머리 \texttt{diagnostics["stability\_checked"]}에 ``computed momenta only; local\_stability checks continuous k''(MAGSWT면 ``continuous k'')를 적는다(SPEC-10). 연속 검사는 \texttt{local\_stability}(D51) \\
+    검증 기준 & AGENTS.md 작업 원칙 3: 구현은 기준값 대비 검증 뒤 다음 단계로. 기준값은 닫힌 식, 작은 ED, Toth--Lake 관례의 독립 계산, magnopy 같은 다른 패키지. 옛 코드 수치는 공선 상태에서만(옛 코드는 비공선 상태에서 $B$와 $B^\dagger$를 바꿈, \texttt{hamiltonian\_convention.tex})(SPEC-17) \\
+    검증 & \texttt{tests/test\_methods/test\_relative\_stationarity.py}: 상대 토크가 $J$, $S$ 배율과 무관하고, 판정이 에너지 단위에 의존하지 않는다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

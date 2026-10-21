@@ -135,7 +135,7 @@ stk.solve_nlswt(model, state)   # 1/S 보정 (D46)
 
 1. **인터페이스 변경은 토의 후 결정**: API(함수명, 데이터 구조, 클래스 인터페이스) 변경은 선 제안 → 토의 → 성민 확정 순서를 따름. 임의로 결정하지 않음.
 2. **영향 범위 명시**: 모듈 간 의존성 변경이 생기면 영향받는 모듈을 명시할 것.
-3. **작업 종류에 맞는 검증**: 코드 구현은 구현 → legacy 수치 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 이론 문서는 `workbench/rules/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
+3. **작업 종류에 맞는 검증**: 코드 구현은 구현 → 기준값 대비 검증 → 성민 확인 → 다음 단계 순서로 진행하며, 검증 전 다음 구현 단계에 착수하지 않는다. 기준값은 닫힌 식, 작은 ED, Toth–Lake 관례의 독립 계산과 magnopy 같은 다른 패키지다. 옛 코드 수치는 공선 상태에서만 기준으로 쓴다(옛 코드는 비공선 상태에서 $B$와 $B^\dagger$를 바꿔 틀렸다, `docs/verification-notes/hamiltonian_convention.tex`; D68). 이론 문서는 `workbench/rules/lswt-canonical-document-lifecycle.md`에 따라 문체 교정, 원문 대조와 사용자 물리·수학 검토를 구분한다. 문체 교정에 코드 수치 검증을 일괄 요구하지 않는다.
 4. **이론 source authority 준수**: 위 `이론 문서와 source authority` 구분을 따른다. LSWT 일반 이론과 개발 노트는 `workbench/topics/` 연구노트를 직접 편집한다. 이론 노트 `lswt-*`는 `note.md`, 개발 노트 `dev-*`는 아직 TeX다. PDF는 그로부터 생성한다(Markdown 이론 노트의 공개용 PDF 경로는 열린 항목이다). LSWT 이론의 공개본은 사용자가 accepted로 승인한 연구노트에서만 만들고, 검토용 preview는 draft에서도 만든다. PDF 등 파생물을 직접 수정하지 않는다.
 5. **이론 문체 preflight**: LSWT 이론 연구노트(`workbench/topics/*/lswt-*`)를 작성하거나 교정하기 전에 `workbench/rules/lswt-writing-style.md`와 기호 규칙 `workbench/rules/lswt-notation.md`를 읽는다. `status: in-review`이면 current working guidance로 적용하되 accepted policy로 보고하지 않으며, 문체 검토를 물리·수학적 acceptance로 간주하지 않는다.
 
