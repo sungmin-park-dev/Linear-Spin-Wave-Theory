@@ -2,12 +2,14 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Gapped-limit Chern
+short: Goldstone Chern = 갭 극한
 title: Goldstone 띠의 Chern 수는 작은 갭을 연 극한으로 정의한다
 topics:
 - spin-wave-observables
 date: '2026-10-14'
 from:
+- id: topology-q
+  type: origin
 - id: loop-phase-ana
   type: support
 fields:

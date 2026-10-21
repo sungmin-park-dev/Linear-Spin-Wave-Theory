@@ -1,0 +1,19 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 1/S·유한 온도 솔버 검증
+title: 1/S 솔버와 유한 온도 자화를 큰 S의 ED와 문헌 값으로 검증했는가
+topics:
+- toolkit-development
+date: '2026-10-03'
+from:
+- id: toolkit-q
+  type: origin
+fields:
+  question: Are the 1/S solver and the finite-temperature magnetization verified against large-S exact diagonalization and published values?
+  motivation: The package results beyond linear order and at finite temperature need independent references.
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 to group the points listed as its children; the date is the earliest child date.

@@ -1,15 +1,17 @@
 format: 1
 kind: question
 progress: active
-short: Zero modes?
-title: 영모드(Goldstone 점)에서 LSWT 양들은 어떻게 다루는가
+short: Goldstone 모드와 관측량
+title: 영모드(Goldstone 점)가 있을 때 각 LSWT 관측량은 정의되는가, 어떤 극한으로 정의하는가
 topics:
 - fundamental-theory-of-spin-wave-theory
 - spin-wave-observables
 date: '2026-10-12'
 from:
-- id: stability-hessian-ana
+- id: project-q
   type: origin
+- id: stability-hessian-ana
+  type: use
 fields:
   question: At momenta where $H_k$ has a zero eigenvalue, $T_k$ does not exist; which quantities (Berry curvature, one-magnon weights, stability) still have a defined value there, and how?
   motivation: Zero directions are undecided at harmonic order; until then the package returned NaN at zero modes (D25).

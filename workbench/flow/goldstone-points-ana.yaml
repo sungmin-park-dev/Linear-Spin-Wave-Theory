@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Goldstone points
+short: Goldstone 점의 Berry 곡률
 title: 'Goldstone 점에서 Berry 곡률과 κ: B = 0과 B ≠ 0'
 topics:
 - spin-wave-observables

@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Loop Berry phase
+short: Goldstone 점 둘레 Berry 위상
 title: '적분 가능성과 정수성은 다르다: Goldstone 점 둘레 Berry 위상'
 topics:
 - spin-wave-observables

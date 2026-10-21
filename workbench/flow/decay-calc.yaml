@@ -2,12 +2,14 @@ format: 1
 kind: calc
 progress: done
 result: solved
-short: Magnon decay
+short: 마그논 붕괴율 (D57)
 title: 마그논 붕괴율을 넓힘 없이 황금률로 계산한다 (D57)
 topics:
 - beyond-linear-spin-waves
 date: '2026-10-14'
 from:
+- id: nonlinear-q
+  type: origin
 - id: nlswt-expansion
   type: use
 - id: two-magnon-calc

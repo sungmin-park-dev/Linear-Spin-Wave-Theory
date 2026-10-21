@@ -2,14 +2,14 @@ format: 1
 kind: calc
 progress: done
 result: solved
-short: 1/S solver
+short: 1/S 솔버 구현·ED 대조 (D46)
 title: 비선형 스핀파 1/S 전개를 S⁰ 차수까지 구현하고 큰 S ED와 대조한다 (D46)
 topics:
 - beyond-linear-spin-waves
 - toolkit-development
 date: '2026-10-03'
 from:
-- id: toolkit-q
+- id: solver-validation-q
   type: origin
 fields:
   goal: 'Extend the package beyond LSWT to order $S^0$: ground-state energy, magnon shifts and decay.'

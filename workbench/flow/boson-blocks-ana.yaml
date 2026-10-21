@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: BdG blocks
+short: BdG 블록 명시
 title: 보존 해밀토니안을 원형 성분으로 완성하고 BdG 블록을 명시한다
 topics:
 - fundamental-theory-of-spin-wave-theory

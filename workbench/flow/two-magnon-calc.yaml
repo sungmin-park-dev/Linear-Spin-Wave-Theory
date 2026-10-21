@@ -2,13 +2,15 @@ format: 1
 kind: calc
 progress: done
 result: solved
-short: Two-magnon cont.
+short: 두 마그논 연속체 (D56)
 title: 종방향 두 마그논 연속체를 O(S⁰)에서 계산한다 (D56)
 topics:
 - spin-wave-observables
 - beyond-linear-spin-waves
 date: '2026-10-14'
 from:
+- id: nonlinear-q
+  type: origin
 - id: nlswt-note-ana
   type: use
 fields:

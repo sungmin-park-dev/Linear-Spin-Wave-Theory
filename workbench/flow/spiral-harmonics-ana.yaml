@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Broken rotation
+short: 회전 대칭 깨진 나선
 title: 회전 조건이 깨지면 단일 Q 나선이 어떻게 무너지는가
 topics:
 - fundamental-theory-of-spin-wave-theory

@@ -2,12 +2,14 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Hessian = BdG
+short: 고전 Hessian = BdG 행렬
 title: 고전 에너지의 2차 변분은 정확히 BdG 행렬이다
 topics:
 - fundamental-theory-of-spin-wave-theory
 date: '2026-10-12'
 from:
+- id: stability-q
+  type: origin
 - id: boson-blocks-ana
   type: use
 - id: spiral-frame-ana

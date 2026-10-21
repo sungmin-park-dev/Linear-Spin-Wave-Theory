@@ -1,7 +1,7 @@
 format: 1
 kind: question
 progress: active
-short: spin-toolkit
+short: spin-toolkit 패키지
 title: 정본 이론 위에 반고전 패키지(spin-toolkit)를 만들어 정본과 문헌으로 검증하고 공개할 수 있는가
 topics:
 - toolkit-development

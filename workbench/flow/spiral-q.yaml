@@ -1,0 +1,20 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 단일 Q 나선 풀이
+title: 단일 Q 나선을 자기 초격자 없이 풀고 그 안정성을 판정할 수 있는가
+topics:
+- fundamental-theory-of-spin-wave-theory
+- toolkit-development
+date: '2026-10-01'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: Can single-Q spirals, incommensurate ones included, be solved on the primitive cell in a rotating frame, and when are they stationary and stable?
+  motivation: Spirals need either a large supercell or the rotating frame; the frame is exact only when every term commutes with the axis rotation.
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 to group the points listed as its children; the date is the earliest child date.

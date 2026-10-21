@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Beyond 2nd order
+short: 2차 미정 영모드의 고차 판정
 title: 2차가 정하지 못한 영모드를 고차 항으로 판정한다 (D54)
 topics:
 - fundamental-theory-of-spin-wave-theory

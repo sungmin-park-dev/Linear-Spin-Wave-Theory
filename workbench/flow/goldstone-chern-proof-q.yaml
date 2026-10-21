@@ -1,7 +1,7 @@
 format: 1
 kind: question
-progress: open
-short: General proof?
+progress: done
+short: Goldstone Chern 정수 조건
 title: Goldstone 띠의 Chern 수가 정수라는 일반 증명이 있는가
 topics:
 - spin-wave-observables
@@ -12,6 +12,18 @@ from:
 fields:
   question: Does the loop Berry phase around a Goldstone point vanish in general, so that the gapped-limit Chern number equals the integral avoiding $k_0$, also for $B\neq0$?
   motivation: Shown only for two honeycomb models; the $B\neq0$ Kubo numerators are not settled by a general argument.
+  result: For a linear Goldstone mode (one-dimensional kernel, linear dispersion in every direction) the loop Berry phase vanishes like r, the integral avoiding k0 equals the gapped limit and is an integer. For a quadratic zero mode whose pairing with the hole partner is of the same order as the normal part the loop phase tends to a constant and the integral is not an integer (square-lattice counterexample, loop phase -0.1494).
 sources:
 - workbench/log/2026-10-14.md 13:30 ("일반 증명은 아직 없음"), 14:40 (separate thread)
 - workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md (Goldstone Points)
+- 'commit 75a69b9 (PR #71, merged 2026-10-15)'
+result: solved
+evidence:
+- kind: analytic
+  file: workbench/topics/spin-wave-observables/lswt-magnon-topology/note.md
+  text: Goldstone Points
+  checks: []
+- kind: calc
+  file: code-space/examples/verification/lswt_goldstone_chern_check.py
+  text: three test models
+  checks: []

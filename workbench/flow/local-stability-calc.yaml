@@ -2,7 +2,7 @@ format: 1
 kind: calc
 progress: done
 result: solved
-short: Continuous-k test
+short: 연속 k 국소 안정성 (D51)
 title: 연속 k와 영모드 강성으로 국소 안정성을 판정한다 (D51)
 topics:
 - fundamental-theory-of-spin-wave-theory

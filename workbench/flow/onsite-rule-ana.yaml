@@ -2,13 +2,13 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Single-ion rule
+short: 단일 이온 (1−1/2S) 규칙
 title: 단일 이온 항은 결맞음 상태 값 (1−1/2S)A로 넣는다 (D37)
 topics:
 - fundamental-theory-of-spin-wave-theory
 date: '2026-10-01'
 from:
-- id: project-q
+- id: canon-review-q
   type: origin
 fields:
   goal: How should a single-ion term $\mathbf S_i^TA\mathbf S_i$ enter the classical energy and LSWT?

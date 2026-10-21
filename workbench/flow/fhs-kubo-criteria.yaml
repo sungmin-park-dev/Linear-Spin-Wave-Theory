@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: FHS+Kubo agree
+short: 'Chern: FHS·Kubo 일치 기준'
 title: Chern 수는 FHS와 Kubo가 일치할 때만 받는다 (D31)
 topics:
 - spin-wave-observables

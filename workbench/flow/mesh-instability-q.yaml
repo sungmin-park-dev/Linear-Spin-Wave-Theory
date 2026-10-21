@@ -2,7 +2,7 @@ format: 1
 kind: question
 progress: done
 result: solved
-short: Mesh misses?
+short: 메시가 놓치는 불안정
 title: 유한 메시가 놓치는 장파장 불안정을 잡을 수 있는가
 topics:
 - fundamental-theory-of-spin-wave-theory
