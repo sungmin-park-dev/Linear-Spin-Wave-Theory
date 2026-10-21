@@ -68,7 +68,7 @@
     \toprule
     필드 & 의미 \\
     \midrule
-    \texttt{terms[].kind} & 항의 종류. 1차 허용값은 \texttt{bilinear}, \texttt{zeeman} \\
+    \texttt{terms[].kind} & 항의 종류. 허용값은 \texttt{bilinear}, \texttt{zeeman}, \texttt{onsite}(D37) \\
     \texttt{terms[].participants} & 참여 사이트 ID와 정수 셀 좌표 $n$의 목록; 길이는 kind가 정함 \\
     \texttt{terms[].coefficient} & kind별 실수 계수 배열 \\
     \texttt{terms[].label} & NN·NNN·x·y·z 등 선택적 설명 라벨 \\
@@ -81,12 +81,13 @@
     \midrule
     \texttt{bilinear} & 서로 다른 두 물리 사이트 & $J$, 실수 $3\times3$ & $S_{R+n_1,a}^{\mathsf T}\,J\,S_{R+n_2,b}$ \\
     \texttt{zeeman} & 한 사이트, 셀 $(0,0)$ & 무차원 $g_a$, $3\times3$ & $-\mathbf b^{\mathsf T}g_a\,S_{R,a}$ \\
+    \texttt{onsite} & 한 사이트, 셀 $(0,0)$ & 실수 대칭 $A_a$, $3\times3$ & $S_{R,a}^{\mathsf T}A_a\,S_{R,a}$; 고전·LSWT는 결맞음 상태 값, 곧 $(1-\tfrac1{2S})A_a$ \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
   \begin{band}{형식은 열고, 검증은 닫는다}
     허용 목록 밖의 kind는 공통 검증이 거부하고, 수신 모듈은 지원하는 kind를 선언한다.\\
-    같은 사이트가 반복되는 항은 $S$에 따라 의미가 달라지므로($S=\tfrac12$에서 $(S^z)^2=\tfrac14$) 허용하지 않는다.
+    같은 사이트의 두 스핀 곱은 \texttt{bilinear}로 쓰지 않고 \texttt{onsite}로만 받는다. $S$에 따라 의미가 달라지므로($S=\tfrac12$에서 $(S^z)^2=\tfrac14$) 결맞음 상태 규칙(D37)을 따로 적용한다.
   \end{band}
   \slidesource{2026-09-29 스키마 결정; 필드명은 검토안}{contract}
 \endgroup
@@ -250,7 +251,7 @@
     \midrule
     외부 조건 & 무차원 \texttt{field} $=\mu_B\mathbf B/E_0$, \texttt{temperature} $=k_BT/E_0$(D20) \\
     계산계 실현 & 열역학 극한, 또는 정수 클러스터 행렬 $L$의 유한 토러스($LM^{-1}$ 정수). 토러스에서는 $L$이 k점을 정한다 \\
-    방법 설정 & LSWT: 열역학 극한의 k점 격자 $(N_1,N_2)$, regularization(없음·MAGSWT), 밴드 경로, 허용오차 \\
+    방법 설정 & LSWT: 열역학 극한의 k점 격자 $(N_1,N_2)$, 정규화(없음·균일 이동·$k$ 의존; 균일 이동의 코드 이름은 옛 ``MAGSWT''로 D62의 MAGSWT와 다르다), 증강(\texttt{augmentation}, D62), 밴드 경로, 허용오차 \\
     \midrule
     결과 & 내용 \\
     \midrule
@@ -259,7 +260,7 @@
     \bottomrule
   \end{tabularx}
   \par\medskip
-  \supportingtext{기존 \texttt{SolverResult}를 확장한다. backlog의 ``k-data dict를 dataclass로 전환''은 LSWT 본문 설계에 포함한다.}
+  \supportingtext{구현: \texttt{solve\_lswt}가 \texttt{LSWTResult}를 낸다. 머리부는 D14, 읽기 전용과 표준 JSON(NaN, $\pm\infty$ 포함)은 D66을 따른다. 옛 \texttt{SolverResult}는 0.3에서 지운다(D65).}
   \slidesource{계산 요청·결과 검토안}{contract,implementation}
 \endgroup
 

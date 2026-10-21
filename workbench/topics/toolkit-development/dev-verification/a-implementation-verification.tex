@@ -1022,6 +1022,33 @@ save_json(r, "lswt.json")  # 머리부 + 요약
 \endgroup
 
 
+\subsection{D52--D72: 검증 요약 (2026-10-21)}\label{d52-d72-summary}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{D51 뒤의 결정마다 무엇과 비교했고 어느 테스트가 지키는지. 경로는 \texttt{code-space/tests/} 기준. 결정 본문은 연구노트 \emph{Toolkit decisions and references}.}
+  \scriptsize\renewcommand{\arraystretch}{1.05}
+  \begin{tabularx}{\textwidth}{@{}p{1.5cm}Yp{4.4cm}@{}}
+    \toprule
+    결정 & 비교 기준과 결과 & 테스트 \\
+    \midrule
+    D52 & 영모드 운동량의 한 마그논 가중치: 방향에 무관한 극한이 있을 때만 값, 없으면 NaN & \texttt{test\_structure\_factor}, \texttt{test\_spiral\_lswt} \\
+    D53--D55 & 상 비교에 국소 안정성, 2차가 못 정한 영모드는 고차 항, 나선은 회전틀 $H(k)$로 판정 & \texttt{test\_phase\_competition}, \texttt{test\_local\_stability} \\
+    D56, D60 & 종방향 두 마그논 연속체: 실공간 Wick 합과 같은 시각 상관, 유한 온도 상세 균형 & \texttt{test\_two\_magnon}, \texttt{test\_structure\_factor\_s0} \\
+    D57--D59 & 붕괴율(삼각형 적분, 해석 적분 재현), 스펙트럼 함수(반원 Hilbert 변환), $O(S^0)$ 구조 인자(큰 $S$ ED의 $1/S$ 전개) & \texttt{test\_magnon\_decay}, \texttt{test\_magnon\_spectral}, \texttt{test\_structure\_factor\_s0} \\
+    D61--D63 & 정의되지 않는 값은 NaN; MAGSWT 에너지와 정상점 탐색(BCAO 씨앗이 토크 $<10^{-10}$로 수렴) & \texttt{test\_undefined\_values}, \texttt{test\_magswt} \\
+    D64 & 영모드 보손 수 탐지, $T>0$ Goldstone 보손 수 $+\infty$, 모멘트 NaN & \texttt{test\_zero\_mode\_occupation} \\
+    D65--D68 & 옛 모듈 없이 새 API가 돈다; 결과 읽기 전용·JSON 왕복; 희소 $H(k)$가 조밀 $H(k)$와 같다; 상대 토크가 $J$, $S$ 배율과 무관 & \texttt{test\_new\_api\_independence}, \texttt{test\_result\_contract}, \texttt{test\_quadratic\_sparse}, \texttt{test\_relative\_stationarity} \\
+    B1--B12 & 문헌·독립 계산 대조: BCAO 결합, 벌집 LT 경계, 정사각 $Z_c$, 삼각 XY 에너지·Goldstone 속도, 벌집 Néel, UUD 평탄부 경계(Chubukov--Golosov), 비등방 one-loop와 큰 $S$ ED. 기록은 작업 파일 \texttt{workbench/tasks/2026-10-21-theory-reliability.md} & \texttt{test\_reliability\_benchmarks} \\
+    D69, D71 & 격자 위 $k$에서 삼각 Goldstone 속도가 Chernyshev--Zhitomirsky 식 (56)과 2\,\% 안; 격자 밖 $k$와 연속체 안 $\eta=0$ 메시 값은 NaN & \texttt{test\_reliability\_benchmarks} \\
+    D70 & 초격자 LT 하한에 닿으면 멈춤, BCAO에서 갇힌 UUD를 벗어남 & \texttt{test\_classical\_search} \\
+    D72 & 정사각 Néel 고정점 = one-loop; XYZ 큰 $S$ ED 오차 $\propto 1/S$; 가우스 에너지 정상성; UUD $n_\downarrow=2n_\uparrow$ & \texttt{test\_self\_consistent} \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \supportingtext{이 표는 수치 검증이다. 사용자 물리 검토는 2026-10-15 원칙에 따라 그 결정을 쓰는 계산에서 논문과 대조한다.}
+  \slidesource{2026-10-21 결정 기록과 테스트}{implementation}
+\endgroup
+
+
 \subsection{이행 단계별 확인 조건}\label{next-steps}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{순서: 이름 변경 $\to$ 공통 자료형 $\to$ NBCP 연결 $\to$ 상태 선택 $\to$ 벤치마크 $\to$ 물리량 $\to$ 위상량}
@@ -1057,10 +1084,10 @@ save_json(r, "lswt.json")  # 머리부 + 요약
     \toprule
     항목 & 시점 \\
     \midrule
-    TN 관련 상태·계산 요청·결과의 필드 규약 & 솔버 경계 검증 실험 뒤 \\
-    사용 중단한 진입점(\texttt{LSWTSolver}, SI Hall API, \texttt{SpinOptimizer}, \texttt{EnergyFunction})의 삭제 & 공개 배포 정리 때(D30) \\
+    사용 중단한 진입점(\texttt{SpinSystem}, \texttt{LSWTSolver}, SI Hall API, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, \texttt{LSWTHamiltonian}, \texttt{AbstractSolver}, 켈빈 \texttt{Thermodynamics})의 삭제 & 0.3(D30, D43, D65) \\
     적응형 적분의 오차 추정 개선 & 보류 \\
-    1차 범위 밖: D17 확장, 후속 항 종류와 $S\ge1$, 키타에프 flux·ED 2-마그논 & 필요한 벤치마크·모델이 생길 때 \\
+    1차 범위 밖: D17 확장, 후속 항 종류, 키타에프 flux·ED 2-마그논 & 필요한 벤치마크·모델이 생길 때 \\
+    텐서 네트워크 관련 규약 & 범위 밖(2026-10-10 결정) \\
     \bottomrule
   \end{tabularx}
   \par\medskip
