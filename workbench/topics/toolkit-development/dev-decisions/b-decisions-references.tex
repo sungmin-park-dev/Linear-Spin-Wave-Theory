@@ -337,6 +337,7 @@
     \midrule
     공개 API & \texttt{SpinModel}, \texttt{SpinState}, \texttt{solve\_lswt}, \texttt{LSWTSettings}, \texttt{LSWTResult}; README·docstring·예제는 이것만 쓴다 \\
     옛 API & \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, SI Hall 메서드, \texttt{lswt} 이름: 0.2에서 동작, 경고에 삭제 판 0.3 명시 \\
+    추가 (2026-10-21) & 사용자 선택(``목록에 추가''): \texttt{LSWTHamiltonian}, \texttt{AbstractSolver}, 켈빈 \texttt{Thermodynamics}도 0.2에서 경고, 0.3에서 삭제. 새 API는 이것들을 쓰지 않는다(D65). \texttt{BrillouinZone}은 새 상태 선택 메시가 써서 남긴다 \\
     내부 경로 & 새 API가 내부에서 만드는 \texttt{SpinSystem}은 \texttt{internal\_use()}로 경고하지 않음 \\
     검증 & README 빠른 시작을 \texttt{-W error::DeprecationWarning}으로 실행; $E=-0.5388J$, M점 $\omega=1.0J$ \\
     \bottomrule
@@ -793,7 +794,7 @@
     항 종류 & 새 함수 \texttt{require\_kinds}: \texttt{QuadraticBoseHamiltonian}, 비선형 전개, 나선 에너지, LT, 대칭 검사, 영 모드 대칭, \texttt{rotation\_symmetry}가 모르는 항 종류를 \texttt{NotImplementedError}로 거부한다. 이전에는 일부가 조용히 빼서 틀린 $H(k)$가 나올 수 있었다(ARCH-05) \\
     나선 onsite & 나선 에너지와 기울기가 onsite 항을 빠뜨렸다. 이제 $\kappa S^2 d^T\bar A d+(S/2)\operatorname{tr}A$, $\bar A$는 축 둘레 회전 평균(축 대칭이면 $\bar A=A$). $q=1/3$ 원뿔에서 초격자 고전 에너지와 $10^{-13}$ 안으로 일치 \\
     대칭 검사 & \texttt{CrystalSymmetry.check\_model}이 onsite 항을 본다: 상 $i$의 자리에서 $A'=R_sAR_s^T$(ARCH-02). C3를 깨는 $A=\mathrm{diag}(0.5,0,0)$은 위반, $D(S^z)^2$는 통과 \\
-    검증 & \texttt{tests/test\_methods/test\_new\_api\_independence.py}: 지울 모듈을 쓸 수 없게 막은 하위 프로세스에서 \texttt{solve\_lswt}, \texttt{thermal\_quantities}, 상태 선택, 스핀 그림이 돈다. 남은 일: 0.3 삭제 목록에 \texttt{LSWTHamiltonian}, \texttt{AbstractSolver}, 켈빈 \texttt{Thermodynamics}를 넣을지는 사용자 결정 \\
+    검증 & \texttt{tests/test\_methods/test\_new\_api\_independence.py}: 지울 모듈을 쓸 수 없게 막은 하위 프로세스에서 \texttt{solve\_lswt}, \texttt{thermal\_quantities}, 상태 선택, 스핀 그림이 돈다. 이 셋은 사용자 선택으로 0.3 삭제 목록에 넣었다(D43 추가 행) \\
     \bottomrule
   \end{tabularx}
   \slidesource{2026-10-21 결정}{contract}

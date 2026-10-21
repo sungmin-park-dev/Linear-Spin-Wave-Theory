@@ -150,3 +150,23 @@ def test_new_api_runs_without_the_pre_02_modules():
     out = subprocess.run([sys.executable, "-c", BLOCKED], capture_output=True, text=True)
     assert out.returncode == 0, out.stderr[-3000:]
     assert out.stdout.strip().endswith("ok")
+
+
+def test_pre_02_internals_warn_and_the_old_solver_warns_once():
+    from spintoolkit.methods.lswt import LSWTSolver
+    from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+    from spintoolkit.observables.thermodynamics import Thermodynamics
+    from spintoolkit.system.conversion import to_spin_system
+
+    for make, name in ((lambda: LSWTHamiltonian({}, []), "LSWTHamiltonian"),
+                       (lambda: Thermodynamics(), "Thermodynamics")):
+        with pytest.warns(DeprecationWarning, match=f"{name} is deprecated"):
+            make()
+    model = square_heisenberg(J=-1.0)
+    system = to_spin_system(model, polarized_state(model, (0, 0, 1)))
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        LSWTSolver(system, bz_type="simple")
+    names = [str(w.message).split(" is deprecated")[0] for w in caught
+             if issubclass(w.category, DeprecationWarning)]
+    assert names == ["LSWTSolver"]

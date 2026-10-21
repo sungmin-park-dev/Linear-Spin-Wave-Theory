@@ -83,6 +83,8 @@ class AbstractSolver(ABC):
     """
 
     def __init__(self, system: SpinSystem):
+        from spintoolkit._deprecation import warn_deprecated
+        warn_deprecated("AbstractSolver", "use the solve_* functions on SpinModel/SpinState")
         self.system = system
 
     @abstractmethod

@@ -24,9 +24,10 @@ fields are ``mu_B B / E0`` and temperatures ``k_B T / E0``.
 Deprecated API
 --------------
 ``SpinSystem`` (with ``SpinSite``, ``Coupling``), ``LSWTSolver``,
-``SpinOptimizer``, ``EnergyFunction``, ``Topology.compute_thermal_Hall`` and
-the old package name ``lswt`` work in 0.2 with a DeprecationWarning and are
-removed in 0.3 (D43).
+``SpinOptimizer``, ``EnergyFunction``, ``Topology.compute_thermal_Hall``,
+``LSWTHamiltonian``, ``AbstractSolver``, the kelvin ``Thermodynamics`` and the
+old package name ``lswt`` work in 0.2 with a DeprecationWarning and are removed
+in 0.3 (D43, D65).
 
 Quick Start
 -----------
