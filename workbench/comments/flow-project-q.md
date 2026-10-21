@@ -13,3 +13,9 @@ toolkit(package 개발)과 lswt를 구분해서 flow를 나타내자.
 흐름의 시작점을 둘로 나눴습니다. 이 점(LSWT canon)은 이론 정본 질문만 남겼고, 패키지는 새 시작점 spin-toolkit(toolkit-q)으로 따로 그립니다. 이론 쪽 발단: drafts-check · onsite-rule · spiral-frame. 패키지 쪽 발단: nlswt-expansion · scope · state-selection · thermal-hall. 발단 선과 질문 문장은 이 지시에 따라 바꿨습니다.
 
 - 상태: 답함
+
+### 답 · 사용자 · 2026-10-21 16:33
+
+좋은 것 같아. 이어서 LSWT와 개발 각각에 집중해서 흐름을 조정하자. 지금 짧은 제목이 너무 모호하고, 중의적으로 적혀있고, 독립적인 점으로 유지되기는 너무 약한 것들이 많아. 내 생각에 엮을 수 있는 겻들은 큰 주제로 엮어보자. 지금은 에이전트와 사람 모두에게 연구 흐름이 잘 보이지 않는 것 같아.
+
+- 상태: 대기
