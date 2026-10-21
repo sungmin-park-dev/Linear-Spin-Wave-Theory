@@ -73,6 +73,9 @@ class Thermodynamics:
     """
 
     def __init__(self, lswt_obj=None):
+        from spintoolkit._deprecation import warn_deprecated
+        warn_deprecated("Thermodynamics", "use spintoolkit.observables.thermal_quantities on an "
+                        "LSWTResult (dimensionless t = k_B T / E0)")
         self.lswt_obj = lswt_obj
         self.Ns = lswt_obj.Ns if lswt_obj is not None else None
 

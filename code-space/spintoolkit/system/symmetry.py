@@ -46,7 +46,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from spintoolkit.system.model import BILINEAR, ZEEMAN, Site, SpinModel, Term
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, Site, SpinModel, Term, require_kinds
 
 #: Tolerance of fractional positions and of orthogonality tests.
 SYMMETRY_POSITION_TOLERANCE = 1e-6
@@ -564,6 +564,7 @@ class CrystalSymmetry:
             model or has a different coefficient; empty if the model is
             symmetric.
         """
+        require_kinds(model, (BILINEAR, ZEEMAN, ONSITE), "CrystalSymmetry.check_model")
         if not np.allclose(model.lattice, self.lattice):
             return ["model lattice differs from the crystal lattice"]
         if set(model.site_ids) != set(self._positions):
@@ -573,6 +574,10 @@ class CrystalSymmetry:
             key, C = self._canonical(*term.participants, term.coefficient)
             bonds[key] = C
         g_tensors = {t.participants[0][0]: t.coefficient for t in model.terms_of_kind(ZEEMAN)}
+        onsite: Dict[str, np.ndarray] = {}
+        for term in model.terms_of_kind(ONSITE):
+            site = term.participants[0][0]
+            onsite[site] = onsite.get(site, np.zeros((3, 3))) + term.coefficient
         violations = []
         for key, C in bonds.items():
             scale = max(1.0, float(np.abs(C).max()))
@@ -594,6 +599,16 @@ class CrystalSymmetry:
                                                     atol=SYMMETRY_COEFFICIENT_TOLERANCE * max(1.0, np.abs(g).max())):
                     violations.append(f"zeeman of {site!r}: operation {i} requires "
                                       f"g({image!r}) = R_s g R_s^T")
+        # Onsite S^T A S with S -> R_s S: the image site needs R_s A R_s^T.
+        for site, A in onsite.items():
+            for i, site_map in enumerate(self._site_maps):
+                image = site_map[site][0]
+                R = self.operations[i].spin_rotation
+                other = onsite.get(image, np.zeros((3, 3)))
+                if not np.allclose(other, R @ A @ R.T,
+                                   atol=SYMMETRY_COEFFICIENT_TOLERANCE * max(1.0, np.abs(A).max())):
+                    violations.append(f"onsite of {site!r}: operation {i} requires "
+                                      f"A({image!r}) = R_s A R_s^T")
         return violations
 
 

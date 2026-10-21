@@ -199,3 +199,15 @@ def test_generated_model_has_c3_symmetric_magnons():
         bands = [solve_lswt(model, state, conditions,
                             settings=LSWTSettings(k_points=q)).bands() for q in (k, rotated)]
     assert np.allclose(bands[0], bands[1], atol=1e-10)
+
+
+def test_check_model_sees_onsite_terms():
+    # Easy-axis D (S^z)^2 keeps the 6/mmm symmetry; an in-plane A = diag(0.5, 0, 0)
+    # breaks C3 and must be reported (audit ARCH-02).
+    base = triangular_heisenberg()
+    for A, broken in ((np.diag([0.0, 0.0, -0.3]), False), (np.diag([0.5, 0.0, 0.0]), True)):
+        model = SpinModel(base.lattice, list(base.sites), list(base.terms) + [Term.onsite("A", A)],
+                          {"model_id": f"onsite_{broken}"})
+        violations = flat_triangular().check_model(model)
+        assert bool(violations) is broken
+        assert all("onsite" in v for v in violations)

@@ -96,3 +96,15 @@ def test_dressed_structure_factor_conserves_the_one_magnon_weight_on_shell():
     assert np.sum(out["one_magnon"]) * dw == pytest.approx(np.sum(out["lswt"]) * dw, rel=0.02)
     assert np.all(out["two_magnon"] >= 0)
     assert np.allclose(out["total"], out["one_magnon"] + out["two_magnon"])
+
+
+def test_dressed_structure_factor_dyson_mode_reports_negative_frequency_weight():
+    # The band loop once reused the name of the `mode` argument, so the Dyson
+    # branch never ran (audit OBS-04).
+    model, state, result, reciprocal = _triangular(1.0, mesh=6)
+    lswt = solve_lswt(model, state)
+    q = np.array([K_DECAY]) @ reciprocal
+    out = dressed_structure_factor(lswt, result, q, np.linspace(0.1, 6, 61), 0.05,
+                                   mode="dyson", grid=(12, 12), levels=60,
+                                   two_magnon_mesh=(6, 6))
+    assert "negative_frequency_weight" in out

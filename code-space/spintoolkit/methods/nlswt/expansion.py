@@ -37,7 +37,7 @@ import numpy as np
 from spintoolkit.methods.lswt.quadratic import local_frame
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, require_kinds
 
 #: Single-site monomial ``(a^dagger)^p a^q`` keyed by ``(p, q)``.
 SitePolynomial = Dict[Tuple[int, int], complex]
@@ -129,6 +129,7 @@ def expand_model(model: SpinModel, state: SpinState,
     NonlinearExpansionError
         For onsite terms (see the module docstring).
     """
+    require_kinds(model, (BILINEAR, ZEEMAN, ONSITE), "the nonlinear spin-wave expansion")
     if model.terms_of_kind(ONSITE):
         raise NonlinearExpansionError(
             "onsite terms are not supported by the nonlinear spin-wave expansion: the "

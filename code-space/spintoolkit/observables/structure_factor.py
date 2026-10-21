@@ -77,6 +77,17 @@ def _diagonalization_at(result, q: np.ndarray):
     stored = {tuple(np.round(k, 12)): i for i, k in enumerate(result.k_points)}
     settings = result.header.settings
     for qi in q:
+        bare = result.hamiltonian_at(qi)[0]
+        w = np.linalg.eigvalsh(bare)
+        if w[0] <= settings["zero_mode_tolerance"] * max(np.max(np.abs(w)), 1.0):
+            # A zero mode, also where a regularization lifted it: its weight is the
+            # limit of D52, not the value at an arbitrary shift (D64).
+            n2 = bare.shape[-1]
+            H_out.append(bare)
+            E_out.append(np.full(n2, np.nan))
+            T_out.append(np.full((n2, n2), np.nan, dtype=complex))
+            zero.append(True)
+            continue
         i = stored.get(tuple(np.round(qi, 12)))
         if i is not None:
             H_out.append(result.hamiltonians[i])
@@ -90,8 +101,8 @@ def _diagonalization_at(result, q: np.ndarray):
             H = H + result.header.diagnostics["max_regularization_shift"] * np.eye(H.shape[1])
             regularization = "none"
         try:
-            H, E, T, _ = _diagonalize(np.asarray(H, dtype=complex), regularization, qi[None, :],
-                                      settings["zero_mode_tolerance"])
+            H, E, T, _, _ = _diagonalize(np.asarray(H, dtype=complex), regularization,
+                                         qi[None, :], settings["zero_mode_tolerance"])
         except LSWTError:
             n2 = H.shape[-1]
             H_out.append(np.asarray(H).reshape(n2, n2))
@@ -173,20 +184,23 @@ class StructureFactor:
         return out
 
     def spectrum(self, omega: Sequence[float], eta: float, shape: str = "lorentzian",
-                 component: Optional[str] = None) -> np.ndarray:
+                 component: Optional[str] = None, part: str = "real") -> np.ndarray:
         """Broadened ``S(q, w)`` on a frequency grid, shape (nq, nw).
 
         ``component`` None sums the diagonal (trace); "neutron" applies the
         polarization factor; "xx", "zz", ... pick one Cartesian component.
+        ``part`` ("real", "imag" or "complex") picks that part of a Cartesian
+        component. An off-diagonal ``S^{ab}`` is complex in general: its
+        imaginary part is the antisymmetric (chiral) correlation, which the
+        unpolarized neutron intensity does not see. The trace and "neutron"
+        are real and take only ``part="real"``.
         """
         omega = np.asarray(omega, dtype=float)
-        if component is None:
+        weight = cartesian_weight(self.weights, component, part)
+        if weight is None and component is None:
             weight = self.trace()
-        elif component == "neutron":
+        elif weight is None:
             weight = self.neutron()
-        else:
-            a, b = ("xyz".index(component[0]), "xyz".index(component[1]))
-            weight = np.real(self.weights[:, :, a, b])
         x = omega[None, None, :] - self.energies[:, :, None]
         if shape == "lorentzian":
             profile = eta / np.pi / (x ** 2 + eta ** 2)
@@ -199,6 +213,32 @@ class StructureFactor:
     def to_json_dict(self) -> Dict[str, Any]:
         from spintoolkit.methods.result import to_jsonable
         return to_jsonable({k: getattr(self, k) for k in self.__dataclass_fields__})
+
+
+def cartesian_weight(weights: np.ndarray, component: Optional[str],
+                     part: str = "real") -> Optional[np.ndarray]:
+    """Part of one Cartesian component of mode weights ``(..., 3, 3)``; None for trace/neutron.
+
+    Raises
+    ------
+    ValueError
+        For an unknown ``part``, or a part other than "real" of the trace or
+        the neutron intensity (both real).
+    """
+    if part not in ("real", "imag", "complex"):
+        raise ValueError("part must be 'real', 'imag' or 'complex'")
+    if component is None or component == "neutron":
+        if part != "real":
+            raise ValueError(f"part={part!r} needs a Cartesian component such as 'xy'; the "
+                             "trace and the neutron intensity are real")
+        return None
+    a, b = ("xyz".index(component[0]), "xyz".index(component[1]))
+    weight = weights[..., a, b]
+    if part == "real":
+        return np.real(weight)
+    if part == "imag":
+        return np.imag(weight)
+    return np.asarray(weight, dtype=complex)
 
 
 def _zero_mode_decision(result, temperature, zero_modes, gapless):
@@ -365,9 +405,10 @@ def structure_factor(result, q_points, temperature: float = 0.0,
         :func:`~spintoolkit.observables.neutron.neutron_intensity`). None
         (default) gives the spin structure factor.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "structure_factor")
+    require_stationary(result, "structure_factor")
     from spintoolkit.methods.lswt.run import require_lab_frame
 
     require_lab_frame(result, "structure_factor")
@@ -468,9 +509,10 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         branches then survive; use the commensurate supercell with
         :func:`structure_factor`.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "spiral_structure_factor")
+    require_stationary(result.rotating, "spiral_structure_factor")
     rotating = result.rotating
     Q = np.asarray(result.wave_vector, dtype=float)
     lattice = np.asarray(rotating.lattice)
@@ -594,9 +636,10 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
         is the harmonic ``<delta S_i^a delta S_i^b>``, not the exact
         ``S(S+1)`` identity.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "spin_correlation")
+    require_stationary(result, "spin_correlation")
     from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.states.spin_state import reduce_cell
 
@@ -628,9 +671,10 @@ def bond_correlations(result, model) -> Dict[str, Any]:
         ``bonds``: list of per-term dicts (``label``, ``site_i``, ``site_j``,
         ``offset``, ``correlation`` (3, 3)); ``energy``: per site, E0.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "bond_correlations")
+    require_stationary(result, "bond_correlations")
     from spintoolkit.methods.lswt.run import require_lab_frame
     from spintoolkit.system.model import BILINEAR, ZEEMAN
     from spintoolkit.states.spin_state import reduce_cell

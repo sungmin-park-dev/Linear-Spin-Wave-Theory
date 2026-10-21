@@ -84,7 +84,7 @@ from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.lswt.run import LSWTError
 from spintoolkit.methods.nlswt.engine import NonlinearSpinWaves, bogoliubov_mesh
 from spintoolkit.methods.nlswt.expansion import expand_model
-from spintoolkit.methods.result import ResultHeader
+from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.model import SpinModel
@@ -124,7 +124,7 @@ class PseudoGoldstoneSettings:
                 "t_values": list(self.t_values)}
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class PseudoGoldstoneResult:
     """Pseudo-Goldstone gap through relative order 1/S.
 
@@ -150,6 +150,15 @@ class PseudoGoldstoneResult:
     gap_squared: Tuple[float, float]
     curvature: Dict[str, float]
     components: Dict[str, float]
+
+    def __post_init__(self):
+        freeze_fields(self)
+
+    def to_json_dict(self) -> Dict[str, Any]:
+        return to_jsonable({"header": self.header,
+                            "pseudo_goldstone": {"gap_squared": self.gap_squared,
+                                                 "curvature": self.curvature,
+                                                 "components": self.components}})
 
     @property
     def leading_gap(self) -> float:

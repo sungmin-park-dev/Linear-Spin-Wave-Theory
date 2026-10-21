@@ -1,8 +1,8 @@
 """Deprecation policy of the pre-0.2 API (D30, D43).
 
 The ``SpinSystem``-based API (``SpinSystem``, ``LSWTSolver``,
-``SpinOptimizer``, ``EnergyFunction``, the SI Hall method and the ``lswt``
-package alias) keeps working in 0.2 with a DeprecationWarning and is removed
+``SpinOptimizer``, ``EnergyFunction``, ``LSWTHamiltonian``, ``AbstractSolver``,
+the kelvin ``Thermodynamics``, the SI Hall method and the ``lswt`` package alias) keeps working in 0.2 with a DeprecationWarning and is removed
 in :data:`REMOVAL_VERSION`. Code of the new API that still builds a
 ``SpinSystem`` internally does so inside :func:`internal_use`, so users of the
 new API see no warning.

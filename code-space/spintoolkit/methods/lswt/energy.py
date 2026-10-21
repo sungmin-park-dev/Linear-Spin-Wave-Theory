@@ -75,9 +75,11 @@ class EnergyFunction:
         )
         _, self.k_points, _ = B_zone.get_full(N=N)
         self.num_k_points = len(self.k_points)
-        self.lswt_Ham = LSWTHamiltonian(
-            self.spin_sys_data["Spin info"], self.spin_sys_data["Couplings"]
-        )
+        from spintoolkit._deprecation import internal_use
+        with internal_use():
+            self.lswt_Ham = LSWTHamiltonian(
+                self.spin_sys_data["Spin info"], self.spin_sys_data["Couplings"]
+            )
 
         self.energy_func = self.lswt_energy_density_func
 

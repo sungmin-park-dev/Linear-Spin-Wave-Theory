@@ -79,7 +79,7 @@ from spintoolkit.methods.classical import (
     classical_energy, refine_classical, rotation_generators, tangent_expansion)
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.model import BILINEAR, ZEEMAN, SpinModel
+from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, require_kinds
 
 #: Verdicts of :func:`select_on_manifold`.
 NO_DEGENERACY = "no_degeneracy"
@@ -286,11 +286,12 @@ def rotation_symmetry(model: SpinModel, conditions: ExternalConditions, axis,
     (bool, dict)
         The verdict and the largest relative violation of each kind.
     """
+    require_kinds(model, (BILINEAR, ONSITE, ZEEMAN), "rotation_symmetry")
     axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
     K = _cross_matrix(axis)
     # Onsite matrices transform like exchange matrices under a global rotation.
     exchange = [t.coefficient for t in model.terms_of_kind(BILINEAR)]
-    exchange += [t.coefficient for t in model.terms_of_kind("onsite")]
+    exchange += [t.coefficient for t in model.terms_of_kind(ONSITE)]
     scale = max([np.linalg.norm(J) for J in exchange] + [0.0])
     bilinear = max([np.linalg.norm(K @ J - J @ K) for J in exchange] + [0.0])
     fields = [t.coefficient.T @ conditions.field for t in model.terms_of_kind(ZEEMAN)]
@@ -836,40 +837,42 @@ class LSWTZeroPointEnergy:
     def __call__(self, model: SpinModel, state: SpinState,
                  conditions: Optional[ExternalConditions] = None, axis=None) -> float:
         """Zero-point energy per site; ``axis`` (constrained method) is the orbit axis."""
-        from spintoolkit.system.conversion import to_spin_system
-
         conditions = conditions or ExternalConditions()
-        system = to_spin_system(model, state, conditions)
         key = (model.fingerprint(), state.supercell.tobytes(), conditions.field.tobytes())
         if self.method == "legacy":
+            from spintoolkit._deprecation import internal_use, warn_deprecated
             from spintoolkit.methods.lswt.energy import EnergyFunction
-            if key not in self._cache:
-                self._cache[key] = EnergyFunction(system.to_legacy_dict(self.bz_type), N=self.N)
-            energy_function = self._cache[key]
-            value = float(energy_function.quantum_energy_density_func(
-                system.get_angles_flat(), reg_type=self.reg_type))
+            from spintoolkit.system.conversion import to_spin_system
+
+            warn_deprecated('LSWTZeroPointEnergy(method="legacy")',
+                            'use method="constrained"')
+            system = to_spin_system(model, state, conditions)
+            with internal_use():
+                if key not in self._cache:
+                    self._cache[key] = EnergyFunction(system.to_legacy_dict(self.bz_type),
+                                                      N=self.N)
+                energy_function = self._cache[key]
+                value = float(energy_function.quantum_energy_density_func(
+                    system.get_angles_flat(), reg_type=self.reg_type))
             self.regularization.append(energy_function.mu_magswt)
             return value
-        from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
+        from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
         from spintoolkit.system.brillouin_zone import BrillouinZone
 
-        data = system.to_legacy_dict(self.bz_type)
         if key not in self._cache:
-            _, k, _ = BrillouinZone(data["Lattice/BZ setting"], bz_type=self.bz_type).get_full(self.N)
-            self._cache[key] = np.asarray(k, dtype=float)
+            zone = BrillouinZone((state.magnetic_lattice(model), self.bz_type))
+            self._cache[key] = np.asarray(zone.get_full(self.N)[1], dtype=float)
         k = self._cache[key]
         centre = np.linalg.norm(k, axis=1) <= 1e-12
         if axis is None:
             k = k[~centre]
             centre = centre[~centre]
-        angles = system.get_angles_flat()
-        H, _ = LSWTHamiltonian(data["Spin info"], data["Couplings"]).Quadratic_Bose_Hamiltonian(
-            k, angles=angles)
-        H = np.asarray(H)
+        hamiltonian = QuadraticBoseHamiltonian(model, state, conditions)
+        H = hamiltonian.at(k)
         ns = H.shape[1] // 2
         reduce = None
         if axis is not None and centre.any():
-            u = _soft_boson_line(data["Spin info"], angles, axis)
+            u = _soft_boson_line(hamiltonian, axis)
             q, _ = np.linalg.qr(np.column_stack([u, np.eye(ns)]))
             Q = q[:, 1:ns]                                      # orthonormal complement of u
             zero = np.zeros_like(Q)
@@ -891,7 +894,7 @@ class LSWTZeroPointEnergy:
         return 0.0
 
     def describe(self) -> Dict[str, Any]:
-        out = {"provider": "LSWT zero-point energy via to_spin_system", "method": self.method,
+        out = {"provider": "LSWT zero-point energy (QuadraticBoseHamiltonian)", "method": self.method,
                "bz_type": self.bz_type, "N": self.N}
         if self.method == "legacy":
             values = [x for x in self.regularization if x is not None]
@@ -975,27 +978,25 @@ class LSWTHarmonicFreeEnergy(LSWTZeroPointEnergy):
 
     def describe(self) -> Dict[str, Any]:
         out = super().describe()
-        out.update({"provider": "LSWT harmonic free energy via to_spin_system",
+        out.update({"provider": "LSWT harmonic free energy (QuadraticBoseHamiltonian)",
                     "temperature": self.temperature, "soft_cutoff": self.soft_cutoff,
                     "soft_modes_left_out": sorted(set(self.left_out)),
                     "undefined_calls": self.undefined})
         return out
 
 
-def _soft_boson_line(spin_info, angles, axis) -> np.ndarray:
+def _soft_boson_line(hamiltonian, axis) -> np.ndarray:
     """Normalized boson amplitudes of the uniform rotation about ``axis`` (zone centre).
 
-    ``u_i = sqrt(S_i) ((n x s_i).e_theta + i (n x s_i).e_phi)`` in the local
-    frame of :class:`~spintoolkit.methods.lswt.hamiltonian.LSWTHamiltonian`.
+    ``u_i = sqrt(S_i) ((n x s_i).x_i + i (n x s_i).y_i)`` in the local frame
+    ``(x_i, y_i, s_i) = (e_theta, e_phi, s_i)`` of
+    :class:`~spintoolkit.methods.lswt.quadratic.QuadraticBoseHamiltonian`.
     """
     axis = np.asarray(axis, dtype=float) / np.linalg.norm(axis)
     u = []
-    for info, (theta, phi) in zip(spin_info.values(), np.asarray(angles).reshape(-1, 2)):
-        s = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.sin(phi), np.cos(theta)])
-        e_theta = np.array([np.cos(theta) * np.cos(phi), np.cos(theta) * np.sin(phi), -np.sin(theta)])
-        e_phi = np.array([-np.sin(phi), np.cos(phi), 0.0])
-        d = np.cross(axis, s)
-        u.append(np.sqrt(info["Spin"]) * (d @ e_theta + 1j * (d @ e_phi)))
+    for spin, frame in zip(hamiltonian.spins, hamiltonian.local_frames):
+        d = np.cross(axis, frame[:, 2])
+        u.append(np.sqrt(spin) * (d @ frame[:, 0] + 1j * (d @ frame[:, 1])))
     u = np.array(u)
     return u / np.linalg.norm(u)
 

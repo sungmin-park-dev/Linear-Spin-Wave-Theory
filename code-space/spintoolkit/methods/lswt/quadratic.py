@@ -37,7 +37,8 @@ import numpy as np
 
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
-from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, onsite_renormalization
+from spintoolkit.system.model import (BILINEAR, ONSITE, ZEEMAN, SpinModel, onsite_renormalization,
+                                      require_kinds)
 
 #: ``C`` maps the (+, -, z) ladder basis to Cartesian components (local frame).
 _LADDER = np.array([[1, 1, 0], [1j, -1j, 0], [0, 0, np.sqrt(2)]]) / np.sqrt(2)
@@ -87,6 +88,7 @@ class QuadraticBoseHamiltonian:
 
     def __init__(self, model: SpinModel, state: SpinState,
                  conditions: Optional[ExternalConditions] = None):
+        require_kinds(model, (BILINEAR, ZEEMAN, ONSITE), "QuadraticBoseHamiltonian")
         conditions = conditions or ExternalConditions()
         self.site_keys: Tuple = tuple((site.id, cell) for site in model.sites for cell in state.cells)
         index: Dict = {key: i for i, key in enumerate(self.site_keys)}

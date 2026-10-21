@@ -298,18 +298,15 @@ def test_soft_boson_line_is_the_zone_centre_goldstone_mode_for_a_general_axis():
     """D28 provider: u_i = sqrt(S_i)(t_theta + i t_phi) is the D17 null vector of H(k = 0)
     (its complex conjugate is not) with the whole problem rotated off z."""
     from spintoolkit.methods.classical import refine_classical
-    from spintoolkit.methods.lswt.hamiltonian import LSWTHamiltonian
-    from spintoolkit.system.conversion import to_spin_system
+    from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 
     c, s = np.cos(0.7), np.sin(0.7)
     rotation = np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]]) @ np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
     model, state, conditions = setup("Y", {"JPD": 0.01}, rotation=rotation)
     state = refine_classical(model, state, conditions)
-    system = to_spin_system(model, state, conditions)
-    data, angles = system.to_legacy_dict("Hex_30"), system.get_angles_flat()
-    H = np.asarray(LSWTHamiltonian(data["Spin info"], data["Couplings"]).Quadratic_Bose_Hamiltonian(
-        np.zeros((1, 2)), angles=angles)[0])[0]
-    u = sel._soft_boson_line(data["Spin info"], angles, rotation @ [0, 0, 1])
+    hamiltonian = QuadraticBoseHamiltonian(model, state, conditions)
+    H = hamiltonian.at(np.zeros((1, 2)))[0]
+    u = sel._soft_boson_line(hamiltonian, rotation @ [0, 0, 1])
     scale = np.linalg.norm(H, 2)
     assert np.linalg.norm(H @ np.r_[u, u.conj()]) < 1e-12 * scale
     assert np.linalg.norm(H @ np.r_[u.conj(), u]) > 1e-2 * scale

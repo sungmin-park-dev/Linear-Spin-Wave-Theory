@@ -19,6 +19,68 @@ from spintoolkit.definitions import (
 )
 
 
+# ---------------------------------------------------------------------------
+# Dimensionless forms (D20): energies in E0, ``t = k_B T / E0``, ``k_B = 1``.
+# The Kelvin-based functions below serve the pre-0.2 API.
+# ---------------------------------------------------------------------------
+
+def _check(energy, t: float) -> np.ndarray:
+    if not np.isfinite(t) or t < 0:
+        raise ValueError("t must be finite and non-negative")
+    energy = np.asarray(energy, dtype=float)
+    if np.any(~np.isfinite(energy)) or np.any(energy < 0):
+        raise ValueError("magnon energies must be finite and non-negative")
+    return energy
+
+
+def bose_occupation(energy, t: float) -> np.ndarray:
+    """``n_B = 1 / (exp(e / t) - 1)``; zero at ``t = 0``, ``+inf`` for an exact zero mode at ``t > 0``."""
+    energy = _check(energy, t)
+    if t == 0:
+        return np.zeros_like(energy)
+    with np.errstate(divide="ignore", over="ignore"):
+        return 1.0 / np.expm1(energy / t)
+
+
+def bose_free_energy(energy, t: float) -> np.ndarray:
+    """``t ln(1 - exp(-e / t))`` per mode; zero at ``t = 0``, ``-inf`` for an exact zero mode."""
+    energy = _check(energy, t)
+    if t == 0:
+        return np.zeros_like(energy)
+    x = energy / t
+    out = np.empty_like(x)
+    small = x <= np.log(2)
+    # expm1 avoids cancellation near zero; log1p keeps exponentially small terms at large x.
+    with np.errstate(divide="ignore"):
+        out[small] = np.log(-np.expm1(-x[small]))
+    out[~small] = np.log1p(-np.exp(-x[~small]))
+    return t * out
+
+
+def bose_entropy(energy, t: float) -> np.ndarray:
+    """``(1 + n) ln(1 + n) - n ln n = x n - ln(1 - e^-x)`` per mode, ``x = e / t``; zero at ``t = 0``."""
+    energy = _check(energy, t)
+    if t == 0:
+        return np.zeros_like(energy)
+    x = energy / t
+    with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+        out = x / np.expm1(x) - np.log(-np.expm1(-x))
+    out[x == 0] = np.inf
+    return out
+
+
+def bose_heat_capacity(energy, t: float) -> np.ndarray:
+    """``x^2 / (4 sinh^2(x / 2))`` per mode, ``x = e / t`` (1 at ``x -> 0``); zero at ``t = 0``."""
+    energy = _check(energy, t)
+    if t == 0:
+        return np.zeros_like(energy)
+    x = energy / t
+    with np.errstate(over="ignore", invalid="ignore"):
+        out = (x / (2 * np.sinh(x / 2))) ** 2
+    out[x == 0] = 1.0
+    return np.where(np.isfinite(out), out, 0.0)
+
+
 def compute_bose_einstein_distribution(E_list, Temperature=DEFAULT_TEMPERATURE):
     """Compute the Bose-Einstein distribution n_B(E) = 1/(exp(E/kT) - 1).
 

@@ -337,6 +337,7 @@
     \midrule
     공개 API & \texttt{SpinModel}, \texttt{SpinState}, \texttt{solve\_lswt}, \texttt{LSWTSettings}, \texttt{LSWTResult}; README·docstring·예제는 이것만 쓴다 \\
     옛 API & \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{SpinOptimizer}, \texttt{EnergyFunction}, SI Hall 메서드, \texttt{lswt} 이름: 0.2에서 동작, 경고에 삭제 판 0.3 명시 \\
+    추가 (2026-10-21) & 사용자 선택(``목록에 추가''): \texttt{LSWTHamiltonian}, \texttt{AbstractSolver}, 켈빈 \texttt{Thermodynamics}도 0.2에서 경고, 0.3에서 삭제. 새 API는 이것들을 쓰지 않는다(D65). \texttt{BrillouinZone}은 새 상태 선택 메시가 써서 남긴다 \\
     내부 경로 & 새 API가 내부에서 만드는 \texttt{SpinSystem}은 \texttt{internal\_use()}로 경고하지 않음 \\
     검증 & README 빠른 시작을 \texttt{-W error::DeprecationWarning}으로 실행; $E=-0.5388J$, M점 $\omega=1.0J$ \\
     \bottomrule
@@ -755,6 +756,69 @@
     \bottomrule
   \end{tabularx}
   \slidesource{2026-10-20 결정}{contract}
+\endgroup
+
+\subsection{결정 기록 (D64): 발산은 부호 있는 무한대, 정의 안 됨은 NaN, 영 모드 보손 수는 탐지해 알린다}\label{decisions-d64-divergent-undefined}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-20--21 사용자 지시(``보손수에 이상이 있는 것 같은 것이 자동적으로 탐지가 되었을 때, 사용자에게 알리고 진행하게 하자'', ``물리적으로 무한대로 발산하는 경우, 부호를 고려하여 무한대로 두고, 물리적으로 정의가 안되는 경우 nan으로 두자'', ``그렇게하자''), 적용은 Claude. D61을 고친다. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    원칙 & 극한이 있고 부호가 정해진 발산은 $\pm\infty$. 극한이 없거나(방향·메시·이동량 의존) 전개 밖이면 NaN과 경고. 발산하는 보손 수에서 얻는 모멘트 $S-\langle n\rangle$은 스핀파 전개 밖이라 NaN \\
+    영 모드 보손 수 & 이상 탄성 항이 있는 골드스톤 점($B\ne0$)에서 $\langle n_k\rangle\sim\mu^{-1/2}\to+\infty$. 2차원 $T=0$ 적분은 유한하지만, 그 점을 포함한 메시 합은 이동량 $\mu$에 따라 달라지는 인공물이다(감사 CORE-01: $16^2,32^2,64^2$ MAGSWT 메시에서 $\langle n\rangle=61.9,15.6,4.05$). 정규화가 영 모드를 들어 올린 $k$에서 $H+\mu$와 $H+4\mu$의 점유를 비교해 달라지면 보손 수·모멘트를 NaN으로, 진단 \texttt{divergent\_zero\_mode\_occupation}, 선택지(Γ를 피하는 메시와 수렴 확인; 유한 토러스에서 대칭 골드스톤 모드를 빼고 크기 외삽; 모멘트 방향 작은 장에서 $L\to\infty$ 뒤 $h\to0$)를 경고에 적는다. 강자성($B=0$)은 $n=0$이 극한이라 그대로. 일반적인 영 모드 제외·외삽 기능은 만들지 않는다(사용자 결정) \\
+    유한 온도 & 간격 없는 2차원 스펙트럼의 $t>0$ 보손 수는 $+\infty$(Mermin--Wagner), 모멘트·자화는 NaN, $F,U,S,C$는 유한. 정규화된 영 모드가 $k$ 집합에 있으면 $t>0$의 $F,S$는 $\ln\mu$에 의존해 NaN, $U,C$는 유지($\omega n_B\to t$) \\
+    조화 전개 없음 & \texttt{thermal\_quantities}가 \texttt{stationary=False} 또는 $k\to-k$에 닫히지 않은 $k$ 집합에서 모든 열 양을 NaN으로(이전에는 $U,S,C,n,M$을 냈다, 감사 OBS-01). 구조인자, 스핀 상관, 결합 상관, 나선 구조인자, 두 마그논, 옷 입은 구조인자, 열 홀은 비정류 결과를 \texttt{require\_stationary}로 거부, Berry·Chern은 이차 부분 띠라는 경고만(OBS-02) \\
+    나선 자화 & 회전 좌표 결과의 균일 자화는 실험실 좌표로: $Q$가 역격자 벡터가 아니면 회전축 성분만 남는다(OBS-03). \texttt{solve\_spiral\_lswt}가 저장하는 열 결과도 같은 규칙 \\
+    구조인자 & 정규화가 들어 올린 영 모드 $q$도 D52 극한(Bragg)으로 다룬다. 이전에는 임의 이동량에서의 가중치를 냈다 \\
+    비대각 성분 & 2026-10-21 사용자 선택(``part 인자''): \texttt{StructureFactor.spectrum}과 두 마그논 \texttt{spectrum}에 \texttt{part="real"|"imag"|"complex"}. 기본은 이전처럼 실수부. $S^{ab}$의 허수부는 반대칭(카이랄) 상관으로, 비편극 중성자 세기에는 안 보이지만 이전에는 버려졌다(감사 ARCH-01: $z$ 강자성의 $S^{xy}=\pm iS^{xx}$가 0). 대각합과 중성자 세기는 실수라 \texttt{"real"}만 받는다 \\
+    비교 대상 & 정사각 Néel $S=1/2$: Γ를 피한 메시의 $\langle n\rangle\to0.1966$(Takahashi PRB 40, 2494 (1989); $64^2$에서 0.1926), Mermin--Wagner PRL 17, 1133 (1966). 원뿔 나선 자화 $=$ 초격자 자화(\texttt{tests/test\_methods/test\_zero\_mode\_occupation.py}) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
+\subsection{결정 기록 (D65): 새 API는 0.3에서 지울 옛 코드 없이 돈다}\label{decisions-d65-new-api-independent}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 감사 2단계(사용자 ``다음 단계로 가자''), 적용은 Claude. 수치 결과는 그대로(전체 테스트 통과). 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    목적 & D43이 0.3에서 지우는 \texttt{SpinSystem}, \texttt{LSWTSolver}, \texttt{EnergyFunction}, \texttt{SpinOptimizer}와 그것들만 쓰는 \texttt{LSWTHamiltonian}, 켈빈 \texttt{Thermodynamics}를 새 API가 부르지 않는다(감사 ARCH-03) \\
+    상태 선택 & \texttt{LSWTZeroPointEnergy}/\texttt{LSWTHarmonicFreeEnergy}(constrained)가 \texttt{QuadraticBoseHamiltonian}과 자기 세포의 \texttt{BrillouinZone} 메시를 쓴다. 부드러운 모드 벡터는 같은 국소 좌표($e_\theta,e_\phi,s$)에서 만든다. \texttt{method="legacy"}는 \texttt{EnergyFunction}에 기대므로 폐기 경고 \\
+    열역학 & \texttt{thermal\_quantities}와 \texttt{magnon\_free\_energy}가 무차원 함수(\texttt{bose\_occupation}, \texttt{bose\_free\_energy}, \texttt{bose\_entropy}, \texttt{bose\_heat\_capacity})로 모드 합을 직접 한다. 가짜 켈빈 $t/k_B$ 변환이 없어졌다(ARCH-14). $U=E_{cl}+E_{zp}+\sum w_k\varepsilon n_B/N_s$, $S=\sum w_k[(1+n)\ln(1+n)-n\ln n]/N_s$, $C=\sum w_k x^2/4\sinh^2(x/2)/N_s$ \\
+    스핀 그림 & \texttt{plot\_spin\_configuration}이 모형·상태에서 자기 세포를 직접 만든다. onsite가 있는 모형도 그린다(ARCH-04). 결합선이 $r_i+(r_i-r_j)$로 그려지던 것을 $r_j$로 고쳤다(벌집처럼 반전 중심이 자리에 없는 격자에서 선이 빈 곳을 가리켰다) \\
+    항 종류 & 새 함수 \texttt{require\_kinds}: \texttt{QuadraticBoseHamiltonian}, 비선형 전개, 나선 에너지, LT, 대칭 검사, 영 모드 대칭, \texttt{rotation\_symmetry}가 모르는 항 종류를 \texttt{NotImplementedError}로 거부한다. 이전에는 일부가 조용히 빼서 틀린 $H(k)$가 나올 수 있었다(ARCH-05) \\
+    나선 onsite & 나선 에너지와 기울기가 onsite 항을 빠뜨렸다. 이제 $\kappa S^2 d^T\bar A d+(S/2)\operatorname{tr}A$, $\bar A$는 축 둘레 회전 평균(축 대칭이면 $\bar A=A$). $q=1/3$ 원뿔에서 초격자 고전 에너지와 $10^{-13}$ 안으로 일치 \\
+    대칭 검사 & \texttt{CrystalSymmetry.check\_model}이 onsite 항을 본다: 상 $i$의 자리에서 $A'=R_sAR_s^T$(ARCH-02). C3를 깨는 $A=\mathrm{diag}(0.5,0,0)$은 위반, $D(S^z)^2$는 통과 \\
+    검증 & \texttt{tests/test\_methods/test\_new\_api\_independence.py}: 지울 모듈을 쓸 수 없게 막은 하위 프로세스에서 \texttt{solve\_lswt}, \texttt{thermal\_quantities}, 상태 선택, 스핀 그림이 돈다. 이 셋은 사용자 선택으로 0.3 삭제 목록에 넣었다(D43 추가 행) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
+\subsection{결정 기록 (D66): 결과는 읽기 전용이고, 표준 JSON으로 저장되며, 계산 환경을 적는다}\label{decisions-d66-result-contract}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 감사 3단계(사용자 ``이어서 진행하자.''), 적용은 Claude. 수치 결과는 그대로(전체 테스트 통과). 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    목적 & 관측량이 확인하는 안전 표지(\texttt{extra["frame"]}, \texttt{extra["augmentation"]}, \texttt{header.diagnostics})를 계산 뒤에 바꿀 수 없게 하고(감사 ARCH-07), 저장한 결과가 계산을 다시 만들 정보를 갖게 한다(ARCH-08, C6) \\
+    읽기 전용 & \texttt{LSWTResult}, \texttt{SpiralLSWTResult}, \texttt{ThermalResult}, \texttt{NLSWTResult}, 유사 골드스톤 결과, \texttt{EDResult}/\texttt{EDBlock}, \texttt{ClassicalSearchResult}, MC \texttt{ThermalAverages}, \texttt{ResultHeader}: 배열 필드는 읽기 전용 view, dict 필드는 \texttt{FrozenDict}(dict의 하위 클래스로 바꾸는 메서드가 \texttt{TypeError}). 넘겨 준 원래 배열은 그대로 쓸 수 있다. 바꾼 결과는 \texttt{dataclasses.replace}로 새로 만든다. 표지는 필드로 옮기지 않았다(공개 API 변경이라 토의 대상) \\
+    비교 & 결과 클래스는 \texttt{eq=False}: \texttt{==}가 배열 때문에 오류를 내던 것을 동일성 비교로(ARCH-19) \\
+    JSON & 표준 JSON(\texttt{allow\_nan=False}): NaN과 D64의 $\pm\infty$는 문자열 \texttt{"NaN"}, \texttt{"Infinity"}, \texttt{"-Infinity"}, 복소수는 \texttt{\{"real","imag"\}}. \texttt{load\_json}이 둘을 되돌린다(머리 형식 2판). LSWT JSON에 열 결과, 격자와 자기 격자, 위치, 국소 좌표계, 표지를 더했다. \texttt{NLSWTResult}, 유사 골드스톤 결과, \texttt{ClassicalSearchResult}에 \texttt{to\_json\_dict}. 결과 객체 자체를 JSON에서 되살리지는 않는다($H(k)$ 함수가 없으므로) \\
+    계산 환경 & 머리에 python, numpy, scipy 버전. git 조회는 프로세스마다 한 번(결과마다 두 번 하던 9--12 ms, ARCH-09). git 저장소가 아닌 설치본은 pip이 남긴 커밋(\texttt{direct\_url.json}) \\
+    seed & MC \texttt{ThermalAverages.settings}에 표본기의 seed와 실행 설정(seed가 numpy Generator이면 \texttt{"generator"}, 상태는 적지 않음). 고전 탐색은 이미 seed를 적는다 \\
+    남은 것 & \texttt{StabilityReport}에 머리 없음, 검증 스크립트 출력에 머리 넣기, Langevin 표본의 seed는 적분기 객체에만 있음 \\
+    검증 & \texttt{tests/test\_methods/test\_result\_contract.py}: 쓰기 시도가 막히고, NaN·$+\infty$·복소수가 엄격한 JSON 파서로 왕복하고, git을 다시 부르지 않고, MC seed가 남는다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}

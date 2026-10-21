@@ -95,6 +95,8 @@ class LSWTHamiltonian:
     """
 
     def __init__(self, spin_info, couplings):
+        from spintoolkit._deprecation import warn_deprecated
+        warn_deprecated("LSWTHamiltonian", "use QuadraticBoseHamiltonian(model, state, conditions)")
         self.spin_info = spin_info
         self.couplings = couplings
         self.Ns = len(self.spin_info)

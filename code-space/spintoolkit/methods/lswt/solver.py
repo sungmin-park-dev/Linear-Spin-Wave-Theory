@@ -74,7 +74,8 @@ class LSWTSolver(AbstractSolver):
             self._system = system
             self._legacy_data = system.to_legacy_dict(bz_type=bz_type)
 
-        super().__init__(self._system)
+        with internal_use():
+            super().__init__(self._system)
 
         self._bz_type = bz_type
         self.spin_system_data = self._legacy_data
@@ -83,7 +84,8 @@ class LSWTSolver(AbstractSolver):
         self.lattice_bz_settings = self.spin_system_data["Lattice/BZ setting"]
         self.Ns = len(self.spin_info)
         self.T = 0
-        self.Ham = LSWTHamiltonian(self.spin_info, self.couplings)
+        with internal_use():
+            self.Ham = LSWTHamiltonian(self.spin_info, self.couplings)
 
     def solve(self, N: int = 10, bz_type: Optional[str] = None,
               regularization: str = "MAGSWT",

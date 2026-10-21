@@ -434,6 +434,22 @@ def _check_terms(terms, site_ids):
     return out
 
 
+def require_kinds(model: "SpinModel", kinds, consumer: str) -> None:
+    """Refuse a model with term kinds that ``consumer`` does not implement.
+
+    A consumer that loops over :meth:`SpinModel.terms_of_kind` would otherwise
+    drop the other kinds without a word and return a wrong result.
+
+    Raises
+    ------
+    NotImplementedError
+        Naming the unsupported kinds.
+    """
+    unsupported = sorted({t.kind for t in model.terms} - set(kinds))
+    if unsupported:
+        raise NotImplementedError(f"{consumer} does not support term kinds {unsupported}")
+
+
 def onsite_renormalization(spin: float) -> float:
     """Factor ``1 - 1/(2S)`` applied to onsite coefficients by classical and LSWT methods (D37).
 

@@ -26,7 +26,7 @@ from spintoolkit.methods.lswt.run import LSWTError
 from spintoolkit.methods.nlswt.engine import (NonlinearEnergies, NonlinearSpinWaves,
                                               bogoliubov_mesh, hilbert_transform)
 from spintoolkit.methods.nlswt.expansion import expand_model
-from spintoolkit.methods.result import ResultHeader
+from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
@@ -68,7 +68,7 @@ class NLSWTSettings:
                 "kernel_tolerance": self.kernel_tolerance}
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class NLSWTResult:
     """Ground-state energy through order S^0 with the common header.
 
@@ -91,6 +91,22 @@ class NLSWTResult:
     k_points: np.ndarray
     solver: NonlinearSpinWaves = field(repr=False, compare=False)
     lattice: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
+
+    def __post_init__(self):
+        freeze_fields(self)
+
+    def to_json_dict(self, include_arrays: bool = False) -> Dict[str, Any]:
+        """Header, the energy pieces per site, the loop momenta and the lattice.
+
+        The perturbation theory (``solver``) is not serialized; magnon energies
+        at other momenta need the result object.
+        """
+        e = self.energies
+        body = {"classical": e.classical, "zero_point": e.zero_point,
+                "hartree_fock": e.hartree_fock, "cubic": e.cubic, "tadpole": e.tadpole,
+                "order_s0": e.order_s0, "total": e.total, "condensate": e.condensate,
+                "k_points": self.k_points, "lattice": self.lattice}
+        return to_jsonable({"header": self.header, "nlswt": body})
 
     @property
     def ground_state_energy(self) -> float:

@@ -202,7 +202,7 @@ def twist_derivatives(torus: ClassicalTorus, spins: np.ndarray, axis=(0.0, 0.0, 
     return float(first), float(second)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class ThermalAverages:
     """Monte Carlo averages per site with binned standard errors.
 
@@ -218,6 +218,10 @@ class ThermalAverages:
     acceptance : float
     series : dict
         Raw measurement series (energy per site, ``m_q`` vectors, twist derivatives).
+    settings : dict
+        Sampler and run settings, with the ``seed`` the sampler was created
+        with (None: not reproducible; ``"generator"``: a numpy Generator was
+        passed and its state is not recorded).
     """
 
     temperature: float
@@ -229,6 +233,11 @@ class ThermalAverages:
     helicity: Dict[str, Tuple[float, float]]
     acceptance: float
     series: Dict[str, np.ndarray]
+    settings: Dict[str, object] = field(default_factory=dict)
+
+    def __post_init__(self):
+        from spintoolkit.methods.result import freeze_fields
+        freeze_fields(self)
 
 
 def _binned(values: np.ndarray, estimator, bins: int) -> Tuple[float, float]:
@@ -297,5 +306,10 @@ def thermal_averages(sampler: MonteCarlo, spins: np.ndarray, thermalization_swee
                 for label, d in derivatives.items()}
     series = {"energy": energy, **{f"m_{k}": v for k, v in order.items()},
               **{f"twist_{k}": v for k, v in derivatives.items()}}
+    seed = sampler.seed
+    settings = {"seed": "generator" if isinstance(seed, np.random.Generator) else seed,
+                "step": sampler.step, "overrelaxation": sampler.overrelaxation,
+                "thermalization_sweeps": thermalization_sweeps, "measurements": measurements,
+                "sweeps_between": sweeps_between, "bins": bins, "u1_projection": u1_projection}
     return ThermalAverages(T, e, e_err, c, c_err, order_out, helicity,
-                           float(np.mean(rates)), series), spins
+                           float(np.mean(rates)), series, settings), spins

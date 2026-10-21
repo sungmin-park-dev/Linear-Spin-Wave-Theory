@@ -128,7 +128,7 @@ def bogoliubov_mesh(hamiltonian_at, k: np.ndarray, fractional: np.ndarray,
                     resolution: int) -> BogoliubovMesh:
     """Diagonalize ``H(k)`` on the momenta (no regularization: zero modes raise)."""
     H = np.asarray(hamiltonian_at(k), dtype=complex)
-    _, E, T, _ = _diagonalize(H, "none", k, zero_mode_tolerance)
+    _, E, T, _, _ = _diagonalize(H, "none", k, zero_mode_tolerance)
     ns = H.shape[1] // 2
     f = np.mod(fractional, 1.0)
     keys = np.mod(np.rint(f * resolution).astype(np.int64), resolution)
@@ -577,7 +577,7 @@ class NonlinearSpinWaves:
     def _bogoliubov(self, momenta):
         k = np.atleast_2d(np.asarray(momenta, dtype=float))
         H = np.asarray(self.hamiltonian_at(k), dtype=complex)
-        _, E, T, _ = _diagonalize(H, "none", k, 1e-12)
+        _, E, T, _, _ = _diagonalize(H, "none", k, 1e-12)
         return E[:, :self.ns].real, T
 
     def cubic_self_energy(self, k, n: int, omega: complex) -> complex:

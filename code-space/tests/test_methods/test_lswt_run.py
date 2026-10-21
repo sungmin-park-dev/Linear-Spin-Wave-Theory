@@ -176,8 +176,7 @@ def test_header_and_json(tmp_path):
     assert summary["lswt"]["ground_state_energy"] == pytest.approx(result.ground_state_energy)
     assert "eigenvectors" not in summary["lswt"]
     full = load_json(save_json(result, tmp_path / "full.json", include_arrays=True))
-    np.testing.assert_allclose(np.array(full["lswt"]["eigenvectors"]["real"]),
-                               result.eigenvectors.real)
+    np.testing.assert_allclose(full["lswt"]["eigenvectors"], result.eigenvectors)
     ed = solve_ed(model, CalculationGeometry.finite_torus([[3, 0], [0, 3]]),
                   sector=EDSector(axis=(0, 0, 1), magnon_number=1))
     ed_json = load_json(save_json(ed, tmp_path / "ed.json"))
