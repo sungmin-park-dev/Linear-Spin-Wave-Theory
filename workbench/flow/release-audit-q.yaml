@@ -1,0 +1,27 @@
+format: 1
+kind: question
+progress: active
+short: 공개 전 감사와 신뢰성
+title: 공개 전에 API·성능·정의 안 되는 값의 처리와 이론적 신뢰성을 확인했는가
+topics:
+- toolkit-development
+date: '2026-10-15'
+from:
+- id: toolkit-q
+  type: origin
+fields:
+  question: Before release, are the API, performance, the handling of undefined values and the theoretical reliability of the package checked?
+  motivation: 'Decisions D61-D71 (2026-10-15 to 10-21): NaN for undefined values, opt-in MAGSWT, stationary-point search, deprecations for 0.3, read-only results, sparse H(k), tolerances, NLSWT near Goldstone modes, adaptive classical search, decay-continuum NaN.'
+evidence:
+- kind: other
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D61-D71
+  checks: []
+- kind: other
+  file: workbench/tasks/2026-10-21-theory-reliability.md
+  text: reliability benchmarks
+  checks: []
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 for the package work after 2026-10-15, which had no point in the flow.

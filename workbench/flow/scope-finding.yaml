@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Semiclassical only
+short: '패키지 범위: 반고전 (D48)'
 title: 패키지 범위는 2D 스핀 모형의 반고전 툴킷이다 (D48)
 topics:
 - toolkit-development

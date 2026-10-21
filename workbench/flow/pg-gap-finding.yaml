@@ -2,12 +2,14 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: 1/S gap unclear
+short: 유사 Goldstone gap 1/S (D47)
 title: 유사 Goldstone gap의 다음 차수는 S = 1/2에서 선도 차수보다 크다 (D47)
 topics:
 - beyond-linear-spin-waves
 date: '2026-10-03'
 from:
+- id: state-selection-q
+  type: origin
 - id: nlswt-expansion
   type: use
 - id: one-loop-potential

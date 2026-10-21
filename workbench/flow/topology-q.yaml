@@ -1,0 +1,19 @@
+format: 1
+kind: question
+progress: active
+short: 마그논 위상과 열 Hall
+title: Berry 곡률·Chern 수·열 Hall 전도도를 언제 정의할 수 있고 어떤 관례로 계산하는가
+topics:
+- spin-wave-observables
+- toolkit-development
+date: '2026-08-02'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: When are the Berry curvature, Chern number and magnon thermal Hall conductivity defined, including at gapless Goldstone points, and in which Bloch convention are they computed?
+  motivation: Band topology needs isolated bands and a fixed Bloch convention; Goldstone points and the thermal Hall normalization were open.
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 to group the points listed as its children; the date is the earliest child date.

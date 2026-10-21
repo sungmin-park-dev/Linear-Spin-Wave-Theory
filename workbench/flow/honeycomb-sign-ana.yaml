@@ -2,15 +2,17 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Chern sign = sgn D
+short: 벌집 DM Chern 부호
 title: 벌집 DM 강자성 마그논 Chern 수의 부호를 해석적으로 유도한다
 topics:
 - worked-examples
 - spin-wave-observables
 date: '2026-10-13'
 from:
-- id: worked-examples-calc
+- id: topology-q
   type: origin
+- id: worked-examples-calc
+  type: use
 - id: fhs-kubo-criteria
   type: use
 fields:

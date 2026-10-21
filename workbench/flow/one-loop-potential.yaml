@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: 1-loop potential
+short: 1-loop 유효 퍼텐셜 (D28)
 title: 고전·양자 비교는 완화 경로 위 1-loop 유효 퍼텐셜의 최소로 한다 (D28)
 topics:
 - toolkit-development

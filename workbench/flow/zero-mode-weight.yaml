@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Zero-mode weights
+short: 영모드 운동량 가중치 (D52)
 title: 영모드 운동량의 한 마그논 가중치는 방향 무관 극한이 있을 때만 값을 낸다 (D52)
 topics:
 - spin-wave-observables

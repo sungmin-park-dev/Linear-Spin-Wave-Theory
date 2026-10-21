@@ -2,12 +2,14 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Stable only at min
+short: '나선 pitch: 최소에서만 안정'
 title: 단일 Q 나선은 모든 Q에서 토크가 0이지만 전역 최소에서만 안정하다
 topics:
 - fundamental-theory-of-spin-wave-theory
 date: '2026-10-12'
 from:
+- id: spiral-q
+  type: origin
 - id: stability-hessian-ana
   type: support
 fields:

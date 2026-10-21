@@ -1,12 +1,14 @@
 format: 1
 kind: finding
 progress: active
-short: Finite M in 2D
+short: 2D Goldstone 상의 유한 M
 title: 2D Goldstone 상에서도 M = −∂F/∂h는 유한하다
 topics:
 - spin-wave-observables
 date: '2026-10-10'
 from:
+- id: zero-modes-q
+  type: origin
 - id: thermal-m-ana
   type: support
 fields:

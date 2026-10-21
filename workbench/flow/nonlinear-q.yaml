@@ -1,0 +1,18 @@
+format: 1
+kind: question
+progress: active
+short: 1/S 보정 이론
+title: 1/S 보정(에너지 S⁰, 마그논 1/S, 붕괴와 두 마그논 연속체)을 유도하고 문헌과 맞출 수 있는가
+topics:
+- beyond-linear-spin-waves
+date: '2026-10-12'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: Can the 1/S corrections (energy to order S^0, magnon energies to 1/S, decay and the two-magnon continuum) be derived in the notes and matched with the literature?
+  motivation: Linear theory is the leading order; spin-1/2 models need the next order to judge it.
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 to group the points listed as its children; the date is the earliest child date.

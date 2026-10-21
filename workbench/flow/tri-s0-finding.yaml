@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Paper I3 value
+short: 0.2% = 논문 I₃ 수치
 title: 0.2% 차이는 논문의 I₃ 수치에서 온다
 topics:
 - beyond-linear-spin-waves

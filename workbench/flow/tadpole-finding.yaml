@@ -1,12 +1,14 @@
 format: 1
 kind: finding
 progress: active
-short: Tadpole = dE_zp
+short: tadpole = 영점 에너지의 힘
 title: tadpole 계수는 영점 에너지가 고전 방향에 주는 힘이다
 topics:
 - beyond-linear-spin-waves
 date: '2026-10-12'
 from:
+- id: nonlinear-q
+  type: origin
 - id: nlswt-note-ana
   type: support
 - id: pre-move-fixes

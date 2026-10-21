@@ -2,8 +2,8 @@ format: 1
 kind: question
 progress: done
 result: solved
-short: Pick among states?
-title: 고전적으로 축퇴된 상태 중 영점 에너지로 어떻게 고르는가
+short: 축퇴 상태 선택
+title: 고전적으로 축퇴된 상태 중 무엇을 기준 상태로 고르는가 (영점 에너지, 1-loop)
 topics:
 - toolkit-development
 - beyond-linear-spin-waves

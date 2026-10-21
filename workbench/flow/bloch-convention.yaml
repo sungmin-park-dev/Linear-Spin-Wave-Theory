@@ -2,7 +2,7 @@ format: 1
 kind: finding
 progress: done
 result: solved
-short: Full-position κ
+short: 열 Hall은 full-position 규약
 title: thermal Hall은 full-position Bloch 규약에서만 물리적이다
 topics:
 - spin-wave-observables

@@ -2,15 +2,17 @@ format: 1
 kind: calc
 progress: done
 result: solved
-short: Orbit refinement
+short: 약한 궤도 정제 (D50)
 title: 약하게 고정된 궤도에서 고전 상태 정제가 시작점에 따라 갈리는 원인 (D50)
 topics:
 - toolkit-development
 - fundamental-theory-of-spin-wave-theory
 date: '2026-10-10'
 from:
-- id: thermal-m-ana
+- id: state-selection-q
   type: origin
+- id: thermal-m-ana
+  type: use
 - id: one-loop-potential
   type: use
 fields:

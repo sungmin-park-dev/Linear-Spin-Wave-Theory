@@ -2,7 +2,7 @@ format: 1
 kind: question
 progress: done
 result: solved
-short: 0.2% triangular?
+short: 삼각격자 S⁰ 에너지 0.2% 차이
 title: 삼각격자 S⁰ 바닥 에너지가 Chernyshev–Zhitomirsky 값과 왜 0.2% 다른가
 topics:
 - beyond-linear-spin-waves

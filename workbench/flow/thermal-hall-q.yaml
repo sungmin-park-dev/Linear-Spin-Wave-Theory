@@ -1,14 +1,14 @@
 format: 1
 kind: question
 progress: active
-short: Thermal Hall norm?
+short: 열 Hall 정규화·단위
 title: thermal Hall 계산의 면적·단위·반환 기준이 맞는가
 topics:
 - spin-wave-observables
 - toolkit-development
 date: '2026-08-02'
 from:
-- id: toolkit-q
+- id: topology-q
   type: origin
 fields:
   question: Are the area normalization (real_space_volume), the unit conversion and the returned quantity of the magnon thermal Hall conductivity correct?

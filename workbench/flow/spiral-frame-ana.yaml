@@ -2,14 +2,14 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: Rotating-frame Q
+short: 회전틀 나선 풀이 (D34)
 title: 단일 Q 나선을 회전틀에서 원시 셀 LSWT로 푼다 (D34)
 topics:
 - fundamental-theory-of-spin-wave-theory
 - toolkit-development
 date: '2026-10-01'
 from:
-- id: project-q
+- id: spiral-q
   type: origin
 fields:
   goal: Solve single-Q spirals, including incommensurate ones, without a magnetic supercell.

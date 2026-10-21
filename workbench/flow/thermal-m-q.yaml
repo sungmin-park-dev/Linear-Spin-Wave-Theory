@@ -2,15 +2,17 @@ format: 1
 kind: question
 progress: done
 result: solved
-short: M(h,t) definition?
+short: 기운 상태의 유한 온도 M
 title: 유한 온도 자화를 기운 상태에서 어떻게 정의하는가
 topics:
 - spin-wave-observables
 - toolkit-development
 date: '2026-10-08'
 from:
-- id: pre-move-fixes
+- id: solver-validation-q
   type: origin
+- id: pre-move-fixes
+  type: use
 fields:
   question: How should the finite-temperature magnetization be defined in a canted state, given that the moment sum $g(S-\langle n\rangle)$ misses the canting-angle rotation?
   guess: Use $M(h,t)=-\partial F/\partial h$.

@@ -2,7 +2,7 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: M = -dF/dh
+short: 유한 온도 M = −∂F/∂h (D49)
 title: 유한 온도 자화 M(h,t) = −∂F/∂h와 그 분해식 (D49)
 topics:
 - spin-wave-observables

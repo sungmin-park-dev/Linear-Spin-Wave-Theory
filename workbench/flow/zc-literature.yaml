@@ -2,13 +2,15 @@ format: 1
 kind: literature
 progress: done
 result: solved
-short: Zheng-Hamer check
+short: Zheng–Hamer Z_c 대조
 title: Zheng–Hamer (1993) 원문으로 정사각 Z_c와 바닥 에너지를 대조한다
 topics:
 - beyond-linear-spin-waves
 - worked-examples
 date: '2026-10-10'
 from:
+- id: canon-review-q
+  type: origin
 - id: nlswt-expansion
   type: use
 fields:

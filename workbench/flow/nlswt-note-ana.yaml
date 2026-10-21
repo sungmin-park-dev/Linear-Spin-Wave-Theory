@@ -2,12 +2,14 @@ format: 1
 kind: analytic
 progress: done
 result: solved
-short: 1/S theory note
+short: 1/S 유도 노트
 title: '1/S 보정을 연구노트로 유도한다: 3·4차 항, 꼭짓점, tadpole'
 topics:
 - beyond-linear-spin-waves
 date: '2026-10-12'
 from:
+- id: nonlinear-q
+  type: origin
 - id: nlswt-expansion
   type: support
 - id: boson-blocks-ana

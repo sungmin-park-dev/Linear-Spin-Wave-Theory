@@ -1,0 +1,19 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 기준 상태의 안정성 판정
+title: 고전 기준 상태가 정류하고 국소적으로 안정한지 어떻게 판정하는가
+topics:
+- fundamental-theory-of-spin-wave-theory
+date: '2026-10-12'
+from:
+- id: project-q
+  type: origin
+fields:
+  question: How do we decide that a classical reference state is stationary and locally stable, including directions a finite momentum mesh misses and zero modes the quadratic order leaves undecided?
+  motivation: LSWT about a state is meaningful only if the state is stationary and its BdG matrix is positive (semi)definite.
+sources:
+- 'workbench/comments/flow-project-q.md (c-20261015-2239, user reply 2026-10-21: group weak points into larger topics)'
+guesses:
+- Theme added 2026-10-21 to group the points listed as its children; the date is the earliest child date.
