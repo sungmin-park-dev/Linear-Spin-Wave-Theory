@@ -1,0 +1,23 @@
+format: 1
+kind: literature
+progress: done
+result: solved
+short: 'BCAO: 선행 연구 조사'
+title: BCAO 자기장 상도의 실험과 이론 선행 연구를 조사한다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: bcao-app-q
+  type: origin
+fields:
+  reading: 'Experiments: in-plane dZZ → UUD (≈0.1–0.26 T) → polarized (≈0.52–0.55 T), both first order, angle law with γ = 31 (2403.15315); unexplained phase IV (2403.04466). Theory: classical field diagrams (2308.10672, 2503.22300), second-order candidate energies (2408.00622), one-point DMRG scans (2503.20859, no UUD).'
+  gain: The Chernyshev group moved from third-neighbour to nearest-neighbour Jz±, so the original topic A (2308.10672 model) is largely superseded; three groups list the in-plane field problem as their next step.
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-bcao-field-phase-diagram-survey.md
+  text: literature table
+  checks: []
+sources:
+- docs/reviews/2026-10-21-bcao-field-phase-diagram-survey.md
+guesses: []

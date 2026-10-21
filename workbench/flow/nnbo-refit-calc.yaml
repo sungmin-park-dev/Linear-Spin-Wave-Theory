@@ -1,0 +1,27 @@
+format: 1
+kind: calc
+progress: done
+result: solved
+short: 'NNBO: S=1 모형 재보정'
+title: S = 1 U(1) 핵심 모형을 실험 포화장과 Curie–Weiss 온도에 다시 맞춘다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: nnbo-nematic-q
+  type: origin
+- id: nnbo-two-magnon-calc
+  type: use
+fields:
+  goal: The Valentí parameters give saturation at 3.3 T in an S = 1 product treatment (experiment 8–10.5 T), so fix the U(1) core directly from experiment.
+  setup: Product-state saturation $h_s=J_1+3J_3$ = 7.8 T (g = 2.16), mean Curie–Weiss temperature $-2(J_1+J_3)/k_B$ = 23.8 K; D from DFT (0.78 meV) or from the Curie–Weiss anisotropy (≈2.5 meV).
+  result: J3/|J1| ≈ 0.49, |J1| ≈ 2.0 meV, J3 ≈ 1.0 meV. Pair binding there ≤ 0.017|J1|, so any nematic window is ≤ 0.15 T against the ≈ 2 T experimental window.
+evidence:
+- kind: calc
+  file: data-space/verification/261021-na3ni2bio6-multimagnon/fitpt.py
+  text: fitted point runs
+  checks: []
+sources:
+- data-space/verification/261021-na3ni2bio6-multimagnon/README.md
+guesses:
+- Curie–Weiss fits depend on the fit range and g anisotropy, so the fitted ratio is approximate.

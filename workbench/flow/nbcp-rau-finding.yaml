@@ -1,0 +1,25 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'NBCP: Rau gap 식 오용'
+title: 논문은 공선 질서용 Rau gap 식을 비공선 Y·V에 적용했다
+topics:
+- worked-examples
+date: '2026-10-01'
+from:
+- id: nbcp-app-q
+  type: origin
+- id: pg-gap-finding
+  type: use
+fields:
+  statement: The Rau–McClarty–Moessner curvature formula holds only for collinear order and drops the nonlinear part of the rotation; the paper applies it to the noncollinear Y and V states. The correct leading order is $\Delta^2=C_\phi/\chi_z$ with the exact orbit.
+  condition: Leading order in 1/S.
+evidence:
+- kind: calc
+  file: data-space/verification/260912-pseudo-goldstone
+  text: pseudo-Goldstone gap fixtures
+  checks: []
+sources:
+- nbcp-spin-supersolid workbench/flow/rau-gap-finding.yaml
+guesses: []

@@ -1,0 +1,25 @@
+format: 1
+kind: question
+progress: active
+short: 'NNBO: 정체기와 숨은 상'
+title: Na₃Ni₂BiO₆의 c* 장 정체기·계단과 포화 직전 숨은 상(8.35–10.5 T)은 무엇인가
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: materials-q
+  type: origin
+- id: bcao-verdict-finding
+  type: use
+fields:
+  question: What produces the 1/3 plateau, its splitting and the 7.4–8.2 T first-order steps, and what is the hidden phase between 8.35 and 10.5 T in the S = 1 honeycomb magnet Na3Ni2BiO6 with field along c*?
+  motivation: 'Live debate: Shangguan et al. (2312.15932) need Kitaev K = 0.6|J1| for the plateau, Valentí''s group (2602.03936) finds K ≈ 0 and J1–J3 plus single-ion anisotropy enough; 0.1 K data (2605.28118) show a split plateau, steps near 1/2 and 2/3 and a hidden phase; no inelastic-neutron fit exists.'
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-na3ni2bio6-nematic.md
+  text: material and debate
+  checks: []
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21
+- artifact https://claude.ai/artifact/JhfBAERCAFMwqdC2Lwu5bL
+guesses: []

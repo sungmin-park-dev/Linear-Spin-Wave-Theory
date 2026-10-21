@@ -1,0 +1,26 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'BCAO: c축 장에 보호된 U(1) 없음'
+title: c축 장에서 BCAO의 지그재그 계열 상태는 J±±에 고정되어 NBCP 같은 우연한 U(1)이 없다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: bcao-app-q
+  type: origin
+- id: nbcp-z6-finding
+  type: use
+fields:
+  statement: 'Rotating canted states about the c axis: for q = 0 states (FM, Néel) the J±± and Jz± energies cancel exactly, as for NBCP three-sublattice states, but for zigzag, stripy and double-zigzag states J±± pins the angle at first order (cos 2ψ, range ≈ 2.83|J±±|). BCAO is easy-plane, so canted states have uniform S^z, and the honeycomb nearest-neighbour hard-core boson model phase-separates instead of forming a supersolid (cond-mat/0701120).'
+  condition: Classical energies of canted states; S = 1/2 honeycomb XXZ–J±±–Jz±–J3 model.
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-bcao-field-phase-diagram-survey.md
+  text: model families
+  checks: []
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21 (script scratchpad u1/u1.py, not kept)
+guesses:
+- The check script was not saved; the statement can be redone with the package classical energy in a few lines.

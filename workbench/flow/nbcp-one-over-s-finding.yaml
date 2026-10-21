@@ -1,0 +1,26 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'NBCP: S=1/2에서 1/S 통제 안 됨'
+title: S = 1/2에서 1/S 전개는 유사 Goldstone gap도 선택 방향도 정하지 못한다
+topics:
+- worked-examples
+date: '2026-10-03'
+from:
+- id: nbcp-app-q
+  type: origin
+- id: pg-gap-finding
+  type: support
+fields:
+  statement: At S = 1/2 the next order is −20 to −28 times the leading one, so the 1/S series fixes neither the pseudo-Goldstone gap nor the selected orientation; symmetry statements are unaffected. The open NBCP question (S = 1/2 angular potential) continues in nbcp-spin-supersolid.
+  condition: Y 0.2 T, V 1.4 T, $J_{PD}$ = 0.010 meV.
+evidence:
+- kind: calc
+  title: D47
+  file: workbench/topics/toolkit-development/dev-decisions/b-decisions-references.tex
+  text: D47 table
+  checks: []
+sources:
+- nbcp-spin-supersolid workbench/flow/one-over-s-finding.yaml
+guesses: []

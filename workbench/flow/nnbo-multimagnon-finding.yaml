@@ -1,0 +1,28 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'NNBO: 4마그논 덩어리가 쌍을 이김'
+title: 포화 직전에는 쌍보다 4마그논 덩어리가 먼저 불안정해져 쌍 네마틱이 생기지 않는다
+topics:
+- worked-examples
+- beyond-linear-spin-waves
+date: '2026-10-21'
+from:
+- id: nnbo-nematic-q
+  type: origin
+- id: nnbo-two-magnon-calc
+  type: use
+- id: nnbo-refit-calc
+  type: use
+fields:
+  statement: 'Exact n-magnon sectors (n ≤ 5) on 32, 50 and 72 sites: at every point tried, including the most pair-friendly one (J3/|J1| = 0.37, D = 0) and the fitted one (0.49, 0.2), h4 > h2, so pairs attract and the pair (quadrupolar) nematic does not form. At (0.37, 0) h4 − h2 = 0.043, 0.028, 0.023 |J1| on 32, 50, 72 sites.'
+  condition: U(1) core without biquadratic or Kitaev terms. h5 < h4 on 32 sites, so a four-magnon (higher multipolar) condensate is not excluded; needs larger n and lattices or DMRG.
+evidence:
+- kind: calc
+  file: data-space/verification/261021-na3ni2bio6-multimagnon/nmag.py
+  text: n-magnon code, checked against 8-site ED for n = 1–4
+  checks: []
+sources:
+- data-space/verification/261021-na3ni2bio6-multimagnon/results.txt
+guesses: []
