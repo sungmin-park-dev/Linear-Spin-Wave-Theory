@@ -88,7 +88,7 @@ ED_SYMMETRY_TOLERANCE = 1e-12      # relative size of sector-changing coefficien
 # =============================================================================
 
 LSWT_DEFAULT_MESH = (24, 24)       # thermodynamic-limit mesh of the magnetic reciprocal cell
-LSWT_STATIONARITY_TOLERANCE = 1e-8 # E0, largest torque accepted without a warning
+LSWT_STATIONARITY_TOLERANCE = 1e-8 # largest relative torque max|S_i x h_i| / max S_i|h_i| accepted (D68)
 LSWT_ZERO_MODE_TOLERANCE = 1e-10   # min eig H(k) / max |eig H(k)| at or below this is a zero mode
 AUGMENTATION_PADDING = 1e-9        # MAGSWT (D62): mu = mu_min + this x spectral scale, lifting the zero mode at mu_min
 AUGMENTATION_BISECTION_STEPS = 50  # MAGSWT: bisection steps for the comparison shift mu_real_spectrum

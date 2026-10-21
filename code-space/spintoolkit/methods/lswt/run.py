@@ -28,6 +28,7 @@ an upper estimate; the boson numbers are NaN and observables refuse the result
 Passing the mesh is not a stability test: an instability between mesh points,
 in particular a negative stiffness next to a Goldstone mode, goes unnoticed;
 :func:`~spintoolkit.methods.stability.local_stability` tests continuous ``k`` (D51).
+The header records what was checked in ``diagnostics["stability_checked"]`` (D68).
 
 Energies are per site in the energy unit E0 of the model (D20).
 """
@@ -42,7 +43,7 @@ import numpy as np
 
 from spintoolkit.definitions.defaults import (
     LSWT_DEFAULT_MESH, LSWT_STATIONARITY_TOLERANCE, LSWT_ZERO_MODE_TOLERANCE)
-from spintoolkit.methods.classical import classical_energy, torques
+from spintoolkit.methods.classical import classical_energy, stationarity
 from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
@@ -96,7 +97,8 @@ def require_stationary(result, observable: str, *, refuse: bool = True) -> None:
     if header is None or header.diagnostics.get("stationary", True):
         return
     message = (f"{observable}: the reference state is not stationary (max torque "
-               f"{header.diagnostics.get('max_torque', float('nan')):.3g} E0); linear boson "
+               f"{header.diagnostics.get('max_torque', float('nan')):.3g} E0, relative "
+               f"{header.diagnostics.get('relative_torque', float('nan')):.3g}); linear boson "
                "terms remain and the harmonic eigenvectors are not the spin-model "
                "fluctuations (D61, D64)")
     if refuse:
@@ -147,7 +149,9 @@ class LSWTSettings:
         :class:`LSWTError` with any regularization: no energies are reported
         for an unstable state.
     stationarity_tolerance : float
-        Largest torque (E0) accepted without a warning.
+        Largest relative torque ``max_i |S_i x h_i| / max_i S_i |h_i|``
+        accepted without a warning (D68; the sine of the misalignment angle,
+        independent of the energy unit and of S).
     zero_mode_tolerance : float
         Without regularization, ``min eig H(k) <= zero_mode_tolerance *
         max |eig H(k)|`` is a zero mode or an instability.
@@ -512,11 +516,11 @@ def solve_lswt(model: SpinModel, state: SpinState,
     boson_numbers = weights @ occupation
 
     e_cl = classical_energy(model, state, conditions)
-    torque = max(float(np.linalg.norm(t)) for t in torques(model, state, conditions).values())
+    torque, relative_torque = stationarity(model, state, conditions)
     keys = tuple((site.id, cell) for site in model.sites for cell in state.cells)
     diagnostics = {
-        "max_torque": torque, "max_linear_term": linear_max,
-        "stationary": torque <= settings.stationarity_tolerance,
+        "max_torque": torque, "relative_torque": relative_torque, "max_linear_term": linear_max,
+        "stationary": relative_torque <= settings.stationarity_tolerance,
         "min_hamiltonian_eigenvalue": float(np.min(np.linalg.eigvalsh(H))),
         "min_magnon_energy": float(np.min(E[:, :ns])),
         "regularization": settings.regularization,
@@ -525,7 +529,11 @@ def solve_lswt(model: SpinModel, state: SpinState,
                     "finite torus" if geometry.kind == "finite_torus" else
                     f"{settings.mesh[0]}x{settings.mesh[1]} mesh of the magnetic reciprocal cell, "
                     f"{'half-step shifted' if settings.shift else 'zone-centred'}"),
-        "num_k": len(k)}
+        "num_k": len(k),
+        # Positivity of H(k) is checked at the computed momenta only (D68); a negative
+        # stiffness between mesh points is found by local_stability (D51) or MAGSWT (D62).
+        "stability_checked": ("continuous k (MAGSWT shift search)" if augmentation is not None
+                              else "computed momenta only; local_stability checks continuous k")}
     if augmentation is not None:
         # The boson numbers are those of the augmented Hamiltonian; their mean is
         # dE/dmu, which bounds the energy offset of the padding above mu_min.
@@ -563,7 +571,8 @@ def solve_lswt(model: SpinModel, state: SpinState,
             zero_point = float("nan")
             boson_numbers = np.full(len(boson_numbers), np.nan)
     if not diagnostics["stationary"]:
-        warnings.warn(f"reference state is not stationary (max torque {torque:.3g} E0): linear "
+        warnings.warn(f"reference state is not stationary (max torque {torque:.3g} E0, relative "
+                      f"{relative_torque:.3g}): linear "
                       "boson terms remain and LSWT is not a consistent expansion; the zero-point "
                       "energy and the boson numbers are NaN", UserWarning, stacklevel=2)
         zero_point = float("nan")

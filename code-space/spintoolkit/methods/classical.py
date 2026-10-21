@@ -188,6 +188,29 @@ def torques(model: SpinModel, state: SpinState,
             for key, value in fields.items()}
 
 
+def stationarity(model: SpinModel, state: SpinState,
+                 conditions: Optional[ExternalConditions] = None) -> Tuple[float, float]:
+    """Largest torque and the relative torque that the stationarity tolerances use (D68).
+
+    Returns
+    -------
+    max_torque : float
+        ``max_i |S_i x h_i|`` in E0.
+    relative_torque : float
+        ``max_torque / max_i S_i |h_i|``: the sine of the largest angle between
+        a spin and its local field, weighted by that field relative to the
+        strongest one. It does not change when all couplings, fields or spin
+        lengths are scaled together. Zero when every local field vanishes.
+    """
+    fields = local_fields(model, state, conditions)
+    torque, scale = 0.0, 0.0
+    for key, h in fields.items():
+        S = model.site(key[0]).spin
+        torque = max(torque, float(np.linalg.norm(np.cross(S * state.direction(*key), h))))
+        scale = max(scale, S * float(np.linalg.norm(h)))
+    return torque, (torque / scale if scale > 0 else 0.0)
+
+
 class _Compiled(NamedTuple):
     """Array form of a model and state: one row per spin of the supercell."""
 

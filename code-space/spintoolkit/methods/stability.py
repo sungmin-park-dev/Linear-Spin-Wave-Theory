@@ -109,7 +109,7 @@ from spintoolkit.definitions.defaults import (
     STABILITY_BALL_RADIUS, STABILITY_FOLD_DENOMINATOR, STABILITY_FOLD_SPINS, STABILITY_MESH,
     STABILITY_SEEDS, STABILITY_STIFFNESS_TOLERANCE, STABILITY_ZERO_TOLERANCE)
 from spintoolkit.methods.classical import (_compile, _energy_and_fields, rotation_generators,
-                                           tangent_expansion, tangent_frames, torques)
+                                           stationarity, tangent_expansion, tangent_frames)
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.states.incommensurate import IncommensurateStructure, rotation_matrix
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
@@ -329,7 +329,7 @@ def local_stability(model: SpinModel, state,
         ``|rho| / (scale * length^2)`` and the relative linear term at or
         below this count as zero.
     stationarity_tolerance : float
-        Largest torque (E0) accepted.
+        Largest relative torque ``max_i |S_i x h_i| / max_i S_i |h_i|`` accepted (D68).
     higher_order : bool
         Test zero modes that harmonic order leaves open beyond harmonic order
         (D54) and let the result decide between ``"marginal"``, ``"stable"``
@@ -374,10 +374,11 @@ def local_stability(model: SpinModel, state,
         # dE/dQ of the lab model: a twisted spiral can be locally stable at a pitch
         # that is not an energy extremum (only without the perpendicular symmetries).
         settings["pitch_gradient"] = np.asarray(pitch_gradient, dtype=float).tolist()
-    torque = max(float(np.linalg.norm(t)) for t in torques(model, state, conditions).values())
+    torque, relative_torque = stationarity(model, state, conditions)
     nan2 = np.full(2, np.nan)
-    if torque > stationarity_tolerance:
-        return StabilityReport(NOT_STATIONARY, (f"max torque {torque:.3g} E0 exceeds "
+    if relative_torque > stationarity_tolerance:
+        return StabilityReport(NOT_STATIONARY, (f"max torque {torque:.3g} E0 (relative "
+                                                f"{relative_torque:.3g}) exceeds "
                                                 f"{stationarity_tolerance:.3g}",),
                                float("nan"), nan2, nan2, float("nan"), float("nan"), (),
                                torque, settings)

@@ -485,7 +485,15 @@ def solve_spiral_lswt(model: SpinModel, structure: IncommensurateStructure,
     rotated, state = rotating_frame_model(model, structure, conditions)
     gradient = spiral_energy_gradient(model, structure, conditions)
     gradient_norm = float(np.linalg.norm(gradient))
-    if gradient_norm > settings.stationarity_tolerance:
+    # Relative pitch gradient (D68): |dE/dq| per spin over the local-field energy
+    # scale max S_i |h_i| times the lattice length sqrt(cell area).
+    from spintoolkit.methods.classical import local_fields
+
+    scale = max((rotated.site(key[0]).spin * float(np.linalg.norm(h))
+                 for key, h in local_fields(rotated, state, conditions).items()), default=0.0)
+    length = float(np.sqrt(abs(np.linalg.det(np.asarray(model.lattice, dtype=float)))))
+    relative_gradient = gradient_norm / (scale * length) if scale > 0 else 0.0
+    if relative_gradient > settings.stationarity_tolerance:
         warnings.warn(f"the wave vector is not a classical extremum (|dE/dq| = "
                       f"{gradient_norm:.3g} E0): the spiral is not stationary against a change "
                       "of pitch and LSWT is expected to show negative modes", UserWarning,
@@ -494,8 +502,10 @@ def solve_spiral_lswt(model: SpinModel, structure: IncommensurateStructure,
         warnings.filterwarnings("ignore", message="reference state is not stationary")
         rotating = solve_lswt(rotated, state, conditions, geometry, settings)
     torque = rotating.header.diagnostics["max_torque"]
-    if torque > settings.stationarity_tolerance:
-        warnings.warn(f"the spiral is not stationary (max torque {torque:.3g} E0): linear "
+    relative_torque = rotating.header.diagnostics["relative_torque"]
+    if relative_torque > settings.stationarity_tolerance:
+        warnings.warn(f"the spiral is not stationary (max torque {torque:.3g} E0, relative "
+                      f"{relative_torque:.3g}): linear "
                       "boson terms remain and LSWT is not a consistent expansion", UserWarning,
                       stacklevel=2)
     rotating = replace(rotating, extra={**rotating.extra, "frame": ROTATING_FRAME,
@@ -513,8 +523,9 @@ def solve_spiral_lswt(model: SpinModel, structure: IncommensurateStructure,
     diagnostics = {**rotating.header.diagnostics,
                    "frame": "rotating (Toth and Lake 2015)",
                    "wave_vector_gradient": gradient.tolist(),
-                   "stationary": bool(torque <= settings.stationarity_tolerance
-                                      and gradient_norm <= settings.stationarity_tolerance),
+                   "relative_wave_vector_gradient": relative_gradient,
+                   "stationary": bool(relative_torque <= settings.stationarity_tolerance
+                                      and relative_gradient <= settings.stationarity_tolerance),
                    "rotating_model_ref": rotated.fingerprint()}
     header = ResultHeader.build(
         "lswt-spiral", model, None, geometry, conditions, settings.as_dict(),
