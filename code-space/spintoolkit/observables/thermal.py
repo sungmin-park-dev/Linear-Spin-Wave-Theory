@@ -54,7 +54,7 @@ class ZeroModeCandidateError(ValueError):
             f"(small gaps: computed). Candidates: {report.summary()}")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class ThermalResult:
     """Finite-temperature quantities on a temperature grid.
 
@@ -96,6 +96,10 @@ class ThermalResult:
     decision: str
     zero_modes: Dict[str, Any] = field(default_factory=dict)
     beyond_lswt: np.ndarray = field(default_factory=lambda: np.zeros(0, dtype=bool))
+
+    def __post_init__(self):
+        from spintoolkit.methods.result import freeze_fields
+        freeze_fields(self)
 
     def to_json_dict(self) -> Dict[str, Any]:
         from spintoolkit.methods.result import to_jsonable

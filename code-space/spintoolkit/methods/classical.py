@@ -521,7 +521,7 @@ def refine_classical(model: SpinModel, state: SpinState,
 # Global search (stage 6c, D32)
 # ---------------------------------------------------------------------------
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class ClassicalSearchResult:
     """Result of :func:`classical_search`.
 
@@ -543,6 +543,24 @@ class ClassicalSearchResult:
     search_energy: float
     evaluations: int
     settings: Dict = field(default_factory=dict)
+
+    def __post_init__(self):
+        from spintoolkit.methods.result import freeze_fields
+        freeze_fields(self)
+
+    def to_json_dict(self) -> Dict:
+        """The state (fingerprint, supercell, directions), the energies and the search settings."""
+        from spintoolkit.methods.result import _code_version, state_fingerprint, to_jsonable
+
+        directions = [[site, list(cell), vector]
+                      for (site, cell), vector in sorted(self.state.directions.items())]
+        return to_jsonable({"code_version": _code_version(),
+                            "state": {"model_ref": self.state.model_ref,
+                                      "state_ref": state_fingerprint(self.state),
+                                      "supercell": self.state.supercell,
+                                      "directions": directions},
+                            "energy": self.energy, "search_energy": self.search_energy,
+                            "evaluations": self.evaluations, "settings": self.settings})
 
 
 def _angles_to_directions(angles: np.ndarray) -> np.ndarray:

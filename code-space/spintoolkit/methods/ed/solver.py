@@ -33,7 +33,7 @@ from spintoolkit.definitions.defaults import (
     ED_DENSE_LIMIT, ED_LANCZOS_MIN_DIMENSION, ED_SYMMETRY_TOLERANCE)
 from spintoolkit.methods.ed.basis import SectorBasis, TranslationOrbits, cluster_translations
 from spintoolkit.methods.ed.hamiltonian import frame_rotation, matrix_elements, operator_terms
-from spintoolkit.methods.result import ResultHeader, to_jsonable
+from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
 from spintoolkit.system.cluster import TorusCluster, allowed_momenta, expand_on_torus
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
@@ -79,7 +79,7 @@ class EDSector:
             object.__setattr__(self, "momenta", tuple(int(i) for i in self.momenta))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class EDBlock:
     """Eigenvalues of one block.
 
@@ -112,8 +112,11 @@ class EDBlock:
     solver: str
     residual: float
 
+    def __post_init__(self):
+        freeze_fields(self)
 
-@dataclass(frozen=True)
+
+@dataclass(frozen=True, eq=False)
 class EDResult:
     """Exact-diagonalization result body (the common header follows in stage 4).
 
@@ -146,6 +149,9 @@ class EDResult:
     diagnostics: Dict[str, Any] = field(default_factory=dict)
     header: Optional[ResultHeader] = None
 
+    def __post_init__(self):
+        freeze_fields(self)
+
     def to_json_dict(self, include_arrays: bool = False) -> Dict[str, Any]:
         """Header and blocks; eigenvectors only when ``include_arrays``."""
         blocks = []
@@ -159,6 +165,7 @@ class EDResult:
         return to_jsonable({"header": self.header,
                             "ed": {"sector": self.sector, "num_sites": self.num_sites,
                                    "reference_energy": self.reference_energy,
+                                   "diagnostics": self.diagnostics,
                                    "blocks": blocks}})
 
     def energies(self) -> np.ndarray:

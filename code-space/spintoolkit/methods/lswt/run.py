@@ -45,7 +45,7 @@ from spintoolkit.definitions.defaults import (
 from spintoolkit.methods.classical import classical_energy, torques
 from spintoolkit.methods.lswt.diagonalization import Diagonalizer
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
-from spintoolkit.methods.result import ResultHeader, to_jsonable
+from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
 from spintoolkit.observables.bose_statistics import compute_static_magnon_kernel
 from spintoolkit.states.spin_state import SpinState, validate_spin_state
 from spintoolkit.system.cluster import allowed_momenta, expand_on_torus
@@ -203,7 +203,7 @@ class LSWTSettings:
                 "augmentation": self.augmentation}
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class LSWTResult:
     """LSWT result body with the common header.
 
@@ -262,6 +262,12 @@ class LSWTResult:
         ``hamiltonian_derivatives_at(k)`` returns ``(dH/dk_x, dH/dk_y)``, each
         ``(m, 2Ns, 2Ns)``, analytic in the Fourier convention of ``H(k)``
         (D13); for Berry curvature (stage 5). Not serialized.
+    extra : dict
+        Method flags read by the observables: ``"frame"`` (``"rotating"`` for
+        the rotating frame of a spiral, D34), ``"augmentation"`` (MAGSWT, D62).
+
+    The result is read-only (D66): arrays are read-only views and ``extra``
+    a :class:`~spintoolkit.methods.result.FrozenDict`.
     """
 
     header: ResultHeader
@@ -289,6 +295,9 @@ class LSWTResult:
     extra: Dict[str, Any] = field(default_factory=dict)
     hamiltonian_derivatives_at: Optional[Callable] = field(default=None, repr=False,
                                                            compare=False)
+
+    def __post_init__(self):
+        freeze_fields(self)
 
     @property
     def num_sites(self) -> int:
@@ -318,7 +327,11 @@ class LSWTResult:
                 "boson_numbers": self.boson_numbers,
                 "ordered_moments": self.ordered_moments(),
                 "regularization_shift": self.regularization_shift,
-                "linear_terms": self.linear_terms}
+                "linear_terms": self.linear_terms,
+                "lattice": self.lattice, "magnetic_lattice": self.magnetic_lattice,
+                "positions": self.positions, "local_frames": self.local_frames,
+                "extra": self.extra,
+                "thermal": None if self.thermal is None else self.thermal.to_json_dict()}
         if include_arrays:
             body.update({"hamiltonians": self.hamiltonians, "eigenvalues": self.eigenvalues,
                          "eigenvectors": self.eigenvectors})
@@ -568,9 +581,9 @@ def solve_lswt(model: SpinModel, state: SpinState,
                         np.asarray(model.lattice, dtype=float), state.magnetic_lattice(model),
                         None, np.array([model.cartesian_position(s, c) for s, c in keys]),
                         hamiltonian.local_frames,
-                        hamiltonian_at, hamiltonian_derivatives_at=hamiltonian_derivatives_at)
-    if augmentation is not None:
-        result.extra["augmentation"] = augmentation.as_dict()
+                        hamiltonian_at, hamiltonian_derivatives_at=hamiltonian_derivatives_at,
+                        extra={} if augmentation is None
+                        else {"augmentation": augmentation.as_dict()})
     if conditions.temperature > 0:
         from spintoolkit.observables.thermal import thermal_quantities
 

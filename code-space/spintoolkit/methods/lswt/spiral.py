@@ -59,7 +59,7 @@ from scipy.optimize import minimize
 from spintoolkit.definitions.defaults import (
     CLASSICAL_REFINE_NEWTON_STEPS, LSWT_STATIONARITY_TOLERANCE, SPIRAL_SYMMETRY_TOLERANCE)
 from spintoolkit.methods.lswt.run import LSWTResult, LSWTSettings, solve_lswt
-from spintoolkit.methods.result import ResultHeader, to_jsonable
+from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
 from spintoolkit.states.incommensurate import (
     IncommensurateStructure, rotation_matrix, cross_matrix, validate_spiral)
 from spintoolkit.states.spin_state import SpinState
@@ -374,7 +374,7 @@ def spiral_fingerprint(structure: IncommensurateStructure) -> str:
     return hashlib.sha256(payload.encode()).hexdigest()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class SpiralLSWTResult:
     """LSWT of a single-Q spiral.
 
@@ -396,6 +396,9 @@ class SpiralLSWTResult:
     wave_vector: np.ndarray
     rotating: LSWTResult
     rotating_model: SpinModel = field(repr=False)
+
+    def __post_init__(self):
+        freeze_fields(self)
 
     @property
     def classical_energy(self) -> float:
