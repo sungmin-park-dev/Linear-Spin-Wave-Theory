@@ -26,6 +26,28 @@ the cubic self-energy and the tadpole enter magnon energies at the same order
 as the Hartree-Fock term, and a Gaussian self-consistency that leaves them out
 is not a consistent approximation; :func:`solve_scswt` refuses such states.
 
+Cubic vertices in mean field (``SCSWTSettings(cubic="mean_field")``, D73;
+Bader, Feng, Budaraju, Becca, Knolle and Pollmann, arXiv:2512.08768, SM
+Sec. S3): the spin directions become variables. The Wick contraction of
+``H_3`` in the Gaussian vacuum leaves linear terms; together with ``H_1`` of
+the tilted directions they are the force on a boson condensate, and the
+directions are rotated until that force vanishes::
+
+    H_1(theta) + <H_3(theta)>_linear = 0,
+    H_SC(k) = H_2(theta) + dH_HF[H_4(theta)],  both self-consistent.
+
+This is the Hartree-Fock decoupling of ``H_3`` (its tadpole), with the
+condensate absorbed into the directions so that ``<a> = 0`` in the rotated
+frames. The energy ``<H_0 + H_2 + H_4>(theta)`` contains the tadpole energy
+of :func:`solve_nlswt`. It leaves out the second-order process of the
+three-magnon vertex (``E_cubic`` of :func:`solve_nlswt`, and ``Sigma_3`` in
+the magnon energies), which is of the same order as the Hartree-Fock term; a
+Gaussian state cannot hold three-magnon correlations. That energy, evaluated
+in the self-consistent vacuum, is reported separately as
+``energies.three_magnon`` and is not part of ``total``. Every order of
+``H(theta)`` is expanded at the current directions (Bader et al. keep ``H_4``
+at the classical directions; the difference is of higher order).
+
 Field scans with frozen two-point functions (the SCOL plateau boundaries of
 arXiv:2512.02150): pass ``frozen=`` a result at a reference field. The
 quartic terms do not depend on the field, so ``dH_HF`` of the reference is
@@ -77,6 +99,13 @@ class SCSWTSettings:
     cubic_tolerance : float
         Three-boson coefficients up to this fraction of the largest quadratic
         coefficient count as zero.
+    cubic : {"refuse", "mean_field"}
+        States with three-boson vertices: ``"refuse"`` raises (D72);
+        ``"mean_field"`` renormalizes the spin directions with the contracted
+        cubic terms (D73, see the module docstring).
+    max_tilt : float
+        ``cubic="mean_field"``: largest rotation of a spin direction in one
+        iteration (radians); larger Newton steps are scaled down.
     """
 
     mesh: Tuple[int, int] = (24, 24)
@@ -85,6 +114,8 @@ class SCSWTSettings:
     mixing: float = 1.0
     zero_mode_tolerance: float = 1e-9
     cubic_tolerance: float = 1e-10
+    cubic: str = "refuse"
+    max_tilt: float = 0.2
 
     def __post_init__(self):
         mesh = tuple(int(n) for n in self.mesh)
@@ -94,13 +125,18 @@ class SCSWTSettings:
             raise ValueError("mixing must be in (0, 1]")
         if self.max_iterations < 1:
             raise ValueError("max_iterations must be positive")
+        if self.cubic not in ("refuse", "mean_field"):
+            raise ValueError('cubic must be "refuse" or "mean_field"')
+        if not self.max_tilt > 0:
+            raise ValueError("max_tilt must be positive")
         object.__setattr__(self, "mesh", mesh)
 
     def as_dict(self) -> Dict[str, Any]:
         return {"mesh": list(self.mesh), "mesh_offset": "1/3 step", "tolerance": self.tolerance,
                 "max_iterations": self.max_iterations, "mixing": self.mixing,
                 "zero_mode_tolerance": self.zero_mode_tolerance,
-                "cubic_tolerance": self.cubic_tolerance}
+                "cubic_tolerance": self.cubic_tolerance, "cubic": self.cubic,
+                "max_tilt": self.max_tilt}
 
 
 @dataclass(frozen=True)
@@ -117,15 +153,21 @@ class SelfConsistentEnergies:
     quartic : float
         ``<H_4>`` in the self-consistent vacuum.
     one_loop : float
-        ``H_0 + E_zp + <H_4>_LSWT``: the order-S^0 energy of
-        :func:`solve_nlswt` for a state without cubic vertices; NaN where the
-        LSWT vacuum does not exist.
+        The energy through order S^0 of :func:`solve_nlswt` about the
+        classical state (``H_0 + E_zp + <H_4>_LSWT`` without cubic vertices);
+        NaN where the LSWT vacuum does not exist.
+    three_magnon : float
+        ``cubic="mean_field"``: the second-order energy of the three-magnon
+        vertex (``E_cubic`` of :func:`solve_nlswt`) in the self-consistent
+        vacuum, the part of order S^0 that the Gaussian scheme leaves out; not
+        included in ``total``. Zero without cubic vertices.
     """
 
     classical: float
     quadratic: float
     quartic: float
     one_loop: float
+    three_magnon: float = 0.0
 
     @property
     def total(self) -> float:
@@ -160,6 +202,9 @@ class SCSWTResult:
     boson_numbers : (Ns,) array
         ``<a_s^+ a_s>`` of every magnetic site in the self-consistent vacuum.
     lattice : (2, 2) array
+    state : SpinState
+        Directions of the self-consistent vacuum: the classical state, or the
+        renormalized directions with ``cubic="mean_field"``.
     """
 
     header: ResultHeader
@@ -168,10 +213,12 @@ class SCSWTResult:
     spins: np.ndarray
     boson_numbers: np.ndarray
     lattice: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
+    state: Optional[SpinState] = field(default=None, repr=False, compare=False)
     _quadratic: Any = field(default=None, repr=False, compare=False)
     _monomials: Tuple = field(default=(), repr=False, compare=False)
     _coefficients: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
     _quartic: Tuple = field(default=(), repr=False, compare=False)
+    _contract: Any = field(default=None, repr=False, compare=False)
 
     def __post_init__(self):
         freeze_fields(self)
@@ -198,9 +245,19 @@ class SCSWTResult:
 
         NaN (with a warning) at momenta where ``H_SC(k)`` is not positive
         definite: a zero mode or an instability of the state at this field,
-        where magnon energies are not defined.
+        where magnon energies are not defined. NaN everywhere (with a warning)
+        for a ``cubic="mean_field"`` result whose Goldstone (or accidental)
+        modes the scheme gaps spuriously (``diagnostics["spurious_gap"]``,
+        D73).
         """
         k = np.atleast_2d(np.asarray(k_points, dtype=float))
+        if self.header.diagnostics.get("spurious_gap") is not None:
+            warnings.warn("magnon_energies: the Gaussian scheme without Sigma_3 gaps the zero "
+                          "modes of this state (spurious gap "
+                          f"{self.header.diagnostics['spurious_gap']:.4g}); the magnon energies "
+                          "are NaN (D73). Use solve_nlswt for the spectrum.",
+                          UserWarning, stacklevel=2)
+            return np.full((len(k), len(self.spins)), np.nan)
         H = self.hamiltonian(k)
         ns = len(self.spins)
         out = np.full((len(k), ns), np.nan)
@@ -227,7 +284,8 @@ class SCSWTResult:
     def to_json_dict(self, include_arrays: bool = False) -> Dict[str, Any]:
         e = self.energies
         body = {"classical": e.classical, "quadratic": e.quadratic, "quartic": e.quartic,
-                "total": e.total, "one_loop": e.one_loop, "spins": self.spins,
+                "total": e.total, "one_loop": e.one_loop, "three_magnon": e.three_magnon,
+                "spins": self.spins,
                 "boson_numbers": self.boson_numbers, "k_points": self.k_points,
                 "lattice": self.lattice}
         return to_jsonable({"header": self.header, "scswt": body})
@@ -268,6 +326,8 @@ def solve_scswt(model: SpinModel, state: SpinState,
         Start the iteration from the correction of this result (same model and
         state) instead of the LSWT vacuum; needed where the LSWT vacuum does
         not exist, such as a plateau state away from its classical field.
+        With ``cubic="mean_field"``: a mean-field result of the same model and
+        magnetic cell; the iteration starts from its directions and vacuum.
 
     Returns
     -------
@@ -276,9 +336,16 @@ def solve_scswt(model: SpinModel, state: SpinState,
     Raises
     ------
     LSWTError
-        Cubic vertices (the scheme is not defined there), a non-stationary
-        state, a zero or negative mode on the momenta in any iteration, or no
-        convergence.
+        Cubic vertices with ``cubic="refuse"`` (the scheme is not defined
+        there), a non-stationary state (except with ``cubic="mean_field"``),
+        a zero or negative mode on the momenta in any iteration, a cubic force
+        along a zero mode, or no convergence.
+
+    Warns
+    -----
+    UserWarning
+        ``cubic="mean_field"`` on a state with zero modes at k = 0 and cubic
+        vertices: the scheme gaps them, and ``magnon_energies`` is NaN (D73).
     """
     conditions = conditions or ExternalConditions()
     if frozen is not None and initial is not None:
@@ -290,16 +357,20 @@ def solve_scswt(model: SpinModel, state: SpinState,
     expansion = expand_model(model, state, conditions)
     scale = max(1.0, max((abs(c) for c, _ in expansion.orders[2]), default=1.0))
     linear = max((abs(c) for c, _ in expansion.orders[1]), default=0.0)
+    cubic = max((abs(c) for c, _ in expansion.orders[3]), default=0.0)
+    if settings.cubic == "mean_field":
+        return _solve_mean_field(model, state, conditions, geometry, settings, initial, frozen,
+                                 expansion, scale, cubic, linear)
     if linear > 1e-8 * scale:
         raise LSWTError(f"the reference state is not stationary (linear boson term {linear:.3g})")
-    cubic = max((abs(c) for c, _ in expansion.orders[3]), default=0.0)
     if cubic > settings.cubic_tolerance * scale:
         raise LSWTError(
             f"the state has three-boson vertices (largest {cubic:.3g}): the cubic self-energy "
             "and the tadpole then shift magnon energies at the same order as the Hartree-Fock "
             "term, and the self-consistent one-loop scheme, which keeps only the latter, is "
             "not defined (D72). Options: solve_nlswt (one loop with Sigma_3 and the tadpole), "
-            "or a state without cubic vertices.")
+            'SCSWTSettings(cubic="mean_field") (directions renormalized by the contracted '
+            "cubic terms, without Sigma_3; D73), or a state without cubic vertices.")
     k, grid, reciprocal = _momenta(model, state, geometry, settings)
     resolution = _resolution(np.mod(grid, 1.0))
     quadratic = QuadraticBoseHamiltonian(model, state, conditions)
@@ -394,5 +465,216 @@ def solve_scswt(model: SpinModel, state: SpinState,
     header = ResultHeader.build("scswt", model, state, geometry, conditions, settings.as_dict(),
                                 "energies per site of the model (E0)", diagnostics)
     return SCSWTResult(header, energies, k, np.asarray(expansion.spins, dtype=float), numbers,
-                       np.asarray(model.lattice, dtype=float), quadratic, tuple(monomials),
-                       coefficients, tuple(quartic))
+                       np.asarray(model.lattice, dtype=float), state, quadratic, tuple(monomials),
+                       coefficients, tuple(quartic), contract)
+
+
+class _TermsHamiltonian:
+    """``H(k)`` (Nambu) of a list of quadratic monomials."""
+
+    def __init__(self, terms, num_sites: int):
+        self.terms = list(terms)
+        self.num_sites = num_sites
+
+    def at(self, k_points) -> np.ndarray:
+        return nambu_matrices(self.terms, np.atleast_2d(k_points), self.num_sites)
+
+
+def _linear_force(expansion, contract) -> np.ndarray:
+    """``zeta = (mu, lambda)``: coefficients of ``a_s^+`` and ``a_s`` in ``H_1 + <H_3>_linear``.
+
+    Per magnetic cell, in the convention ``1/2 (zeta^+ psi + psi^+ zeta)`` of
+    :meth:`NonlinearSpinWaves.linear_terms`.
+    """
+    ns = expansion.num_sites
+    mu = np.zeros(ns, dtype=complex)
+    lam = np.zeros(ns, dtype=complex)
+    for c, ((s, dagger, _),) in expansion.orders[1]:
+        if dagger:
+            mu[s] += c
+        else:
+            lam[s] += c
+    for c, m in expansion.orders[3]:
+        for i, j, x in ((0, 1, 2), (0, 2, 1), (1, 2, 0)):
+            value = c * contract(m[i], m[j])
+            s, dagger, _ = m[x]
+            if dagger:
+                mu[s] += value
+            else:
+                lam[s] += value
+    return np.r_[mu, lam]
+
+
+def _condensate(H0: np.ndarray, zeta: np.ndarray, scale: float) -> np.ndarray:
+    """Newton step ``<psi> = -H(0)^+ zeta``; raises for a force along a zero mode."""
+    w, V = np.linalg.eigh(H0)
+    kernel = np.abs(w) <= 1e-9 * max(np.max(np.abs(w)), 1.0)
+    projection = np.linalg.norm(V[:, kernel].conj().T @ zeta)
+    if projection > 1e-8 * scale:
+        raise LSWTError(
+            "the contracted cubic force has a component along a zero mode of H_SC(k=0) "
+            f"(|projection| = {projection:.3g}): quantum fluctuations push the state along a "
+            "flat direction (order by disorder), and the directions have no stationary "
+            "point near this state; start from the state the fluctuations select")
+    inverse = (V[:, ~kernel] / w[~kernel]) @ V[:, ~kernel].conj().T
+    return -inverse @ zeta
+
+
+def _tilt(directions, frames, spins, shift, mixing, max_tilt):
+    """Rotate every direction toward its condensate ``<s^+> = sqrt(2S) <a>``; largest angle."""
+    ns = len(spins)
+    phi = mixing * shift[:ns]
+    local = np.stack([np.sqrt(2 * spins) * phi.real, np.sqrt(2 * spins) * phi.imag,
+                      spins.astype(float)], axis=1)
+    angles = np.arctan2(np.hypot(local[:, 0], local[:, 1]), local[:, 2])
+    largest = float(np.max(angles, initial=0.0))
+    if largest > max_tilt:
+        local[:, :2] *= np.tan(max_tilt) / np.tan(largest)
+    new = np.einsum("sab,sb->sa", frames, local)
+    return new / np.linalg.norm(new, axis=1)[:, None], largest
+
+
+def _solve_mean_field(model, state, conditions, geometry, settings, initial, frozen,
+                      expansion, scale, cubic, linear):
+    """``solve_scswt`` with ``cubic="mean_field"`` (D73).
+
+    The start ``state`` need not be classically stationary (``H_1`` is part of
+    the force); ``one_loop`` is then NaN.
+    """
+    if frozen is not None:
+        raise ValueError('frozen= is not available with cubic="mean_field": the directions '
+                         "depend on the field; use initial=")
+    from spintoolkit.methods.nlswt.engine import NonlinearSpinWaves
+
+    k, grid, reciprocal = _momenta(model, state, geometry, settings)
+    resolution = _resolution(np.mod(grid, 1.0))
+    ns = expansion.num_sites
+    keys = tuple((site.id, cell) for site in model.sites for cell in state.cells)
+    pair = lambda contract, m: contract(m[0], m[1])  # noqa: E731
+
+    def per_site(contract, terms, expectation):
+        return float(np.real(sum(c * expectation(contract, m) for c, m in terms))) / ns
+
+    def mesh_of(terms):
+        return bogoliubov_mesh(_TermsHamiltonian(terms, ns).at, k, grid, reciprocal,
+                               settings.zero_mode_tolerance, resolution)
+
+    def make_state(directions):
+        return SpinState(model.fingerprint(), state.supercell,
+                         {key: directions[i] for i, key in enumerate(keys)},
+                         {"origin": "scswt_mean_field", "classical_state": state_fingerprint(state)})
+
+    one_loop = float("nan")
+    try:
+        lswt_mesh = mesh_of(expansion.orders[2])
+    except LSWTError as exc:
+        lswt_mesh, missing = None, exc
+    if lswt_mesh is not None:
+        try:
+            one_loop = NonlinearSpinWaves(expansion, lswt_mesh, _TermsHamiltonian(
+                expansion.orders[2], ns).at).energies().total
+        except LSWTError:             # tadpole along a zero mode: the one-loop energy is undefined
+            one_loop = float("nan")
+    # a zero mode of the classical H(k = 0) (Goldstone or accidental) with cubic vertices: at
+    # one loop the Goldstone theorem holds through Hartree-Fock + tadpole + Sigma_3(0, 0) = 0,
+    # and the Gaussian scheme, which has no Sigma_3, gaps the mode (Hohenberg-Martin)
+    w0 = np.linalg.eigvalsh(_TermsHamiltonian(expansion.orders[2], ns).at(np.zeros((1, 2)))[0])
+    zero_modes = int(np.sum(np.abs(w0) <= 1e-7 * max(np.max(np.abs(w0)), 1.0)))
+    gapped = zero_modes > 0 and cubic > settings.cubic_tolerance * scale
+    directions = np.array([state.direction(s, c) for s, c in keys], dtype=float)
+    if initial is not None:
+        if (initial.header.model_ref != model.fingerprint()
+                or initial._contract is None or initial.state is None
+                or not np.array_equal(initial.state.supercell, state.supercell)
+                or initial.k_points.shape != k.shape or not np.allclose(initial.k_points, k)):
+            raise ValueError("initial= needs a mean-field result of the same model, magnetic "
+                             "cell and momenta (the field and the start state may differ)")
+        contract = initial._contract
+        directions = np.array([initial.state.direction(s, c) for s, c in keys], dtype=float)
+    elif lswt_mesh is None:
+        raise LSWTError(f"the LSWT vacuum does not exist ({missing}); start the iteration from "
+                        "a self-consistent result of the same state at another field (initial=)")
+    else:
+        contract = Contractions(lswt_mesh)
+
+    history: List[Tuple[float, float, float]] = []
+    previous = None
+    converged = False
+    iterations = 0
+    for iterations in range(1, settings.max_iterations + 1):
+        current = expand_model(model, make_state(directions), conditions)
+        hf = _merge(hartree_fock_terms(current.orders[4], contract))
+        terms = list(current.orders[2]) + list(zip(hf[1], hf[0]))
+        try:
+            contract = Contractions(mesh_of(terms))
+        except LSWTError as exc:
+            raise LSWTError(f"self-consistent iteration {iterations}: {exc} The iteration has "
+                            "no stable fixed point from this start (the state may be unstable "
+                            "at this S and field); try mixing < 1 or a smaller max_tilt") from exc
+        correction = nambu_matrices(list(zip(hf[1], hf[0])), k, ns)
+        change = (float("inf") if previous is None
+                  else float(np.max(np.abs(correction - previous), initial=0.0)))
+        previous = correction
+        zeta = _linear_force(current, contract)
+        force = float(np.max(np.abs(zeta), initial=0.0))
+        H0 = _TermsHamiltonian(terms, ns).at(np.zeros((1, 2)))[0]
+        shift = _condensate(H0, zeta, scale)
+        directions, tilt = _tilt(directions, current.local_frames, current.spins, shift,
+                                 settings.mixing, settings.max_tilt)
+        history.append((change, force, tilt))
+        if change <= settings.tolerance * scale and force <= settings.tolerance * scale:
+            converged = True
+            break
+    if not converged:
+        raise LSWTError(f"self-consistency did not converge in {settings.max_iterations} "
+                        f"iterations (last change {history[-1][0]:.3g}, force "
+                        f"{history[-1][1]:.3g}); try mixing < 1")
+
+    final_state = make_state(directions)
+    current = expand_model(model, final_state, conditions)
+    hf = _merge(hartree_fock_terms(current.orders[4], contract))
+    terms = list(current.orders[2]) + list(zip(hf[1], hf[0]))
+    mesh = mesh_of(terms)
+    contract = Contractions(mesh)
+    three_magnon = NonlinearSpinWaves(current, mesh, _TermsHamiltonian(terms, ns).at,
+                                      linear_tolerance=np.inf).cubic_energy() / ns
+    energies = SelfConsistentEnergies(current.classical_energy / ns,
+                                      per_site(contract, current.orders[2], pair),
+                                      per_site(contract, current.orders[4], wick4), one_loop,
+                                      three_magnon)
+    numbers = np.array([contract((s, True, (0.0, 0.0)), (s, False, (0.0, 0.0))).real
+                        for s in range(ns)])
+    classical = np.array([state.direction(s, c) for s, c in keys], dtype=float)
+    shifts = np.arccos(np.clip(np.sum(classical * directions, axis=1), -1.0, 1.0))
+    spurious_gap = None
+    if gapped:
+        H0 = _TermsHamiltonian(terms, ns).at(np.zeros((1, 2)))
+        try:
+            spurious_gap = float(np.min(_diagonalize(H0, "none", np.zeros((1, 2)),
+                                                     settings.zero_mode_tolerance)[1][0, :ns].real))
+        except LSWTError:
+            spurious_gap = float("nan")
+        warnings.warn(
+            f"solve_scswt(cubic=\"mean_field\"): the classical state has {zero_modes} zero "
+            "mode(s) at k = 0 (Goldstone or accidental) and three-boson vertices. Without "
+            "Sigma_3 the Gaussian scheme gaps them (lowest energy at k = 0: "
+            f"{spurious_gap:.4g}; the gap is of relative order S^-1/2), so magnon_energies "
+            "returns NaN and the order-S^0 energy carries an error of relative order "
+            "S^-1/2 instead of 1/S (D73). Options: solve_nlswt (Goldstone modes exact at "
+            "order 1/S), or a state without zero modes.", UserWarning, stacklevel=3)
+    diagnostics = {"num_k": len(k), "mode": "mean_field", "iterations": iterations,
+                   "converged": converged, "changes": [h[0] for h in history[-5:]],
+                   "forces": [h[1] for h in history[-5:]], "max_cubic_coefficient": cubic,
+                   "classical_linear_term": linear,
+                   "final_force": float(np.max(np.abs(_linear_force(current, contract)),
+                                               initial=0.0)),
+                   "angle_shifts": shifts.tolist(), "k0_zero_modes": zero_modes,
+                   "spurious_gap": spurious_gap,
+                   "momenta": ("finite torus" if geometry.kind == "finite_torus" else
+                               f"{settings.mesh[0]}x{settings.mesh[1]} mesh offset by 1/3 step")}
+    header = ResultHeader.build("scswt", model, state, geometry, conditions, settings.as_dict(),
+                                "energies per site of the model (E0)", diagnostics)
+    return SCSWTResult(header, energies, k, np.asarray(current.spins, dtype=float), numbers,
+                       np.asarray(model.lattice, dtype=float), final_state,
+                       _TermsHamiltonian(current.orders[2], ns), tuple(hf[0]), hf[1],
+                       tuple(current.orders[4]), contract)

@@ -184,3 +184,85 @@ def test_argument_checks():
         solve_scswt(model, state, ExternalConditions(field=(0, 0, 1.5), temperature=0.1))
     data = ref.to_json_dict()
     assert data["scswt"]["total"] == pytest.approx(ref.ground_state_energy)
+
+
+# ---- cubic vertices in mean field (D73) ---------------------------------------------------------
+
+def canted_square(S, J=(1.0, 0.7, 0.85), h_over_s=3.0):
+    """Square antiferromagnet with exchange diag(J) in a field along z; Neel along x canted to z."""
+    terms = [Term.bilinear(("A", (0, 0)), ("A", d), np.diag(J)) for d in [(1, 0), (0, 1)]]
+    terms.append(Term.zeeman("A", np.eye(3)))
+    model = SpinModel(np.eye(2), (Site("A", (0.0, 0.0), S),), tuple(terms), {"model_id": "xyz"})
+    c = h_over_s / (4 * (J[0] + J[2]))
+    s = np.sqrt(1 - c * c)
+    state = SpinState.from_function(model, [[1, 1], [1, -1]], lambda site, cell: np.array(
+        [s * (-1) ** (cell[0] + cell[1]), 0.0, c]))
+    return model, state, ExternalConditions(field=(0, 0, h_over_s * S))
+
+
+MEAN_FIELD = SCSWTSettings(mesh=(12, 12), cubic="mean_field")
+
+
+def test_mean_field_cubic_without_cubic_vertices_is_the_plain_scheme():
+    model, state = uud(0.5)
+    conditions = ExternalConditions(field=(0, 0, 1.5))
+    plain = solve_scswt(model, state, conditions, settings=SCSWTSettings(mesh=(12, 12)))
+    mean_field = solve_scswt(model, state, conditions, settings=MEAN_FIELD)
+    assert mean_field.ground_state_energy == pytest.approx(plain.ground_state_energy, abs=1e-10)
+    assert max(mean_field.header.diagnostics["angle_shifts"]) == 0.0
+    assert mean_field.energies.three_magnon == 0.0
+    np.testing.assert_allclose(mean_field.hamiltonian(plain.k_points),
+                               plain.hamiltonian(plain.k_points), atol=1e-8)
+
+
+def test_mean_field_cubic_reproduces_the_one_over_s_tadpole_at_large_spin():
+    """Gapped canted state (no continuous symmetry): the renormalized angle is the 1/S condensate
+    of solve_nlswt, and the Gaussian energy is the one-loop energy without the three-magnon
+    second-order term, both up to relative order 1/S."""
+    out = {}
+    for S in (5.0, 20.0):
+        model, state, conditions = canted_square(S)
+        one_loop = solve_nlswt(model, state, conditions, settings=NLSWTSettings(mesh=(12, 12)))
+        result = solve_scswt(model, state, conditions, settings=MEAN_FIELD)
+        e = one_loop.energies
+        tilt = np.sqrt(2 / S) * np.abs(e.condensate[:2])          # <s^x>/S of the condensate
+        np.testing.assert_allclose(result.header.diagnostics["angle_shifts"], tilt, rtol=0.5 / S)
+        gaussian = e.classical + e.zero_point + e.hartree_fock + e.tadpole
+        out[S] = (result.ground_state_energy - gaussian, result.energies.three_magnon - e.cubic)
+        assert result.header.diagnostics["spurious_gap"] is None
+        assert np.isfinite(result.magnon_energies(result.k_points[:3])).all()
+    # leftovers of order 1/S: a missing order-S^0 piece would keep the ratio near 1
+    assert out[5.0][0] / out[20.0][0] == pytest.approx(4.0, rel=0.05)
+    assert out[5.0][1] / out[20.0][1] == pytest.approx(4.0, rel=0.1)
+
+
+def test_mean_field_cubic_goldstone_mode_is_flagged():
+    """U(1) about the field: without Sigma_3 the Goldstone mode acquires a spurious gap."""
+    model, state, conditions = canted_square(1.0, J=(1.0, 1.0, 1.0), h_over_s=4.0)
+    with pytest.warns(UserWarning, match="zero mode"):
+        result = solve_scswt(model, state, conditions, settings=MEAN_FIELD)
+    assert result.header.diagnostics["k0_zero_modes"] == 1
+    assert result.header.diagnostics["spurious_gap"] > 0.5
+    with pytest.warns(UserWarning, match="spurious gap"):
+        assert np.isnan(result.magnon_energies(np.zeros((1, 2)))).all()
+    assert np.isfinite(result.ground_state_energy)
+
+
+def test_mean_field_cubic_field_scan_and_arguments():
+    model, state, conditions = canted_square(2.0)
+    ref = solve_scswt(model, state, conditions, settings=MEAN_FIELD)
+    _, moved_state, moved = canted_square(2.0, h_over_s=3.2)
+    fresh = solve_scswt(model, moved_state, moved, settings=MEAN_FIELD)
+    again = solve_scswt(model, moved_state, moved, settings=MEAN_FIELD, initial=ref)
+    assert again.ground_state_energy == pytest.approx(fresh.ground_state_energy, abs=1e-10)
+    # the start need not be classically stationary: the force contains H_1
+    off = solve_scswt(model, state, moved, settings=MEAN_FIELD)
+    assert off.ground_state_energy == pytest.approx(fresh.ground_state_energy, abs=1e-10)
+    assert np.isnan(off.energies.one_loop) and np.isfinite(fresh.energies.one_loop)
+    with pytest.raises(ValueError, match="initial="):
+        solve_scswt(model, moved_state, moved, settings=MEAN_FIELD, frozen=ref)
+    with pytest.raises(ValueError):
+        SCSWTSettings(cubic="sigma3")
+    assert again.state.direction("A") @ fresh.state.direction("A") == pytest.approx(1.0, abs=1e-12)
+    data = again.to_json_dict()
+    assert data["scswt"]["three_magnon"] == pytest.approx(again.energies.three_magnon)

@@ -930,6 +930,25 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D73): 3차 꼭짓점의 평균장 처리(Bader식 각도 재규격화)}\label{decisions-d73-mean-field-cubic}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 사용자 요청(``bader 확장 식을 진행하자''; 앞서 결정 카드에서 ``Bader식은 다음 PR''). 방식과 규칙은 Claude 추천, 잠정 승인. 비교 대상: Bader et al., arXiv:2512.08768 SM S3절(식 S13--S15), \texttt{solve\_nlswt}의 tadpole과 3차 2차 섭동 에너지.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    방법 & \texttt{SCSWTSettings(cubic="mean\_field")}: 스핀 방향 $\theta$도 변수. 가우스 진공에서 $H_3$를 축약하면 선형 항이 남고, $H_1(\theta)$와 합친 힘 $H_1+\langle H_3\rangle_\mathrm{lin}$이 0이 될 때까지 방향을 돌린다(뉴턴 단계 $\langle\psi\rangle=-H_\mathrm{SC}(0)^{+}\zeta$, $\langle s^+\rangle=\sqrt{2S}\langle a\rangle$). 동시에 $H_\mathrm{SC}=H_2(\theta)+\delta H_\mathrm{HF}[H_4(\theta)]$를 자기무모순으로. 에너지 $\langle H_0+H_2+H_4\rangle(\theta)$. 모든 차수를 현재 $\theta$에서 전개(Bader는 $H_4$를 고전 각도에서; 차이는 더 높은 차수) \\
+    빠지는 것 & 3차 꼭짓점의 2차 과정($E_\mathrm{cubic}$, 마그논의 $\Sigma_3$). 바닥 에너지에서 HF와 같은 $S^0$ 차수다. 가우스 상태는 세 마그논 상관을 담지 못한다. 자기무모순 진공에서 계산한 그 값을 \texttt{energies.three\_magnon}으로 따로 내고 \texttt{total}에는 넣지 않는다 \\
+    골드스톤 & one-loop에서 골드스톤 정리는 HF + tadpole + $\Sigma_3(0,0)=0$으로 성립한다. $\Sigma_3$가 없으면 $k=0$ 영 모드가 가짜 간극을 얻는다(Hohenberg--Martin; 상대 크기 $S^{-1/2}$; 정사각 Heisenberg 기울어진 반강자성, $S=1$에서 간극 $1.6J$). 고전 $H(0)$에 영 모드가 있고 $H_3\neq0$이면 경고, \texttt{diagnostics["spurious\_gap"]}, \texttt{magnon\_energies}는 NaN. 에너지는 내되 $S^0$ 차수 오차가 $1/S$ 대신 $S^{-1/2}$ 상대 \\
+    시작 상태 & 고전 정류 상태가 아니어도 된다($H_1$이 힘에 들어감; 그때 \texttt{one\_loop}는 NaN). \texttt{initial=}: 같은 모형·자기 단위포·운동량의 평균장 결과에서 방향과 진공을 이어받는다(장 스캔). \texttt{frozen=}은 안 됨(방향이 장에 따라 바뀜) \\
+    확인 & $H_3=0$이면 \texttt{cubic="refuse"}와 같다($10^{-10}$). 간극 있는 기울어진 XYZ 반강자성: 각도 이동$\times S$가 \texttt{solve\_nlswt} 응축 값으로, $E_\mathrm{MF}-(E_\mathrm{1L}-E_\mathrm{cubic})$이 $1/S$로 줄어든다. 큰 $S$ ED(3$\times$1 BCAO 토러스): $E_\mathrm{ED}-E_\mathrm{MF}\to E_\mathrm{3m}$, $E_\mathrm{ED}-E_\mathrm{MF}-E_\mathrm{3m}$은 $1/S$로 줄어든다(B13). $S=1$에서는 평균장이 one-loop보다 ED에 가깝다 \\
+    검증 & \texttt{tests/test\_methods/test\_self\_consistent.py}(평균장 4개), B13, 표 \texttt{data-space/verification/261021-self-consistent/tables.txt} 3절 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}
