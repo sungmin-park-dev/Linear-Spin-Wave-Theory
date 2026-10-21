@@ -1,0 +1,25 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'BCAO: Maksimov 경계 재현 안 됨'
+title: Maksimov 등의 J3 = 0.45 UUD → 이중 지그재그 경계(Jz± ≈ 0.9)는 같은 모형으로 재현되지 않는다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: bcao-app-q
+  type: origin
+- id: release-audit-q
+  type: use
+fields:
+  statement: In the 2308.10672 Hamiltonian the boundary is near Jz± ≈ 0.55 in both the package and an independent minimizer; at Jz± = 0.7 a double-zigzag state (−0.34152) lies below UUD (−0.33337). The J3 = 0.2 and 0.34 statements agree.
+  condition: Classical energies; cause on the paper side (normalization or minimization) suspected, not asserted.
+evidence:
+- kind: calc
+  file: workbench/tasks/2026-10-21-theory-reliability.md
+  text: open item 1
+  checks: []
+sources:
+- workbench/tasks/2026-10-21-theory-reliability.md
+guesses: []

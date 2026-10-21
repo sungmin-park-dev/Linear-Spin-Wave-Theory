@@ -1,0 +1,26 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 'NNBO: 숨은 상이 두 마그논 네마틱?'
+title: 포화 직전 숨은 상은 두 마그논 응축으로 생긴 스핀 네마틱인가
+topics:
+- worked-examples
+- beyond-linear-spin-waves
+date: '2026-10-21'
+from:
+- id: nnbo-app-q
+  type: origin
+fields:
+  question: Does the U(1) core (S = 1 honeycomb J1–J3–D, field along the easy axis) condense bound magnon pairs before single magnons and before the first-order collapse, giving a quadrupolar nematic window?
+  guess: Easy-axis D binds two magnons on one site and ferromagnetic J1 attracts neighbouring magnons; the 8.35–10.5 T window is gapped for single spins but not saturated.
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-na3ni2bio6-nematic.md
+  text: hypothesis
+  checks: []
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21
+guesses:
+- No paper proposing a nematic phase in this material was found in the literature check.
+- spin-toolkit cannot treat a nematic state (dipolar HP only, would need SU(3) flavor waves), so the checks below are package-independent exact calculations.

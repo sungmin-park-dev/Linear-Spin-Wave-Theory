@@ -1,0 +1,25 @@
+format: 1
+kind: calc
+progress: done
+result: solved
+short: 'NNBO: 두 마그논과 D_c 경계'
+title: 포화장 위 두 마그논 문제를 정확히 풀어 쌍이 1차 붕괴를 이기는 D 상한을 구한다
+topics:
+- worked-examples
+- beyond-linear-spin-waves
+date: '2026-10-21'
+from:
+- id: nnbo-nematic-q
+  type: origin
+fields:
+  goal: Find the pair-instability field $h_2=-E_2/2$ and compare with the single-magnon field $h_1$ and the product-state collapse field $h_{\rm col}$.
+  setup: Exact two-magnon sector on L×L tori up to L = 30 (1800 sites), checked against full ED of the 8-site torus to 1e-14; collapse from all S^z and SU(3) product states in small supercells (lower bound).
+  result: 'Both published sets bind pairs but collapse first: Valentí-like (J3/|J1| 0.37, D/|J1| 0.21) h2 = 0.061 < h_col = 0.112; Shangguan (1.0, 3.0) 1.081 < 2.000. Pair binding is independent of small D, so pairs win only for D < D_c ≈ 0.115, 0.160, 0.230, 0.364, 0.508 |J1| at J3/|J1| = 0.34, 0.37, 0.40, 0.45, 0.50.'
+evidence:
+- kind: calc
+  file: data-space/verification/261021-na3ni2bio6-multimagnon/twomag.py
+  text: two-magnon code and runs (results.txt)
+  checks: []
+sources:
+- data-space/verification/261021-na3ni2bio6-multimagnon/README.md
+guesses: []

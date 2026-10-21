@@ -1,0 +1,30 @@
+format: 1
+kind: question
+progress: done
+result: solved
+short: 'BCAO: 장 상도를 그릴 가치'
+title: BaCo₂(AsO₄)₂의 자기장 상도를 스핀파로 그리면 논문이 될 새 질문이 있는가
+topics:
+- worked-examples
+date: '2026-10-20'
+from:
+- id: materials-q
+  type: origin
+- id: release-audit-q
+  type: use
+fields:
+  question: Is a spin-wave (plus DMRG check) field phase diagram of BCAO worth a paper, given what is already known?
+  motivation: Chosen 2026-10-20 as research topic A (S = 1/2 honeycomb XXZ–J±±–Jz±–J3); the package reliability checks B1–B13 (2026-10-21) were run for it first.
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-bcao-field-phase-diagram-survey.md
+  text: survey and recommendation
+  checks: []
+- kind: other
+  file: workbench/tasks/2026-10-21-theory-reliability.md
+  text: B1–B13
+  checks: []
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21
+- artifact https://claude.ai/artifact/3cEKJ1aemcSbJta9Fzr9c4
+guesses: []

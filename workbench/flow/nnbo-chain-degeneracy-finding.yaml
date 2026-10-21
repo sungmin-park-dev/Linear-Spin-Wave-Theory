@@ -1,0 +1,26 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'NNBO: 포화장의 사슬 배열 축퇴'
+title: 곱 상태에서 포화장 h_s = J1 + 3J3의 사슬 배열은 거시적으로 축퇴한다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: nnbo-app-q
+  type: origin
+- id: nnbo-refit-calc
+  type: use
+fields:
+  statement: 'Among S^z product states, every arrangement of zigzag chains in which down chains are isolated (M = 1/5, 1/3, 1/2, 3/5, 2/3, …) lies exactly on the zigzag–polarized line at $h_s=J_1+3J_3$, for any J1, J3, D; other states lie above. Zigzag chains couple only to neighbouring chains, so this is the saturation-field exclusion degeneracy of a 1D Ising chain.'
+  condition: Product states in all supercells up to 6 cells; quantum fluctuations and small terms (Kitaev, J2, interlayer) lift it.
+evidence:
+- kind: calc
+  file: data-space/verification/261021-na3ni2bio6-multimagnon/collin.py
+  text: energies relative to the zigzag–polarized line (results.txt)
+  checks: []
+sources:
+- data-space/verification/261021-na3ni2bio6-multimagnon/results.txt
+guesses:
+- Likely already known in Ising literature (Kudō–Katsura 1976 studied the honeycomb J1–J2–J3 Ising model in field); not yet checked.

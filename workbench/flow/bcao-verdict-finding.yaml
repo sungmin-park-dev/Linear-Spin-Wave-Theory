@@ -1,0 +1,27 @@
+format: 1
+kind: finding
+progress: done
+result: solved
+short: 'BCAO: 접음 (새 질문 없음)'
+title: BCAO 장 상도는 이미 정해진 갭 있는 공선 상들이라 새 논문 질문이 없어 접는다
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: bcao-app-q
+  type: origin
+- id: bcao-literature
+  type: use
+- id: bcao-u1-finding
+  type: use
+fields:
+  statement: 'In-plane phases are gapped collinear states settled by experiment; the Kitaev field-induced spin-liquid motivation is largely refuted; the in-plane problem is crowded; the c-axis field has no protected U(1). A material-specific diagram would be a PRB at best. Work moved to Na3Ni2BiO6.'
+  condition: User's judgement 2026-10-21 ("큰 가치가 없겠네"), agreed after the literature check and the c-axis symmetry check.
+evidence:
+- kind: other
+  file: docs/reviews/2026-10-21-bcao-field-phase-diagram-survey.md
+  text: recommendation
+  checks: []
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21
+guesses: []

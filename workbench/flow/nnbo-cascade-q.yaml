@@ -1,0 +1,21 @@
+format: 1
+kind: question
+progress: open
+short: 'NNBO: 축퇴를 무엇이 푸나'
+title: 사슬 배열 축퇴를 푸는 항이 1/3 정체기와 1/2·2/3 계단을 Kitaev 없이 설명하는가
+topics:
+- worked-examples
+date: '2026-10-21'
+from:
+- id: nnbo-app-q
+  type: origin
+- id: nnbo-chain-degeneracy-finding
+  type: use
+- id: state-selection-q
+  type: use
+fields:
+  question: Which perturbation (LSWT zero-point energy per chain arrangement, Kitaev, J2, interlayer coupling) lifts the chain degeneracy, which fractions and order does each select, and does the result match the 0.1 K data without Kitaev?
+  motivation: 'Candidate paper message (2026-10-21): the plateau and steps follow from lifting a macroscopic degeneracy, so Kitaev is not required and the selecting term fixes the fractions. Steps: novelty and competition check (Kudō–Katsura; announced K–Γ theory), zero-point energies per arrangement with the S = 1 strong-D convention, then small terms one at a time.'
+sources:
+- thread "BCAO 장 상도 선행 연구" 2026-10-21 (proposal, awaiting the user)
+guesses: []

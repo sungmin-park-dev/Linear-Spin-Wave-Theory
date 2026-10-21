@@ -1,0 +1,18 @@
+format: 1
+kind: question
+progress: paused
+short: 'NNBO: 4마그논 다극자 응축?'
+title: J1–J3–D 육각격자에서 4마그논 결합 상태가 응축하는 다극자 상이 있는가
+topics:
+- worked-examples
+- beyond-linear-spin-waves
+date: '2026-10-21'
+from:
+- id: nnbo-multimagnon-finding
+  type: origin
+fields:
+  question: Do four-magnon bound states condense into a higher multipolar phase below saturation, or do clusters keep growing into a first-order collapse?
+  motivation: h5 < h4 on 32 sites hints that clusters stop at four magnons; deciding it needs n ≥ 5 on larger lattices or cylinder DMRG (Mac mini). Weak link to the material (window < 1 T at the fitted point), so second priority.
+sources:
+- data-space/verification/261021-na3ni2bio6-multimagnon/results.txt
+guesses: []

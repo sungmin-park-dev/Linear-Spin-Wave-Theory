@@ -1,0 +1,30 @@
+format: 1
+kind: question
+progress: active
+short: 'NBCP: Y·V 초고체'
+title: NBCP의 Y·V 상은 U(1)을 깨는 비등방성 아래에서도 유한온도 spin supersolid로 남는가
+topics:
+- worked-examples
+date: '2026-08-10'
+from:
+- id: materials-q
+  type: origin
+- id: pg-gap-finding
+  type: use
+fields:
+  question: Are the Y and V phases of the triangular NBCP model (arXiv:2601.20963) spin supersolids at finite temperature once SOC terms (J_PD, J_Γ) break the U(1) symmetry?
+  motivation: The first material example and the template for the later ones; the paper-worthy question was whether a symmetry-protected phase survives the anisotropy that breaks its symmetry. Research moved to the private repository nbcp-spin-supersolid on 2026-10-09; this repository keeps code-space/model/nbcp and data-space/verification/260912-pseudo-goldstone as regression fixtures.
+evidence:
+- kind: other
+  file: workbench/decisions/2026-10-09-nbcp-repository-split.md
+  text: repository split
+  checks: []
+- kind: calc
+  file: data-space/verification/260912-pseudo-goldstone
+  text: pseudo-Goldstone fixtures
+  checks: []
+sources:
+- nbcp-spin-supersolid workbench/flow/supersolid-q.yaml, pg-gap-q.yaml
+- workbench/decisions/2026-10-09-nbcp-repository-split.md
+guesses:
+- Only the key steps are copied here; the full NBCP flow (about 50 points) lives in nbcp-spin-supersolid.
