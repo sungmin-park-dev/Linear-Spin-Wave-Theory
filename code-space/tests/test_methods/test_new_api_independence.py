@@ -106,7 +106,8 @@ def test_constrained_zero_point_energy_accepts_onsite_terms():
 
 BLOCKED = textwrap.dedent('''
     import sys, types, warnings
-    warnings.simplefilter("error", DeprecationWarning)
+    # Only the package's own deprecations (other libraries warn about theirs).
+    warnings.filterwarnings("error", message=".*removed in spintoolkit", category=DeprecationWarning)
     BLOCK = ("spintoolkit.system.spin_system", "spintoolkit.methods.lswt.hamiltonian",
              "spintoolkit.methods.lswt.energy", "spintoolkit.methods.lswt.solver",
              "spintoolkit.observables.thermodynamics", "spintoolkit.methods.optimization")
