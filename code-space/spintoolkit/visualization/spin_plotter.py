@@ -1,9 +1,10 @@
 """Spin configuration plotter.
 
 Takes a ``SpinModel`` and a ``SpinState`` (stage 7); the state is drawn on its
-magnetic cell through :func:`~spintoolkit.system.conversion.to_spin_system`,
-so the directions shown are exactly those of the state. Passing a
-``SpinSystem`` still works but is deprecated (D30).
+magnetic cell (one site per model site and cell, one bond per bilinear term and
+cell), so the directions shown are exactly those of the state. Terms other than
+bonds (onsite, Zeeman) are not drawn. Passing a ``SpinSystem`` still works but
+is deprecated (D30).
 
 Visualizes spin arrangements on a 2D lattice:
 - Gray circle at each site (size = spin magnitude S)
@@ -14,6 +15,8 @@ Visualizes spin arrangements on a 2D lattice:
 """
 
 
+from types import SimpleNamespace
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -23,9 +26,8 @@ from itertools import product
 
 from spintoolkit._deprecation import warn_deprecated
 from spintoolkit.states.spin_state import SpinState
-from spintoolkit.system.conversion import to_spin_system
-from spintoolkit.system.model import SpinModel
-from spintoolkit.system.spin_system import SpinSystem
+from spintoolkit.states.spin_state import validate_spin_state
+from spintoolkit.system.model import BILINEAR, SpinModel
 
 
 # Bond colors / linestyles for distinct exchange matrices
@@ -186,7 +188,7 @@ def plot_spin_configuration(model, state=None, n_repeat=1, figsize=(8, 8),
         Single axes if show_polar=False or ax provided,
         (ax_xy, ax_polar) tuple if show_polar=True.
     """
-    system = _as_spin_system(model, state)
+    system = _magnetic_cell(model, state)
     # Create figure layout
     if ax is not None:
         fig = ax.get_figure()
@@ -214,17 +216,55 @@ def plot_spin_configuration(model, state=None, n_repeat=1, figsize=(8, 8),
     return fig, ax_xy
 
 
-def _as_spin_system(model, state):
-    """SpinSystem of the magnetic cell to draw."""
+def _magnetic_cell(model, state):
+    """Sites and bonds of the magnetic cell to draw.
+
+    Bond ``displacement`` here is ``r_j - r_i`` (from the drawn site to its
+    partner); a ``SpinSystem`` stores ``r_i - r_j`` (D13) and is converted.
+    """
+    from spintoolkit.system.spin_system import SpinSystem
+
     if isinstance(model, SpinSystem):
         if state is not None:
             raise TypeError("a SpinSystem already holds its configuration; omit state")
         warn_deprecated("plot_spin_configuration(SpinSystem)",
                         "pass a SpinModel and a SpinState", stacklevel=4)
-        return model
+        sites = [SimpleNamespace(label=x.label, position=np.asarray(x.position, dtype=float),
+                                 spin=x.spin, angles=tuple(x.angles)) for x in model.sites]
+        bonds = [SimpleNamespace(site_i=c.site_i, exchange_matrix=np.asarray(c.exchange_matrix),
+                                 displacement=-np.asarray(c.displacement, dtype=float))
+                 for c in model.couplings]
+        return SimpleNamespace(lattice_vectors=np.asarray(model.lattice_vectors, dtype=float),
+                               sites=sites, couplings=bonds, label=model.label,
+                               num_sites=len(sites))
     if not isinstance(model, SpinModel) or not isinstance(state, SpinState):
         raise TypeError("plot_spin_configuration needs a SpinModel and a SpinState")
-    return to_spin_system(model, state)
+    validate_spin_state(state, model)
+    n = state.num_cells
+    index, sites = {}, []
+    for site in model.sites:
+        for cell in state.cells:
+            v = np.asarray(state.direction(site.id, cell), dtype=float)
+            theta = float(np.arccos(np.clip(v[2], -1.0, 1.0)))
+            phi = float(np.arctan2(v[1], v[0])) if np.hypot(v[0], v[1]) > 0 else 0.0
+            index[(site.id, tuple(cell))] = len(sites)
+            sites.append(SimpleNamespace(
+                label=site.id if n == 1 else f"{site.id}@{cell[0]},{cell[1]}",
+                position=np.asarray(model.cartesian_position(site.id, cell), dtype=float),
+                spin=site.spin, angles=(theta, phi)))
+    bonds = []
+    for term in model.terms_of_kind(BILINEAR):
+        (a, n1), (b, n2) = term.participants
+        for cell in state.cells:
+            source = (cell[0] + n1[0], cell[1] + n1[1])
+            target = (cell[0] + n2[0], cell[1] + n2[1])
+            d = model.cartesian_position(b, target) - model.cartesian_position(a, source)
+            bonds.append(SimpleNamespace(site_i=index[(a, tuple(state.reduce_cell(source)))],
+                                         exchange_matrix=np.asarray(term.coefficient),
+                                         displacement=d))
+    return SimpleNamespace(lattice_vectors=np.asarray(state.magnetic_lattice(model), dtype=float),
+                           sites=sites, couplings=bonds, label=model.metadata.get("model_id"),
+                           num_sites=len(sites))
 
 
 # ======================================================================

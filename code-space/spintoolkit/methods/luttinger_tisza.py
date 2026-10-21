@@ -52,7 +52,8 @@ import numpy as np
 from scipy.optimize import minimize
 
 from spintoolkit.states.spin_state import SpinState
-from spintoolkit.system.model import BILINEAR, ONSITE, SpinModel, onsite_renormalization
+from spintoolkit.system.model import (BILINEAR, ONSITE, ZEEMAN, SpinModel, onsite_renormalization,
+                                      require_kinds)
 
 #: Relative tolerance on eigenvalues for minima, degeneracy and the eigenspace.
 LT_TOLERANCE = 1e-9
@@ -143,6 +144,7 @@ class LTReport:
 
 def lt_matrix(model: SpinModel, q) -> np.ndarray:
     """``J(q)`` (``(m, 3Ns, 3Ns)``) for Cartesian momenta ``q`` ``(m, 2)``; see the module docstring."""
+    require_kinds(model, (BILINEAR, ONSITE, ZEEMAN), "lt_matrix")
     q = np.atleast_2d(np.asarray(q, dtype=float))
     index = {site_id: i for i, site_id in enumerate(model.site_ids)}
     spins = {s.id: s.spin for s in model.sites}

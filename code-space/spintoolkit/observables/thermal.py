@@ -3,9 +3,8 @@
 Input is an :class:`~spintoolkit.methods.lswt.run.LSWTResult`; its stored
 eigenvalues and eigenvectors are reused, nothing is diagonalized again. The
 temperature is ``t = k_B T / E0``; energies are per site in E0, entropy and
-specific heat per site in units of k_B. The existing kelvin/meV routines of
-:mod:`spintoolkit.observables.thermodynamics` do the sums: only ``E / (k_B T)``
-enters, so reading E0 as meV and passing ``T = t / k_B`` (k_B in meV/K) is exact.
+specific heat per site in units of k_B. The mode sums use the dimensionless
+functions of :mod:`spintoolkit.observables.bose_statistics` (no kelvin or meV).
 
 Quantities (per site, ``N_s`` sites in the magnetic cell, ``omega_nk`` the
 magnon energies, ``n_B`` the Bose factor):
@@ -39,9 +38,8 @@ import warnings
 
 import numpy as np
 
-from spintoolkit.definitions.constants import K_BOLTZMANN_MEV
-from spintoolkit.methods.lswt.hamiltonian import log_1_m_exp
-from spintoolkit.observables.thermodynamics import Thermodynamics, compute_bosonic_number_at_k
+from spintoolkit.observables.bose_statistics import (bose_entropy, bose_free_energy,
+                                                     bose_heat_capacity, bose_occupation)
 from spintoolkit.observables.zero_modes import ZeroModeReport, scan_zero_modes
 
 
@@ -123,8 +121,8 @@ def magnon_free_energy(result, temperatures: Sequence[float]) -> np.ndarray:
 
     require_unaugmented(result, "magnon_free_energy")
     energies = result.eigenvalues[:, :result.num_sites]
-    return np.array([float(result.weights @ np.sum(log_1_m_exp(energies, tk / K_BOLTZMANN_MEV),
-                                                   axis=1)) / result.num_sites
+    return np.array([float(result.weights @ np.sum(bose_free_energy(energies, tk), axis=1))
+                     / result.num_sites
                      for tk in np.asarray(temperatures, dtype=float).ravel()])
 
 
@@ -147,11 +145,11 @@ def _lab_magnetization(result, magnetization: np.ndarray) -> np.ndarray:
     return (magnetization @ axis) * axis
 
 
-def _k_data(result) -> Dict[Any, Any]:
-    """The stored diagonalization in the layout of the existing observables."""
-    return {i: [[H], [E, T], [True, None]]
-            for i, (H, E, T) in enumerate(zip(result.hamiltonians, result.eigenvalues,
-                                              result.eigenvectors))}
+def _thermal_energy(energies: np.ndarray, t: float) -> np.ndarray:
+    """``e n_B(e)`` per mode, with its limit ``t`` at an exact zero mode."""
+    with np.errstate(invalid="ignore"):
+        out = energies * bose_occupation(energies, t)
+    return np.where(energies == 0, t, out)
 
 
 def thermal_quantities(result, temperatures: Sequence[float],
@@ -212,26 +210,27 @@ def thermal_quantities(result, temperatures: Sequence[float],
                       "avoids them", UserWarning, stacklevel=2)
 
     ns = result.num_sites
-    k_data = _k_data(result)
-    thermo = Thermodynamics()
-    thermo.Ns = ns
+    w = result.weights
+    E = result.eigenvalues
+    positive = E[:, :ns]
     free = result.classical_energy + result.zero_point_energy + magnon_free_energy(result, t)
-    kelvin = t / K_BOLTZMANN_MEV
     internal, entropy, heat = [], [], []
     bosons, moments, magnetization = [], [], []
-    for tk, T in zip(t, kelvin):
-        internal.append(result.classical_energy
-                        + thermo.compute_internal_energy(k_data, Temperature=T))
-        entropy.append(thermo.compute_entropy_density(k_data, T) / K_BOLTZMANN_MEV)
-        heat.append(thermo.compute_specific_heat(k_data, T) / K_BOLTZMANN_MEV)
+    for tk in t:
+        internal.append(result.classical_energy + result.zero_point_energy
+                        + w @ np.sum(_thermal_energy(positive, tk), axis=1) / ns)
+        entropy.append(w @ np.sum(bose_entropy(positive, tk), axis=1) / ns)
+        heat.append(w @ np.sum(bose_heat_capacity(positive, tk), axis=1) / ns)
         if gapless_flag and tk > 0:
             bosons.append(np.full(ns, np.inf))
         elif (lifted and tk > 0) or (tk == 0 and diagnostics.get("divergent_zero_mode_occupation")):
             bosons.append(np.full(ns, np.nan))
         else:
-            per_k = np.array([compute_bosonic_number_at_k(E, V, Temperature=T, num_sl=ns)[0]
-                              for E, V in zip(result.eigenvalues, result.eigenvectors)])
-            bosons.append(result.weights @ per_k)
+            kernel = np.concatenate([np.ones((len(E), ns)), np.zeros((len(E), ns))], axis=1) \
+                + bose_occupation(E, tk)
+            T = result.eigenvectors
+            occupation = np.einsum("kin,kn,kin->ki", T, kernel, T.conj()).real[:, ns:]
+            bosons.append(w @ occupation)
         m = np.where(np.isfinite(bosons[-1]), result.spins - bosons[-1], np.nan)
         moments.append(m)
         magnetization.append(_lab_magnetization(result, m @ result.directions / ns))

@@ -157,7 +157,9 @@ def _gap(H: np.ndarray) -> Optional[float]:
 
 def _symmetry_axes(model, conditions) -> np.ndarray:
     """Axes (3, n_sym) of the global spin rotations that leave the energy invariant."""
-    from spintoolkit.system.model import BILINEAR, ZEEMAN
+    from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, require_kinds
+
+    require_kinds(model, (BILINEAR, ONSITE, ZEEMAN), "the zero-mode symmetry scan")
 
     def cross(n):
         return np.array([[0, -n[2], n[1]], [n[2], 0, -n[0]], [-n[1], n[0], 0]])

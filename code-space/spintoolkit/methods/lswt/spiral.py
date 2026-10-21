@@ -65,7 +65,8 @@ from spintoolkit.states.incommensurate import (
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
-from spintoolkit.system.model import BILINEAR, ONSITE, ZEEMAN, SpinModel, Term
+from spintoolkit.system.model import (BILINEAR, ONSITE, ZEEMAN, SpinModel, Term,
+                                      onsite_renormalization, require_kinds)
 
 ROTATING_FRAME = "rotating"
 
@@ -171,6 +172,7 @@ def rotating_frame_model(model: SpinModel, structure: IncommensurateStructure,
 
 
 def _bond_arrays(model: SpinModel):
+    require_kinds(model, (BILINEAR, ZEEMAN, ONSITE), "the spiral energy functions")
     index = {s: i for i, s in enumerate(model.site_ids)}
     spins = np.array([s.spin for s in model.sites])
     bonds = model.terms_of_kind(BILINEAR)
@@ -179,7 +181,14 @@ def _bond_arrays(model: SpinModel):
     dn = np.array([np.subtract(t.participants[1][1], t.participants[0][1]) for t in bonds],
                   dtype=float).reshape(-1, 2)
     J = np.array([t.coefficient for t in bonds]).reshape(-1, 3, 3)
-    return index, spins, a, b, dn, J
+    # Onsite terms (D37): kappa S^2 d^T A d + (S/2) tr A per site, as in classical_energy.
+    A = np.zeros((len(spins), 3, 3))
+    constant = 0.0
+    for term in model.terms_of_kind(ONSITE):
+        i = index[term.participants[0][0]]
+        A[i] += onsite_renormalization(spins[i]) * spins[i] ** 2 * term.coefficient
+        constant += spins[i] / 2 * np.trace(term.coefficient)
+    return index, spins, a, b, dn, J, A, constant
 
 
 def _fields(model: SpinModel, conditions: Optional[ExternalConditions]) -> np.ndarray:
@@ -195,23 +204,31 @@ def _fields(model: SpinModel, conditions: Optional[ExternalConditions]) -> np.nd
 def _energy_and_gradient(arrays, h, axis, q, d, directions_gradient=False):
     """Energy per site, ``dE/dq`` and optionally ``dE/dd_a`` (Ns, 3), all analytic.
 
-    ``E = (1/Ns) [sum_bonds S_a S_b d_a^T J R_n(2 pi q . dn) d_b - sum_a S_a h_a . d_a]``
+    ``E = (1/Ns) [sum_bonds S_a S_b d_a^T J R_n(2 pi q . dn) d_b + sum_a (kappa_a S_a^2
+    d_a^T Abar_a d_a + (S_a/2) tr A_a) - sum_a S_a h_a . d_a]`` with ``Abar`` the onsite
+    matrix averaged over the rotation about the axis
     and ``dR_n(phi)/dphi = R_n(phi) [n]_x``.
     """
-    _, spins, a, b, dn, J = arrays
+    _, spins, a, b, dn, J, A, constant = arrays
     ns = len(spins)
     K = cross_matrix(axis)
+    # Lab-frame onsite energy of the rotating spins, averaged over the phase (exact
+    # for A invariant about the axis; the equidistributed average otherwise).
+    phases = 2 * np.pi * np.arange(8) / 8
+    rotations = rotation_matrix(axis, phases)
+    A = np.einsum("pyx,ayz,pzw->axw", rotations, A, rotations) / len(phases)
     R = rotation_matrix(axis, 2 * np.pi * dn @ q)                 # (nb, 3, 3)
     JR = np.einsum("bxy,byz->bxz", J, R)
     left = spins[a, None] * d[a]
     right = spins[b, None] * d[b]
     bond = np.einsum("bx,bxy,by->b", left, JR, right)
-    energy = (bond.sum() - np.sum(spins[:, None] * h * d)) / ns
+    onsite = np.einsum("ax,axy,ay->", d, A, d) + constant
+    energy = (bond.sum() + onsite - np.sum(spins[:, None] * h * d)) / ns
     slope = np.einsum("bx,bxy,yz,bz->b", left, JR, K, right)    # dE_bond / dphi
     gradient = 2 * np.pi * (slope @ dn) / ns
     if not directions_gradient:
         return float(energy), gradient
-    grad_d = -spins[:, None] * h
+    grad_d = -spins[:, None] * h + 2 * np.einsum("axy,ay->ax", A, d)
     np.add.at(grad_d, a, spins[a, None] * np.einsum("bxy,by->bx", JR, right))
     np.add.at(grad_d, b, spins[b, None] * np.einsum("bxy,bx->by", JR, left))
     return float(energy), gradient, grad_d / ns

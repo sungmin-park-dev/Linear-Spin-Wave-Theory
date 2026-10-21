@@ -9,13 +9,16 @@ This module defines that contract so that different methods can be compared
 on the same SpinSystem with minimal code changes.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import numpy as np
 
-from spintoolkit.system.spin_system import SpinSystem
+if TYPE_CHECKING:       # the SpinSystem-based solvers go in 0.3 (D43)
+    from spintoolkit.system.spin_system import SpinSystem
 
 
 @dataclass
