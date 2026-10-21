@@ -35,6 +35,10 @@ B11 Anisotropic one loop (Delta, Jz+-; Hartree-Fock, cubic and tadpole all
     non-zero) against exact diagonalization at large S on a finite torus,
     where the 1/S expansion is exact perturbation theory: the errors fall as
     1/S (energy per site) and relative 1/S^2 (excitations).
+B13 The same cluster with the cubic vertices in mean field (D73, Bader et al.,
+    arXiv:2512.08768): the Gaussian energy misses exactly the second-order
+    three-magnon energy, so exact minus Gaussian tends to that term, and the
+    remainder after adding it falls as 1/S.
 
 The full tables are produced by
 ``code-space/examples/verification/theory_reliability_benchmarks.py``.
@@ -542,3 +546,22 @@ def test_anisotropic_one_loop_matches_large_spin_exact_diagonalization():
             np.testing.assert_array_less(np.abs(exact[1:4] - exact[0] - one_loop),
                                          0.1 * np.abs(exact[1:4] - exact[0] - lswt))
     assert error[1.0] / error[2.5] == pytest.approx(2.5, rel=0.15)
+
+
+def test_mean_field_cubic_misses_only_the_three_magnon_energy():
+    """B13: renormalized directions (tadpole) and self-consistent Hartree-Fock against exact
+    diagonalization; the left-out order-S^0 piece is the three-magnon second-order energy."""
+    from spintoolkit.methods.nlswt import SCSWTSettings, solve_scswt
+    geometry = CalculationGeometry.finite_torus([[3, 0], [0, 1]])
+    rest, missing = {}, {}
+    for S in (1.0, 2.5):
+        model = bcao_minimal(J3=0.45, Delta1=0.3, Delta3=0.4, Jzpm3=0.8, S=S)
+        conditions = ExternalConditions(field=(3.0 * S, 0, 0))
+        exact = solve_ed(model, geometry, conditions, num_eigenvalues=2).energies()[0] / 6
+        result = solve_scswt(model, polarized_state(model, (1, 0, 0)), conditions,
+                             geometry=geometry, settings=SCSWTSettings(cubic="mean_field"))
+        assert max(result.header.diagnostics["angle_shifts"]) > 1e-3 / S
+        missing[S] = (exact - result.ground_state_energy) / result.energies.three_magnon
+        rest[S] = exact - result.ground_state_energy - result.energies.three_magnon
+    assert missing[2.5] == pytest.approx(1.0, abs=0.15)
+    assert rest[1.0] / rest[2.5] > 2.0

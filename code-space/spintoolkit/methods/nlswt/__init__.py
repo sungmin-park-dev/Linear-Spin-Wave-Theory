@@ -1,4 +1,4 @@
-"""Interacting (nonlinear) spin waves: 1/S corrections beyond LSWT (D46, D47, D72)."""
+"""Interacting (nonlinear) spin waves: 1/S corrections beyond LSWT (D46, D47, D72, D73)."""
 
 from .engine import NonlinearEnergies, NonlinearSpinWaves
 from .expansion import BosonExpansion, NonlinearExpansionError, expand_model
