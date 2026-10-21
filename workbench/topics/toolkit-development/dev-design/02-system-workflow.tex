@@ -47,7 +47,7 @@
     \node[box,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (lswt) at (4.6,1.75)
       {LSWT};
     \node[box,dashed,font=\normalsize,text width=3.1cm,minimum height=1.3cm] (quantum) at (9.2,1.75)
-      {ED · 텐서 네트워크\\1차: 최소 ED 검증};
+      {ED\\스핀파 결과 검증용};
     \node[focus,font=\normalsize,text width=3.1cm,minimum height=1.1cm] (result) at (0,-0.6)
       {계산 결과};
     \node[box,font=\normalsize,text width=3.1cm,minimum height=1.1cm] (observables) at (4.6,-0.6)
@@ -76,11 +76,33 @@
   \end{tikzpicture}
   \par\bigskip
   \begin{minipage}{0.98\textwidth}
-    \supportingtext{현재 구현 기반: NBCP·고전 최적화·LSWT. 1차에서 최소 ED 검증 도구를 더하고, ED·TN 솔버는 후속 확장이다.\\
+    \supportingtext{범위는 반고전 방법이다(2026-10-10 결정): 고전 탐색, LSWT, $1/S$ 보정, 고전 MC·스핀 동역학. ED는 스핀파 결과 검증용으로만 두고, 텐서 네트워크·DMRG·QMC는 다루지 않는다.\\
     영점 에너지로 고전 manifold 위의 상태를 고르는 경로(D17 궤도 선택)가 있어 LSWT가 상태 선택에 되먹임된다.\\
-    LSWT의 기준 상태는 직접 지정할 수도 있다. ED·TN은 고전 최적화를 필수로 거치지 않는다.}
+    LSWT의 기준 상태는 직접 지정할 수도 있다. ED는 고전 최적화를 거치지 않는다.}
   \end{minipage}
   \slidesource{합의된 계산·분석 흐름; 공통 규약을 통한 연결은 후속 개발 대상}{contract}
+\endgroup
+
+
+\subsection{현재 구현의 계산 흐름 (2026-10-21)}\label{workflow-implementation}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{위 목표 구조가 코드에서 어떤 이름으로 이어지는지. 옛 진입점은 0.2에서 경고, 0.3에서 지운다(D43, D65).}
+  \footnotesize\renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}p{2.6cm}p{4.6cm}Y@{}}
+    \toprule
+    블록 & 코드 & 규칙 \\
+    \midrule
+    모델 & \texttt{SpinModel}, \texttt{Site}, \texttt{Term.bilinear}·\texttt{zeeman}·\texttt{onsite} & 만들 때 검증. 값은 $E_0$ 단위(D20). 방법 전용 로직을 넣지 않는다 \\
+    외부 조건·설정 & \texttt{ExternalConditions}(장, 온도), \texttt{LSWTSettings}(메시, 정규화, 허용오차) & 조건과 수치 설정을 나눈다 \\
+    상태 & \texttt{SpinState}, \texttt{classical\_search}, \texttt{find\_stationary\_state}, \texttt{IncommensurateStructure} & 고전 탐색은 초격자 LT 하한까지 다시 돈다(D70). 단위 세포를 고정한 정상점 탐색(D63) \\
+    안정성·상 비교 & \texttt{local\_stability}, \texttt{compare\_states} & 연속 $k$ 국소 안정성(D51), 안정성을 함께 적는 상 비교(D53) \\
+    LSWT & \texttt{solve\_lswt} $\to$ \texttt{LSWTResult}, \texttt{solve\_spiral\_lswt} & 불안정이면 \texttt{LSWTError}(D61). $H(k)$는 결합별 희소 저장(D67). 결과는 읽기 전용, 머리에 출처·설정·진단(D14, D66) \\
+    선형 너머 & \texttt{solve\_nlswt}, \texttt{pseudo\_goldstone\_gap}, \texttt{solve\_scswt} & $1/S$ 보정(D46, D47). 메시가 풀지 못하는 값은 NaN(D69, D71). 자기무모순 one-loop는 $H_3=0$인 상태만(D72) \\
+    물리량 & \texttt{spintoolkit.observables}의 띠, 구조 인자, 중성자 세기, 열역학, 위상량, \texttt{magnetization\_curve} & 발산은 부호 있는 $\pm\infty$, 정의되지 않음은 NaN, 영모드 보손 수는 탐지해 알린다(D64) \\
+    검증 & \texttt{spintoolkit.methods.ed.solve\_ed} & 스핀파 결과 검증용 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 코드와 결정 D43--D72}{contract,implementation}
 \endgroup
 
 
@@ -154,8 +176,10 @@
         \begin{itemize}
           \item 각 스핀이 국소장과 평행(토크 0)해야 보손 선형항이 사라진다.
             극소 여부는 Colpa 조건으로 판정한다.
-          \item MAGSWT는 불안정한 기준 상태를 정규화하므로 정상성 위반은
-            오류가 아니라 \textbf{경고로 기록}한다.
+          \item 정상성은 상대 토크로 판정해 결과 진단에 적고, 정상이 아닌 상태의 결과는
+            물리량 함수가 \textbf{거부}한다(D68). 정규화 이동은 불안정한 상태에 쓰지 않는다(D61).
+          \item 고전적으로 불안정한 정상 상태는 켤 때만 쓰는 최소 증강 스핀파(MAGSWT,
+            \texttt{augmentation="minimal"})로 에너지만 낸다(D62).
           \item 영점 에너지로 상태를 고를 때는 고전 바닥상태 manifold 위에서만 비교하고(D17),
             선택에 쓴 에너지를 결과에 기록한다.
         \end{itemize}

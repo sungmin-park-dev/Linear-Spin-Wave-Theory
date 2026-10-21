@@ -16,17 +16,18 @@
     0 & 패키지 이름 변경 & \texttt{lswt} $\to$ \texttt{spintoolkit}; 기존 테스트·수치 결과 보존 \textbf{(완료)} \\
     1 & 공통 자료형·검증 & \texttt{SpinModel}·\texttt{terms}·상태 검증; 세 모델을 같은 소비자가 읽음 \textbf{(완료)} \\
     2 & NBCP 연결 & 1--4 MSL의 기존 수치 보존; 결합 변위 방향의 명시적 변환 \textbf{(완료)} \\
-    2b & 영점 에너지 상태 선택 & D17 궤도 탐색, D19 판정 기준; \texttt{quantum} 삭제(D18) \textbf{(구현·검증, 검토 대기)} \\
-    3 & 벤치마크·최소 ED & 일반 ED; 완전 편극상에서 LSWT와 ED가 정확히 일치 \textbf{(구현·검증, 검토 대기)} \\
-    4 & LSWT 물리량 & 바닥상태, 열역학·영모드, 구조인자, 밴드 구조(4d) \textbf{(구현·검증, 검토 대기)} \\
-    5 & 위상량 & Berry 곡률·Chern 수·thermal Hall, 적응형 적분 \textbf{(구현·검증, 검토 대기)} \\
-    6 & D30 구현 & 정리, LT 진단, 전역 고전 탐색 \textbf{(구현·검증, 검토 대기)} \\
-    7 & 시각화 & 마그논 밴드·스핀 배치 그림(LSWT 구현 뒤) \\
+    2b & 영점 에너지 상태 선택 & D17 궤도 탐색, D19 판정 기준; \texttt{quantum} 삭제(D18) \textbf{(구현·검증)} \\
+    3 & 벤치마크·최소 ED & 일반 ED; 완전 편극상에서 LSWT와 ED가 정확히 일치 \textbf{(구현·검증)} \\
+    4 & LSWT 물리량 & 바닥상태, 열역학·영모드, 구조인자, 밴드 구조(4d) \textbf{(구현·검증)} \\
+    5 & 위상량 & Berry 곡률·Chern 수·thermal Hall, 적응형 적분 \textbf{(구현·검증)} \\
+    6 & D30 구현 & 정리, LT 진단, 전역 고전 탐색 \textbf{(구현·검증)} \\
+    7 & 시각화 & 마그논 밴드·스핀 배치 그림(LSWT 구현 뒤) \textbf{(구현)} \\
     \bottomrule
   \end{tabularx}
   \par\medskip
   \textbf{1차 이후}\\[0.4em]
-  ED·TN 솔버, 키타에프 벤치마크, 유한 클러스터 계산, 고차 스핀 상호작용.\\[0.4em]
+  1차 이후 실제로 더한 것은 새 API(D36, D43, D65), $1/S$ 보정(D46--D47), 안정성·상 비교(D51--D54), 연속체·스펙트럼(D56--D60), 감사와 신뢰성 확인(D61--D72)이다. 그 기록은 연구노트 \emph{Toolkit decisions and references}와 \emph{Toolkit implementation and verification}이 맡는다. 텐서 네트워크와 일반 ED 솔버는 범위 밖이다(2026-10-10 결정).\\[0.4em]
+  사용자 물리 검토는 2026-10-15 원칙에 따라 그 결정을 쓰는 계산을 할 때 논문 결과와 대조한다.\\[0.4em]
   \supportingtext{물리상수·물리량의 단위와 출처 관리, 계산 결과의 저장·재사용 규칙은 함께 구체화한다.
   단계별 통과 조건은 부록 A에 둔다.}
   \slidesource{2026-09-29 범위 결정과 구현 단계}{plan}
