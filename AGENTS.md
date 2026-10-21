@@ -110,6 +110,7 @@ result.ground_state_energy      # 자리당 E_cl + E_zp
 result.bands()                  # (nk, Ns) 마그논 에너지
 result.header                   # 출처·설정·진단(D14), 결과는 읽기 전용(D66)
 stk.solve_nlswt(model, state)   # 1/S 보정 (D46)
+stk.solve_scswt(model, state, conditions)   # 자기무모순 one-loop, 3차 꼭짓점 없는 상태만 (D72)
 ```
 
 관측량은 `spintoolkit.observables`(띠, 구조 인자, 중성자 세기, 열역학, 위상)의 함수가 결과를 받는다. 나선은 `IncommensurateStructure`와 `solve_spiral_lswt`(D34), 검증용 ED는 `spintoolkit.methods.ed.solve_ed`.

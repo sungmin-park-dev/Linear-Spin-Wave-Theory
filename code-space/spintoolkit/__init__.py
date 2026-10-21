@@ -67,6 +67,7 @@ from spintoolkit.states.incommensurate import IncommensurateStructure
 from spintoolkit.methods.base import AbstractSolver, SolverResult
 from spintoolkit.methods.lswt import LSWTResult, LSWTSettings, solve_lswt
 from spintoolkit.methods.nlswt import NLSWTResult, NLSWTSettings, solve_nlswt
+from spintoolkit.methods.nlswt import SCSWTResult, SCSWTSettings, solve_scswt
 from spintoolkit.methods.stability import StabilityReport, local_stability
 from spintoolkit.methods.lswt import solve_spiral_lswt
 from spintoolkit.methods.nlswt import pseudo_goldstone_gap
@@ -95,7 +96,7 @@ __all__ = [
     'models', 'observables',
     # Solvers
     'AbstractSolver', 'SolverResult', 'solve_lswt', 'LSWTSettings', 'LSWTResult',
-    'solve_nlswt', 'NLSWTSettings', 'NLSWTResult',
+    'solve_nlswt', 'NLSWTSettings', 'NLSWTResult', 'solve_scswt', 'SCSWTSettings', 'SCSWTResult',
     'local_stability', 'StabilityReport', 'solve_spiral_lswt', 'pseudo_goldstone_gap',
     'solve_ed', 'classical_search', 'find_stationary_state', 'StationaryResult',
     'compare_states', 'magnetization_curve',

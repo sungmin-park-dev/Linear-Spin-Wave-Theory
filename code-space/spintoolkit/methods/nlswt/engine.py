@@ -186,6 +186,22 @@ class Contractions:
         return (1.0 if same else 0.0) + self._avg(self._n, t, s, r - rp, +1)
 
 
+def hartree_fock_terms(quartic: Sequence[Tuple[complex, Monomial]], contract: Contractions
+                       ) -> List[Tuple[complex, Monomial]]:
+    """Quadratic monomials of the Hartree-Fock decoupling of normal-ordered quartic terms.
+
+    ``O1 O2 O3 O4 -> sum over the six pairs <Oi Oj> (remaining two)``, so that
+    the Nambu matrix of the result is the derivative of ``<H_4>`` with respect
+    to the two-point functions of the Gaussian state ``contract``.
+    """
+    out: List[Tuple[complex, Monomial]] = []
+    for c, m in quartic:
+        for i, j in ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)):
+            rest = tuple(m[x] for x in range(4) if x not in (i, j))
+            out.append((c * contract(m[i], m[j]), rest))
+    return out
+
+
 def wick4(contract: Contractions, ops) -> complex:
     """``<O1 O2 O3 O4>`` in a Gaussian state with zero mean."""
     o1, o2, o3, o4 = ops
@@ -472,11 +488,7 @@ class NonlinearSpinWaves:
 
         ``condensate`` (``<psi>`` at q = 0) defaults to :meth:`tadpole`.
         """
-        out: List[Tuple[complex, Monomial]] = []
-        for c, m in self.expansion.orders[4]:
-            for i, j in ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)):
-                rest = tuple(m[x] for x in range(4) if x not in (i, j))
-                out.append((c * self.contract(m[i], m[j]), rest))
+        out = hartree_fock_terms(self.expansion.orders[4], self.contract)
         shift = self.tadpole()[0] if condensate is None else np.asarray(condensate)
         ns = self.ns
         for c, m in self.expansion.orders[3]:
