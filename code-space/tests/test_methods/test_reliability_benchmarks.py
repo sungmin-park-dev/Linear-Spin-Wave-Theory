@@ -255,16 +255,24 @@ def test_triangular_xy_energy_through_order_s0_matches_chernyshev_zhitomirsky_eq
 
 def test_triangular_goldstone_velocities_at_order_one_over_s_on_the_mesh_grid():
     """Eq. (56): v0 (1 - 0.11488/2S), vQ (1 + 0.08285/2S). At k = b1/N (on the mesh grid)
-    the ratios agree to 2 %; the remainder is the k^2 term and the mesh."""
+    the ratios agree to 2 %; the remainder is the k^2 term and the mesh. The k -> 0 mode
+    (velocity v0 > vQ) can decay into two +-Q magnons, so at eta = 0 its mesh energy is NaN
+    (D71) and its shift is the principal value of spectral_function."""
     S = 0.5
     model = triangular_heisenberg(J=1.0, S=S)
     state = state_120(model)
     result = solve_nlswt(model, state, settings=NLSWTSettings(mesh=(24, 24)))
     b = 2 * np.pi * np.linalg.inv(state.magnetic_lattice(model)).T
-    out = result.magnon_energies((b[0] / 24)[None])
+    k = (b[0] / 24)[None]
+    with pytest.warns(UserWarning, match="continuum"):
+        out = result.magnon_energies(k)
     ratio = out["total"][0] / out["lswt"][0]          # bands: Gamma mode, then the two +-Q modes
-    assert ratio[0] == pytest.approx(1 - 0.11488 / (2 * S), rel=0.02)
+    assert np.isnan(ratio[0]) and result.decay_rates(k)["decay_rate"][0, 0] > 0
     np.testing.assert_allclose(ratio[1:], 1 + 0.08285 / (2 * S), rtol=0.025)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")               # D69 flags the +-Q modes there
+        principal = result.spectral_function(k, np.linspace(0, 1, 3), 0.05)["energy"][0, 0]
+    assert principal / out["lswt"][0, 0] == pytest.approx(1 - 0.11488 / (2 * S), rel=0.02)
 
 
 def test_unresolved_goldstone_cancellation_off_the_mesh_grid_is_nan():
@@ -277,8 +285,11 @@ def test_unresolved_goldstone_cancellation_off_the_mesh_grid_is_nan():
     k = np.array([0.045 * b[0] + 0.0167 * b[1], 0.3 * b[0] + 0.111 * b[1]])
     with pytest.warns(UserWarning, match="cancellation"):
         out = result.magnon_energies(k)
-    assert np.isfinite(out["total"][0, 0]) and np.all(np.isnan(out["total"][0, 1:]))
-    assert np.all(np.isfinite(out["total"][1]))
+    # the Gamma mode is NaN too, for another reason: it can decay (D71, eta = 0)
+    assert np.all(np.isnan(out["total"][0]))
+    # far from the zero mode only the bands inside the decay continuum are NaN (D71)
+    assert np.array_equal(np.isnan(out["total"][1]), result.solver.resonant_on_mesh(k[1:])[0])
+    assert np.isfinite(out["total"][1]).any()
     with pytest.warns(UserWarning, match="cancellation"):
         spectral = result.spectral_function(k[:1], np.linspace(0, 2, 5), 0.05, grid=(24, 24))
     assert np.all(np.isnan(spectral["energy"][0, 1:])) and np.all(np.isnan(spectral["spectral"][0, 1:]))
@@ -479,3 +490,23 @@ def test_polarized_bcao_softens_at_the_zigzag_saturation_field(J3, d1, d3, jzp):
         assert above.bands().min() > 0
         with pytest.raises(LSWTError):
             solve_lswt(model, state, ExternalConditions(field=tuple(0.999 * h_s * d)), settings=settings)
+
+
+# ---------------------------------------------------------------- D71 ----
+
+def test_eta_zero_energy_inside_the_decay_continuum_is_nan():
+    """Triangular S = 1/2: at eta = 0 the bands above the two-magnon continuum of the mesh
+    are NaN (the mesh sum is not the principal value: N = 24 and 48 gave 0.87 and 1.18);
+    bands below it are finite and mesh independent."""
+    model = triangular_heisenberg(J=1.0, S=0.5)
+    state = state_120(model)
+    b = 2 * np.pi * np.linalg.inv(state.magnetic_lattice(model)).T
+    k = np.array([b[0] * 0.5 + b[1] * 0.25, b[0] * 0.25])
+    totals = []
+    for n in (24, 48):
+        result = solve_nlswt(model, state, settings=NLSWTSettings(mesh=(n, n)))
+        with pytest.warns(UserWarning, match="continuum"):
+            totals.append(result.magnon_energies(k)["total"])
+    inside = np.isnan(totals[0])
+    assert inside.sum() == 3 and np.array_equal(inside, np.isnan(totals[1]))
+    np.testing.assert_allclose(totals[0][~inside], totals[1][~inside], atol=2e-3)

@@ -893,6 +893,23 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D71): 연속체 안의 $\eta=0$ 메시 에너지는 NaN으로 낸다}\label{decisions-d71-eta-zero-continuum}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 이론적 신뢰성 확인, 사용자 승인(``η=0 주값 처리 … 진행하자'', 추천안 NaN). 적용은 Claude. 잠정 승인. 비교 대상: \texttt{spectral\_function}의 주값 에너지(삼각형 적분 밀도의 Hilbert 변환).}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    현상 & 띠 $\omega_n(k)$가 두 마그논 붕괴 연속체 안에 있으면 $\eta=0$의 메시 합 $\Sigma_3(k,\omega_n)$이 극을 지나며, 실수부가 주값이 아니라 메시마다 다른 수가 된다. 삼각 $S=1/2$의 같은 $k$에서 $N=24$, 48이 0.87과 1.18 \\
+    규칙 & 열역학 극한 기하에서 \texttt{magnon\_energies(eta=0)}의 \texttt{total}은 그 띠에서 NaN, 경고에 선택지(\texttt{spectral\_function}의 \texttt{energy}, 양의 $\eta$, 유한 토러스)를 적는다. 판정은 메시의 짝 $(q,k-q)$ 중 붕괴 꼭짓점이 0이 아닌 것($|D|^2>10^{-10}\max$)이 $\omega_{n_1}(q)+\omega_{n_2}(k-q)<\omega_n(k)$를 만족하는가이다. 숨은 대칭으로 꼭짓점이 0인 통로는 세지 않는다 \\
+    확인 & 삼각 $S=1/2$, $k$ = Γ–K 중간: 예전 메시 값 1.0885는 주값 1.1778(메시 24, 48과 격자 96, 192에서 $10^{-3}$ 안)과 8\,\% 달랐다. $k\to0$ Goldstone 모드도 $\pm Q$ 둘로 붕괴할 수 있어 NaN이 되며, 그 속도 비는 주값으로 Chernyshev--Zhitomirsky 식 (56)과 2\,\% 안. 연속체 밖 띠는 메시 값이 낫다(Hilbert 변환은 \texttt{levels}에 따라 수 \% 흔들림: 0.7355 대 메시 0.7313) \\
+    검증 & 연속체 밖 띠는 $N=24$, 48에서 $2\times10^{-3}$ 안에서 같다. \texttt{tests/test\_methods/test\_reliability\_benchmarks.py} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

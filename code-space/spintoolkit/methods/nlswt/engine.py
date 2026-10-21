@@ -603,6 +603,35 @@ class NonlinearSpinWaves:
         source = np.sum(-18 * np.abs(S) ** 2 / (omega + E1[:, :, None] + E2s[:, None, :]))
         return complex((decay + source) / nk)
 
+    def resonant_on_mesh(self, momenta, tolerance: float = 1e-10) -> np.ndarray:
+        """Bands whose energy lies inside the two-magnon decay continuum of the mesh (D71).
+
+        ``True`` for ``(k, n)`` when some mesh pair ``(q, k - q)`` with a
+        non-zero decay vertex (``|D|^2`` above ``tolerance`` times the largest
+        one) has ``w_n1(q) + w_n2(k - q) < w_n(k)``. There the mesh sum of
+        :meth:`cubic_self_energy` at ``omega = w_n(k)`` crosses its poles and
+        its real part is not the principal value. A channel closed by the
+        vertex (a hidden symmetry) does not count.
+        """
+        k_all = np.atleast_2d(np.asarray(momenta, dtype=float))
+        mesh = self.mesh
+        q1, T1, E1 = mesh.k, mesh.vectors, mesh.energies
+        nk = len(q1)
+        flags = np.zeros((len(k_all), self.ns), dtype=bool)
+        for i, k in enumerate(k_all):
+            k = k.reshape(1, 2)
+            Ek, Tk = self._bogoliubov(k)
+            E2, T2 = self._bogoliubov(k - q1)
+            D = self._decay(q1, k - q1, np.broadcast_to(k, (nk, 2)), T1, T2,
+                            np.broadcast_to(Tk, (nk,) + Tk.shape[1:]))
+            weight = np.abs(D) ** 2
+            pair = E1[:, :, None] + E2[:, None, :]
+            for n in range(self.ns):
+                w = weight[..., n]
+                open_ = w > tolerance * max(float(w.max()), 1e-300)
+                flags[i, n] = bool(np.any(open_ & (pair < Ek[0, n])))
+        return flags
+
     def decay_rate(self, k, grid: Sequence[int] = (64, 64)) -> Tuple[np.ndarray, np.ndarray]:
         """Golden-rule decay rate ``Gamma_n(k) = -Im Sigma_3^nn(k, w_n(k) + i0)`` (D57).
 

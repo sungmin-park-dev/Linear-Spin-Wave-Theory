@@ -39,8 +39,10 @@ def energies(S):
 def magnons(result, k):
     shifted = result.magnon_energies(k)
     decay = result.decay_rates(k, grid=(96, 96))
+    principal = result.spectral_function(k, np.linspace(0.0, 2.0, 3), 0.05, grid=(96, 96), levels=1600)
     print('LSWT     ', np.round(shifted['lswt'][0], 4))
     print('1/S      ', np.round(shifted['total'][0], 4))
+    print('1/S (PV) ', np.round(principal['energy'][0], 4))
     print('decay    ', np.round(decay['decay_rate'][0], 4))
     return shifted, decay
 

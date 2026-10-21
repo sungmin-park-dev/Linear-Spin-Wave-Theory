@@ -139,7 +139,10 @@ class NLSWTResult:
             energy is outside the 1/S expansion, and where the shift is a
             near-cancellation the mesh cannot resolve (D69: near a Goldstone
             mode folded to the zone centre, momenta off the grid
-            ``(j1/N1, j2/N2)`` of the magnetic reciprocal cell, with a warning). In the thermodynamic limit
+            ``(j1/N1, j2/N2)`` of the magnetic reciprocal cell, with a warning),
+            and at ``eta = 0`` where the band lies inside the two-magnon decay
+            continuum of the mesh (D71: the mesh sum is then not the principal
+            value; use :meth:`spectral_function`). In the thermodynamic limit
             ``decay_rate`` at ``eta = 0`` is NaN (a mesh sum of delta
             functions does not give the rate; use :meth:`decay_rates`).
         """
@@ -155,6 +158,18 @@ class NLSWTResult:
             unsafe = _cancellation_limited(lswt, static, cubic.real, min(mesh))
             unsafe &= ~_on_mesh_grid(k, self.solver.mesh.reciprocal, mesh)[:, None]
             total = _flag_cancellation(total, unsafe, "magnon_energies", min(mesh))
+            if eta == 0:
+                inside = self.solver.resonant_on_mesh(k)
+                if np.any(inside):
+                    warnings.warn(
+                        f"magnon_energies(eta=0): {int(inside.sum())} band(s) lie inside the "
+                        "two-magnon decay continuum, where the mesh sum of Sigma_3 crosses its "
+                        "poles and its real part is not the principal value; the energy is NaN "
+                        "(D71). Options: spectral_function(...)['energy'] (principal value by an "
+                        "exact Hilbert transform of the triangle-integrated densities), a "
+                        "positive eta (a broadened, eta-dependent shift), or a finite torus.",
+                        UserWarning, stacklevel=2)
+                    total = np.where(inside, np.nan, total)
         rate = -cubic.imag
         if eta == 0 and self.header.geometry.get("kind") != "finite_torus":
             rate = np.full(rate.shape, np.nan)
