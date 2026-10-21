@@ -2,8 +2,10 @@
 
 Convention
 ----------
-For magnetic moments ``mu_i = -mu_B g_i S_i`` the unpolarized cross section
-per magnetic site is (Squires, ch. 7; Boothroyd, ch. 6)
+For magnetic moments ``mu_i = +mu_B g_i S_i`` (the sign of the Zeeman term
+``-mu_B B^T g S``, 2026-10-20 decision; the unpolarized intensity is quadratic
+in the moment, so it does not depend on this sign) the unpolarized cross
+section per magnetic site is (Squires, ch. 7; Boothroyd, ch. 6)
 
     d^2 sigma / dOmega dE = (gamma r_0)^2 (k_f / k_i) exp(-2 W) I(Q, w),
 
@@ -288,7 +290,7 @@ def neutron_intensity(result, Q, temperature: float = 0.0, *, g: SiteValue = Non
     temperature : float
         ``t = k_B T / E0`` (Bose factors, D25 zero-mode decision).
     g : scalar, (3, 3) array or mapping site id -> either, optional
-        g-tensor in the global spin frame, moment ``mu = -mu_B g S``. Default 2
+        g-tensor in the global spin frame, moment ``mu = mu_B g S``. Default 2
         (spin-only). Use the tensor of the model's Zeeman term when the field
         was given as ``mu_B B``.
     form_factor : FormFactor or mapping site id -> FormFactor, optional

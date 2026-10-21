@@ -99,7 +99,7 @@ example) and a `stk.SpinState` for the ordered configuration, or find one with
 
 ## Tutorials
 
-Five tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
+Six tutorials in [`docs/tutorials/`](docs/tutorials/README.md) go from a
 first calculation to neutron spectra, the magnetization curve at 1/S order
 (checked against exact diagonalization) and magnon topology. Every number in
 them is printed by a script in `code-space/examples/tutorials/` and checked by the test
@@ -141,6 +141,28 @@ diagonalization of small clusters, and the earlier implementation in
 `nbcp-spin-supersolid`, on 2026-10-09; the NBCP model in `code-space/model/nbcp/` stays
 here as a regression fixture.
 
+## Performance
+
+LSWT diagonalizes one dense `2Ns x 2Ns` matrix per momentum, so the cost grows
+like `Ns^3` per k point for `Ns` spins in the magnetic cell. `H(k)` is assembled
+from the non-zero entries of each bond only, so memory grows with the number of
+bonds; a 400-spin ferromagnetic supercell on a 2 x 2 mesh takes about 5 s and
+270 MB on one core.
+
+The matrices are small and many, and multithreaded BLAS does not speed them up.
+When several processes share a machine, BLAS threads compete and a run can be
+hundreds of times slower (measured: 16 Cholesky and eigh calls on 72 x 72
+matrices, 0.02 s on one thread, 9 s with four contending threads). Use one
+BLAS thread per process and parallelize over parameter points with processes:
+
+```bash
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python my_sweep.py
+```
+
+The tests run the same way: `OMP_NUM_THREADS=1 python -m pytest code-space/tests -q`.
+Inside Python, `threadpoolctl` (not a dependency) does the same for a block of code:
+`with threadpool_limits(1): result = solve_lswt(...)`.
+
 ## Known limitations
 
 - Two-dimensional lattices only.
@@ -167,7 +189,7 @@ results in research.
 - [Documentation index](docs/README.md)
 - [Package layout](code-space/spintoolkit/README.md) (Korean)
 
-Design notes and the decision log (D01–D60) are in Korean, in
+Design notes and the decision log (D01–D67) are in Korean, in
 `workbench/topics/toolkit-development/`. Earlier snapshots are kept in
 `archive/` and are no longer edited.
 

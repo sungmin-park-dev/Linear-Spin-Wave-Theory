@@ -821,6 +821,24 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D67): $H(k)$는 결합마다 0이 아닌 원소만 저장하고, 대각화는 BLAS 1스레드를 권한다}\label{decisions-d67-sparse-assembly}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-21 감사 4단계(사용자 ``다음으로 가자''), 적용은 Claude. 수치 결과는 비트 단위로 같음. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    목적 & \texttt{QuadraticBoseHamiltonian}이 결합마다 $(2N_s)^2$ 밀집 행렬 $P_b,Q_b$를 두어 메모리가 $N_s^3$으로 자라고, $H(k)$ 조립이 대각화보다 오래 걸렸다(감사 CORE-04) \\
+    저장 & 결합마다 $P_b$, $Q_b$의 0이 아닌 원소 4개씩을 하나의 희소 행렬(행: $H$의 평탄화한 원소, 열: $2b$에 $P_b$, $2b+1$에 $Q_b$)에 둔다. 상수 $H_0$와 onsite는 밀집 그대로. $H(k)$와 해석적 1·2차 도함수는 희소 행렬과 위상 $(m,2n_b)$의 곱 하나 \\
+    대각화 & 밀집 Colpa 그대로($N_s^3$). 셀이 작아 희소 고유값 풀이의 이득이 없다 \\
+    측정 & 정사각 FM 초격자, 1스레드, 16 k점의 $H$와 도함수: $N_s=144$에서 조립 메모리 1.53\,GB → 2\,MB, 시간 16.7\,s → 0.34\,s. $N_s=400$, $2\times2$ 메시 \texttt{solve\_lswt} 5.4\,s, 최대 메모리 273\,MB(이전 방식은 결합 행렬만 약 16\,GB로 추산). 이전 구현과 $H$, 도함수 차이 0(삼각 격자 무작위 비공선 상태 포함) \\
+    스레드 & 작은 행렬을 k마다 푸는 구조라 다중 스레드 BLAS가 경합만 한다(감사 CORE-05: 1스레드 0.02\,s 대 경합 4스레드 9\,s). README ``Performance''에 \texttt{OMP\_NUM\_THREADS=1}과 프로세스 병렬을 권하고, CI 테스트도 1스레드로 돌린다. \texttt{threadpoolctl}은 의존성으로 넣지 않았다 \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

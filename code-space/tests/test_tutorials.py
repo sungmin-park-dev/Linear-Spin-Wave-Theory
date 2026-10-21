@@ -79,3 +79,32 @@ def test_interacting(capsys):
     assert "undefined path points (Goldstone modes): 3" in out
     assert "path points where the expansion is not controlled: [16]" in out
     assert "total 2.061  one magnon 1.530  continuum 0.531  (LSWT 2.052)" in out
+
+
+def _undefined_names(code):
+    """Names a code block reads but neither it, an import nor builtins define (a static NameError check)."""
+    import ast
+    import builtins
+
+    tree = ast.parse(code)
+    defined = set(dir(builtins))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
+            defined.add(node.id)
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            defined.update((a.asname or a.name).split(".")[0] for a in node.names)
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            defined.add(node.name)
+        elif isinstance(node, ast.arg):
+            defined.add(node.arg)
+    used = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load)}
+    return sorted(used - defined)
+
+
+@pytest.mark.parametrize("page", sorted((ROOT / "docs" / "tutorials").glob("0*.md")),
+                         ids=lambda p: p.stem)
+def test_tutorial_code_blocks_define_every_name(page):
+    import re
+
+    code = "\n".join(re.findall(r"```python\n(.*?)```", page.read_text(), re.S))
+    assert code and _undefined_names(code) == []

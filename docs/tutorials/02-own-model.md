@@ -31,7 +31,10 @@ def square_j1j2(J2, S=0.5):
 ```
 
 - `Site(id, position, spin)` places a spin in the unit cell. The position is
-  Cartesian, in the units of the lattice vectors.
+  fractional: in units of the lattice vectors, so `(0.5, 0)` is halfway along
+  the first lattice vector whatever its length and direction. (On this square
+  lattice fractional and Cartesian coordinates coincide; on a triangular or
+  honeycomb lattice they do not.)
 - `Term.bilinear((site_i, cell_i), (site_j, cell_j), M)` adds
   S_i^a M_ab S_j^b for every translate of the bond. The cell offsets are in
   units of the lattice vectors. List each bond once. Here (1, 0) and (0, 1)
@@ -41,7 +44,8 @@ def square_j1j2(J2, S=0.5):
   `stk.dzyaloshinskii_moriya` and `stk.kitaev` build common ones.
   An antisymmetric part is a DM interaction.
 - `Term.zeeman(site, g)` couples the site to the field of
-  `ExternalConditions(field=h)` as −h·g·S, where h = μ_B B in units of E0.
+  `ExternalConditions(field=b)` as −bᵀ g S, where b = μ_B B / E0 (the
+  theory notes write h = μ_B gᵀB, the field the spin feels; here h = gᵀb).
   Use `Term.onsite(site, A)` (S·A·S) for
   single-ion anisotropy when S ≥ 1.
 
@@ -61,6 +65,7 @@ before you compare numbers.
 ```python
 from spintoolkit.methods.classical import classical_search
 
+model = square_j1j2(J2=0.0)
 search = classical_search(model, np.diag([2, 2]))
 ```
 

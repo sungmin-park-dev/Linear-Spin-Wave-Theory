@@ -124,6 +124,17 @@ def bond_angle_exchange(phi: float, Jx: float, Jy: float, Jz: float,
 
     where Dx', Dy' are the DM components rotated by phi.
 
+    In ladder operators (``S^+ = S^x + i S^y``) the bond terms are
+
+        H_PD    = Jpd (exp(+i phi) S_i^+ S_j^+ + h.c.)
+                = 2 Jpd [cos(phi) (S^x S^x - S^y S^y) - sin(phi) (S^x S^y + S^y S^x)],
+        H_Gamma = Gamma [cos(phi) (S^y S^z + S^z S^y) - sin(phi) (S^x S^z + S^z S^x)],
+        H_DM    = D' . (S_i x S_j)   with D' = (Dx', Dy', Dz),
+
+    with ``phi`` the angle of the bond from the lattice x axis. These are the
+    matrices as written (the NBCP model fixture uses them); compare a paper's
+    phase convention for ``phi`` before reusing its parameters.
+
     Parameters
     ----------
     phi : float
@@ -171,6 +182,18 @@ def bond_angle_exchange(phi: float, Jx: float, Jy: float, Jz: float,
 def nnn_exchange(phi: float, Kx: float, Ky: float, Kz: float,
                  Kpd: float = 0.0, KGamma: float = 0.0) -> np.ndarray:
     """Next-nearest-neighbor bond-angle dependent exchange matrix.
+
+    The matrix form is::
+
+        [[Kx - 2*Kpd*cos(phi),  -2*Kpd*sin(phi),      KGamma*sin(phi)],
+         [-2*Kpd*sin(phi),       Ky + 2*Kpd*cos(phi), KGamma*cos(phi)],
+         [ KGamma*sin(phi),      KGamma*cos(phi),     Kz             ]]
+
+    so ``H_PD = -Kpd (exp(-i phi) S_i^+ S_j^+ + h.c.)`` and
+    ``H_Gamma = KGamma [cos(phi) (S^y S^z + S^z S^y) + sin(phi) (S^x S^z + S^z S^x)]``.
+    The pseudo-dipolar phase convention differs from
+    :func:`bond_angle_exchange` (sign and sense of ``phi``); the matrices are
+    kept as written (NBCP model fixture).
 
     Parameters
     ----------

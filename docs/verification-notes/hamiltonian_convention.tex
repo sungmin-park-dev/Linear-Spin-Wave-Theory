@@ -42,13 +42,19 @@ An important identity is
   \mathbf{C}^T = \mathbf{S}\,\mathbf{C}\dg.
 \end{equation}
 
-The rotated exchange matrix in the lab frame is
+The exchange matrix between the local frames is
 \begin{equation}
   \mathsf{RJ}_{\sigma\rho}
   = \mathbf{R}_\sigma^T \,\mathbf{J}_{\sigma\rho}\, \mathbf{R}_\rho,
 \end{equation}
-where $\mathbf{R}_\sigma$ is the rotation from the lab frame to the local
-spin frame at sublattice $\sigma$.  The code computes
+where the columns of $\mathbf{R}_\sigma$ are the local $x$, $y$, $z$ axes of
+sublattice $\sigma$ in lab components, so $\mathbf{R}_\sigma$ maps local-frame
+components to lab components ($\mathbf{S}^{\mathrm{lab}}_\sigma =
+\mathbf{R}_\sigma \mathbf{S}^{\mathrm{local}}_\sigma$), as in the code
+(\texttt{local\_frame}) and the theory notes. The code builds $\mathbf{R}_\sigma = R_z(\phi_\sigma) R_y(\theta_\sigma)$ from the polar and
+azimuthal angles of the spin and takes $\phi_\sigma = 0$ when the spin is along
+$\pm\hat z$ (where $\phi$ is undefined); this choice changes only the phase of
+the boson operators and the eigenvectors, not energies or observables.  The code computes
 \begin{equation}\label{eq:hopt}
   \boxed{\hop = \mathbf{C}\dg\, \mathsf{RJ}\, \mathbf{C}.}
 \end{equation}
