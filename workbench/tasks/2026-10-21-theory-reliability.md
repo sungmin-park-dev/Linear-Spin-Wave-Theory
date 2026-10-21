@@ -1,0 +1,38 @@
+---
+title: 패키지 이론적 신뢰성 확인
+topic: toolkit-development
+priority: 1
+created: '2026-10-21'
+state: active
+task: BCAO 계산(연구 주제 A) 전에, 패키지가 문헌값과 닫힌 식, 독립 구성을 실제 계산으로 재현하는지 확인한다. 2026-10-20 감사(코드 점검)의 다음 단계다.
+end-condition: 아래 기준 문제가 모두 통과 또는 원인이 적힌 불일치이고, 열린 질문에 사용자 판정이 적혀 있다.
+references:
+- workbench/tasks/2026-10-15-remaining-development.md
+- data-space/verification/261021-theory-reliability/tables.txt
+- code-space/tests/test_methods/test_reliability_benchmarks.py
+---
+
+## 기준 문제와 결과 (2026-10-21)
+
+이미 있던 검증(정사각 ⟨n⟩ = 0.1966, 삼각 1/S² 에너지, Hamer χ⊥, 붕괴 문턱, MAGSWT 이동량, kagome 열 홀, magnopy 비교)은 다시 하지 않고 빈 곳만 골랐다. 테스트는 `code-space/tests/test_methods/test_reliability_benchmarks.py`, 표는 `data-space/verification/261021-theory-reliability/tables.txt`.
+
+| | 대상 | 기준 | 결과 |
+|---|---|---|---|
+| B1 | BCAO 결합 행렬 | 입방축 K–Γ–Γ′ 모형을 결정축으로 돌린 것, Maksimov et al. arXiv:2204.09695 식 (1)–(3) | 1e-16 일치. x축 방향 하나를 고르면 맞고, 반대 방향은 Jz± → −Jz±(z축 C2, 에너지 같음) |
+| B2 | BCAO 고전 바닥상태 | 패키지와 무관한 최소화 코드 | 에너지 같음. 위상 관례(결합에 수직·평행·역회전)를 바꿔도 줄무늬 상태 에너지는 같다 |
+| B3 | 벌집 J1–J3 LT | FM → 나선 J3 = 0.25, 나선 → 지그재그 J3 = 0.4 (2204.09695가 인용한 Rastelli 1979) | 일치, LT 에너지는 독립 계산과 1e-4 |
+| B4 | 면내 장 편극상 LSWT (Jz±, Δ 포함) | 손으로 만든 Holstein–Primakoff 블로흐 행렬 | 1e-15 일치 |
+| B5 | 정사각 1/S 마그논 | 균일 재규격화 Z_c = 1 + 0.1579/(2S) (Oguchi 1960) | 상대 2e-5 |
+| B6 | 삼각 XY 극한 에너지 | Chernyshev–Zhitomirsky 2009 식 (92): −(3/2)S²[1 + 0.064515/2S + 0.013326/(2S)²] | LSWT 1e-7, S⁰ 차수 3e-4 |
+| B6 | 삼각 Goldstone 속도 1/S | 같은 논문 식 (56): 1 − 0.11488/2S, 1 + 0.08285/2S | 메시 격자 위 k에서 2 % 안. 격자 밖 k에서는 크게 틀림 → D69 |
+| B7 | 벌집 Néel S = 1/2 | Zheng–Oitmaa–Hamer 1991: E/(NS²) = −3/2 − 0.31476/S, M/S = 1 − 0.2582/S (arXiv:1811.04229에 인용된 값) | α = −0.31476, 2차 합 −0.5489, ΔS = 0.258 |
+
+## 고친 것
+
+- **D69**: 비공선 상태에서 영역 중심으로 접힌 Goldstone 모드 근처의 1/S 마그논 에너지가 두 큰 항(HF+tadpole, Re Σ₃, 각각 1/|k|)의 상쇄로 나오는데, 격자 밖 k에서는 메시 오차가 커서 경고 없이 0.4–3.3배 틀렸다(기대 1.08). 상쇄 비 ρ > N/4이면 NaN과 경고. `magnon_energies`, `spectral_function`. 잠정 승인, 비교 대상은 CZ09 식 (56).
+
+## 열린 것 (사용자 판정 필요)
+
+1. **classical_search 기본 시드가 국소 최소에 갇힌다.** BCAO J3 = 0.45, Jz± = 0.5, 셀 [[1,0],[0,6]]에서 기본 시드는 −0.30361(UUD), 시드 1·2는 −0.30419. maxiter를 늘려도 그대로다. 제안: `classical_search(..., restarts=n)`으로 여러 시드 중 최저를 고르고 머리에 시드별 에너지 폭을 적는다(API 추가라 사용자 확인 필요). 그 전까지 BCAO 상도는 시드 여러 개로 돌린다.
+2. **η = 0 메시 주값.** 띠가 두 마그논 연속체 안에 있으면 `magnon_energies(eta=0)`의 실수부가 메시에 민감하다(삼각 같은 k에서 N = 24와 48이 0.87과 1.18). 지금은 숫자를 낸다. 연속체 안이면 NaN으로 할지, 삼각형 적분 주값(`spectral_function`과 같은 방식)으로 바꿀지.
+3. **Maksimov J3 = 0.45 경계.** 논문(2308.10672)은 UUD → 이중 지그재그 경계를 Jz± ≈ 0.9로 적었는데, 같은 해밀토니안에서 두 코드 모두 0.55 근처다. Jz± = 0.7에서 이중 지그재그(−0.34152)가 UUD(−0.33337)보다 낮은 변분 상태가 있으므로 논문 값을 같은 모형으로 재현할 수 없다. J3 = 0.2의 삼중 지그재그 상한 0.6과 J3 = 0.34의 이중 지그재그 시작(≈0.2)은 맞는다. 원인은 논문 쪽 계산(정규화 또는 최소화)으로 보이며 단정하지 않는다. BCAO 연구에서 이 차이를 기록하고 넘어간다.
