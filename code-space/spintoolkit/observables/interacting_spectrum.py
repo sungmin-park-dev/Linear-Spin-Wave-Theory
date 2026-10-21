@@ -79,9 +79,10 @@ def dressed_structure_factor(lswt_result, nlswt_result, q_points, omega, eta: fl
     Each LSWT mode is matched to the band of the same energy in the
     nonlinear calculation; a mode without such a band raises ValueError.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(lswt_result, "dressed_structure_factor")
+    require_stationary(lswt_result, "dressed_structure_factor")
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     w = np.asarray(omega, dtype=float)
     with warnings.catch_warnings():
@@ -96,13 +97,13 @@ def dressed_structure_factor(lswt_result, nlswt_result, q_points, omega, eta: fl
     for i in range(len(q)):
         bands = dressed["lswt"][i]
         scale = max(float(np.max(bands)), 1.0)
-        for mode in np.flatnonzero(factor.energies[i] > 0):
-            match = np.flatnonzero(np.abs(bands - factor.energies[i, mode]) < 1e-6 * scale)
+        for band in np.flatnonzero(factor.energies[i] > 0):
+            match = np.flatnonzero(np.abs(bands - factor.energies[i, band]) < 1e-6 * scale)
             if len(match) == 0:
-                raise ValueError(f"LSWT mode at energy {factor.energies[i, mode]:.6g} has no "
+                raise ValueError(f"LSWT mode at energy {factor.energies[i, band]:.6g} has no "
                                  f"band of the nonlinear calculation at q = {q[i]}")
             # degenerate bands carry the same (group-mean) spectral function
-            one[i] += weight[i, mode] * dressed["spectral"][i, match[0]]
+            one[i] += weight[i, band] * dressed["spectral"][i, match[0]]
     continuum = two_magnon_continuum(lswt_result, q, mesh=two_magnon_mesh)
     two = continuum.spectrum(w, eta, component=component)
     bare = factor.spectrum(w, eta, component=component)

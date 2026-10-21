@@ -69,10 +69,12 @@ class ThermalResult:
     entropy, specific_heat : (nt,) arrays
         Per site, units of k_B.
     boson_numbers, moments : (nt, Ns) arrays
-        NaN at ``t > 0`` when the spectrum is gapless.
+        At ``t > 0`` with a gapless spectrum the boson numbers are ``+inf``
+        (they diverge in two dimensions) and the moments NaN.
     magnetization : (nt, 3) array
         ``sum_i (S_i - <n_i>) n_i / N_s`` (no g-tensor, no canting-angle
-        shift); NaN at ``t > 0`` when gapless.
+        shift), in the lab frame (for a spiral, the component along the
+        rotation axis); NaN at ``t > 0`` when gapless.
     gapless : bool
     decision : str
         "scan" when the scan decided, "user" when ``gapless`` was given.
@@ -126,6 +128,25 @@ def magnon_free_energy(result, temperatures: Sequence[float]) -> np.ndarray:
                      for tk in np.asarray(temperatures, dtype=float).ravel()])
 
 
+def _lab_magnetization(result, magnetization: np.ndarray) -> np.ndarray:
+    """Lab-frame uniform magnetization of a moment sum taken along the result's spin directions.
+
+    In the rotating frame of a spiral (D34) the directions are those of the
+    cell at the origin; the lab spins rotate about the axis with ``Q . R``, so
+    the components normal to the axis average to zero unless ``Q`` is a
+    reciprocal lattice vector.
+    """
+    extra = getattr(result, "extra", {})
+    if extra.get("frame") != "rotating":
+        return magnetization
+    axis = np.asarray(extra["rotation_axis"], dtype=float)
+    axis = axis / np.linalg.norm(axis)
+    phases = np.asarray(result.lattice, dtype=float) @ np.asarray(extra["wave_vector"], dtype=float)
+    if np.allclose(np.exp(1j * phases), 1.0, atol=1e-9):
+        return magnetization
+    return (magnetization @ axis) * axis
+
+
 def _k_data(result) -> Dict[Any, Any]:
     """The stored diagonalization in the layout of the existing observables."""
     return {i: [[H], [E, T], [True, None]]
@@ -168,9 +189,27 @@ def thermal_quantities(result, temperatures: Sequence[float],
     else:
         gapless_flag, decision = bool(gapless), "user"
     if gapless_flag and np.any(t > 0):
-        warnings.warn("gapless spectrum: boson numbers, moments and magnetization at t > 0 "
-                      "diverge in two dimensions and are reported as NaN; F, U, S, C are finite",
+        warnings.warn("gapless spectrum: the boson numbers at t > 0 diverge in two dimensions "
+                      "and are reported as +inf; the moments and the magnetization are then "
+                      "outside the spin-wave expansion and are NaN; F, U, S, C are finite",
                       UserWarning, stacklevel=2)
+    diagnostics = result.header.diagnostics
+    undefined = []
+    if not diagnostics.get("stationary", True):
+        undefined.append("the reference state is not stationary (linear boson terms remain)")
+    if diagnostics.get("inversion_closed", True) is False:
+        undefined.append("the explicit k_points are not closed under k -> -k")
+    if undefined:
+        warnings.warn(f"{' and '.join(undefined)}: the thermal quantities have no harmonic "
+                      "expansion here and are NaN", UserWarning, stacklevel=2)
+    # A zero mode lifted by the regularization sits on the k set: at t > 0 its Bose
+    # factor ~ t / shift and ln(omega) terms are artefacts of the shift, so F, S and the
+    # boson numbers are not defined on this k set (D64); U and C stay finite (omega n_B -> t).
+    lifted = diagnostics.get("regularized_zero_modes", 0) > 0
+    if lifted and np.any(t > 0):
+        warnings.warn("zero modes lifted by the regularization lie on the k set: F, S and the "
+                      "boson numbers at t > 0 depend on the shift and are NaN; use a mesh that "
+                      "avoids them", UserWarning, stacklevel=2)
 
     ns = result.num_sites
     k_data = _k_data(result)
@@ -186,18 +225,28 @@ def thermal_quantities(result, temperatures: Sequence[float],
         entropy.append(thermo.compute_entropy_density(k_data, T) / K_BOLTZMANN_MEV)
         heat.append(thermo.compute_specific_heat(k_data, T) / K_BOLTZMANN_MEV)
         if gapless_flag and tk > 0:
+            bosons.append(np.full(ns, np.inf))
+        elif (lifted and tk > 0) or (tk == 0 and diagnostics.get("divergent_zero_mode_occupation")):
             bosons.append(np.full(ns, np.nan))
         else:
             per_k = np.array([compute_bosonic_number_at_k(E, V, Temperature=T, num_sl=ns)[0]
                               for E, V in zip(result.eigenvalues, result.eigenvectors)])
             bosons.append(result.weights @ per_k)
-        m = result.spins - bosons[-1]
+        m = np.where(np.isfinite(bosons[-1]), result.spins - bosons[-1], np.nan)
         moments.append(m)
-        magnetization.append(m @ result.directions / ns)
+        magnetization.append(_lab_magnetization(result, m @ result.directions / ns))
     bosons = np.array(bosons)
-    beyond = np.any(bosons > result.spins, axis=1)
+    beyond = np.any(np.isfinite(bosons) & (bosons > result.spins), axis=1)
     columns = [np.array(free, dtype=float), np.array(internal), np.array(entropy),
                np.array(heat), np.array(moments), np.array(magnetization)]
+    if lifted:
+        hot = t > 0
+        columns[0][hot] = np.nan
+        columns[2][hot] = np.nan
+    if undefined:
+        for column in columns:
+            column[...] = np.nan
+        bosons = np.full_like(bosons, np.nan)
     if np.any(beyond):
         warnings.warn(f"boson numbers exceed S at t = {t[beyond].tolist()}: LSWT is not valid "
                       "there (moments would reverse) and the thermal quantities are NaN",

@@ -37,8 +37,12 @@ correlations mix ``k`` with ``k +- Q``
 (:func:`~spintoolkit.observables.structure_factor.spiral_structure_factor`).
 Observables that assume lab-frame spins refuse it (see
 :func:`~spintoolkit.methods.lswt.run.require_lab_frame`). Energies, magnon
-bands, boson numbers and thermodynamics are frame independent and are read
-from it directly.
+bands, boson numbers, moment sizes and the thermodynamic potentials are frame
+independent and are read from it directly. The uniform magnetization is not:
+the lab spins rotate with ``Q . R``, so only its component along the rotation
+axis survives unless ``Q`` is a reciprocal lattice vector, and
+:func:`~spintoolkit.observables.thermal.thermal_quantities` reports that
+lab-frame component.
 """
 
 from __future__ import annotations
@@ -477,6 +481,15 @@ def solve_spiral_lswt(model: SpinModel, structure: IncommensurateStructure,
     rotating = replace(rotating, extra={**rotating.extra, "frame": ROTATING_FRAME,
                                         "wave_vector": structure.cartesian_wave_vector(model),
                                         "rotation_axis": structure.rotation_axis})
+    if rotating.thermal is not None:
+        # solve_lswt computed it before the frame was known; the magnetization must be
+        # the lab-frame one (D64).
+        from spintoolkit.observables.thermal import thermal_quantities
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            rotating = replace(rotating, thermal=thermal_quantities(
+                rotating, [conditions.temperature], gapless=settings.gapless))
     diagnostics = {**rotating.header.diagnostics,
                    "frame": "rotating (Toth and Lake 2015)",
                    "wave_vector_gradient": gradient.tolist(),

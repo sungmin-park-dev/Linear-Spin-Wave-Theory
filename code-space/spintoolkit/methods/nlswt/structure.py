@@ -125,7 +125,7 @@ def _diagonal(solver, q):
     """Full Colpa energies (2Ns,) and paraunitary T at one momentum."""
     k = np.asarray(q, dtype=float).reshape(1, 2)
     H = np.asarray(solver.hamiltonian_at(k), dtype=complex)
-    _, E, T, _ = _diagonalize(H, "none", k, 1e-12)
+    _, E, T, _, _ = _diagonalize(H, "none", k, 1e-12)
     return E[0].real, T[0]
 
 

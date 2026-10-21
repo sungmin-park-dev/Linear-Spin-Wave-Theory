@@ -79,6 +79,32 @@ def require_unaugmented(result, observable: str) -> None:
                          "energy is reported")
 
 
+def require_stationary(result, observable: str, *, refuse: bool = True) -> None:
+    """Refuse (or warn on) a result whose reference state is not a classical stationary point.
+
+    Linear boson terms remain there (D61): the quadratic Hamiltonian is not the
+    harmonic expansion about an extremum, so its eigenvectors do not give the
+    fluctuations of the spin model. The bands of the quadratic part are kept
+    (D61), so band-only observables only warn.
+
+    Raises
+    ------
+    ValueError
+        If ``refuse`` and ``result.header.diagnostics["stationary"]`` is False.
+    """
+    header = getattr(result, "header", None)
+    if header is None or header.diagnostics.get("stationary", True):
+        return
+    message = (f"{observable}: the reference state is not stationary (max torque "
+               f"{header.diagnostics.get('max_torque', float('nan')):.3g} E0); linear boson "
+               "terms remain and the harmonic eigenvectors are not the spin-model "
+               "fluctuations (D61, D64)")
+    if refuse:
+        raise ValueError(message + "; relax the state first (find_stationary_state)")
+    warnings.warn(message + "; the bands are those of the quadratic part only",
+                  UserWarning, stacklevel=3)
+
+
 def require_lab_frame(result, observable: str) -> None:
     """Refuse a rotating-frame spiral result for an observable that assumes lab-frame spins.
 
@@ -361,9 +387,12 @@ def _diagonalize(H: np.ndarray, regularization: str, k: np.ndarray, zero_mode_to
                 "A zero mode (e.g. Goldstone at the zone centre) needs a mesh that avoids it "
                 "(shift=True) or an explicit regularization ('MAGSWT', 'k-dependent'); "
                 "a negative eigenvalue means the reference state is unstable.")
-        return H, np.array(energies), np.array(vectors), np.zeros(nk)
+        return H, np.array(energies), np.array(vectors), np.zeros(nk), np.zeros(nk, dtype=bool)
     lowest = np.array([np.linalg.eigvalsh(Hk)[[0, -1]] for Hk in H])
     negative = lowest[:, 0] < -zero_mode_tolerance * np.max(np.abs(lowest), axis=1)
+    # Momenta where the regularization lifts a zero mode, relative to the energy scale of
+    # the whole k set (H(k) can vanish at a point, as for a ferromagnet at the zone centre).
+    lifted = lowest[:, 0] <= zero_mode_tolerance * np.max(np.abs(lowest))
     if np.any(negative):
         i = int(np.flatnonzero(negative)[0])
         raise LSWTError(
@@ -378,7 +407,36 @@ def _diagonalize(H: np.ndarray, regularization: str, k: np.ndarray, zero_mode_to
         raise LSWTError(f"Colpa diagonalization failed at {len(bad)} momenta even with "
                         f"regularization '{regularization}' (first k={np.round(k[bad[0]], 6).tolist()})")
     shift = np.real(np.trace(reg - original, axis1=1, axis2=2)) / n2
-    return np.asarray(reg), np.array(bose_E), np.array(para_T), shift
+    return np.asarray(reg), np.array(bose_E), np.array(para_T), shift, lifted
+
+
+def _zero_point_occupation(H: np.ndarray) -> np.ndarray:
+    """``<a_i^dagger a_i>`` of the Bogoliubov vacuum of each positive definite ``H``, ``(m, Ns)``."""
+    ns = H.shape[1] // 2
+    J = np.diag(np.r_[np.ones(ns), -np.ones(ns)])
+    out = []
+    for Hk in H:
+        _, T = Diagonalizer.Colpa(np.linalg.cholesky(Hk), J)
+        out.append(np.sum(np.abs(T[ns:, :ns]) ** 2, axis=1))
+    return np.array(out)
+
+
+def _divergent_zero_modes(H: np.ndarray, zero_mode_tolerance: float) -> np.ndarray:
+    """Whether the vacuum boson numbers at zero-mode momenta grow without bound as a shift goes to 0.
+
+    ``H`` holds the unregularized ``H(k)`` at momenta with a zero mode. A
+    uniform shift ``mu`` lifts the mode; a zero mode that mixes particles and
+    holes (a Goldstone mode with anomalous terms) has ``<n> ~ mu^(-1/2)``, while
+    one without (a ferromagnetic Goldstone mode, ``B = 0``) keeps ``<n>``
+    fixed. Two shifts a factor 4 apart tell the cases apart; the boson numbers
+    then differ by a factor near 2 or not at all.
+    """
+    scale = np.max(np.abs(np.linalg.eigvalsh(H)), axis=1)
+    mu = np.maximum(scale, 1.0) * max(1e3 * zero_mode_tolerance, 1e-8)
+    eye = np.eye(H.shape[1])
+    small = _zero_point_occupation(H + mu[:, None, None] * eye)
+    large = _zero_point_occupation(H + 4 * mu[:, None, None] * eye)
+    return np.any(np.abs(small - large) > 1e-6 * (1.0 + np.abs(large)), axis=1)
 
 
 def solve_lswt(model: SpinModel, state: SpinState,
@@ -429,8 +487,8 @@ def solve_lswt(model: SpinModel, state: SpinState,
         augmentation = find_augmentation(hamiltonian, state.magnetic_lattice(model), k,
                                          settings.augmentation)
         H = H + augmentation.mu * np.eye(H.shape[1])
-    H, E, T, shift = _diagonalize(np.asarray(H, dtype=complex), settings.regularization, k,
-                                  settings.zero_mode_tolerance)
+    H, E, T, shift, lifted = _diagonalize(np.asarray(H, dtype=complex), settings.regularization,
+                                          k, settings.zero_mode_tolerance)
 
     ns = H.shape[1] // 2
     weights = np.full(len(k), 1.0 / len(k))
@@ -463,6 +521,27 @@ def solve_lswt(model: SpinModel, state: SpinState,
             (augmentation.mu - augmentation.mu_min) * np.mean(boson_numbers))
         diagnostics["energy_bound"] = augmentation.label
         boson_numbers = np.full(len(boson_numbers), np.nan)
+    diagnostics["regularized_zero_modes"] = int(np.count_nonzero(lifted))
+    diagnostics["divergent_zero_mode_occupation"] = False
+    if np.any(lifted):
+        where = np.flatnonzero(lifted)
+        divergent = _divergent_zero_modes(hamiltonian.at(k[where]), settings.zero_mode_tolerance)
+        if np.any(divergent):
+            # The boson number of the mode itself is +inf in the limit of no shift; a mesh
+            # average containing it is an artefact of the k set, not a physical value (D64).
+            diagnostics["divergent_zero_mode_occupation"] = True
+            first = np.round(k[where[np.argmax(divergent)]], 6).tolist()
+            warnings.warn(
+                f"H(k) has zero modes at {int(np.count_nonzero(lifted))} of {len(k)} momenta "
+                f"(first k={first}) that the regularization '{settings.regularization}' lifts; "
+                "their boson numbers grow without bound as the shift goes to zero, so the boson "
+                "numbers and moments of this k set are not defined and are NaN (the energy is "
+                "unaffected). Options: a mesh that avoids these momenta (shift=True) with a check "
+                "of convergence in the mesh; on a finite torus, removing the symmetry Goldstone "
+                "modes and extrapolating in the cluster size; or a small field along the moments, "
+                "taking the thermodynamic limit before the field goes to zero.",
+                UserWarning, stacklevel=2)
+            boson_numbers = np.full(len(boson_numbers), np.nan)
     if settings.k_points is not None:
         diagnostics["inversion_closed"] = _closed_under_inversion(k, state.magnetic_lattice(model))
         if not diagnostics["inversion_closed"]:

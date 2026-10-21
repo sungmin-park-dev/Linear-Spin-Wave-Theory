@@ -169,9 +169,10 @@ def berry_curvature(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF) -
     -------
     BerryCurvature
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "berry_curvature")
+    require_stationary(result, "berry_curvature", refuse=False)
     _check_result(result)
     ns = result.num_sites
     dx, dy = result.hamiltonian_derivatives_at(result.k_points)
@@ -195,7 +196,7 @@ def zone_gauge(result) -> Tuple[int, np.ndarray]:
     change by the same factor per site. Returns the sign and the magnetic
     reciprocal vectors (rows).
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "zone_gauge")
     reciprocal = 2 * np.pi * np.linalg.inv(result.magnetic_lattice).T
@@ -247,9 +248,10 @@ def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
         Chern numbers of the particle bands in ascending energy (float, exact
         integers up to round-off).
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "chern_numbers_fhs")
+    require_stationary(result, "chern_numbers_fhs", refuse=False)
     _check_result(result)
     mesh = _mesh_indices(result)
     if mesh is None:
@@ -351,9 +353,10 @@ def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
         The FHS integers where accepted, NaN elsewhere (with a warning naming
         both values: refine the mesh, or the gap closes).
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "chern_numbers")
+    require_stationary(result, "chern_numbers", refuse=False)
     curvature = curvature if curvature is not None else berry_curvature(result, band_gap_cutoff)
     kubo = curvature.chern_numbers()
     fhs = chern_numbers_fhs(result, band_gap_cutoff)
@@ -491,9 +494,10 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     -------
     ThermalHall
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "thermal_hall")
+    require_stationary(result, "thermal_hall")
     from spintoolkit.observables.thermal import ZeroModeCandidateError
     from spintoolkit.observables.zero_modes import scan_zero_modes
 

@@ -287,7 +287,7 @@ def scan_zero_modes(result, model=None, state=None, conditions=None,
             unique.append(point)
 
     reciprocal = 2 * np.pi * np.linalg.inv(magnetic).T
-    delta = 0.02 * min(np.linalg.norm(reciprocal, axis=0))
+    delta = 0.02 * min(np.linalg.norm(reciprocal, axis=1))
     angles = np.arange(ZERO_MODE_LINE_DIRECTIONS) * np.pi / ZERO_MODE_LINE_DIRECTIONS
     zone_centre = {}
     if model is not None and state is not None:

@@ -757,6 +757,27 @@
   \slidesource{2026-10-20 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D64): 발산은 부호 있는 무한대, 정의 안 됨은 NaN, 영 모드 보손 수는 탐지해 알린다}\label{decisions-d64-divergent-undefined}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-20--21 사용자 지시(``보손수에 이상이 있는 것 같은 것이 자동적으로 탐지가 되었을 때, 사용자에게 알리고 진행하게 하자'', ``물리적으로 무한대로 발산하는 경우, 부호를 고려하여 무한대로 두고, 물리적으로 정의가 안되는 경우 nan으로 두자'', ``그렇게하자''), 적용은 Claude. D61을 고친다. 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    원칙 & 극한이 있고 부호가 정해진 발산은 $\pm\infty$. 극한이 없거나(방향·메시·이동량 의존) 전개 밖이면 NaN과 경고. 발산하는 보손 수에서 얻는 모멘트 $S-\langle n\rangle$은 스핀파 전개 밖이라 NaN \\
+    영 모드 보손 수 & 이상 탄성 항이 있는 골드스톤 점($B\ne0$)에서 $\langle n_k\rangle\sim\mu^{-1/2}\to+\infty$. 2차원 $T=0$ 적분은 유한하지만, 그 점을 포함한 메시 합은 이동량 $\mu$에 따라 달라지는 인공물이다(감사 CORE-01: $16^2,32^2,64^2$ MAGSWT 메시에서 $\langle n\rangle=61.9,15.6,4.05$). 정규화가 영 모드를 들어 올린 $k$에서 $H+\mu$와 $H+4\mu$의 점유를 비교해 달라지면 보손 수·모멘트를 NaN으로, 진단 \texttt{divergent\_zero\_mode\_occupation}, 선택지(Γ를 피하는 메시와 수렴 확인; 유한 토러스에서 대칭 골드스톤 모드를 빼고 크기 외삽; 모멘트 방향 작은 장에서 $L\to\infty$ 뒤 $h\to0$)를 경고에 적는다. 강자성($B=0$)은 $n=0$이 극한이라 그대로. 일반적인 영 모드 제외·외삽 기능은 만들지 않는다(사용자 결정) \\
+    유한 온도 & 간격 없는 2차원 스펙트럼의 $t>0$ 보손 수는 $+\infty$(Mermin--Wagner), 모멘트·자화는 NaN, $F,U,S,C$는 유한. 정규화된 영 모드가 $k$ 집합에 있으면 $t>0$의 $F,S$는 $\ln\mu$에 의존해 NaN, $U,C$는 유지($\omega n_B\to t$) \\
+    조화 전개 없음 & \texttt{thermal\_quantities}가 \texttt{stationary=False} 또는 $k\to-k$에 닫히지 않은 $k$ 집합에서 모든 열 양을 NaN으로(이전에는 $U,S,C,n,M$을 냈다, 감사 OBS-01). 구조인자, 스핀 상관, 결합 상관, 나선 구조인자, 두 마그논, 옷 입은 구조인자, 열 홀은 비정류 결과를 \texttt{require\_stationary}로 거부, Berry·Chern은 이차 부분 띠라는 경고만(OBS-02) \\
+    나선 자화 & 회전 좌표 결과의 균일 자화는 실험실 좌표로: $Q$가 역격자 벡터가 아니면 회전축 성분만 남는다(OBS-03). \texttt{solve\_spiral\_lswt}가 저장하는 열 결과도 같은 규칙 \\
+    구조인자 & 정규화가 들어 올린 영 모드 $q$도 D52 극한(Bragg)으로 다룬다. 이전에는 임의 이동량에서의 가중치를 냈다 \\
+    비대각 성분 & 2026-10-21 사용자 선택(``part 인자''): \texttt{StructureFactor.spectrum}과 두 마그논 \texttt{spectrum}에 \texttt{part="real"|"imag"|"complex"}. 기본은 이전처럼 실수부. $S^{ab}$의 허수부는 반대칭(카이랄) 상관으로, 비편극 중성자 세기에는 안 보이지만 이전에는 버려졌다(감사 ARCH-01: $z$ 강자성의 $S^{xy}=\pm iS^{xx}$가 0). 대각합과 중성자 세기는 실수라 \texttt{"real"}만 받는다 \\
+    비교 대상 & 정사각 Néel $S=1/2$: Γ를 피한 메시의 $\langle n\rangle\to0.1966$(Takahashi PRB 40, 2494 (1989); $64^2$에서 0.1926), Mermin--Wagner PRL 17, 1133 (1966). 원뿔 나선 자화 $=$ 초격자 자화(\texttt{tests/test\_methods/test\_zero\_mode\_occupation.py}) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-21 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

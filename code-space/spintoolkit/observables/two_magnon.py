@@ -104,13 +104,18 @@ class TwoMagnonContinuum:
         return self.weights.sum(axis=1)
 
     def spectrum(self, omega: Sequence[float], eta: float, shape: str = "lorentzian",
-                 component: Optional[str] = None) -> np.ndarray:
+                 component: Optional[str] = None, part: str = "real") -> np.ndarray:
         """Broadened ``S_2(q, w)`` on a frequency grid, shape (nq, nw).
 
-        Components as in :meth:`StructureFactor.spectrum`.
+        Components and ``part`` as in :meth:`StructureFactor.spectrum`.
         """
+        from spintoolkit.observables.structure_factor import cartesian_weight
+
         omega = np.asarray(omega, dtype=float)
-        if component is None:
+        weight = cartesian_weight(self.weights, component, part)
+        if weight is not None:
+            pass
+        elif component is None:
             weight = np.real(np.einsum("qmaa->qm", self.weights))
         elif component == "neutron":
             weight = np.full(self.energies.shape, np.nan)
@@ -121,9 +126,6 @@ class TwoMagnonContinuum:
                 unit = np.array([q[0], q[1], 0.0]) / norm
                 projector = np.eye(3) - np.outer(unit, unit)
                 weight[i] = np.real(np.einsum("ab,mab->m", projector, self.weights[i]))
-        else:
-            a, b = ("xyz".index(component[0]), "xyz".index(component[1]))
-            weight = np.real(self.weights[:, :, a, b])
         x = omega[None, None, :] - self.energies[:, :, None]
         if shape == "lorentzian":
             profile = eta / np.pi / (x ** 2 + eta ** 2)
@@ -202,9 +204,10 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     numbers of :func:`~spintoolkit.observables.thermal.thermal_quantities`;
     the continuum is then not defined and is reported as NaN.
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "two_magnon_continuum")
+    require_stationary(result, "two_magnon_continuum")
     from spintoolkit.methods.lswt.run import require_lab_frame
 
     require_lab_frame(result, "two_magnon_continuum")
@@ -313,9 +316,10 @@ def two_magnon_threshold(result, k_points, grid: Sequence[int] = (48, 48)) -> np
     -------
     (m,) array
     """
-    from spintoolkit.methods.lswt.run import require_unaugmented
+    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
 
     require_unaugmented(result, "two_magnon_threshold")
+    require_stationary(result, "two_magnon_threshold")
     from scipy.optimize import minimize
 
     from spintoolkit.methods.lswt.run import require_lab_frame
