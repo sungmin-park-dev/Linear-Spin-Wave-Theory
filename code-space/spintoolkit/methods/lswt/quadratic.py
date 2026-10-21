@@ -14,8 +14,10 @@ conventions are those of :class:`~spintoolkit.methods.lswt.hamiltonian.LSWTHamil
   carries ``exp(-i k . (r_i - r_j))`` on the ``a_i^dagger a_j`` element.
 
 ``H(k) = H_0 + sum_b [P_b exp(-i k . d_b) + Q_b exp(+i k . d_b)]`` is stored as
-the constant matrices, so the matrix and its analytic k-derivatives at any
-momentum cost one contraction.
+the dense constant ``H_0`` and, for the bonds, only the eight non-zero entries
+of each ``P_b`` and ``Q_b`` in one sparse matrix (D67): memory grows like the
+number of bonds times eight instead of bonds times ``(2 N_s)^2``, and the
+matrix and its analytic k-derivatives at any momentum cost one sparse product.
 
 Onsite terms (D37) enter as a bond from a spin to itself with the coefficient
 ``(1 - 1/(2S)) A`` and no phase. With that factor the classical energy is the
@@ -34,6 +36,7 @@ from typing import Dict, Optional, Tuple
 import warnings
 
 import numpy as np
+from scipy import sparse
 
 from spintoolkit.states.spin_state import SpinState
 from spintoolkit.system.conditions import ExternalConditions
@@ -129,21 +132,16 @@ class QuadraticBoseHamiltonian:
                 constant[k, k] -= t00 * Sj
             for k in (j, ns + j):
                 constant[k, k] -= t00 * Si
-            p = np.zeros((2 * ns, 2 * ns), dtype=complex)   # coefficient of exp(-i k.d)
-            q = np.zeros((2 * ns, 2 * ns), dtype=complex)   # coefficient of exp(+i k.d)
-            p[i, j] += tpm
-            q[j, i] += np.conj(tpm)
-            p[ns + i, ns + j] += np.conj(tpm)
-            q[ns + j, ns + i] += tpm
-            p[i, ns + j] += tpp
-            q[j, ns + i] += tpp
-            q[ns + j, i] += np.conj(tpp)
-            p[ns + i, j] += np.conj(tpp)
+            # (row, column, value) of the coefficients of exp(-i k.d) (p) and exp(+i k.d) (q)
+            p = ((i, j, tpm), (ns + i, ns + j, np.conj(tpm)),
+                 (i, ns + j, tpp), (ns + i, j, np.conj(tpp)))
+            q = ((j, i, np.conj(tpm)), (ns + j, ns + i, tpm),
+                 (j, ns + i, tpp), (ns + j, i, np.conj(tpp)))
             linear[i] += np.sqrt(2) * Sj * hop[1, 2]
             linear[j] += np.sqrt(2) * Si * hop[2, 0]
             return p, q
 
-        P, Q, deltas = [], [], []
+        rows, columns, values, slots, deltas = [], [], [], [], []
         for term in model.terms_of_kind(BILINEAR):
             (a, n1), (b, n2) = term.participants
             for cell in state.cells:
@@ -151,8 +149,12 @@ class QuadraticBoseHamiltonian:
                 target = (cell[0] + n2[0], cell[1] + n2[1])
                 p, q = bond(index[(a, state.reduce_cell(source))],
                             index[(b, state.reduce_cell(target))], term.coefficient)
-                P.append(p)
-                Q.append(q)
+                b_index = len(deltas)
+                for slot, entries in ((2 * b_index, p), (2 * b_index + 1, q)):
+                    for r, c, v in entries:
+                        rows.append(r * 2 * ns + c)
+                        columns.append(slot)
+                        values.append(v)
                 deltas.append(model.cartesian_position(a, source) - model.cartesian_position(b, target))
         for term in model.terms_of_kind(ONSITE):
             site = term.participants[0][0]
@@ -160,12 +162,14 @@ class QuadraticBoseHamiltonian:
             for cell in state.cells:
                 i = index[(site, cell)]
                 p, q = bond(i, i, kappa * term.coefficient)
-                constant += p + q
+                for r, c, v in p + q:
+                    constant[r, c] += v
 
         self._constant = constant
-        self._P = np.array(P).reshape(-1, 2 * ns, 2 * ns)
-        self._Q = np.array(Q).reshape(-1, 2 * ns, 2 * ns)
         self._deltas = np.array(deltas, dtype=float).reshape(-1, 2)
+        # Column 2b holds P_b, column 2b+1 holds Q_b, flattened row-major; duplicates are summed.
+        self._bonds = sparse.csr_matrix((np.array(values, dtype=complex), (rows, columns)),
+                                        shape=((2 * ns) ** 2, 2 * len(deltas)))
         self.linear_terms = linear
 
     def _phases(self, momenta) -> Tuple[np.ndarray, np.ndarray]:
@@ -173,13 +177,20 @@ class QuadraticBoseHamiltonian:
         minus = np.exp(-1j * k @ self._deltas.T)                # (nk, nb)
         return k, minus
 
+    def _bond_sum(self, minus_coefficients: np.ndarray, plus_coefficients: np.ndarray) -> np.ndarray:
+        """``sum_b [P_b c^-_{kb} + Q_b c^+_{kb}]`` as ``(m, 2Ns, 2Ns)``."""
+        m, n = len(minus_coefficients), 2 * self.num_sites
+        if not len(self._deltas):
+            return np.zeros((m, n, n), dtype=complex)
+        weights = np.empty((2 * len(self._deltas), m), dtype=complex)
+        weights[0::2] = minus_coefficients.T
+        weights[1::2] = plus_coefficients.T
+        return np.asarray(self._bonds @ weights).T.reshape(m, n, n)
+
     def at(self, momenta) -> np.ndarray:
         """``H(k)`` for momenta ``(m, 2)``; returns ``(m, 2Ns, 2Ns)``."""
         k, minus = self._phases(momenta)
-        H = np.broadcast_to(self._constant, (len(k),) + self._constant.shape).copy()
-        if len(self._deltas):
-            H += np.einsum("kb,bij->kij", minus, self._P) + np.einsum("kb,bij->kij", minus.conj(), self._Q)
-        return H
+        return self._constant + self._bond_sum(minus, minus.conj())
 
     def derivatives_at(self, momenta) -> Tuple[np.ndarray, np.ndarray]:
         """Analytic ``(dH/dk_x, dH/dk_y)`` at momenta ``(m, 2)``."""
@@ -187,9 +198,7 @@ class QuadraticBoseHamiltonian:
         out = []
         for axis in (0, 1):
             factor = -1j * self._deltas[:, axis]
-            d = (np.einsum("kb,bij->kij", minus * factor, self._P)
-                 + np.einsum("kb,bij->kij", (minus * factor).conj(), self._Q))
-            out.append(d if len(self._deltas) else np.zeros((len(k),) + self._constant.shape, complex))
+            out.append(self._bond_sum(minus * factor, (minus * factor).conj()))
         return out[0], out[1]
 
     def second_derivatives_at(self, momenta) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -198,7 +207,5 @@ class QuadraticBoseHamiltonian:
         out = []
         for a, b in ((0, 0), (0, 1), (1, 1)):
             factor = -self._deltas[:, a] * self._deltas[:, b]       # (-i d_a)(-i d_b) = (+i d_a)(+i d_b)
-            d = (np.einsum("kb,bij->kij", minus * factor, self._P)
-                 + np.einsum("kb,bij->kij", minus.conj() * factor, self._Q))
-            out.append(d if len(self._deltas) else np.zeros((len(k),) + self._constant.shape, complex))
+            out.append(self._bond_sum(minus * factor, minus.conj() * factor))
         return out[0], out[1], out[2]
