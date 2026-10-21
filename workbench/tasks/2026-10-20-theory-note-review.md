@@ -3,7 +3,7 @@ title: 이론 노트 검토 (draft → accepted)
 topic: fundamental-theory-of-spin-wave-theory
 priority: 1
 created: '2026-10-20'
-state: active
+state: working
 task: 이론 노트 12편을 주제 순서대로 하나씩 원문 PDF, 인용 문헌, 패키지 계산과 대조하고, 고친 것과 남은 것을 적은 뒤 사용자가 accepted를 정한다.
 end-condition: 12편 모두 사용자 판정(accepted 또는 고칠 것)이 이 표에 적혀 있다.
 references:
