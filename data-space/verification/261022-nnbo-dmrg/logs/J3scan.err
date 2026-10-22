@@ -1,0 +1,6 @@
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.04e-10, calling psi.canonical_form()
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.04e-10, calling psi.canonical_form()
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.11e-10, calling psi.canonical_form()
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.86e-10, calling psi.canonical_form()
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.18e-10, calling psi.canonical_form()
+final DMRG state not in canonical form up to norm_tol_final=1.00e-10: norm_err=1.33e-10, calling psi.canonical_form()

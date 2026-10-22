@@ -1,0 +1,421 @@
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 35, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 20, in run
+    info = dmrg.run(psi, M, dict(mixer=True, max_E_err=1e-11, max_S_err=1e-7, max_sweeps=80,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 103, in run
+    E, _ = engine.run()
+           ^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 453, in run
+    return super().run()
+           ^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/mps_common.py", line 806, in run
+    result = self.run_iteration()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 297, in run_iteration
+    self.sweep(meas_E_trunc=False)
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 527, in sweep
+    return super().sweep(optimize)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/mps_common.py", line 402, in sweep
+    update_data = self.update_local(theta, optimize=optimize)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 565, in update_local
+    E0, theta, N, ov_change = self.diag(theta)
+                              ^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/algorithms/dmrg.py", line 740, in diag
+    E, theta, N = LanczosGroundState(self.eff_H, theta_guess, self.lanczos_params).run()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/linalg/krylov_based.py", line 627, in run
+    N = self._build_krylov()
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/linalg/krylov_based.py", line 654, in _build_krylov
+    raise ValueError(f'Norm of self.psi0 too small: {beta}')
+ValueError: Norm of self.psi0 too small: 1.4080367189738165e-15
+FAIL D=0.5 nd=3
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=21 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=24 seed=-1
+FAIL D=0.1 nd=15 seed=-1
+FAIL D=0.1 nd=18 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=12 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=6 seed=-1
+FAIL D=0.1 nd=3 seed=-1
+FAIL D=0.1 nd=9 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=33 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=27 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.1 nd=30 seed=-1
+FAIL D=0.12 nd=24 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=21 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=18 seed=-1
+FAIL D=0.12 nd=15 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=12 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=9 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=6 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=3 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.12 nd=33 seed=-1
+FAIL D=0.21 nd=24 seed=-1
+FAIL D=0.21 nd=21 seed=-1
+FAIL D=0.12 nd=30 seed=-1
+FAIL D=0.12 nd=27 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.21 nd=18 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.21 nd=15 seed=-1
+FAIL D=0.21 nd=12 seed=-1
+FAIL D=0.21 nd=9 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.21 nd=6 seed=-1
+FAIL D=0.5 nd=24 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+FAIL D=0.21 nd=3 seed=-1
+FAIL D=0.5 nd=21 seed=-1
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
+Traceback (most recent call last):
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 41, in <module>
+    print(json.dumps(run(float(a[1]), float(a[2]), int(a[3]), int(a[4]), int(a[5]), int(a[6]), int(a[7]))),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/dmrg_sector.py", line 24, in run
+    psi = MPS.from_product_state(M.lat.mps_sites(), st, bc="infinite")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/elssen-macmini-smpark/nnbo-dmrg/.venv/lib/python3.12/site-packages/tenpy/networks/mps.py", line 2059, in from_product_state
+    p_st = site.state_labels[p_st]  # translate labels into "int"
+           ~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: '0'
