@@ -23,7 +23,7 @@ import numpy as np
 
 from spintoolkit.methods.lswt.quadratic import QuadraticBoseHamiltonian
 from spintoolkit.methods.lswt.run import LSWTError
-from spintoolkit.methods.nlswt.engine import (NonlinearEnergies, NonlinearSpinWaves,
+from spintoolkit.methods.nlswt.engine import (NonlinearEnergies, NonlinearSpinWaves, degenerate_groups,
                                               bogoliubov_mesh, hilbert_transform)
 from spintoolkit.methods.nlswt.expansion import expand_model
 from spintoolkit.methods.result import ResultHeader, freeze_fields, to_jsonable
@@ -264,9 +264,12 @@ class NLSWTResult:
         Notes
         -----
         The self-energy is band diagonal (off-diagonal elements change the
-        energies at higher order); within an exactly degenerate group of
-        bands the diagonal elements depend on the basis, and their mean (the
-        basis-independent trace) is used for every band of the group.
+        energies at higher order). Within an exactly degenerate group of
+        bands the diagonal elements depend on the basis of the group; the
+        corrections are the eigenvalues of ``P (dH + Sigma_3(w_0)) P``
+        (degenerate perturbation theory, with the matrix densities of
+        :meth:`NonlinearSpinWaves.cubic_spectral_density_matrix`), and the
+        self-energies of ``mode="dyson"`` are taken in that eigenbasis.
         """
         if eta <= 0:
             raise ValueError("eta must be positive")
@@ -298,9 +301,32 @@ class NLSWTResult:
                     sigma[i, n] = cubic(n, w)
             for group in _degenerate_groups(E):
                 if len(group) > 1:
-                    static[i, group] = static[i, group].mean()
-                    on_shell[i, group] = on_shell[i, group].mean()
-                    sigma[i, group] = sigma[i, group].mean(axis=0)
+                    # The diagonal elements depend on the basis of the degenerate subspace;
+                    # the corrections are the eigenvalues of P (dH + Sigma_3(w_0)) P.
+                    xg, dec, src = self.solver.cubic_spectral_density_matrix(ki, group, grid, levels)
+
+                    def cubic_block(freq):
+                        freq = np.asarray(freq, dtype=float)
+                        out = np.zeros((len(group), len(group), len(freq)), dtype=complex)
+                        for a in range(len(group)):
+                            for b in range(len(group)):
+                                out[a, b] = (_transform(xg, dec[a, b], freq)
+                                             + np.conj(_transform(xg, np.conj(src[a, b]), -freq)))
+                        return out
+
+                    block = (T[0].conj().T @ dH[0] @ T[0])[np.ix_(group, group)]
+                    if not (np.any(dec) or np.any(src)):
+                        # no cubic vertex: Sigma_3 = 0, P dH P is Hermitian
+                        static[i, group] = np.linalg.eigvalsh((block + block.conj().T) / 2)
+                        continue
+                    values, V = np.linalg.eig(block + cubic_block([E[group[0]]])[:, :, 0])
+                    order = np.argsort(values.real)
+                    values, V = values[order], V[:, order]
+                    Vinv = np.linalg.inv(V)
+                    static[i, group] = np.real(np.diag(Vinv @ block @ V))
+                    on_shell[i, group] = values - static[i, group]
+                    if mode == "dyson":
+                        sigma[i, group] = np.einsum("na,abw,bn->nw", Vinv, cubic_block(w), V)
         energy = _physical_energies(E_all + static + on_shell.real, E_all)
         unsafe = np.zeros(energy.shape, dtype=bool)
         if self.header.geometry.get("kind") != "finite_torus":
@@ -380,19 +406,12 @@ def _physical_energies(energy: np.ndarray, lswt: np.ndarray) -> np.ndarray:
     return np.where(energy < -1e-10 * scale, np.nan, energy)
 
 
-def _degenerate_groups(energies: np.ndarray, tolerance: float = 1e-8):
-    """Index groups of equal energies (relative tolerance)."""
-    order = np.argsort(energies)
-    scale = max(float(np.max(np.abs(energies))), 1.0)
-    groups, current = [], [int(order[0])]
-    for a, b in zip(order[:-1], order[1:]):
-        if energies[b] - energies[a] <= tolerance * scale:
-            current.append(int(b))
-        else:
-            groups.append(current)
-            current = [int(b)]
-    groups.append(current)
-    return groups
+_degenerate_groups = degenerate_groups
+
+
+def _transform(x: np.ndarray, rho: np.ndarray, omega: np.ndarray) -> np.ndarray:
+    """:func:`hilbert_transform` of a complex density (linear in its real and imaginary parts)."""
+    return hilbert_transform(x, rho.real, omega) + 1j * hilbert_transform(x, rho.imag, omega)
 
 
 def _resolution(fractional: np.ndarray, limit: int = 4096) -> int:

@@ -98,10 +98,24 @@ class TwoMagnonContinuum:
     mesh: np.ndarray
     excluded: np.ndarray
     settings: Dict[str, Any] = field(default_factory=dict)
+    ir_divergent: Optional[np.ndarray] = None
 
     def static(self) -> np.ndarray:
-        """Equal-time two-magnon ``S_2^{ab}(q)``, shape (nq, 3, 3)."""
-        return self.weights.sum(axis=1)
+        """Equal-time two-magnon ``S_2^{ab}(q)``, shape (nq, 3, 3).
+
+        ``+inf`` on a diagonal component flagged in ``ir_divergent`` (its mesh
+        sum grows like ``log N`` without bound), NaN on the off-diagonal
+        components that involve it.
+        """
+        out = self.weights.sum(axis=1)
+        if self.ir_divergent is not None and np.any(self.ir_divergent):
+            out = out.copy()
+            diagonal = np.diagonal(self.ir_divergent, axis1=1, axis2=2)       # (nq, 3)
+            involved = diagonal[:, :, None] | diagonal[:, None, :]
+            out[involved] = np.nan
+            for iq, a in zip(*np.nonzero(diagonal)):
+                out[iq, a, a] = np.inf
+        return out
 
     def spectrum(self, omega: Sequence[float], eta: float, shape: str = "lorentzian",
                  component: Optional[str] = None, part: str = "real") -> np.ndarray:
@@ -134,7 +148,26 @@ class TwoMagnonContinuum:
         else:
             raise ValueError("shape must be 'lorentzian' or 'gaussian'")
         profile = np.where(np.isnan(x), 0.0, profile)       # pairs left out (energy NaN)
-        return np.einsum("qm,qmw->qw", weight, profile)
+        out = np.einsum("qm,qmw->qw", weight, profile)
+        if self.ir_divergent is not None and np.any(self.ir_divergent):
+            # The pair energies of a divergent component reach zero with a weight
+            # density ~ 1/E, so every broadened profile integrates to +inf.
+            diagonal = np.diagonal(self.ir_divergent, axis1=1, axis2=2)
+            if component is None or component == "neutron":
+                hit = np.any(diagonal, axis=1)
+                if component == "neutron":
+                    for i, q in enumerate(self.q):
+                        norm = np.linalg.norm(q)
+                        unit = np.array([q[0], q[1], 0.0]) / norm if norm else np.zeros(3)
+                        hit[i] = np.any(diagonal[i] & (1 - unit ** 2 > 1e-12))
+                out = np.where(hit[:, None], np.inf, out)
+            else:
+                a, b = ("xyz".index(component[0]), "xyz".index(component[1]))
+                if a == b and part == "real":
+                    out = np.where(diagonal[:, a, None], np.inf, out)
+                else:
+                    out = np.where((diagonal[:, a] | diagonal[:, b])[:, None], np.nan, out)
+        return out
 
 
 def _mesh(result, mesh) -> np.ndarray:
@@ -197,7 +230,12 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     the interaction corrections of the same order. Mesh points where ``k`` or
     ``-k - q`` has a zero mode (e.g. a Goldstone mode at a Bragg vector) are
     left out and counted in ``excluded``; their measure vanishes as the mesh
-    is refined, and the weights stay integrable there at ``t = 0``. At
+    is refined. At ``t = 0`` the weight near one soft magnon goes as
+    ``1/|k|`` and is integrable; where ``q`` connects two zero modes (both
+    magnons soft, e.g. the longitudinal weight at a Neel Bragg vector) it
+    goes as ``1/|k|^2``, the sum diverges logarithmically with the mesh, and
+    ``static`` and ``spectrum`` report ``+inf`` on those components
+    (``ir_divergent``, with a warning). At
     ``t > 0`` a zero mode makes the thermal weights diverge logarithmically
     with the mesh in two dimensions (the scattering weight near a zero mode
     goes as ``n |A|^2``), the same Mermin-Wagner divergence as the boson
@@ -286,7 +324,89 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     weights = np.where(np.isnan(energies)[:, :, None, None], 0.0, weights)
     if undefined:
         weights = np.full(weights.shape, np.nan + 0j)
-    return TwoMagnonContinuum(q, energies, weights, k, excluded, settings)
+    divergent = None
+    if t == 0:
+        divergent = _infrared_divergence(result, q, n, ns)
+        if np.any(divergent):
+            first = np.round(q[np.argmax(np.any(divergent, axis=(1, 2)))], 6).tolist()
+            warnings.warn(
+                f"two-magnon continuum: at {int(np.any(divergent, axis=(1, 2)).sum())} momenta "
+                f"(first q={first}) both magnons of a pair become soft together (q connects two "
+                "zero modes, e.g. a Neel Bragg vector) and the pair weight grows as 1/|k|^2, so "
+                "the equal-time sum and every broadened spectrum diverge logarithmically with the "
+                "mesh; they are +inf on those diagonal components (NaN off the diagonal). The "
+                "unbroadened weights at nonzero energy are finite.", UserWarning, stacklevel=2)
+    return TwoMagnonContinuum(q, energies, weights, k, excluded, settings, divergent)
+
+
+#: Radii (fractions of the magnetic reciprocal vectors) and exponent margin of
+#: the infrared test of the t = 0 pair weight near a zero mode.
+IR_TEST_RADII = (1e-3, 5e-4, 2.5e-4)
+IR_TEST_EXPONENT = 1.9
+IR_TEST_COEFFICIENT = 1e-8
+
+
+def _pair_density(result, k: np.ndarray, qi: np.ndarray, n: np.ndarray, ns: int) -> np.ndarray:
+    """t = 0 pair weight per momentum, ``1/2 sum_{nn'} A^a* A^b`` with ``N`` -> ``N_s``, (nk, 3, 3)."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        _, _, Tk, zk = _diagonalization_at(result, k)
+        _, _, Tm, zm = _diagonalization_at(result, -k - qi)
+    cols = slice(ns, 2 * ns)
+    norm = 1.0 / np.sqrt(ns)
+
+    def amplitude(T_first, T_second):
+        return -norm * np.einsum("ia,kin,kim->kanm", n,
+                                 T_first[:, ns:, cols], T_second[:, :ns, cols])
+
+    A = amplitude(Tm, Tk) + np.swapaxes(amplitude(Tk, Tm), 2, 3)
+    W = 0.5 * np.einsum("kanm,kbnm->kab", A.conj(), A)
+    W[zk | zm] = np.nan
+    return W
+
+
+def _infrared_divergence(result, q: np.ndarray, n: np.ndarray, ns: int) -> np.ndarray:
+    """Diagonal components whose t = 0 equal-time sum diverges in the thermodynamic limit.
+
+    Near a point zero mode ``p0`` the pair weight goes as ``|k - p0|^-p``; the
+    2D zone sum converges for ``p < 2``. A single soft magnon gives ``p = 1``;
+    a pair of soft magnons (``-p0 - q`` also a zero mode) gives ``p = 2``, a
+    logarithmic divergence. ``p`` is measured on circles of the radii
+    :data:`IR_TEST_RADII` around every zero mode of
+    :func:`~spintoolkit.observables.zero_modes.scan_zero_modes`; components with
+    ``p >= IR_TEST_EXPONENT`` are flagged. Returns a (nq, 3, 3) bool array.
+    """
+    from spintoolkit.observables.zero_modes import ZERO, scan_zero_modes
+
+    out = np.zeros((len(q), 3, 3), dtype=bool)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        report = scan_zero_modes(result)
+    points = [c.k for c in report.candidates if c.classification == ZERO]
+    if not points:
+        return out
+    reciprocal = 2 * np.pi * np.linalg.inv(np.asarray(result.magnetic_lattice)).T
+    scale = float(np.min(np.linalg.norm(reciprocal, axis=1)))
+    angles = 2 * np.pi * (np.arange(8) + 0.25) / 8
+    circle = np.column_stack([np.cos(angles), np.sin(angles)])
+    radii = scale * np.asarray(IR_TEST_RADII)
+    for iq, qi in enumerate(q):
+        for p0 in points:
+            k = np.concatenate([p0 + r * circle for r in radii])
+            W = np.real(np.diagonal(_pair_density(result, k, qi, n, ns), axis1=1, axis2=2))
+            mean = W.reshape(len(radii), len(circle), 3).mean(axis=1)          # (nr, 3)
+            if not np.all(np.isfinite(mean)):
+                continue
+            # A weight that vanishes identically (e.g. q = 0 with a conserved total
+            # S^z) is round-off amplified by the soft modes; require an O(1) coefficient
+            # of |k - p0|^-2 in units of the reciprocal vectors.
+            positive = np.all(mean > 0, axis=0) & (
+                mean[-1] * IR_TEST_RADII[-1] ** 2 > IR_TEST_COEFFICIENT)
+            with np.errstate(divide="ignore", invalid="ignore"):
+                slope = -np.polyfit(np.log(radii), np.log(np.where(mean > 0, mean, 1.0)), 1)[0]
+            flag = positive & (slope >= IR_TEST_EXPONENT)
+            out[iq] |= np.diag(flag)
+    return out
 
 
 def two_magnon_threshold(result, k_points, grid: Sequence[int] = (48, 48)) -> np.ndarray:

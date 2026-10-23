@@ -62,6 +62,7 @@ import warnings
 from spintoolkit.definitions.defaults import (
     TOPOLOGY_ADAPTIVE_ABSOLUTE, TOPOLOGY_ADAPTIVE_MAX_DEPTH, TOPOLOGY_ADAPTIVE_MAX_POINTS,
     TOPOLOGY_ADAPTIVE_RELATIVE, TOPOLOGY_BAND_GAP_CUTOFF, TOPOLOGY_CHERN_AGREEMENT,
+    TOPOLOGY_GAP_RESOLUTION,
     TOPOLOGY_MIN_LINK_OVERLAP, TOPOLOGY_PLAQUETTE_PHASE_MARGIN)
 from spintoolkit.observables.topology import (
     c2_weight, c2_weight_derivative, compute_berry_curvature, curvature_pair_terms,
@@ -321,6 +322,46 @@ def chern_numbers_fhs(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
     return chern
 
 
+def _signed_separation(result, k: np.ndarray, band: int) -> float:
+    """Separation of particle band ``band`` (ascending) from the neighbouring particle bands at ``k``.
+
+    The touching of a particle band with the hole bands at zero energy (a
+    Goldstone mode) is left to the mesh check of ``band_gap_cutoff``; this
+    measures the gaps between particle bands, where the curvature of a
+    band concentrates when they nearly close.
+    """
+    ns = result.num_sites
+    H = result.hamiltonian_at(np.reshape(k, (1, 2)))[0]
+    eta = np.r_[np.ones(ns), -np.ones(ns)]
+    particles = np.sort(np.linalg.eigvals(eta[:, None] * H).real)[ns:]   # the ns largest
+    return float(min(particles[band] - particles[band - 1] if band > 0 else np.inf,
+                     particles[band + 1] - particles[band] if band + 1 < ns else np.inf))
+
+
+def continuous_band_separation(result, band: int, seeds: int = 6) -> Tuple[float, np.ndarray]:
+    """Smallest separation of a particle band from the other particle bands over continuous k.
+
+    Local minimization (Nelder-Mead in the fractional coordinates of the
+    magnetic reciprocal cell) from the ``seeds`` mesh points of smallest
+    separation. A near-touching between mesh points, where the Berry
+    curvature of the band is concentrated, is invisible to the mesh.
+    """
+    from scipy.optimize import minimize
+
+    reciprocal = 2 * np.pi * np.linalg.inv(result.magnetic_lattice).T
+    fractional = result.k_points @ np.linalg.inv(reciprocal)
+    sampled = np.array([_signed_separation(result, k, band) for k in result.k_points])
+    best, where = np.inf, None
+    for p in np.argsort(sampled)[:seeds]:
+        res = minimize(lambda x: _signed_separation(result, x @ reciprocal, band),
+                       fractional[p], method="Nelder-Mead",
+                       options={"xatol": 1e-10, "fatol": 1e-14, "maxiter": 4000})
+        value = min(float(res.fun), float(sampled[p]))
+        if value < best:
+            best, where = value, (res.x if res.fun <= sampled[p] else fractional[p]) @ reciprocal
+    return best, where
+
+
 def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
                   tolerance: float = TOPOLOGY_CHERN_AGREEMENT,
                   curvature: Optional[BerryCurvature] = None) -> np.ndarray:
@@ -332,10 +373,14 @@ def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
     it returns an arbitrary one. The Kubo integral samples the curvature, so
     it converges slowly where the curvature is concentrated near a small gap,
     and it departs from an integer where the gap closes or the mesh is too
-    coarse. Agreement accepts the integer; otherwise the result is NaN, never
-    a wrong integer in the tested models (a rejection means: refine the mesh,
-    or the gap closes). Both use the same mesh, so this is not a proof; a
-    second mesh (N and 2N) gives the same result when the answer is settled.
+    coarse. Agreement accepts the integer; otherwise the result is NaN (a
+    rejection means: refine the mesh, or the gap closes). Both use the same
+    mesh, so they can also miss the same curvature together, near a gap that
+    nearly closes between mesh points; an accepted band is therefore also
+    checked over continuous k (:func:`continuous_band_separation`), and is NaN
+    if the gap closes or is below ``TOPOLOGY_GAP_RESOLUTION`` times the mesh
+    minimum. This is a diagnostic, not a proof; a second mesh (N and 2N)
+    gives the same result when the answer is settled.
 
     Parameters
     ----------
@@ -362,6 +407,20 @@ def chern_numbers(result, band_gap_cutoff: float = TOPOLOGY_BAND_GAP_CUTOFF,
     fhs = chern_numbers_fhs(result, band_gap_cutoff)
     accepted = np.where(np.abs(kubo - fhs) <= tolerance, np.rint(fhs), np.nan)
     disagree = np.isnan(accepted) & ~np.isnan(kubo) & ~np.isnan(fhs)
+    # Agreement on one mesh does not see a gap that nearly closes between mesh
+    # points: both sums then miss the concentrated curvature together (e.g. two
+    # Dirac points about to merge). Check the separation over continuous k.
+    for band in np.flatnonzero(~np.isnan(accepted)):
+        sampled = min(_signed_separation(result, k, band) for k in result.k_points)
+        gap, where = continuous_band_separation(result, int(band))
+        if gap <= band_gap_cutoff or gap < TOPOLOGY_GAP_RESOLUTION * sampled:
+            accepted[band] = np.nan
+            reason = ("the gap closes" if gap <= band_gap_cutoff else
+                      "the mesh does not resolve this near-touching, where the curvature is "
+                      "concentrated; refine the mesh until the mesh gap approaches it")
+            warnings.warn(f"band {int(band)}: separation {gap:.3g} at k={np.round(where, 6).tolist()} "
+                          f"between mesh points (mesh minimum {sampled:.3g}); {reason}. The "
+                          "Chern number is NaN", UserWarning, stacklevel=2)
     if np.any(disagree):
         bands = np.flatnonzero(disagree).tolist()
         warnings.warn(f"bands {bands}: Kubo {np.round(kubo[disagree], 4).tolist()} and FHS "

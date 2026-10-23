@@ -76,7 +76,11 @@ def test_equal_time_sum_equals_real_space_wick_contraction(case):
     assert np.all(continuum.excluded == 0)
     expected = real_space_static(result, q, L)
     assert np.max(np.abs(expected)) > 1e-2
-    np.testing.assert_allclose(continuum.static(), expected, atol=1e-13)
+    # The identity holds for the mesh sum; static() is the thermodynamic limit, +inf
+    # where q joins two zero modes (the 120 degree state at q = 0, D74).
+    np.testing.assert_allclose(continuum.weights.sum(axis=1), expected, atol=1e-13)
+    divergent = np.any(continuum.ir_divergent, axis=(1, 2))
+    assert divergent.tolist() == ([False] * 4 if case == "neel" else [True, False, False, False])
 
 
 def test_neel_pair_energies_are_sums_of_the_dispersion():
