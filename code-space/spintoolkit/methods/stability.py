@@ -696,27 +696,40 @@ def _amplitude_check(model: SpinModel, state: SpinState, conditions: ExternalCon
         return e / n, np.einsum("ix,iax->ia", force, frames).ravel() / radii.repeat(2) / n
 
     e0 = energy(np.zeros(2 * n))[0]
-    outcomes = []
-    for unit in units:
-        for sign in (1.0, -1.0):
-            values = []
-            for j in range(_HALVINGS):
-                a = sign * STABILITY_AMPLITUDE * np.sqrt(n) / 2 ** j     # rms angle per spin
 
-                def relaxed(y, a=a, unit=unit):
-                    e, g = energy(a * unit + stiff @ y)
-                    return e - e0, stiff.T @ g
+    def change(a, unit):
+        """Energy change per spin at ``a * unit``, relaxed in the stiff directions."""
+        def relaxed(y):
+            e, g = energy(a * unit + stiff @ y)
+            return e - e0, stiff.T @ g
 
-                if stiff.shape[1]:
-                    opt = minimize(relaxed, np.zeros(stiff.shape[1]), jac=True,
-                                   method="L-BFGS-B",
-                                   options={"gtol": 1e-15, "ftol": 0.0, "maxiter": 2000})
-                    values.append(float(opt.fun))
-                else:
-                    values.append(relaxed(np.zeros(0))[0])
-            outcomes.append(_leading(np.array(values) / scale, floor))
+        if stiff.shape[1]:
+            opt = minimize(relaxed, np.zeros(stiff.shape[1]), jac=True, method="L-BFGS-B",
+                           options={"gtol": 1e-15, "ftol": 0.0, "maxiter": 2000})
+            return float(opt.fun)
+        return relaxed(np.zeros(0))[0]
+
+    def series(unit, sign):
+        # rms angle per spin a, a/2, ...
+        return _leading(np.array([change(sign * STABILITY_AMPLITUDE * np.sqrt(n) / 2 ** j, unit)
+                                  for j in range(_HALVINGS)]) / scale, floor)
+
+    outcomes = [series(unit, sign) for unit in units for sign in (1.0, -1.0)]
+    samples = 2 * len(units)
+    if d > 1 and all(o[0] == RISES for o in outcomes):
+        # Sampled directions can all rise while the leading form is negative between
+        # them (a saddle): minimize over the direction in the null space at the smallest
+        # amplitude, then classify that direction as the samples (D75).
+        a = STABILITY_AMPLITUDE * np.sqrt(n) / 2 ** (_HALVINGS - 1)
+        along = lambda y: change(a, A @ y / np.linalg.norm(y))  # noqa: E731
+        y0 = A.T @ units[int(np.argmin([o[2] for o in outcomes[::2]]))]
+        opt = minimize(along, y0, method="Nelder-Mead",
+                       options={"xatol": 1e-6, "fatol": 1e-16, "maxiter": 200 * d})
+        unit = A @ opt.x / np.linalg.norm(opt.x)
+        outcomes += [series(unit, 1.0), series(unit, -1.0)]
+        samples += 2
     outcome, order, value = _combine(outcomes)
-    return HigherOrderCheck("amplitude", fractional, n, 2 * len(units), outcome, order, value,
+    return HigherOrderCheck("amplitude", fractional, n, samples, outcome, order, value,
                             STABILITY_AMPLITUDE)
 
 

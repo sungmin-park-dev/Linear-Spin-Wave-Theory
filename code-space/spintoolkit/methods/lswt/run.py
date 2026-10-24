@@ -36,7 +36,7 @@ Energies are per site in the energy unit E0 of the model (D20).
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Sequence, Tuple
 import warnings
 
 import numpy as np
@@ -124,6 +124,55 @@ def require_lab_frame(result, observable: str) -> None:
                          "rotating frame of a spiral (D34); use spiral_structure_factor for "
                          "the spin structure factor. Other lab-frame observables of spirals "
                          "are not implemented.")
+
+
+def vacuum_beyond_spin(result, observable: str, temperatures: Sequence[float] = (0.0,),
+                       gapless: Optional[bool] = False) -> np.ndarray:
+    """Temperatures at which some boson number exceeds its spin, with a warning (D75).
+
+    ``<n_i>(t) > S_i`` means the moment of site ``i`` would reverse: the
+    Holstein-Primakoff expansion about the reference state is not controlled,
+    and every quantity built from the boson vacuum (or the thermal ensemble)
+    of that state is outside the spin-wave expansion (D64, D75). The magnon
+    bands, which are the classical small-oscillation frequencies, are not
+    affected.
+
+    Parameters
+    ----------
+    result : LSWTResult
+    observable : str
+        Named in the warning.
+    temperatures : sequence of float
+        ``t = k_B T / E0``; at ``t = 0`` the stored ``result.boson_numbers``
+        are used.
+    gapless : bool or None
+        Zero-mode decision passed to ``thermal_quantities`` at ``t > 0``;
+        divergent (``inf``) or undefined (NaN) boson numbers are not counted
+        here (their own checks handle them).
+
+    Returns
+    -------
+    (nt,) bool array
+        True where the consumer must report NaN.
+    """
+    t = np.atleast_1d(np.asarray(temperatures, dtype=float))
+    spins = np.asarray(result.spins, dtype=float)
+    beyond = np.zeros(len(t), dtype=bool)
+    for i, tk in enumerate(t):
+        if tk > 0:
+            from spintoolkit.observables.thermal import thermal_quantities
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                bosons = thermal_quantities(result, [tk], gapless=bool(gapless)).boson_numbers[0]
+        else:
+            bosons = np.asarray(result.boson_numbers, dtype=float)
+        beyond[i] = bool(np.any(np.isfinite(bosons) & (bosons > spins)))
+    if np.any(beyond):
+        warnings.warn(f"{observable}: boson numbers exceed S at t = {t[beyond].tolist()}; the "
+                      "spin-wave expansion about this state is not controlled there (the "
+                      "moment would reverse) and the result is NaN (D75)",
+                      UserWarning, stacklevel=3)
+    return beyond
 
 
 @dataclass(frozen=True)
@@ -308,7 +357,15 @@ class LSWTResult:
         return len(self.site_keys)
 
     def bands(self) -> np.ndarray:
-        """Magnon energies ``(nk, Ns)``, ascending at each k."""
+        """Magnon energies ``(nk, Ns)``, ascending at each k.
+
+        Raises
+        ------
+        ValueError
+            For a MAGSWT result (D62): its bands are those of the augmented
+            Hamiltonian, shifted by ``mu`` (D75).
+        """
+        require_unaugmented(self, "bands")
         return np.sort(self.eigenvalues[:, :self.num_sites], axis=1)
 
     def ordered_moments(self) -> np.ndarray:
@@ -324,7 +381,8 @@ class LSWTResult:
         body = {"site_keys": [[s, list(c)] for s, c in self.site_keys],
                 "spins": self.spins, "directions": self.directions,
                 "k_points": self.k_points, "fractional": self.fractional,
-                "weights": self.weights, "bands": self.bands(),
+                "weights": self.weights,
+                "bands": (None if "augmentation" in self.extra else self.bands()),
                 "classical_energy": self.classical_energy,
                 "zero_point_energy": self.zero_point_energy,
                 "ground_state_energy": self.ground_state_energy,

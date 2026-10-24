@@ -68,7 +68,8 @@ def test_topology(capsys):
     assert "Chern numbers (lower, upper): [ 1. -1.]" in out
     assert "D = 0: [nan nan]" in out
     assert "T = 0.5: kappa_xy / T = -0.1290" in out
-    assert "D -> -D: [0.0009 0.0754 0.129  0.1131]" in out
+    assert "T = 1.0: kappa_xy / T = nan" in out             # <n> > S there (D75)
+    assert "D -> -D: [0.0009 0.0754 0.129     nan]" in out
 
 
 def test_interacting(capsys):

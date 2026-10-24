@@ -19,6 +19,8 @@ A4 (D41) neutron intensity: triangular 120 degree state against the
 The scripts that produce the full tables are in ``code-space/examples/verification/review_benchmarks_a1_a4.py``.
 """
 
+import warnings
+
 import numpy as np
 import pytest
 from scipy.special import spence
@@ -33,6 +35,7 @@ from spintoolkit.models.heisenberg import TRIANGULAR_LATTICE
 from spintoolkit.models.honeycomb import NEAREST_NEIGHBOUR_OFFSETS
 from spintoolkit.observables.berry import chern_numbers, thermal_hall
 from spintoolkit.observables.neutron import neutron_intensity
+from spintoolkit.observables.thermal import thermal_quantities
 from spintoolkit.system.conditions import ExternalConditions
 from spintoolkit.system.geometry import CalculationGeometry
 from spintoolkit.system.model import Site, SpinModel, Term
@@ -189,7 +192,14 @@ def test_kagome_thermal_hall_from_an_independent_bloch_matrix():
                             settings=LSWTSettings(k_points=k_test)).bands()[0]
     np.testing.assert_allclose(lswt_bands, np.linalg.eigvalsh(kagome_bloch(k_test[0], J, D, S, h)),
                                atol=1e-12)
-    np.testing.assert_allclose(thermal_hall(result, ts).kappa_over_t, reference, rtol=1e-6)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        kappa = thermal_hall(result, ts).kappa_over_t
+        beyond = thermal_quantities(result, ts, gapless=False).beyond_lswt
+    # where the thermal boson numbers exceed S the result is NaN (D75)
+    np.testing.assert_array_equal(np.isnan(kappa), beyond)
+    assert not beyond.all()
+    np.testing.assert_allclose(kappa[~beyond], reference[~beyond], rtol=1e-6)
 
 
 def test_kagome_chern_numbers_match_the_literature_and_flip_with_d():

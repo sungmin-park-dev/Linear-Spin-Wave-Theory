@@ -47,6 +47,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Any, Dict, List, Optional, Tuple
+import warnings
 
 import numpy as np
 from scipy.optimize import minimize
@@ -116,8 +117,14 @@ class LTReport:
     Attributes
     ----------
     lambda_min : float
-        Lower bound on the classical energy per site (E0), zero field; includes
-        the onsite constant ``diagnostics["onsite_constant"]``.
+        Smallest LT eigenvalue found per site (E0), zero field, including the
+        onsite constant ``diagnostics["onsite_constant"]``: the minimum over
+        the mesh and the local refinements from its lowest points. It is a
+        lower bound on the classical energy only if it is the global minimum
+        over continuous ``q``, which the search does not certify
+        (``diagnostics["global_minimum_certified"]`` is False, D75); a
+        narrow minimum between mesh points can be missed. For a certified
+        bound on a given supercell use its allowed momenta (D70).
     minima : list of LTWaveVector
         Distinct minima (``q`` and ``-q`` identified).
     near_minimal_fraction : float
@@ -138,7 +145,11 @@ class LTReport:
 
     @property
     def strong_constraint(self) -> bool:
-        """Some minimum admits a single-q state with unit spins (the LT bound is reached)."""
+        """Some minimum found admits a single-q state with unit spins.
+
+        That state reaches ``lambda_min``; it is a ground state only if
+        ``lambda_min`` is the global LT minimum (not certified, D75).
+        """
         return any(m.strong_constraint for m in self.minima)
 
 
@@ -333,7 +344,17 @@ def luttinger_tisza(model: SpinModel, mesh: Tuple[int, int] = (48, 48),
             None if fractions is None else tuple(str(fr) for fr in fractions),
             cell, bool(strong), float(residual), state, energy, u))
     constant = _onsite_constant(model)
+    # Bonds reaching half the mesh or farther alias on it: their q structure is finer than
+    # a mesh step and the search can miss the minimum entirely (D75).
+    reach = np.max([np.abs(np.subtract(t.participants[1][1], t.participants[0][1]))
+                    for t in model.terms_of_kind(BILINEAR)] or [np.zeros(2)], axis=0)
+    if np.any(2 * reach >= (n1, n2)):
+        warnings.warn(f"luttinger_tisza: bonds span up to {reach.astype(int).tolist()} primitive "
+                      f"cells, at least half the mesh {n1}x{n2} along some axis; J(q) varies "
+                      "within a mesh step and lambda_min may miss the global minimum. Use more "
+                      "than twice the longest bond along each axis.", UserWarning, stacklevel=2)
     diagnostics = {"scale": scale, "tolerance": tolerance, "max_denominator": max_denominator,
+                   "global_minimum_certified": False,
                    "zeeman": "ignored (zero field)", "onsite_constant": constant,
                    "single_q_only": "multi-q states and generalized LT are not treated"}
     return LTReport(float(lambda_min + constant), minima, near_fraction, bool(extended), (n1, n2),

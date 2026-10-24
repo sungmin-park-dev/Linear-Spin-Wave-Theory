@@ -14,7 +14,7 @@ Energies are per site in the energy unit E0 of the model (D20).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from math import gcd
 import warnings
 from typing import Any, Dict, Optional, Tuple
@@ -173,8 +173,18 @@ class NLSWTResult:
         rate = -cubic.imag
         if eta == 0 and self.header.geometry.get("kind") != "finite_torus":
             rate = np.full(rate.shape, np.nan)
-        return {"lswt": lswt, "hartree_fock_tadpole": static, "cubic": cubic,
-                "total": total, "decay_rate": rate}
+        return self._outside_expansion({"lswt": lswt, "hartree_fock_tadpole": static,
+                                        "cubic": cubic, "total": total, "decay_rate": rate})
+
+    def _outside_expansion(self, out: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+        """NaN for every entry but the LSWT bands when <n> > S (D75)."""
+        if not self.header.diagnostics.get("boson_numbers_exceed_spin", False):
+            return out
+        warnings.warn("the zero-point boson numbers exceed S (see solve_nlswt): the 1/S "
+                      "corrections are NaN; only the LSWT bands are reported (D75)",
+                      UserWarning, stacklevel=3)
+        return {key: (value if key == "lswt" else np.full(np.shape(value), np.nan))
+                for key, value in out.items()}
 
 
     def decay_rates(self, k_points, grid: Tuple[int, int] = (64, 64)) -> Dict[str, np.ndarray]:
@@ -210,8 +220,8 @@ class NLSWTResult:
         """
         k = np.atleast_2d(np.asarray(k_points, dtype=float))
         pairs = [self.solver.decay_rate(ki, grid) for ki in k]
-        return {"lswt": np.array([p[0] for p in pairs]),
-                "decay_rate": np.array([p[1] for p in pairs])}
+        return self._outside_expansion({"lswt": np.array([p[0] for p in pairs]),
+                                        "decay_rate": np.array([p[1] for p in pairs])})
 
     def spectral_function(self, k_points, omega, eta: float, mode: str = "on_shell",
                           grid: Tuple[int, int] = (64, 64),
@@ -340,7 +350,7 @@ class NLSWTResult:
             width = rate[:, :, None] + eta
             out["spectral"] = width / np.pi / ((w[None, None, :] - energy[:, :, None]) ** 2
                                                + width ** 2)
-            return out
+            return self._outside_expansion(out)
         denominator = (w[None, None, :] + 1j * eta - E_all[:, :, None] - static[:, :, None]
                        - sigma)
         spectral = -np.imag(1.0 / denominator) / np.pi
@@ -350,7 +360,7 @@ class NLSWTResult:
         out.update(spectral=spectral, self_energy=sigma,
                    negative_frequency_weight=(weight(spectral[:, :, below], w[below], axis=-1)
                                               if below.sum() > 1 else np.full((len(k), ns), np.nan)))
-        return out
+        return self._outside_expansion(out)
 
 #: The order-S^0 shift is computed only where its two parts, the Hartree-Fock +
 #: tadpole term and Re Sigma_3, are each at most this fraction of the smallest
@@ -482,10 +492,27 @@ def solve_nlswt(model: SpinModel, state: SpinState,
                            resolution)
     solver = NonlinearSpinWaves(expansion, mesh, quadratic.at, settings.kernel_tolerance)
     energies = solver.energies()
+    # <n_s> of the LSWT vacuum on the loop momenta. Above S the Hartree-Fock
+    # averages and the 1/S expansion itself are not controlled (D75): the order-S^0
+    # pieces and every 1/S magnon quantity are NaN; E_cl + E_zp keeps the status of
+    # the LSWT energy.
+    bosons = np.real(np.diagonal(np.mean(solver.contract._n, axis=0)))
+    ratio = bosons / quadratic.spins
+    beyond = bool(np.any(ratio > 1))
+    if beyond:
+        worst = int(np.argmax(ratio))
+        warnings.warn(f"solve_nlswt: zero-point boson number <n> = {bosons[worst]:.3g} exceeds "
+                      f"the spin S = {quadratic.spins[worst]:.3g}; the 1/S expansion about this "
+                      "state is not controlled and the order-S^0 energy and the 1/S magnon "
+                      "corrections are NaN (D75)", UserWarning, stacklevel=2)
+        energies = replace(energies, hartree_fock=float("nan"), cubic=float("nan"),
+                           tadpole=float("nan"))
     diagnostics = {"num_k": len(k), "max_linear_term": solver.max_linear,
                    "momenta": ("finite torus" if geometry.kind == "finite_torus" else
                                f"{settings.mesh[0]}x{settings.mesh[1]} mesh offset by 1/3 step"),
-                   "tadpole_norm": float(np.linalg.norm(solver.tadpole()[2]))}
+                   "tadpole_norm": float(np.linalg.norm(solver.tadpole()[2])),
+                   "max_boson_number_per_spin": float(np.max(ratio)),
+                   "boson_numbers_exceed_spin": beyond}
     header = ResultHeader.build(
         "nlswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0)", diagnostics)

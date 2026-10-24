@@ -973,6 +973,29 @@
   \slidesource{2026-10-23 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D75): 통제되지 않은 진공과 메시 사이 불안정}\label{decisions-d75-vacuum-stability}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-24 사용자 지시(``그래 그렇게 진행해'', 급한 항목 1·2번). ChatGPT 검토 P10의 남은 P1 묶음 R05(진공 전파)와 안정성 오인증 가운데 Claude가 재현한 것. 방식은 Claude 추천, 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    $n>S$ 원칙 & $\langle n_i\rangle(t)>S_i$이면 모멘트가 뒤집혀 그 상태 둘레의 스핀파 전개가 통제되지 않는다. 진공(또는 열 앙상블)으로 만든 양은 NaN과 경고(\texttt{vacuum\_beyond\_spin}). 띠(고전 미소 진동수)는 둔다. LSWT 바닥 에너지 값은 사용자 결정 대기(D74), \texttt{bond\_correlations}의 에너지도 같은 처리 \\
+    적용 & \texttt{structure\_factor}, \texttt{spiral\_structure\_factor}(가중치·탄성), \texttt{spin\_correlation}, \texttt{bond\_correlations}(상관), \texttt{two\_magnon\_continuum}, \texttt{thermal\_hall}($t$별, \texttt{thermal\_quantities}와 같은 기준), \texttt{LSWTHarmonicFreeEnergy}, \texttt{solve\_nlswt}(HF·3차·tadpole 에너지와 모든 $1/S$ 마그논 양; HF 평균이 진공 기댓값을 직접 쓴다), \texttt{structure\_factor\_s0}, \texttt{structure\_factor\_states} \\
+    MAGSWT 띠 & \texttt{LSWTResult.bands()}도 \texttt{require\_unaugmented}: $\mu$만큼 이동한 띠를 모형의 띠로 내지 않는다. JSON에서는 \texttt{null} \\
+    메시 사이 음수 & \texttt{scan\_zero\_modes}: $\lambda_\mathrm{min}/\mathrm{scale}<-$\texttt{zero\_tolerance}는 영모드가 아니라 \texttt{unstable}(\texttt{has\_unstable}). 열역학량·구조 인자($t>0$)·연속체($t>0$)·열 홀·자화 곡선은 NaN과 경고. 반례: $J_1=1$, $J_2=0.7$ 사슬과 $y$ 강자성, $h=h_\mathrm{sat}-0.01$에서 정확한 최저 $\omega=-0.01$, 메시 8에서는 최저 0.067 \\
+    SCSWT frozen & 열역학 극한에서 $H_\mathrm{SC}(k)$의 최저 고유값을 특수점($0,1/2,1/3,2/3$)과 메시 최저점에서 연속 최소화한다. 음수이면 frozen은 NaN과 경고, 자기무모순은 \texttt{LSWTError}. 반례: UUD $S=1/2$, $h_{c1}-10^{-4}$(1/3 이동 메시에 $k=0$이 없다) \\
+    대칭 허용치 & \texttt{\_symmetry\_axes}: 허용치를 1 E0가 아니라 결합 크기에 상대로. 모든 결합을 $c$배 해도 판정이 같다. 반례: $S=1$ Néel spinodal, $c=10^{-12}$에서 \texttt{stable} \\
+    4차 표본 & 2차원 이상 우연 영공간에서 표본 방향이 모두 오르면, 가장 작은 진폭에서 방향을 연속 최소화하고 그 방향도 판정한다. 반례: 4차 형식 $[x_1^4+4x_2^4-4.1x_1^2x_2^2]/2$, 8방향 모두 양수지만 $-(2/45)a^4$ 방향이 있다 \\
+    LT 하한 & \texttt{lambda\_min}은 찾은 최솟값이며 전역 최소라는 인증이 없으면 하한이 아니다(\texttt{diagnostics["global\_minimum\_certified"]=False}, 설명 수정). 결합 길이가 메시의 절반 이상이면 경고 \\
+    상태 선택 & \texttt{select\_on\_manifold}: 고른 상태를 \texttt{local\_stability}(연속 $k$)로 확인해 불안정이면 \texttt{not\_soft}. 반례: compass 모형 $j_3>a/4$에서 Tetra $N=4$ 메시가 놓친 $q^2$ 불안정 \\
+    검증 & \texttt{tests/test\_methods/test\_physics\_review\_2026\_10\_24.py}; 고온 열 홀 기댓값 갱신(튜토리얼 5의 $T=1$은 NaN) \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-24 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

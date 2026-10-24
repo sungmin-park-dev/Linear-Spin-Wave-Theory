@@ -173,7 +173,7 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
                 if mu > 0:
                     status, message = "augmented", result.extra["augmentation"]["label"]
                 else:
-                    lowest = float(np.min(result.bands()))
+                    lowest = float(np.min(result.eigenvalues[:, :result.num_sites]))
             except LSWTError as error:
                 status, message = "unstable", str(error).splitlines()[0][:200]
             except _NotStationary:

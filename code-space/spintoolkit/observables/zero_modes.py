@@ -10,7 +10,11 @@ threshold cannot separate a tiny gap from a zero mode. Every examined point is
 therefore put in one of three classes, with ``lambda = lambda_min / scale`` and
 ``scale`` the largest ``|eig H(k)|`` on the mesh:
 
-- ``zero``:      ``lambda <= zero_tolerance`` (round-off size);
+- ``unstable``:  ``lambda < -zero_tolerance``: ``H(k)`` has a negative
+  eigenvalue beyond round-off between mesh points, so the state has no
+  harmonic vacuum and no magnon Gibbs state (D75); thermal observables are
+  NaN;
+- ``zero``:      ``|lambda| <= zero_tolerance`` (round-off size);
 - ``candidate``: ``zero_tolerance < lambda <= candidate_tolerance``; the user
   decides whether it is a zero mode or a small gap;
 - ``gapped``:    otherwise.
@@ -34,6 +38,7 @@ NBCP Y and V states with J_PD or J_Gamma), otherwise ``unknown``.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import warnings
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
@@ -46,6 +51,7 @@ from spintoolkit.definitions.defaults import (
 ZERO = "zero"
 CANDIDATE = "candidate"
 GAPPED = "gapped"
+UNSTABLE = "unstable"
 
 _SPECIAL = (0.0, 0.5, 1 / 3, 2 / 3)
 
@@ -105,6 +111,11 @@ class ZeroModeReport:
     def has_candidates(self) -> bool:
         return any(c.classification == CANDIDATE for c in self.candidates)
 
+    @property
+    def has_unstable(self) -> bool:
+        """A significantly negative ``lambda_min`` was found (no harmonic vacuum, D75)."""
+        return any(c.classification == UNSTABLE for c in self.candidates)
+
     def summary(self) -> str:
         if not self.candidates:
             m = self.global_minimum
@@ -130,12 +141,32 @@ class ZeroModeReport:
                             "zone_centre": self.zone_centre, "summary": self.summary()})
 
 
+def require_no_instability(report: "ZeroModeReport", observable: str) -> bool:
+    """Warn and return True if the scan found an instability between mesh points (D75).
+
+    The consumer reports NaN: with a negative oscillator energy the magnon
+    Boltzmann sums diverge and no thermal state of the harmonic theory exists.
+    """
+    if not report.has_unstable:
+        return False
+    worst = min((c for c in report.candidates if c.classification == UNSTABLE),
+                key=lambda c: c.lowest)
+    warnings.warn(f"{observable}: H(k) has a negative eigenvalue between mesh points "
+                  f"(lambda_min/scale {worst.lowest:.3g} at q={_show(worst.fractional)}): the "
+                  "state is unstable, has no harmonic vacuum or thermal state, and the result "
+                  "is NaN (D75); the mesh missed it, so check the state with local_stability",
+                  UserWarning, stacklevel=3)
+    return True
+
+
 def _show(p) -> list:
     """Fractional momentum for display: rounded, then folded into [0, 1)."""
     return (np.mod(np.round(np.asarray(p, dtype=float), 6), 1.0) + 0.0).tolist()
 
 
 def _classify(value: float, zero_tolerance: float, candidate_tolerance: float) -> str:
+    if value < -zero_tolerance:
+        return UNSTABLE
     if value <= zero_tolerance:
         return ZERO
     if value <= candidate_tolerance:
@@ -175,7 +206,11 @@ def _symmetry_axes(model, conditions) -> np.ndarray:
         columns.append(np.concatenate(parts) if parts else np.zeros(1))
     L = np.column_stack(columns)
     _, s, vt = np.linalg.svd(L)
-    tolerance = 1e-10 * max(1.0, s.max(initial=0.0))
+    # Relative to the size of the couplings (not to 1 E0): the classification must not
+    # change when every coupling is rescaled (D75).
+    sizes = [np.linalg.norm(t.coefficient) for t in model.terms if t.kind in (BILINEAR, "onsite")]
+    sizes += [np.linalg.norm(t.coefficient.T @ field_vector) for t in model.terms_of_kind(ZEEMAN)]
+    tolerance = 1e-10 * max(sizes, default=0.0)
     return vt[np.sum(s > tolerance):].T
 
 
@@ -298,7 +333,7 @@ def scan_zero_modes(result, model=None, state=None, conditions=None,
     finished = []
     for point in unique:
         H0 = result.hamiltonian_at(point.k)[0]
-        gap = _gap(H0) if point.classification != ZERO else None
+        gap = _gap(H0) if point.classification not in (ZERO, UNSTABLE) else None
         lines: Tuple[float, ...] = ()
         origin = "not examined"
         if point.classification != GAPPED:

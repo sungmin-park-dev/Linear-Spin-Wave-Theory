@@ -237,7 +237,7 @@ def structure_factor_s0(nlswt_result, q_points, omega, eta: float,
         negative = np.sum(np.maximum(-total, 0.0), axis=1) / np.sum(np.abs(total), axis=1)
     out.update(energy=energy, weight=weight, lswt_energy=lswt_energy, lswt_weight=lswt_weight,
                negative_weight=negative)
-    return out
+    return _outside_expansion(nlswt_result, out, keep=("lswt_energy",))
 
 
 def structure_factor_states(nlswt_result, q_points) -> Dict[str, list]:
@@ -303,7 +303,23 @@ def structure_factor_states(nlswt_result, q_points) -> Dict[str, list]:
         out["lswt_weight"].append(np.einsum("an,bn->nab", a, a.conj()))
         out["two_magnon_energy"].append(np.array(energies))
         out["two_magnon_weight"].append(np.array(weights))
-    return out
+    return _outside_expansion(nlswt_result, out, keep=("two_magnon_energy",))
+
+
+def _outside_expansion(nlswt_result, out: Dict[str, Any], keep: Tuple[str, ...]) -> Dict[str, Any]:
+    """NaN for every entry but the LSWT energies when <n> > S (D75)."""
+    if not nlswt_result.header.diagnostics.get("boson_numbers_exceed_spin", False):
+        return out
+    warnings.warn("the zero-point boson numbers exceed S (see solve_nlswt): the spin-wave "
+                  "expansion is not controlled and the order-S^0 spectrum is NaN (D75)",
+                  UserWarning, stacklevel=3)
+
+    def blank(value):
+        if isinstance(value, list):
+            return [blank(v) for v in value]
+        return np.full(np.shape(value), np.nan)
+
+    return {key: (value if key in keep else blank(value)) for key, value in out.items()}
 
 
 @dataclass(frozen=True)

@@ -43,7 +43,7 @@ import warnings
 
 import numpy as np
 
-from spintoolkit.observables.zero_modes import ZeroModeReport, scan_zero_modes
+from spintoolkit.observables.zero_modes import ZeroModeReport, require_no_instability, scan_zero_modes
 
 
 def _bose(energy: np.ndarray, t: float) -> np.ndarray:
@@ -242,18 +242,24 @@ def cartesian_weight(weights: np.ndarray, component: Optional[str],
 
 
 def _zero_mode_decision(result, temperature, zero_modes, gapless):
+    """Zero-mode decision of D25 at ``t > 0``: ``(gapless, report dict, unstable)``.
+
+    ``unstable`` is True (with a warning) when the scan found a negative
+    eigenvalue of ``H(k)`` between mesh points: no thermal state exists (D75).
+    """
     if temperature == 0:
-        return None, {}
+        return None, {}, False
     from spintoolkit.observables.thermal import ZeroModeCandidateError
     report = zero_modes if zero_modes is not None else scan_zero_modes(result)
     if gapless is None:
-        if report.has_candidates:
+        if report.has_candidates and not report.has_unstable:
             raise ZeroModeCandidateError(report)
         gapless = report.has_zero
     if gapless:
         warnings.warn("gapless spectrum: thermal weights diverge as t / w near the zero modes",
                       UserWarning, stacklevel=3)
-    return bool(gapless), report.to_dict()
+    unstable = require_no_instability(report, "structure factor at t > 0")
+    return bool(gapless), report.to_dict(), unstable
 
 
 def _ordered_moments(result, t: float, gapless: Optional[bool]) -> np.ndarray:
@@ -409,14 +415,14 @@ def structure_factor(result, q_points, temperature: float = 0.0,
 
     require_unaugmented(result, "structure_factor")
     require_stationary(result, "structure_factor")
-    from spintoolkit.methods.lswt.run import require_lab_frame
+    from spintoolkit.methods.lswt.run import require_lab_frame, vacuum_beyond_spin
 
     require_lab_frame(result, "structure_factor")
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     t = float(temperature)
     if not np.isfinite(t) or t < 0:
         raise ValueError("temperature must be finite and non-negative")
-    gapless, report = _zero_mode_decision(result, t, zero_modes, gapless)
+    gapless, report, unstable = _zero_mode_decision(result, t, zero_modes, gapless)
     ns = result.num_sites
     A = _deviation_vectors(result)
     # H(k) is in the full-position gauge (D13): psi(q) already carries exp(-i q . tau_i),
@@ -444,6 +450,9 @@ def structure_factor(result, q_points, temperature: float = 0.0,
     for i in np.flatnonzero(bragg):
         F = np.exp(-1j * result.positions @ q[i]) @ _moments(moment_tensors, i, moments)
         elastic[i] = np.outer(F, F.conj()) / ns ** 2
+    if unstable or vacuum_beyond_spin(result, "structure_factor", [t], gapless)[0]:
+        weights = np.full_like(weights, np.nan)
+        elastic = np.full_like(elastic, np.nan)
     return StructureFactor(q, energies, weights, elastic, bragg, zero, t, gapless, report, limit)
 
 
@@ -509,7 +518,8 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
         branches then survive; use the commensurate supercell with
         :func:`structure_factor`.
     """
-    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
+    from spintoolkit.methods.lswt.run import (require_stationary, require_unaugmented,
+                                              vacuum_beyond_spin)
 
     require_unaugmented(result, "spiral_structure_factor")
     require_stationary(result.rotating, "spiral_structure_factor")
@@ -527,7 +537,7 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
     t = float(temperature)
     if not np.isfinite(t) or t < 0:
         raise ValueError("temperature must be finite and non-negative")
-    gapless, report = _zero_mode_decision(rotating, t, zero_modes, gapless)
+    gapless, report, unstable = _zero_mode_decision(rotating, t, zero_modes, gapless)
     ns = rotating.num_sites
     n = np.asarray(result.structure.rotation_axis, dtype=float)
     K = np.array([[0, -n[2], n[1]], [n[2], 0, -n[0]], [-n[1], n[0], 0]])
@@ -576,7 +586,11 @@ def spiral_structure_factor(result, q_points, temperature: float = 0.0,
                       f"momenta (e.g. Goldstone modes at k = 0, +-Q): the weights of that "
                       f"branch are the direction-independent limit at {int(limit.sum())} of them "
                       f"and NaN at {int(undefined.sum())}", UserWarning, stacklevel=2)
-    return StructureFactor(q, np.concatenate(energies, axis=1), np.concatenate(weights, axis=1),
+    weights = np.concatenate(weights, axis=1)
+    if unstable or vacuum_beyond_spin(rotating, "spiral_structure_factor", [t], gapless)[0]:
+        weights = np.full_like(weights, np.nan)
+        elastic = np.full_like(elastic, np.nan)
+    return StructureFactor(q, np.concatenate(energies, axis=1), weights,
                            elastic, bragg, zero, t, gapless, report, limit)
 
 
@@ -640,7 +654,7 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
 
     require_unaugmented(result, "spin_correlation")
     require_stationary(result, "spin_correlation")
-    from spintoolkit.methods.lswt.run import require_lab_frame
+    from spintoolkit.methods.lswt.run import require_lab_frame, vacuum_beyond_spin
     from spintoolkit.states.spin_state import reduce_cell
 
     require_lab_frame(result, "spin_correlation")
@@ -652,6 +666,9 @@ def spin_correlation(result, model, first, second) -> Dict[str, np.ndarray]:
     fluctuation = _fluctuation(result, G, A, i, j, r_i, r_j)
     m = (result.spins - result.boson_numbers)[:, None] * result.directions
     ordered = np.outer(m[i], m[j])
+    if vacuum_beyond_spin(result, "spin_correlation")[0]:
+        ordered = np.full((3, 3), np.nan)
+        fluctuation = np.full((3, 3), np.nan, dtype=complex)
     return {"ordered": ordered, "fluctuation": fluctuation, "total": ordered + fluctuation}
 
 
@@ -675,7 +692,7 @@ def bond_correlations(result, model) -> Dict[str, Any]:
 
     require_unaugmented(result, "bond_correlations")
     require_stationary(result, "bond_correlations")
-    from spintoolkit.methods.lswt.run import require_lab_frame
+    from spintoolkit.methods.lswt.run import require_lab_frame, vacuum_beyond_spin
     from spintoolkit.system.model import BILINEAR, ZEEMAN
     from spintoolkit.states.spin_state import reduce_cell
 
@@ -725,4 +742,9 @@ def bond_correlations(result, model) -> Dict[str, Any]:
         for i, (s, _) in enumerate(result.site_keys):
             if s == site:
                 energy -= (term.coefficient.T @ field_vector) @ ((spins[i] - n_bos[i]) * result.directions[i])
+    if vacuum_beyond_spin(result, "bond_correlations")[0]:
+        # The correlations need the boson vacuum; the energy is the LSWT
+        # ground-state energy (linear in <n>), reported with the same caveat (D75).
+        for bond in bonds:
+            bond["correlation"] = np.full((3, 3), np.nan)
     return {"bonds": bonds, "energy": float(energy / ns)}
