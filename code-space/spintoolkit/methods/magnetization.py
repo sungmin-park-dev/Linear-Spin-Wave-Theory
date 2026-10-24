@@ -157,7 +157,7 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
     from spintoolkit.methods.lswt import LSWTSettings, solve_lswt
     from spintoolkit.methods.lswt.run import LSWTError
     from spintoolkit.observables.thermal import magnon_free_energy, thermal_quantities
-    from spintoolkit.observables.zero_modes import scan_zero_modes
+    from spintoolkit.observables.zero_modes import require_no_instability, scan_zero_modes
 
     e = np.asarray(direction, dtype=float)
     e = e / np.linalg.norm(e)
@@ -175,6 +175,8 @@ def magnetization_curve(model: SpinModel, state: SpinState, fields: Sequence[flo
         if result is None or len(t) == 0:
             return np.zeros(len(t), dtype=bool), False
         report = scan_zero_modes(result)
+        if require_no_instability(report, "magnetization_curve"):
+            return np.ones(len(t), dtype=bool), False      # no thermal state (D75)
         gapless = bool(report.has_zero or report.has_candidates)
         if gapless:
             return (t == 0) & bool(np.any(result.boson_numbers > result.spins)), True

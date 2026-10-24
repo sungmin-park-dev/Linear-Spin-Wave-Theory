@@ -546,6 +546,19 @@ def select_on_manifold(model: SpinModel, state: SpinState,
     if adiabatic > criteria.adiabatic_warning:
         warnings.warn(f"adiabatic ratio {adiabatic:.3g} > {criteria.adiabatic_warning}: the soft "
                       "coordinate is weakly separated from the other modes", UserWarning, stacklevel=2)
+    # The provider sees only its own mesh: a harmonic instability between its momenta
+    # leaves E_qm finite although the state has no vacuum (D75). Check continuous k.
+    from spintoolkit.methods.stability import UNSTABLE, local_stability
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        stability = local_stability(model, selected, conditions, higher_order=False)
+    diagnostics["selected_stability"] = stability.summary()
+    if stability.verdict == UNSTABLE:
+        return result(NOT_SOFT, "the selected state is unstable at continuous momenta "
+                      f"(local_stability: {stability.summary()[:160]}); its zero-point energy "
+                      "is not defined and the provider mesh missed the instability",
+                      axis_=axis)
     message = f"Gamma = E_cl + E_qm is minimal at phi = {phi_gamma:.6f} about the axis"
     if "quantum" in shifts:
         message += f"; {shifts['quantum']['shift']:+.3g} rad from the E_qm minimum"
@@ -887,9 +900,10 @@ class LSWTZeroPointEnergy:
             frequencies.append(omega)
         self.unstable_pairs.append(unstable)
         self.zone_centre.append("excluded (no axis)" if axis is None else "soft pair projected")
-        return float(total / len(H) / ns) + self._thermal(k, frequencies, unstable, len(H) * ns)
+        return float(total / len(H) / ns) + self._thermal(k, frequencies, unstable, len(H) * ns,
+                                                         H[~centre], hamiltonian.spins)
 
-    def _thermal(self, k, frequencies, unstable, num_modes) -> float:
+    def _thermal(self, k, frequencies, unstable, num_modes, blocks=None, spins=None) -> float:
         """Thermal part of the harmonic free energy per site (zero for the zero-point provider)."""
         return 0.0
 
@@ -956,10 +970,18 @@ class LSWTHarmonicFreeEnergy(LSWTZeroPointEnergy):
         self.soft_cutoff = float(soft_cutoff)
         self.left_out: list = []
         self.undefined = 0
+        self.beyond_spin = 0
 
-    def _thermal(self, k, frequencies, unstable, num_modes) -> float:
+    def _thermal(self, k, frequencies, unstable, num_modes, blocks=None, spins=None) -> float:
         T = self.temperature
         if unstable:
+            self.undefined += 1
+            return float("nan")
+        if blocks is not None and len(blocks) and np.any(_thermal_bosons(blocks, T) > spins):
+            # <n_i>(T) > S_i: the moment would reverse and the harmonic expansion of
+            # f(phi, T) is not controlled (D75); the zone centre (measure 1/N) is not
+            # needed for this check.
+            self.beyond_spin += 1
             self.undefined += 1
             return float("nan")
         total, left_out = 0.0, 0
@@ -981,7 +1003,8 @@ class LSWTHarmonicFreeEnergy(LSWTZeroPointEnergy):
         out.update({"provider": "LSWT harmonic free energy (QuadraticBoseHamiltonian)",
                     "temperature": self.temperature, "soft_cutoff": self.soft_cutoff,
                     "soft_modes_left_out": sorted(set(self.left_out)),
-                    "undefined_calls": self.undefined})
+                    "undefined_calls": self.undefined,
+                    "boson_numbers_above_spin_calls": self.beyond_spin})
         return out
 
 
@@ -1005,6 +1028,21 @@ def _harmonic_zero_point(Hk: np.ndarray) -> Tuple[float, int]:
     """``sum(omega) / 2 - Tr H / 4`` of one BdG block and the number of unstable mode pairs."""
     energy, unstable, _ = _harmonic_modes(Hk)
     return energy, unstable
+
+
+def _thermal_bosons(blocks: np.ndarray, T: float) -> np.ndarray:
+    """Thermal boson numbers ``<n_i>(T)`` per site, averaged over the given stable blocks."""
+    from spintoolkit.methods.lswt.diagonalization import Diagonalizer
+    from spintoolkit.observables.bose_statistics import bose_occupation
+
+    ns = blocks.shape[1] // 2
+    J = np.diag(np.r_[np.ones(ns), -np.ones(ns)])
+    total = np.zeros(ns)
+    for Hk in blocks:
+        E, V = Diagonalizer.Colpa(np.linalg.cholesky(Hk), J)
+        kernel = np.r_[np.ones(ns), np.zeros(ns)] + bose_occupation(E, T)
+        total += np.einsum("in,n,in->i", V, kernel, V.conj()).real[ns:]
+    return total / len(blocks)
 
 
 def _harmonic_modes(Hk: np.ndarray) -> Tuple[float, int, np.ndarray]:

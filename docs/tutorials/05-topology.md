@@ -81,11 +81,14 @@ and divide by the layer spacing for a bulk conductivity.
 T = 0.1: kappa_xy / T = -0.0009
 T = 0.3: kappa_xy / T = -0.0754
 T = 0.5: kappa_xy / T = -0.1290
-T = 1.0: kappa_xy / T = -0.1131
-D -> -D: [0.0009 0.0754 0.129  0.1131]
+T = 1.0: kappa_xy / T = nan
+D -> -D: [0.0009 0.0754 0.129     nan]
 ```
 
 At low T the response is activated across the magnon gap, which is h here.
+At T = 1.0 the thermal boson number per site exceeds S = 1/2: the moment
+would reverse, the free-magnon ensemble is outside the spin-wave expansion,
+and the result is NaN with a warning (D75), as in `thermal_quantities`.
 Reversing D reverses its sign. The Bloch Hamiltonians satisfy
 H_{−D}(k) = H_D(−k)^*, which you can check with `result.hamiltonian_at`.
 This relation maps Ω_n(k) to −Ω_n(−k), so the Chern numbers and κ_xy change

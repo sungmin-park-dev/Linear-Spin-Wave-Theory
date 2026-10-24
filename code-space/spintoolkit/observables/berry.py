@@ -553,12 +553,13 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     -------
     ThermalHall
     """
-    from spintoolkit.methods.lswt.run import require_stationary, require_unaugmented
+    from spintoolkit.methods.lswt.run import (require_stationary, require_unaugmented,
+                                              vacuum_beyond_spin)
 
     require_unaugmented(result, "thermal_hall")
     require_stationary(result, "thermal_hall")
     from spintoolkit.observables.thermal import ZeroModeCandidateError
-    from spintoolkit.observables.zero_modes import scan_zero_modes
+    from spintoolkit.observables.zero_modes import require_no_instability, scan_zero_modes
 
     _check_result(result)
     if _mesh_indices(result) is None:
@@ -568,8 +569,9 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     if np.any(~np.isfinite(t)) or np.any(t < 0):
         raise ValueError("temperatures must be finite and non-negative")
     report = zero_modes if zero_modes is not None else scan_zero_modes(result)
+    unstable = require_no_instability(report, "thermal_hall")
     if gapless is None:
-        if report.has_candidates:
+        if report.has_candidates and not unstable:
             raise ZeroModeCandidateError(report)
         gapless_flag, decision = report.has_zero, "scan"
     else:
@@ -577,9 +579,14 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
     if gapless_flag:
         warnings.warn("gapless spectrum: kappa_xy includes the neighbourhood of the zero modes; "
                       "check its convergence on finer meshes", UserWarning, stacklevel=2)
+    # Where <n_i>(t) > S_i the free-magnon ensemble is outside the spin-wave
+    # expansion, as in thermal_quantities (D75).
+    beyond = (np.ones(len(t), dtype=bool) if unstable
+              else vacuum_beyond_spin(result, "thermal_hall", t, gapless_flag))
     if integration is not None:
         area = float(abs(np.linalg.det(result.magnetic_lattice)))
         kappa, diagnostics = _adaptive_kappa(result, t, band_gap_cutoff, integration, area)
+        kappa = np.where(beyond, np.nan, kappa)
         return ThermalHall(t, kappa, np.full(len(t), np.nan), gapless_flag, decision,
                            report.to_dict(), float(band_gap_cutoff), area, diagnostics)
     curvature = curvature if curvature is not None else berry_curvature(result, band_gap_cutoff)
@@ -594,7 +601,9 @@ def thermal_hall(result, temperatures, zero_modes=None, gapless: Optional[bool] 
         kappa.append(-float(result.weights @ values) / area)
         band_sum.append(-float(result.weights @ np.sum(c2_weight(curvature.energies, tk)
                                                        * curvature.curvature, axis=1)) / area)
-    return ThermalHall(t, np.array(kappa), np.array(band_sum), gapless_flag, decision,
+    kappa = np.where(beyond, np.nan, kappa)
+    band_sum = np.where(beyond, np.nan, band_sum)
+    return ThermalHall(t, kappa, band_sum, gapless_flag, decision,
                        report.to_dict(), float(band_gap_cutoff), area)
 
 

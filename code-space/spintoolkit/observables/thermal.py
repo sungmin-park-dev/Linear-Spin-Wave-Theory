@@ -185,7 +185,7 @@ def thermal_quantities(result, temperatures: Sequence[float],
         raise ValueError("temperatures must be finite and non-negative")
     report = zero_modes if zero_modes is not None else scan_zero_modes(result)
     if gapless is None:
-        if report.has_candidates:
+        if report.has_candidates and not report.has_unstable:
             raise ZeroModeCandidateError(report)
         gapless_flag, decision = report.has_zero, "scan"
     else:
@@ -201,6 +201,10 @@ def thermal_quantities(result, temperatures: Sequence[float],
         undefined.append("the reference state is not stationary (linear boson terms remain)")
     if diagnostics.get("inversion_closed", True) is False:
         undefined.append("the explicit k_points are not closed under k -> -k")
+    if report.has_unstable:
+        # A negative eigenvalue of H(k) between mesh points (D75): no harmonic vacuum.
+        undefined.append("H(k) has a negative eigenvalue between mesh points (the state is "
+                         "unstable; see zero_modes.summary() and local_stability)")
     if undefined:
         warnings.warn(f"{' and '.join(undefined)}: the thermal quantities have no harmonic "
                       "expansion here and are NaN", UserWarning, stacklevel=2)

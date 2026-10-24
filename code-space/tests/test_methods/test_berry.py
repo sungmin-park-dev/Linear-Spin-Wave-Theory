@@ -323,18 +323,30 @@ def test_haldane_thermal_hall_from_an_independent_two_band_calculation():
             reference[i] += c2_quadrature(lower, t) * solid - c2_quadrature(upper, t) * solid
     area = abs(np.linalg.det(result.magnetic_lattice))
     reference = -reference / len(result.k_points) / area
-    kappa = thermal_hall(result, ts).kappa_over_t
-    assert np.allclose(kappa, reference, rtol=1e-6)
+    # at t = 2 the thermal boson numbers exceed S: outside LSWT, NaN (D75)
+    with pytest.warns(UserWarning, match="exceed S"):
+        kappa = thermal_hall(result, ts).kappa_over_t
+    assert np.allclose(kappa[:2], reference[:2], rtol=1e-6) and np.isnan(kappa[2])
 
 
 def test_pair_form_equals_band_sum_and_limits():
     for result in (haldane(0.2, (24, 24))[2], kitaev(mesh=(24, 24))):
         ts = [0.0, 0.02, 0.05, 1.0, 1e3]
-        hall = thermal_hall(result, ts)
-        assert np.allclose(hall.kappa_over_t, hall.kappa_over_t_band_sum, rtol=1e-10, atol=1e-16)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            hall = thermal_hall(result, ts)
+        assert np.allclose(hall.kappa_over_t, hall.kappa_over_t_band_sum, rtol=1e-10, atol=1e-16,
+                           equal_nan=True)
         k = hall.kappa_over_t
         assert k[0] == 0 and abs(k[1]) < 1e-3 * abs(k[3])      # gapped: exponentially small
-        assert abs(k[4]) < 1e-2 * abs(k[3])                       # sum of Chern numbers is zero
+        assert np.isnan(k[4])                                    # <n> > S at t = 1000 (D75)
+        # the formula itself: the sum of Chern numbers is zero, so the high-t limit vanishes
+        terms = [curvature_pair_terms(E, T, [Dx, Dy], result.num_sites)
+                 for E, T, Dx, Dy in zip(result.eigenvalues, result.eigenvectors,
+                                         *result.hamiltonian_derivatives_at(result.k_points))]
+        high = result.weights @ np.array([weighted_curvature_sum(x, 1e3) for x in terms])
+        low = result.weights @ np.array([weighted_curvature_sum(x, 1.0) for x in terms])
+        assert abs(high) < 1e-2 * abs(low)
     forward, backward = (thermal_hall(kitaev(mesh=(24, 24), sign=s), [0.3]).kappa_over_t
                          for s in (1, -1))
     assert np.allclose(forward, -backward, rtol=1e-10)             # time reversal
@@ -449,7 +461,7 @@ def cell_convention_shift(result, t):
 
 def test_cell_convention_kappa_is_not_a_property_of_the_system():
     """Only Chern numbers agree; the returned kappa is the full-position one."""
-    ts = [0.2, 1.0]
+    ts = [0.2, 0.4]                                   # <n> < S (D75)
     symmetric = anisotropic_haldane((1.0, 1.0, 1.0))
     assert np.allclose(kappa_in_cell_convention(symmetric, ts),
                        thermal_hall(symmetric, ts).kappa_over_t, rtol=1e-10)  # C3: J_a = 0

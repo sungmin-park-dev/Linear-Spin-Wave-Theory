@@ -246,7 +246,7 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
 
     require_unaugmented(result, "two_magnon_continuum")
     require_stationary(result, "two_magnon_continuum")
-    from spintoolkit.methods.lswt.run import require_lab_frame
+    from spintoolkit.methods.lswt.run import require_lab_frame, vacuum_beyond_spin
 
     require_lab_frame(result, "two_magnon_continuum")
     t = float(temperature)
@@ -256,11 +256,12 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     undefined = False
     if t > 0:
         from spintoolkit.observables.thermal import ZeroModeCandidateError
-        from spintoolkit.observables.zero_modes import scan_zero_modes
+        from spintoolkit.observables.zero_modes import require_no_instability, scan_zero_modes
 
         report = zero_modes if zero_modes is not None else scan_zero_modes(result)
+        unstable = require_no_instability(report, "two_magnon_continuum")
         if gapless is None:
-            if report.has_candidates:
+            if report.has_candidates and not unstable:
                 raise ZeroModeCandidateError(report)
             undefined, decision = report.has_zero, "scan"
         else:
@@ -270,6 +271,7 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
             warnings.warn("gapless spectrum: the two-magnon continuum at t > 0 diverges with "
                           "the mesh in two dimensions and is reported as NaN", UserWarning,
                           stacklevel=2)
+        undefined = undefined or unstable
     q = np.atleast_2d(np.asarray(q_points, dtype=float))
     ns = result.num_sites
     n = np.asarray(result.directions, dtype=float)                 # (Ns, 3) ordered axes
@@ -324,8 +326,11 @@ def two_magnon_continuum(result, q_points, mesh: Sequence[int] = (24, 24),
     weights = np.where(np.isnan(energies)[:, :, None, None], 0.0, weights)
     if undefined:
         weights = np.full(weights.shape, np.nan + 0j)
+    beyond = vacuum_beyond_spin(result, "two_magnon_continuum", [t], undefined)[0]
+    if beyond:
+        weights = np.full(weights.shape, np.nan + 0j)
     divergent = None
-    if t == 0:
+    if t == 0 and not beyond:
         divergent = _infrared_divergence(result, q, n, ns)
         if np.any(divergent):
             first = np.round(q[np.argmax(np.any(divergent, axis=(1, 2)))], 6).tolist()

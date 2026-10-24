@@ -380,14 +380,16 @@ def solve_scswt(model: SpinModel, state: SpinState,
     def per_site(contract, terms, expectation):
         return float(np.real(sum(c * expectation(contract, m) for c, m in terms))) / ns
 
+    def at_sc(monomials, coefficients, kk):
+        H = np.asarray(quadratic.at(kk), dtype=complex)
+        if len(monomials):
+            H = H + nambu_matrices(list(zip(coefficients, monomials)), kk, ns)
+        return H
+
     def vacuum(monomials, coefficients):
-        def at(kk):
-            H = np.asarray(quadratic.at(kk), dtype=complex)
-            if len(monomials):
-                H = H + nambu_matrices(list(zip(coefficients, monomials)), kk, ns)
-            return H
-        return Contractions(bogoliubov_mesh(at, k, grid, reciprocal,
-                                            settings.zero_mode_tolerance, resolution))
+        return Contractions(bogoliubov_mesh(lambda kk: at_sc(monomials, coefficients, kk), k,
+                                            grid, reciprocal, settings.zero_mode_tolerance,
+                                            resolution))
 
     pair = lambda contract, m: contract(m[0], m[1])  # noqa: E731
     classical = expansion.classical_energy / ns
@@ -449,6 +451,21 @@ def solve_scswt(model: SpinModel, state: SpinState,
                             f"iterations (last change {history[-1]:.3g}); try mixing < 1")
         contract = vacuum(monomials, coefficients)
 
+    if contract is not None and geometry.kind != "finite_torus":
+        # The mesh is offset by 1/3 step and misses k = 0 and the zone corners, where a
+        # gap usually closes first; a vacuum needs H_SC(k) > 0 at every k (D75).
+        found = _lowest_between_mesh(lambda kk: at_sc(monomials, coefficients, kk), k,
+                                     reciprocal)
+        if found is not None:
+            value, where = found
+            message = (f"H_SC(k) has a negative eigenvalue {value:.3g} at fractional "
+                       f"k = {np.round(where, 6).tolist()} between the mesh points: the state "
+                       "has no vacuum at this field")
+            if frozen is None:
+                raise LSWTError(message + " (D75)")
+            warnings.warn(f"solve_scswt(frozen=): {message}; the energies and boson numbers are "
+                          "NaN (D75)", UserWarning, stacklevel=2)
+            contract = None
     if contract is None:
         energies = SelfConsistentEnergies(classical, float("nan"), float("nan"), one_loop)
         numbers = np.full(ns, np.nan)
@@ -467,6 +484,42 @@ def solve_scswt(model: SpinModel, state: SpinState,
     return SCSWTResult(header, energies, k, np.asarray(expansion.spins, dtype=float), numbers,
                        np.asarray(model.lattice, dtype=float), state, quadratic, tuple(monomials),
                        coefficients, tuple(quartic), contract)
+
+
+def _lowest_between_mesh(at, k: np.ndarray, reciprocal: np.ndarray, seeds: int = 6,
+                         tolerance: float = 1e-10) -> Optional[Tuple[float, np.ndarray]]:
+    """A negative eigenvalue of ``H(k)`` off the mesh, or None.
+
+    ``lambda_min`` is evaluated at the special points of the magnetic cell
+    (fractions 0, 1/2, 1/3, 2/3) and minimized over continuous ``k`` from
+    the lowest mesh points. Returns ``(lambda_min, fractional k)`` when it is
+    below ``-tolerance`` times the largest ``|eig H|`` on the mesh.
+    """
+    from scipy.optimize import minimize
+
+    eigs = np.linalg.eigvalsh(at(k))
+    scale = float(np.max(np.abs(eigs)))
+    lowest = lambda p: float(np.linalg.eigvalsh(at(np.atleast_2d(p) @ reciprocal))[0][0])  # noqa: E731
+    special = (0.0, 0.5, 1 / 3, 2 / 3)
+    starts = [np.array([a, b]) for a in special for b in special]
+    fractions = k @ np.linalg.inv(reciprocal)
+    starts += [fractions[i] for i in np.argsort(eigs[:, 0])[:seeds]]
+    step = 1.0 / max(4, int(np.sqrt(len(k))))
+    best, where = np.inf, None
+    for p0 in starts:
+        value = lowest(p0)
+        if value > -tolerance * scale and value < 1e-2 * scale:
+            simplex = np.array([p0, p0 + [step, 0], p0 + [0, step]])
+            opt = minimize(lowest, p0, method="Nelder-Mead",
+                           options={"initial_simplex": simplex, "xatol": 1e-10,
+                                    "fatol": 1e-16 * scale, "maxiter": 300})
+            if opt.fun < value:
+                value, p0 = float(opt.fun), opt.x
+        if value < best:
+            best, where = value, np.mod(p0, 1.0)
+    if best < -tolerance * scale:
+        return best, where
+    return None
 
 
 class _TermsHamiltonian:
