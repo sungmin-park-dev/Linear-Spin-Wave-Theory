@@ -33,8 +33,27 @@ def reciprocal_lattice(lattice) -> np.ndarray:
     return 2 * np.pi * np.linalg.inv(np.asarray(lattice, dtype=float)).T
 
 
+def _reduced(reciprocal: np.ndarray) -> np.ndarray:
+    """A Gauss-reduced basis of the same reciprocal lattice; the input if already reduced.
+
+    The Wigner-Seitz construction below looks for the shortest reciprocal
+    vectors among small integer combinations of the basis; for a skew basis
+    (e.g. ``A = [[1, 0], [8, 1]]``, the square lattice) they lie far outside
+    that range, so the basis is reduced first.
+    """
+    basis = np.array(reciprocal, dtype=float)
+    for _ in range(200):
+        if abs(basis[0] @ basis[1]) <= 0.5 * min(basis[0] @ basis[0], basis[1] @ basis[1]) + 1e-12 * (
+                basis[0] @ basis[0] + basis[1] @ basis[1]):
+            return basis
+        short, long_ = (0, 1) if basis[0] @ basis[0] <= basis[1] @ basis[1] else (1, 0)
+        basis[long_] -= np.rint(basis[0] @ basis[1] / (basis[short] @ basis[short])) * basis[short]
+    raise ValueError("could not reduce the reciprocal basis")
+
+
 def _wigner_seitz(reciprocal: np.ndarray):
     """Edges of the Wigner-Seitz cell: (normal vector G, midpoint G/2, two corners)."""
+    reciprocal = _reduced(reciprocal)
     candidates = [i * reciprocal[0] + j * reciprocal[1]
                   for i in range(-3, 4) for j in range(-3, 4) if (i, j) != (0, 0)]
     candidates.sort(key=lambda g: g @ g)
@@ -79,7 +98,7 @@ def high_symmetry_points(lattice) -> Dict[str, np.ndarray]:
     dict
         Name to Cartesian momentum; see the module docstring for the names.
     """
-    reciprocal = reciprocal_lattice(lattice)
+    reciprocal = _reduced(reciprocal_lattice(lattice))
     edges, corners = _wigner_seitz(reciprocal)
     edges.sort(key=lambda e: (round(float(e[0] @ e[0]), 9),
                               round(float(np.mod(np.arctan2(e[0][1], e[0][0]), 2 * np.pi)), 9)))

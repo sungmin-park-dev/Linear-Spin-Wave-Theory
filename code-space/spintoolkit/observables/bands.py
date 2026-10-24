@@ -101,8 +101,12 @@ def _energies(H: np.ndarray, tolerance: float) -> Tuple[np.ndarray, bool, bool]:
             return np.sort(E[:ns]), False, False
         except np.linalg.LinAlgError:
             pass
-    moduli = np.sort(np.abs(np.linalg.eigvals(eta @ H)))
-    return moduli[::2], True, False                    # each |E| appears twice (+-E)
+    # For H >= 0 the eigenvalues of eta H are the particle energies omega_n(k) >= 0
+    # and the hole energies -omega_n(-k) <= 0; omega(k) != omega(-k) without
+    # inversion, so the moduli are not pairwise equal. Keep the ns largest.
+    spectrum = np.linalg.eigvals(eta @ H)
+    particles = spectrum[np.argsort(spectrum.real)[ns:]]
+    return np.sort(np.abs(particles)), True, False
 
 
 def band_structure(result, path: Sequence[PathPoint] = ("Γ", "K", "M", "Γ"), points: int = 200,

@@ -949,6 +949,30 @@
   \slidesource{2026-10-21 결정}{contract}
 \endgroup
 
+\subsection{결정 기록 (D74): 외부 물리 검토(2026-10-23)에서 확인한 오류 수정}\label{decisions-d74-review-fixes}
+\begingroup% frame-local settings, as in Beamer
+  \framesubtitle{2026-10-23 사용자 지시(``다시한번 확인해보고, 문제가 명확하면 수정해''). ChatGPT 검토 P1--P9의 지적 가운데 Claude가 다시 재현한 열 가지. 방식은 Claude 추천, 잠정 승인.}
+  \small\renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}P{3.0cm}Y@{}}
+    \toprule
+    항목 & 결정 \\
+    \midrule
+    교환 행렬 & \texttt{xxz}, \texttt{xxz\_with\_soc}는 실수 행렬을 만든다(정수 입력에서 $\Gamma$가 0으로 잘리던 오류) \\
+    나선 에너지 & \texttt{spiral\_energy}: 결합·자리·Zeeman 항을 격자가 실현하는 위상 $2\pi q\cdot R$로 평균한다($q$ 정수: 한 점, $2q$ 정수: $0,\pi$, 그 밖: 등간격 8점이 2차 조화까지 정확). U(1) 모형에서는 그대로. 확인: 비U(1) 모형에서 초격자 \texttt{classical\_energy}와 $10^{-13}$ \\
+    영모드 띠 & \texttt{band\_structure}의 준정부호 분기: $\eta H$ 고유값 가운데 큰 $N_s$개가 입자 에너지 $\omega_n(k)\ge0$, 나머지가 $-\omega_n(-k)$. 모듈러스를 둘씩 묶던 방식은 $\omega(k)\neq\omega(-k)$에서 틀린다 \\
+    상태 비교 & \texttt{compare\_states}: LSWT가 비정류라고 판정한(D68) 후보는 \texttt{not stationary}, 순위에서 뺀다. 조화 에너지가 NaN인 후보는 \texttt{stable}로 두지 않는다 \\
+    $n>S$ & \texttt{solve\_lswt}: $\langle n_i\rangle>S_i$이면 경고, \texttt{diagnostics["max\_boson\_number\_per\_spin"]}. 순서 모멘트는 이미 NaN. 에너지는 그대로 낸다(값을 NaN으로 할지는 사용자 결정 대기) \\
+    축퇴 띠(1/S) & \texttt{NLSWTResult.magnon\_energies}: 정확히 축퇴한 띠의 보정은 $P(\delta H+\Sigma_3(\omega_0))P$의 고유값(축퇴 섭동론). \texttt{spectral\_function}: 축퇴 공간의 행렬 밀도(\texttt{cubic\_spectral\_density\_matrix}, $\rho_{nm}\propto D_n^*D_m$)로 같은 행렬을 만들어 대각화, Dyson 모드의 $\Sigma$도 그 고유 기저에서. 대칭으로 보호된 축퇴는 삼각형 격자 오차만큼($10^{-4}$) 갈라질 수 있다. 확인: $JS$가 같은 독립 정사각 AFM 두 층($S=1/2,1$)이 각 층의 값으로 갈라진다 \\
+    종방향 연속체 & \texttt{two\_magnon\_continuum}($t=0$): 두 마그논이 함께 부드러워지는 $q$(Néel Bragg점)에서 가중치가 $|k|^{-2}$, 2차원 합이 로그 발산한다. 영모드 주위 원에서 지수 $p\ge1.9$이면 그 대각 성분의 \texttt{static}과 넓힌 \texttt{spectrum}은 $+\infty$(비대각 NaN), 경고. 확인: 메시를 두 배로 할 때마다 $\ln2/\pi=0.2206$씩 증가; $q=0$은 $S^z_\mathrm{tot}$ 보존으로 0 \\
+    평탄한 쌍 에너지 & 삼각형 적분(\texttt{triangle\_density}): 쌍 에너지가 삼각형 위에서 상수이고 무게가 있으면 측도에 $\delta$ 원자가 있어 밀도로 나타낼 수 없다. NaN과 경고(유한 토러스를 쓰라고 안내). 황금률 적분은 그 상수가 0일 때만 NaN \\
+    Chern 수 & \texttt{chern\_numbers}: Kubo--FHS가 일치해도 연속 $k$에서 띠 간격을 국소 최소화해, 간격이 닫히거나 메시 최솟값의 0.5배(\texttt{TOPOLOGY\_GAP\_RESOLUTION}) 아래이면 NaN과 경고. 반례: 벌집 강자성 Dirac점 합병($J_1=2$, $D=0$)과 $J_1=1.999$, $D=10^{-3}$(참값 $(+1,-1)$, 메시 12에서 $(0,0)$) \\
+    BZ & \texttt{high\_symmetry\_points}, \texttt{zone\_boundary}: 역격자 기저를 먼저 Gauss 축약한다(\texttt{A=[[1,0],[8,1]]}에서 BZ가 26배였음) \\
+    검증 & \texttt{tests/test\_methods/test\_physics\_review\_2026\_10\_23.py} \\
+    \bottomrule
+  \end{tabularx}
+  \slidesource{2026-10-23 결정}{contract}
+\endgroup
+
 \subsection{물리 검토 원칙 (2026-10-15)}\label{decisions-physics-review-principles}
 \begingroup% frame-local settings, as in Beamer
   \framesubtitle{2026-10-15 사용자 지시(``물리검토는 원칙을 세우고, 추천대로 진행해.'' ``실제 엄밀한 검토는 관련 계산을 할 때, 논문결과와 비교하면서 검토할거야''), 원칙은 Claude 제안.}

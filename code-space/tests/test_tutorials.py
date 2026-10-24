@@ -75,7 +75,7 @@ def test_interacting(capsys):
     (_, _, path), out = run("t06_interacting", capsys)
     assert "E_(S^0) = -0.008012  total = -0.546820" in out
     assert "1/S       [   nan    nan 0.7313]" in out
-    assert "1/S (PV)  [1.1778 1.1778 0.7355]" in out
+    assert "1/S (PV)  [1.1778 1.1777 0.7355]" in out
     assert "decay     [0.1597 0.1597 0.    ]" in out
     assert "undefined path points (Goldstone modes): 3" in out
     assert "path points where the expansion is not controlled: [16]" in out

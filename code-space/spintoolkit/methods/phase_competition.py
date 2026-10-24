@@ -92,6 +92,10 @@ class CandidateReport:
                 "augmentation_mu": num(self.augmentation_mu)}
 
 
+class _NotStationary(Exception):
+    """LSWT found linear boson terms: the candidate has no harmonic energy."""
+
+
 def magnetic_mesh(state: SpinState, k_density: int) -> tuple:
     """Mesh of the magnetic zone with about ``k_density`` primitive momenta per direction."""
     n = max(2, math.ceil(k_density / math.sqrt(state.num_cells)))
@@ -160,6 +164,10 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
                 result = solve_lswt(model, state, conditions,
                                     settings=LSWTSettings(mesh=mesh, augmentation=augmentation))
                 e_zp = float(result.zero_point_energy)
+                if not result.header.diagnostics.get("stationary", True):
+                    # Linear boson terms remain: no harmonic energy (D68), so the
+                    # candidate cannot be ranked as stable.
+                    raise _NotStationary(torque)
                 if "augmentation" in result.extra:
                     mu = float(result.extra["augmentation"]["mu"])
                 if mu > 0:
@@ -168,6 +176,10 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
                     lowest = float(np.min(result.bands()))
             except LSWTError as error:
                 status, message = "unstable", str(error).splitlines()[0][:200]
+            except _NotStationary:
+                status, e_zp, stationary = "not stationary", float("nan"), False
+                message = (f"the state is not stationary (max torque {torque:.3g} E0); "
+                           "refine it first (refine=True or 'stationary')")
         stability = (stability_test(model, state, conditions)
                      if local_stability and stationary else None)
         if status == "stable" and stability is not None and stability.verdict == UNSTABLE:
@@ -177,7 +189,10 @@ def compare_states(model: SpinModel, candidates: Mapping[str, SpinState],
             message = f"unstable between mesh points (local_stability): {detail}"[:200]
         spins = np.array([model.site(site).spin for site, _ in state.directions])
         moments = spins[:, None] * np.array(list(state.directions.values()))
-        ranked = status in ("stable", "augmented")
+        ranked = status in ("stable", "augmented") and np.isfinite(e_zp)
+        if status in ("stable", "augmented") and not ranked:
+            status, lowest = "unstable", float("nan")
+            message = message or "zero-point energy undefined (NaN)"
         reports.append(CandidateReport(
             name, state, e_cl, torque, status, message, e_zp,
             e_cl + e_zp if ranked else float("nan"), lowest,

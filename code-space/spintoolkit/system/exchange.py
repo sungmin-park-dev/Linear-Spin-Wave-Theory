@@ -41,7 +41,7 @@ def xxz(Jxy: float, Jz: float) -> np.ndarray:
     np.ndarray
         3x3 diagonal matrix.
     """
-    return np.diag([Jxy, Jxy, Jz])
+    return np.diag(np.array([Jxy, Jxy, Jz], dtype=float))
 
 
 def xxz_with_soc(Jxy: float, Jz: float, Gamma: float) -> np.ndarray:
@@ -67,7 +67,7 @@ def xxz_with_soc(Jxy: float, Jz: float, Gamma: float) -> np.ndarray:
     np.ndarray
         3x3 exchange matrix.
     """
-    J = np.diag([Jxy, Jxy, Jz])
+    J = np.diag(np.array([Jxy, Jxy, Jz], dtype=float))
     J[0, 1] = Gamma
     J[1, 0] = Gamma
     return J

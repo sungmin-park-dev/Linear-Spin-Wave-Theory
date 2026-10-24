@@ -577,13 +577,26 @@ def solve_lswt(model: SpinModel, state: SpinState,
                       "energy and the boson numbers are NaN", UserWarning, stacklevel=2)
         zero_point = float("nan")
         boson_numbers = np.full(len(boson_numbers), np.nan)
+    spins = np.array([model.site(s).spin for s, _ in keys])
+    ratio = boson_numbers / spins
+    diagnostics["max_boson_number_per_spin"] = (float(np.max(ratio))
+                                                if np.all(np.isfinite(ratio)) else float("nan"))
+    if np.any(ratio > 1):
+        # <n_i> > S_i: the 1/S expansion has broken down for this state; the moment
+        # would reverse, so ordered_moments() is NaN there (D64).
+        worst = int(np.argmax(ratio))
+        warnings.warn(
+            f"zero-point boson number <n> = {boson_numbers[worst]:.3g} exceeds the spin "
+            f"S = {spins[worst]:.3g} at site {keys[worst]}: the spin-wave expansion about this "
+            "state is not controlled and the ordered moment is NaN; the energy is reported but "
+            "should not be trusted at this order", UserWarning, stacklevel=2)
     header = ResultHeader.build(
         "lswt", model, state, geometry, conditions, settings.as_dict(),
         "energies per site of the model (E0); boson numbers per magnetic site", diagnostics)
     hamiltonian_at = hamiltonian.at
     hamiltonian_derivatives_at = hamiltonian.derivatives_at
 
-    result = LSWTResult(header, keys, np.array([model.site(s).spin for s, _ in keys]),
+    result = LSWTResult(header, keys, spins,
                         np.array([state.direction(s, c) for s, c in keys]), k, fractional, weights,
                         H, E, T, shift, linear_max, float(e_cl), float(zero_point),
                         float(e_cl + zero_point), boson_numbers,

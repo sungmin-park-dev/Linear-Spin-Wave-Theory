@@ -47,7 +47,7 @@ result.decay_rates(k, grid=(96, 96))
 magnons at k = [2.0944 0.    ] (S = 1/2):
 LSWT      [1.5811 1.5811 1.    ]
 1/S       [   nan    nan 0.7313]
-1/S (PV)  [1.1778 1.1778 0.7355]
+1/S (PV)  [1.1778 1.1777 0.7355]
 decay     [0.1597 0.1597 0.    ]
 ```
 
@@ -59,6 +59,10 @@ of densities integrated on triangles; its `energy` is the on-shell 1/S
 energy. For a band below the continuum the mesh value is the better one: the
 Hilbert transform of a band that does not decay depends on `levels` at the
 level of a few percent (0.7355 here against the mesh 0.7313).
+The upper two bands are degenerate, so `spectral_function` diagonalizes the
+self-energy in that pair (degenerate perturbation theory, D74); the 1e-4
+splitting is the error of the triangle grid, which does not respect the
+symmetry that protects the degeneracy.
 
 The magnetic cell has three sites, so there are three bands. At S = 1/2 the
 1/S correction lowers the upper two by about 25%, and these two decay into

@@ -39,6 +39,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from itertools import permutations
 from typing import Dict, List, Optional, Sequence, Tuple
+import warnings
 
 import numpy as np
 
@@ -85,6 +86,21 @@ def nambu_matrices(quadratic: Sequence[Tuple[complex, Monomial]], momenta: np.nd
             M[:, s1, ns + s2] += minus
             M[:, s2, ns + s1] += plus
     return M
+
+
+def degenerate_groups(energies: np.ndarray, tolerance: float = 1e-8):
+    """Index groups of equal energies (relative tolerance)."""
+    order = np.argsort(energies)
+    scale = max(float(np.max(np.abs(energies))), 1.0)
+    groups, current = [], [int(order[0])]
+    for a, b in zip(order[:-1], order[1:]):
+        if energies[b] - energies[a] <= tolerance * scale:
+            current.append(int(b))
+        else:
+            groups.append(current)
+            current = [int(b)]
+    groups.append(current)
+    return groups
 
 
 @dataclass
@@ -256,6 +272,10 @@ def triangle_density(f: np.ndarray, g: np.ndarray, levels: Sequence[float]) -> n
     the weight ``int delta(x - f) dA`` of the level line times the mean of
     ``g`` on it (the two-dimensional analogue of the tetrahedron method).
 
+    Where ``f`` is constant on a triangle carrying weight (a flat band of pair
+    energies) the measure has a delta-function atom, which a density cannot
+    represent; the result is then NaN at every level, with a warning.
+
     Returns
     -------
     (levels,) or (levels, C) array
@@ -265,9 +285,24 @@ def triangle_density(f: np.ndarray, g: np.ndarray, levels: Sequence[float]) -> n
     single = g.ndim == 2
     flat = g.reshape(n1 * n2, -1)
     F, I = _triangle_vertices(f)
-    f1, f2, f3 = F.T
     G = [flat[I[:, v]] for v in range(3)]
-    out = np.zeros((len(levels), flat.shape[1]), dtype=np.result_type(flat.dtype, float))
+    if _flat_triangle_atoms(F, G) is not None:
+        warnings.warn(
+            "triangle integration: the pair energy is constant on triangles carrying weight (a "
+            "flat band); its spectral measure has a delta-function atom, which a density cannot "
+            "represent, so the density is NaN. Use a finite torus (exact discrete poles) for "
+            "decoupled or flat-band systems.", UserWarning, stacklevel=2)
+        out = np.full((len(levels), flat.shape[1]), np.nan,
+                      dtype=np.result_type(flat.dtype, float))
+    else:
+        out = _triangle_levels(F, G, levels, n1 * n2)
+    return out[:, 0] if single else out
+
+
+def _triangle_levels(F: np.ndarray, G, levels: Sequence[float], cells: int) -> np.ndarray:
+    """Level-line integrals of :func:`triangle_density`; flat triangles contribute nothing."""
+    f1, f2, f3 = F.T
+    out = np.zeros((len(levels), G[0].shape[1]), dtype=np.result_type(G[0].dtype, float))
     with np.errstate(divide="ignore", invalid="ignore"):
         for i, x in enumerate(np.asarray(levels, dtype=float)):
             low = (f1 < x) & (x <= f2)
@@ -284,13 +319,41 @@ def triangle_density(f: np.ndarray, g: np.ndarray, levels: Sequence[float]) -> n
                 coef = (c - x) / ((c - a) * (c - b))
                 w[high] = coef[:, None] * np.stack([1 - t13, 1 - t23, t13 + t23], axis=1)
             out[i] = w[:, 0] @ G[0] + w[:, 1] @ G[1] + w[:, 2] @ G[2]
-    out *= 0.5 / (n1 * n2)
-    return out[:, 0] if single else out
+    return out * (0.5 / cells)
+
+
+def _flat_triangle_atoms(F: np.ndarray, G, tolerance: float = 1e-10):
+    """Mask of triangles on which ``f`` is constant and ``g`` is not zero; None if there are none.
+
+    On such a triangle ``int g delta(x - f) dA`` is a delta function in ``x`` of
+    mass ``(area) <g>``, not a density.
+    """
+    scale = max(1.0, float(np.max(np.abs(F), initial=0.0)))
+    flat = (F[:, 2] - F[:, 0]) <= tolerance * scale
+    if not np.any(flat):
+        return None
+    weight = sum(np.max(np.abs(Gv), axis=1) for Gv in G)
+    size = max(float(np.max(weight, initial=0.0)), 1e-300)
+    atoms = flat & (weight > 1e-12 * size)
+    return atoms if np.any(atoms) else None
 
 
 def triangle_delta_integral(f: np.ndarray, g: np.ndarray) -> float:
-    """``int du dv g(u, v) delta(f(u, v))`` over the unit torus (see :func:`triangle_density`)."""
-    return float(triangle_density(-f, g, [0.0])[0])
+    """``int du dv g(u, v) delta(f(u, v))`` over the unit torus (see :func:`triangle_density`).
+
+    NaN where ``f`` vanishes identically on a triangle carrying weight: the
+    integral is then a delta function of the level, not a number. A flat
+    region at a non-zero value does not contribute.
+    """
+    n1, n2 = f.shape
+    F, I = _triangle_vertices(-np.asarray(f, dtype=float))
+    G = [np.asarray(g).reshape(n1 * n2, 1)[I[:, v]] for v in range(3)]
+    atoms = _flat_triangle_atoms(F, G)
+    if atoms is not None:
+        scale = max(1.0, float(np.max(np.abs(F))))
+        if np.any(atoms & (np.abs(F[:, 0]) <= 1e-10 * scale)):
+            return float("nan")
+    return float(np.real_if_close(_triangle_levels(F, G, [0.0], n1 * n2)[0, 0]))
 
 
 def hilbert_transform(x: np.ndarray, rho: np.ndarray, omega: Sequence[float]) -> np.ndarray:
@@ -723,6 +786,53 @@ class NonlinearSpinWaves:
                         rho_src[n] += triangle_density(f_src, source[:, n, a, b].reshape(n1, n2), x)
         return Ek[0], x, rho_dec, rho_src
 
+    def cubic_spectral_density_matrix(self, k, group: Sequence[int],
+                                      grid: Sequence[int] = (64, 64), levels: int = 400):
+        """Matrix two-magnon densities of a group of bands at ``k`` (degenerate bands).
+
+        ``rho_dec_nm(x) = <sum 2 D^*_{n1 n2; n} D_{n1 n2; m} delta(x - ...)>_q`` and
+        ``rho_src_nm`` likewise, for ``n, m`` in ``group``, on the energies of
+        :meth:`cubic_spectral_densities` (whose densities are the diagonal), so that
+        ``Sigma_3^nm(k, w) = int rho_dec_nm / (w - x + i0) - int rho_src_nm / (w + x)``
+        in the Bogoliubov basis of :meth:`cubic_self_energy_matrix`.
+
+        Returns
+        -------
+        x : (levels,) array
+        rho_dec, rho_src : (G, G, levels) complex arrays
+        """
+        g = list(group)
+        n1, n2 = (int(n) for n in grid)
+        k = np.asarray(k, dtype=float).reshape(1, 2)
+        Ek, Tk = self._bogoliubov(k)
+        u = np.array([((i + 1 / 3) / n1, (j + 1 / 3) / n2) for i in range(n1) for j in range(n2)])
+        q1 = u @ self.mesh.reciprocal
+        m = len(q1)
+        kk = np.broadcast_to(k, (m, 2))
+        Tkk = np.broadcast_to(Tk, (m,) + Tk.shape[1:])
+        E1, T1 = self._bogoliubov(q1)
+        E2, T2 = self._bogoliubov(k - q1)
+        E3, T3 = self._bogoliubov(-k - q1)
+        D = self._decay(q1, k - q1, kk, T1, T2, Tkk)[..., g]                  # (m, n1, n2, G)
+        S = np.moveaxis(self._source([kk, q1, -k - q1], [Tkk, T1, T3])[:, g], 1, -1)
+        decay = 2 * D[..., :, None].conj() * D[..., None, :]                  # (m, n1, n2, G, G)
+        source = 18 * S[..., :, None].conj() * S[..., None, :]
+        top = max(float(np.max(E1[:, :, None] + E2[:, None, :])),
+                  float(np.max(E1[:, :, None] + E3[:, None, :])))
+        x = np.linspace(0.0, 1.02 * top, int(levels))
+        size = len(g)
+        rho_dec = np.zeros((len(x), size * size), dtype=complex)
+        rho_src = np.zeros((len(x), size * size), dtype=complex)
+        for a in range(self.ns):
+            for b in range(self.ns):
+                f_dec = (E1[:, a] + E2[:, b]).reshape(n1, n2)
+                f_src = (E1[:, a] + E3[:, b]).reshape(n1, n2)
+                rho_dec += triangle_density(f_dec, decay[:, a, b].reshape(n1, n2, -1), x)
+                if np.any(source[:, a, b]):
+                    rho_src += triangle_density(f_src, source[:, a, b].reshape(n1, n2, -1), x)
+        shape = (size, size, len(x))
+        return x, rho_dec.T.reshape(shape), rho_src.T.reshape(shape)
+
     def _commutator_terms(self, k: np.ndarray):
         """``j_a = [psi_a(k), H_3]`` as ``(a, f, y, z)``: ``j_a = sum f y z`` per cell (N^{1/2} stripped)."""
         ns = self.ns
@@ -831,4 +941,44 @@ class NonlinearSpinWaves:
         static = np.einsum("kan,kab,kbn->kn", T.conj(), dH, T)[:, :self.ns].real
         cubic = np.array([[self.cubic_self_energy(k[i], n, E[i, n] + 1j * broadening)
                            for n in range(self.ns)] for i in range(len(k))])
+        for i in range(len(k)):
+            for group in degenerate_groups(E[i]):
+                if len(group) > 1:
+                    static[i, group], cubic[i, group] = self.degenerate_corrections(
+                        k[i], T[i], dH[i], group, E[i, group[0]] + 1j * broadening)
         return E, static, cubic
+
+    def correction_block(self, k, T, dH, group, omega: complex) -> Tuple[np.ndarray, np.ndarray]:
+        """Static and cubic corrections ``P (dH + Sigma_3(k, omega)) P`` on a degenerate group.
+
+        ``T`` is the Bogoliubov matrix at ``k``, ``dH`` the static Hamiltonian
+        there, both Nambu; the blocks are in the particle basis of the bands
+        in ``group``, whose diagonals are the band-diagonal corrections.
+        """
+        g = np.asarray(group)
+        static = (T.conj().T @ dH @ T)[np.ix_(g, g)]
+        sigma = T.conj().T @ self.cubic_self_energy_matrix(np.reshape(k, (1, 2)), omega) @ T
+        return static, sigma[np.ix_(g, g)]
+
+    def degenerate_corrections(self, k, T, dH, group, omega: complex):
+        """First-order corrections of an exactly degenerate group of bands.
+
+        The diagonal elements of ``dH + Sigma_3`` in a degenerate subspace
+        depend on the arbitrary basis of that subspace; the corrections are
+        the eigenvalues of the projected matrix ``P (dH + Sigma_3(w_0)) P``
+        (degenerate perturbation theory). Returns the static and cubic parts
+        in the eigenbasis of the sum, ascending in the real part of the
+        total, so that ``static + cubic`` are the eigenvalues.
+        """
+        static, sigma = self.correction_block(k, T, dH, group, omega)
+        total = static + sigma
+        if np.allclose(total, total.conj().T, atol=1e-12 * max(1.0, np.max(np.abs(total)))):
+            values, V = np.linalg.eigh((total + total.conj().T) / 2)
+            Vinv = V.conj().T
+        else:
+            values, V = np.linalg.eig(total)
+            order = np.argsort(values.real)
+            values, V = values[order], V[:, order]
+            Vinv = np.linalg.inv(V)
+        static_part = np.real(np.diag(Vinv @ static @ V))
+        return static_part, values - static_part
