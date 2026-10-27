@@ -9,9 +9,7 @@ sources:
     - archive/2026-10-08-lswt-markdown — LSWT 일반 이론 Markdown (2026-10-08 상태로 보존, 더 고치지 않음)
     - archive/2026-10-08-development-beamer/main.tex — 패키지 개발 설계와 결정 기록 D01–D47 Beamer (2026-10-08 상태로 보존, 더 고치지 않음)
   materials:
-    - docs/reviews
-    - data-space/gallery
-    - docs/tutorials
+    - sources/00-primary-source
 concepts:
   - linear-spin-wave-theory
   - magnon
