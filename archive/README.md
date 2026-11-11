@@ -9,6 +9,7 @@
 | [`2026-10-11-lswt-latex-notes/`](2026-10-11-lswt-latex-notes/) | Markdown 전환 직전의 LaTeX 이론 연구노트와 변환 도구 |
 | [`legacy/`](legacy/) | 원본 legacy 코드(`modules/`, `scripts/`)와 과거 연구노트. 테스트 몇 개가 legacy 수치와 대조한다 |
 | [`government/`](government/) | 옛 GOVERNMENT의 닫힌 이슈·인계 기록, 형식 규칙(frontmatter·이름·폴더 안내)과 서식, map 문서, User-Constitution(원칙은 연구 공통 규칙 6·7번으로 옮김), 2026-10-15에 옮긴 TASK-QUEUE·roadmap·제안 |
+| [`2026-11-11-flow/`](2026-11-11-flow/README.md) | 옛 흐름 점 67개와 그 기록, 끝나지 않은 맡긴 일 8개, 2026-11-11 상태 (옛 `workbench/flow/`, `workbench/tasks/`). 사람이 판단한 것이 없는 기록이라 옮겼고, 새 일은 `workbench/problems/` 아래에서 한다 |
 
 ## 옛 경로 → 새 경로 (2026-10-13)
 
